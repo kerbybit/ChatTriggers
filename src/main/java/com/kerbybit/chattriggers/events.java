@@ -118,6 +118,23 @@ public class events {
 			while (TMP_e.contains(".replace(") && TMP_e.contains(")")) {
 				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".replace("));
 				String[] checkTo = TMP_e.substring(TMP_e.indexOf(".replace(")+9, TMP_e.indexOf(")", TMP_e.indexOf(".replace("))).split(",");
+				
+				List<String> checkFromInterrupt = new ArrayList<String>();
+				checkFromInterrupt.add(".equals(");
+				checkFromInterrupt.add(".startsWith(");
+				checkFromInterrupt.add(".contains(");
+				checkFromInterrupt.add(".endsWith(");
+				
+				for (String value : checkFromInterrupt) {
+					if (checkFrom.contains(value)) {
+						checkFrom = checkFrom.substring(checkFrom.indexOf(value) + value.length(), checkFrom.length());
+					}
+				}
+				
+				if (checkFrom.contains("set.string(")) {
+					checkFrom = checkFrom.substring(checkFrom.indexOf(",", checkFrom.indexOf("set.string("))+1, checkFrom.length());
+				}
+				
 				if (checkTo.length==2) {
 					TMP_e = TMP_e.replace(checkFrom + ".replace(" + checkTo[0] + "," + checkTo[1] + ")", checkFrom.replace(checkTo[0], checkTo[1]));
 				}
