@@ -1,0 +1,16 @@
+[
+{
+  "modid": "CT",
+  "name": "ChatTriggers",
+  "description": "ChatTriggers- customize your chat",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["kerbybit"],
+  "credits": "kerbybit",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
