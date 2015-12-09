@@ -269,6 +269,14 @@ public class events {
 				if (i+1 < tmp_event.size()-1) { //check for events after if event
 					for (int j=i; j<tmp_event.size(); j++) {
 						if (j != tmp_event.size()) {
+							
+							//arguments
+							if (toreplace != null) {
+								for (int k=0; k<toreplace.length; k++) {
+									tmp_event.set(j,tmp_event.get(j).replace(toreplace[k], replacement[k]));
+								}
+							}
+							
 							//increase tab
 							if (tmp_event.get(j).toUpperCase().startsWith("IF")
 							|| tmp_event.get(j).toUpperCase().startsWith("FOR")
