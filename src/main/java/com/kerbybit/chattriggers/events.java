@@ -140,33 +140,87 @@ public class events {
 				}
 			}
 			
-			if (TMP_e.contains(".equals(") && TMP_e.contains(")")) {
+			while (TMP_e.contains(".equals(") && TMP_e.contains(")")) {
 				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".equals("));
 				String checkTo = TMP_e.substring(TMP_e.indexOf(".equals(")+8, TMP_e.indexOf(")", TMP_e.indexOf(".equals(")));
+				
+				List<String> checkFromInterrupt = new ArrayList<String>();
+				checkFromInterrupt.add(" && ");
+				checkFromInterrupt.add(" || ");
+				checkFromInterrupt.add(" ^ ");
+				
+				for (String value : checkFromInterrupt) {
+					while (checkFrom.contains(value)) {
+						checkFrom = checkFrom.substring(checkFrom.indexOf(value) + value.length(), checkFrom.length());
+					}
+				}
+				
 				if (checkFrom.equals(checkTo)) {
 					TMP_e = TMP_e.replace(checkFrom + ".equals(" + checkTo + ")", "true");
 				} else {
 					TMP_e = TMP_e.replace(checkFrom + ".equals(" + checkTo + ")", "false");
 				}
-			} else if (TMP_e.contains(".startsWith(") && TMP_e.contains(")")) {
+			}
+			
+			while (TMP_e.contains(".startsWith(") && TMP_e.contains(")")) {
 				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".startsWith("));
 				String checkTo = TMP_e.substring(TMP_e.indexOf(".startsWith(")+12, TMP_e.indexOf(")", TMP_e.indexOf(".equals(")));
+				
+				List<String> checkFromInterrupt = new ArrayList<String>();
+				checkFromInterrupt.add(" && ");
+				checkFromInterrupt.add(" || ");
+				checkFromInterrupt.add(" ^ ");
+				
+				for (String value : checkFromInterrupt) {
+					while (checkFrom.contains(value)) {
+						checkFrom = checkFrom.substring(checkFrom.indexOf(value) + value.length(), checkFrom.length());
+					}
+				}
+				
 				if (checkFrom.startsWith(checkTo)) {
 					TMP_e = TMP_e.replace(checkFrom + ".startsWith(" + checkTo + ")", "true");
 				} else {
 					TMP_e = TMP_e.replace(checkFrom + ".startsWith(" + checkTo + ")", "false");
 				}
-			} else if (TMP_e.contains(".contains(") && TMP_e.contains(")")) {
+			}
+			
+			while (TMP_e.contains(".contains(") && TMP_e.contains(")")) {
 				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".contains("));
 				String checkTo = TMP_e.substring(TMP_e.indexOf(".contains(")+10, TMP_e.indexOf(")", TMP_e.indexOf(".equals(")));
+				
+				List<String> checkFromInterrupt = new ArrayList<String>();
+				checkFromInterrupt.add(" && ");
+				checkFromInterrupt.add(" || ");
+				checkFromInterrupt.add(" ^ ");
+				
+				for (String value : checkFromInterrupt) {
+					while (checkFrom.contains(value)) {
+						checkFrom = checkFrom.substring(checkFrom.indexOf(value) + value.length(), checkFrom.length());
+					}
+				}
+				
 				if (checkFrom.contains(checkTo)) {
 					TMP_e = TMP_e.replace(checkFrom + ".contains(" + checkTo + ")", "true");
 				} else {
 					TMP_e = TMP_e.replace(checkFrom + ".contains(" + checkTo + ")", "false");
 				}
-			} else if (TMP_e.contains(".endsWith(") && TMP_e.contains(")")) {
+			}
+			
+			while (TMP_e.contains(".endsWith(") && TMP_e.contains(")")) {
 				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".endsWith("));
 				String checkTo = TMP_e.substring(TMP_e.indexOf(".endsWith(")+10, TMP_e.indexOf(")", TMP_e.indexOf(".equals(")));
+				
+				List<String> checkFromInterrupt = new ArrayList<String>();
+				checkFromInterrupt.add(" && ");
+				checkFromInterrupt.add(" || ");
+				checkFromInterrupt.add(" ^ ");
+				
+				for (String value : checkFromInterrupt) {
+					while (checkFrom.contains(value)) {
+						checkFrom = checkFrom.substring(checkFrom.indexOf(value) + value.length(), checkFrom.length());
+					}
+				}
+				
 				if (checkFrom.endsWith(checkTo)) {
 					TMP_e = TMP_e.replace(checkFrom + ".endsWith(" + checkTo + ")", "true");
 				} else {
@@ -240,6 +294,45 @@ public class events {
 					
 					//move i to end of if
 					i += eventsToIf.size()+eventsToElse.size()-2;
+					
+					//&& || ^
+					String[] checkSplit = TMP_e.split(" ");
+					for (int j=1; j<checkSplit.length; j++) {
+						if (checkSplit[j].equals("&&")) {
+							if (checkSplit[j-1].equalsIgnoreCase("TRUE") && checkSplit[j+1].equalsIgnoreCase("TRUE")) {
+								checkSplit[j-1] = "";
+								checkSplit[j] = "";
+								checkSplit[j+1] = "TRUE";
+							} else {
+								checkSplit[j-1] = "";
+								checkSplit[j] = "";
+								checkSplit[j+1] = "FALSE";
+							}
+						}
+						if (checkSplit[j].equals("||")) {
+							if (checkSplit[j-1].equalsIgnoreCase("TRUE") || checkSplit[j+1].equalsIgnoreCase("TRUE")) {
+								checkSplit[j-1] = "";
+								checkSplit[j] = "";
+								checkSplit[j+1] = "TRUE";
+							} else {
+								checkSplit[j-1] = "";
+								checkSplit[j] = "";
+								checkSplit[j+1] = "FALSE";
+							}
+						}
+						if (checkSplit[j].equals("^")) {
+							if (checkSplit[j-1].equalsIgnoreCase("TRUE") ^ checkSplit[j+1].equalsIgnoreCase("TRUE")) {
+								checkSplit[j-1] = "";
+								checkSplit[j] = "";
+								checkSplit[j+1] = "TRUE";
+							} else {
+								checkSplit[j-1] = "";
+								checkSplit[j] = "";
+								checkSplit[j+1] = "FALSE";
+							}
+						}
+					}
+					TMP_e = checkSplit[checkSplit.length-1];
 					
 					//check condition and do events
 					if (TMP_e.equalsIgnoreCase("TRUE")) {
