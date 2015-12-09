@@ -369,6 +369,13 @@ public class events {
 
 						if (j != tmp_event.size()) {
 							
+							//arguments
+							if (toreplace != null) {
+								for (int k=0; k<toreplace.length; k++) {
+									tmp_event.set(j,tmp_event.get(j).replace(toreplace[k], replacement[k]));
+								}
+							}
+							
 							//increase tab
 							if (tmp_event.get(j).toUpperCase().startsWith("IF")
 							|| tmp_event.get(j).toUpperCase().startsWith("FOR")
