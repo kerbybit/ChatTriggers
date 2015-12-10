@@ -239,7 +239,6 @@ public class events {
 						}
 					} catch (NumberFormatException e) {
 						for (int j=0; j<global.USR_string.size(); j++) {
-							System.out.println(global.USR_string.get(j) + " -> " + args[0] + " " + args[1]);
 							if (global.USR_string.get(j).get(0).equals(args[0])) {
 								global.USR_string.get(j).set(1, args[1]);
 								TMP_e = TMP_e.replace("string.set(" + args[0] + "," + args[1] + ")", args[1]);
