@@ -1,5 +1,6 @@
 package com.kerbybit.chattriggers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -61,6 +62,7 @@ public class events {
 	public static void doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, String[] toreplace, String[] replacement) {
 		
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
+		String stringInterrupt = "stringInterruptorF6cyUQp9stringInterruptor";
 		for (int i=0; i<tmp_event.size(); i++) {
 			
 		//SETUP
@@ -98,7 +100,7 @@ public class events {
 						TMP_sn = global.USR_string.get(k).get(1);
 					}
 				}
-				TMP_e = TMP_e.replace("{string[" + TMP_s + "]}", TMP_sn);
+				TMP_e = TMP_e.replace("{string[" + TMP_s + "]}", stringInterrupt + TMP_sn);
 				TMP_e = TMP_e.replace("{string<", "{string[");
 				TMP_e = TMP_e.replace(">}", "]}");
 			}
@@ -119,20 +121,8 @@ public class events {
 				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".replace("));
 				String[] checkTo = TMP_e.substring(TMP_e.indexOf(".replace(")+9, TMP_e.indexOf(")", TMP_e.indexOf(".replace("))).split(",");
 				
-				List<String> checkFromInterrupt = new ArrayList<String>();
-				checkFromInterrupt.add(".equals(");
-				checkFromInterrupt.add(".startsWith(");
-				checkFromInterrupt.add(".contains(");
-				checkFromInterrupt.add(".endsWith(");
-				
-				for (String value : checkFromInterrupt) {
-					if (checkFrom.contains(value)) {
-						checkFrom = checkFrom.substring(checkFrom.indexOf(value) + value.length(), checkFrom.length());
-					}
-				}
-				
-				if (checkFrom.contains("set.string(")) {
-					checkFrom = checkFrom.substring(checkFrom.indexOf(",", checkFrom.indexOf("set.string("))+1, checkFrom.length());
+				while (checkFrom.contains(stringInterrupt)) {
+					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
 				}
 				
 				if (checkTo.length==2) {
@@ -140,19 +130,54 @@ public class events {
 				}
 			}
 			
+			while (TMP_e.contains(".toUpper()")) {
+				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".toUpper()"));
+				
+				while (checkFrom.contains(stringInterrupt)) {
+					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
+				}
+				
+				TMP_e = TMP_e.replace(checkFrom + ".toUpper()", checkFrom.toUpperCase());
+			}
+			
+			while (TMP_e.contains(".toLower()")) {
+				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".toLower()"));
+				
+				while (checkFrom.contains(stringInterrupt)) {
+					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
+				}
+				
+				TMP_e = TMP_e.replace(checkFrom + ".toLower()", checkFrom.toLowerCase());
+			}
+			
+			while (TMP_e.contains(".prefix(") && TMP_e.contains(")")) {
+				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".prefix("));
+				String checkTo = TMP_e.substring(TMP_e.indexOf(".prefix(")+8, TMP_e.indexOf(")"));
+				
+				while (checkFrom.contains(stringInterrupt)) {
+					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
+				}
+				
+				TMP_e = TMP_e.replace(checkFrom + ".prefix(" + checkTo + ")", checkTo + checkFrom);
+			}
+			
+			while (TMP_e.contains(".suffix(") && TMP_e.contains(")")) {
+				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".suffix("));
+				String checkTo = TMP_e.substring(TMP_e.indexOf(".suffix(")+8, TMP_e.indexOf(")"));
+				
+				while (checkFrom.contains(stringInterrupt)) {
+					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
+				}
+				
+				TMP_e = TMP_e.replace(checkFrom + ".suffix(" + checkTo + ")", checkFrom + checkTo);
+			}
+			
 			while (TMP_e.contains(".equals(") && TMP_e.contains(")")) {
 				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".equals("));
 				String checkTo = TMP_e.substring(TMP_e.indexOf(".equals(")+8, TMP_e.indexOf(")", TMP_e.indexOf(".equals(")));
 				
-				List<String> checkFromInterrupt = new ArrayList<String>();
-				checkFromInterrupt.add(" && ");
-				checkFromInterrupt.add(" || ");
-				checkFromInterrupt.add(" ^ ");
-				
-				for (String value : checkFromInterrupt) {
-					while (checkFrom.contains(value)) {
-						checkFrom = checkFrom.substring(checkFrom.indexOf(value) + value.length(), checkFrom.length());
-					}
+				while (checkFrom.contains(stringInterrupt)) {
+					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
 				}
 				
 				if (checkFrom.equals(checkTo)) {
@@ -166,15 +191,8 @@ public class events {
 				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".startsWith("));
 				String checkTo = TMP_e.substring(TMP_e.indexOf(".startsWith(")+12, TMP_e.indexOf(")", TMP_e.indexOf(".equals(")));
 				
-				List<String> checkFromInterrupt = new ArrayList<String>();
-				checkFromInterrupt.add(" && ");
-				checkFromInterrupt.add(" || ");
-				checkFromInterrupt.add(" ^ ");
-				
-				for (String value : checkFromInterrupt) {
-					while (checkFrom.contains(value)) {
-						checkFrom = checkFrom.substring(checkFrom.indexOf(value) + value.length(), checkFrom.length());
-					}
+				while (checkFrom.contains(stringInterrupt)) {
+					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
 				}
 				
 				if (checkFrom.startsWith(checkTo)) {
@@ -188,15 +206,8 @@ public class events {
 				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".contains("));
 				String checkTo = TMP_e.substring(TMP_e.indexOf(".contains(")+10, TMP_e.indexOf(")", TMP_e.indexOf(".equals(")));
 				
-				List<String> checkFromInterrupt = new ArrayList<String>();
-				checkFromInterrupt.add(" && ");
-				checkFromInterrupt.add(" || ");
-				checkFromInterrupt.add(" ^ ");
-				
-				for (String value : checkFromInterrupt) {
-					while (checkFrom.contains(value)) {
-						checkFrom = checkFrom.substring(checkFrom.indexOf(value) + value.length(), checkFrom.length());
-					}
+				while (checkFrom.contains(stringInterrupt)) {
+					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
 				}
 				
 				if (checkFrom.contains(checkTo)) {
@@ -210,15 +221,8 @@ public class events {
 				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".endsWith("));
 				String checkTo = TMP_e.substring(TMP_e.indexOf(".endsWith(")+10, TMP_e.indexOf(")", TMP_e.indexOf(".equals(")));
 				
-				List<String> checkFromInterrupt = new ArrayList<String>();
-				checkFromInterrupt.add(" && ");
-				checkFromInterrupt.add(" || ");
-				checkFromInterrupt.add(" ^ ");
-				
-				for (String value : checkFromInterrupt) {
-					while (checkFrom.contains(value)) {
-						checkFrom = checkFrom.substring(checkFrom.indexOf(value) + value.length(), checkFrom.length());
-					}
+				while (checkFrom.contains(stringInterrupt)) {
+					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
 				}
 				
 				if (checkFrom.endsWith(checkTo)) {
@@ -235,18 +239,23 @@ public class events {
 						int num = Integer.parseInt(args[0]);
 						if (num>0 && num<global.USR_string.size()) {
 							global.USR_string.get(num).set(1, args[1]);
+							try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
 							TMP_e = TMP_e.replace("string.set(" + args[0] + "," + args[1] + ")", args[1]);
 						}
 					} catch (NumberFormatException e) {
 						for (int j=0; j<global.USR_string.size(); j++) {
 							if (global.USR_string.get(j).get(0).equals(args[0])) {
 								global.USR_string.get(j).set(1, args[1]);
+								try {file.saveAll();} catch (IOException e1) {chat.warn(chat.color("red", "Error saving triggers!"));}
 								TMP_e = TMP_e.replace("string.set(" + args[0] + "," + args[1] + ")", args[1]);
 							}
 						}
 					}
 				}
 			}
+			
+		//clear out interrupt
+			TMP_e = TMP_e.replace(stringInterrupt, "");
 			
 		//non-logic events
 			if (TMP_c.equalsIgnoreCase("SAY")) {global.chatQueue.add(TMP_e);}
