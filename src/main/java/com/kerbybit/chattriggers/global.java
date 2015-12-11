@@ -36,6 +36,14 @@ public class global {
 	public static List<List<String>> USR_string = new ArrayList<List<String>>();
 	
 	
+	/////////////////Array matrix///////////////////////
+	// layout
+	// get(0) = array name
+	// get(1+) = array values
+	////////////////////////////////////////////////////
+	public static List<List<String>> USR_array = new ArrayList<List<String>>();
+	
+	
 	
 	//////////////////Settings matrix///////////////////
 	// layout
