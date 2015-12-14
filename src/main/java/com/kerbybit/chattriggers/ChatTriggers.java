@@ -1,5 +1,6 @@
 package com.kerbybit.chattriggers;
 
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,6 +10,8 @@ import org.apache.commons.io.FileUtils;
 import org.lwjgl.input.Keyboard;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -24,12 +27,14 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION)
 public class ChatTriggers {
+	
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event) throws ClassNotFoundException, IOException {
@@ -150,6 +155,12 @@ public class ChatTriggers {
 		if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
 			for (int i=0; i<global.killfeed.size(); i++) {
 				Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(global.killfeed.get(i), 5, i*10 + 5, 0xffffff);
+			}
+			for (int i=0; i<global.notify.size(); i++) {
+				ScaledResolution var5 = new ScaledResolution(Minecraft.getMinecraft(), Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+				int var6 = var5.getScaledWidth();
+				int var7 = var5.getScaledHeight();
+				Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(global.notify.get(i), var6 - Minecraft.getMinecraft().fontRendererObj.getStringWidth(global.notify.get(i)) - 5, var7 + 10 - global.notifyOffset.get(i), 0xffffff);
 			}
 		}
 		

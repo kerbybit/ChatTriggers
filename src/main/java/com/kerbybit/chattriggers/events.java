@@ -106,7 +106,7 @@ public class events {
 			}
 			
 		//add formatting where needed
-			if (TMP_c.equalsIgnoreCase("SAY") || TMP_c.equalsIgnoreCase("CHAT") || TMP_c.equalsIgnoreCase("KILLFEED")) {
+			if (TMP_c.equalsIgnoreCase("SAY") || TMP_c.equalsIgnoreCase("CHAT") || TMP_c.equalsIgnoreCase("KILLFEED") || TMP_c.equalsIgnoreCase("NOTIFY")) {
 				if (TMP_c.equalsIgnoreCase("SAY")) {
 					if (Minecraft.getMinecraft().isSingleplayer()==false) {
 						TMP_e = chat.addFormatting(TMP_e);
@@ -336,6 +336,7 @@ public class events {
 			if (TMP_c.equalsIgnoreCase("SOUND")) {sound.play(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("CANCEL") && chatEvent!=null) {chatEvent.setCanceled(true);}
 			if (TMP_c.equalsIgnoreCase("KILLFEED")) {global.killfeed.add(TMP_e); global.killfeedDelay.add(TMP_t);}
+			if (TMP_c.equalsIgnoreCase("NOTIFY")) {global.notify.add(TMP_e); global.notifyAnimate.add(0); global.notifyOffset.add((float) 0);}
 			if (TMP_c.equalsIgnoreCase("COMMAND")) {global.commandQueue.add(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("TRIGGER")) {doTrigger(TMP_e, chatEvent);}
 			
@@ -597,6 +598,24 @@ public class events {
 				global.killfeedDelay.remove(i);
 			} else {
 				global.killfeedDelay.set(i, global.killfeedDelay.get(i).intValue() - 1);
+			}
+		}
+		
+		for (int i=0; i<global.notify.size(); i++) {
+			if (global.notifyAnimate.get(i)==0) {
+				if (Math.ceil(global.notifyOffset.get(i)) < 25) {
+					global.notifyOffset.set(i, global.notifyOffset.get(i) + (25 - global.notifyOffset.get(i))/10);
+				} else {
+					global.notifyAnimate.set(i, 1);
+				}
+			} else {
+				if (global.notifyOffset.get(i) > 0) {
+					global.notifyOffset.set(i, global.notifyOffset.get(i) - (25 - global.notifyOffset.get(i))/10);
+				} else {
+					global.notify.remove(i);
+					global.notifyAnimate.remove(i);
+					global.notifyOffset.remove(i);
+				}
 			}
 		}
 	}
