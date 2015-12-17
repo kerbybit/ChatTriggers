@@ -169,9 +169,6 @@ public class file {
 							String TMP_c = trigger.get(i).get(j);
 							
 							if (TMP_c.equalsIgnoreCase("END")
-							|| TMP_c.toUpperCase().startsWith("AND")
-							|| TMP_c.toUpperCase().startsWith("OR")
-							|| TMP_c.toUpperCase().startsWith("XOR")
 							|| TMP_c.toUpperCase().startsWith("ELSE")) { 
 								tabbed_logic--;
 							}
@@ -182,9 +179,7 @@ public class file {
 							if (TMP_c.toUpperCase().startsWith("IF") 
 							|| TMP_c.toUpperCase().startsWith("FOR")
 							|| TMP_c.toUpperCase().startsWith("CHOOSE")
-							|| TMP_c.toUpperCase().startsWith("AND")
-							|| TMP_c.toUpperCase().startsWith("OR")
-							|| TMP_c.toUpperCase().startsWith("XOR")
+							|| TMP_c.toUpperCase().startsWith("WAIT")
 							|| TMP_c.toUpperCase().startsWith("ELSE")) {
 								tabbed_logic++;
 							}
@@ -206,9 +201,6 @@ public class file {
 					String TMP_c = trigger.get(i).get(j);
 					
 					if (TMP_c.equalsIgnoreCase("END")
-					|| TMP_c.toUpperCase().startsWith("AND")
-					|| TMP_c.toUpperCase().startsWith("OR")
-					|| TMP_c.toUpperCase().startsWith("XOR")
 					|| TMP_c.toUpperCase().startsWith("ELSE")) { 
 						tabbed_logic--;
 					}
@@ -219,9 +211,7 @@ public class file {
 					if (TMP_c.toUpperCase().startsWith("IF") 
 					|| TMP_c.toUpperCase().startsWith("FOR")
 					|| TMP_c.toUpperCase().startsWith("CHOOSE")
-					|| TMP_c.toUpperCase().startsWith("AND")
-					|| TMP_c.toUpperCase().startsWith("OR")
-					|| TMP_c.toUpperCase().startsWith("XOR")
+					|| TMP_c.toUpperCase().startsWith("WAIT")
 					|| TMP_c.toUpperCase().startsWith("ELSE")) {
 						tabbed_logic++;
 					}
@@ -262,9 +252,15 @@ public class file {
 
 		int j=-1;
 		for (int i=0; i<lines.size()-1; i++) {
-			if (lines.get(i).startsWith("trigger:") && lines.get(i+1).startsWith("type:")) {
+			if (lines.get(i).startsWith("trigger:")) {
 				List<String> tmp_list = new ArrayList<String>();
-				tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("type:") + 5, lines.get(i+1).length()));
+				if (lines.get(i+1).startsWith("type:")) {
+					tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("type:") + 5, lines.get(i+1).length()));
+				} else {
+					chat.warn(chat.color("red","No trigger type specified for") + chat.color("gray",lines.get(i).substring(lines.get(i).indexOf("trigger:") + 8, lines.get(i).length())));
+					chat.warn(chat.color("red", "Set type to") + chat.color("gray", "other"));
+					tmp_list.add("other");
+				}
 				tmp_list.add(lines.get(i).substring(lines.get(i).indexOf("trigger:") + 8, lines.get(i).length()));
 				tmp_triggers.add(tmp_list);
 				j++;

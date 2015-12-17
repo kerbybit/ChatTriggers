@@ -255,6 +255,7 @@ public class CommandTrigger extends CommandBase {
 				|| TMP_etype.equalsIgnoreCase("ELSE")
 				|| TMP_etype.equalsIgnoreCase("ELSEIF")
 				|| TMP_etype.equalsIgnoreCase("FOR")
+				|| TMP_etype.equalsIgnoreCase("WAIT")
 				|| TMP_etype.equalsIgnoreCase("END")) {
 					global.trigger.get(num).add(TMP_e);
 					if (silent==false) {
@@ -435,9 +436,6 @@ public class CommandTrigger extends CommandBase {
 							else {TMP_c = TMP_e.substring(0, TMP_e.indexOf(" ")); TMP_e = TMP_e.substring(TMP_e.indexOf(" ") + 1, TMP_e.length());}
 							
 							if (TMP_c.equalsIgnoreCase("END")
-							|| TMP_c.toUpperCase().startsWith("AND")
-							|| TMP_c.toUpperCase().startsWith("OR")
-							|| TMP_c.toUpperCase().startsWith("XOR")
 							|| TMP_c.toUpperCase().startsWith("ELSE")) { 
 								tabbed_logic--;
 							}
@@ -457,9 +455,7 @@ public class CommandTrigger extends CommandBase {
 							if (TMP_c.toUpperCase().startsWith("IF") 
 							|| TMP_c.toUpperCase().startsWith("FOR")
 							|| TMP_c.toUpperCase().startsWith("CHOOSE")
-							|| TMP_c.toUpperCase().startsWith("AND")
-							|| TMP_c.toUpperCase().startsWith("OR")
-							|| TMP_c.toUpperCase().startsWith("XOR")
+							|| TMP_c.toUpperCase().startsWith("WAIT")
 							|| TMP_c.toUpperCase().startsWith("ELSE")) {
 								tabbed_logic++;
 							}
@@ -528,9 +524,6 @@ public class CommandTrigger extends CommandBase {
 							else {TMP_c = TMP_e.substring(0, TMP_e.indexOf(" ")); TMP_e = TMP_e.substring(TMP_e.indexOf(" ") + 1, TMP_e.length());}
 							
 							if (TMP_c.equalsIgnoreCase("END")
-							|| TMP_c.toUpperCase().startsWith("AND")
-							|| TMP_c.toUpperCase().startsWith("OR")
-							|| TMP_c.toUpperCase().startsWith("XOR")
 							|| TMP_c.toUpperCase().startsWith("ELSE")) { 
 								tabbed_logic--;
 							}
@@ -548,9 +541,7 @@ public class CommandTrigger extends CommandBase {
 							if (TMP_c.toUpperCase().startsWith("IF") 
 							|| TMP_c.toUpperCase().startsWith("FOR")
 							|| TMP_c.toUpperCase().startsWith("CHOOSE")
-							|| TMP_c.toUpperCase().startsWith("AND")
-							|| TMP_c.toUpperCase().startsWith("OR")
-							|| TMP_c.toUpperCase().startsWith("XOR")
+							|| TMP_c.toUpperCase().startsWith("WAIT")
 							|| TMP_c.toUpperCase().startsWith("ELSE")) {
 								tabbed_logic++;
 							}

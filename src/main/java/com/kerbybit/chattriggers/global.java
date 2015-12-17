@@ -16,9 +16,12 @@ public class global {
 	public static List<String> killfeed = new ArrayList<String>();
 	public static List<Integer> killfeedDelay = new ArrayList<Integer>();
 	
+	public static List<List<String>> waitEvents = new ArrayList<List<String>>();
+	public static List<Integer> waitTime = new ArrayList<Integer>();
+	
 	public static List<String> notify = new ArrayList<String>();
-	public static List<Integer> notifyAnimate = new ArrayList<Integer>();
-	public static List<Float> notifyOffset = new ArrayList<Float>();
+	public static List<List<Float>> notifyAnimation = new ArrayList<List<Float>>();
+	public static int notifySize = 0;
 	
 	public static boolean debug = false;
 

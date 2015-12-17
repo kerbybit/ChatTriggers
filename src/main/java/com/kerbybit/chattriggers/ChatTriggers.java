@@ -151,16 +151,15 @@ public class ChatTriggers {
 	@SubscribeEvent
 	public void RenderGameOverlayEvent(RenderGameOverlayEvent event) {
 		
-		//draw killfeed
+		
 		if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
+			//draw killfeed
 			for (int i=0; i<global.killfeed.size(); i++) {
 				Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(global.killfeed.get(i), 5, i*10 + 5, 0xffffff);
 			}
+			//draw notify
 			for (int i=0; i<global.notify.size(); i++) {
-				ScaledResolution var5 = new ScaledResolution(Minecraft.getMinecraft(), Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
-				int var6 = var5.getScaledWidth();
-				int var7 = var5.getScaledHeight();
-				Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(global.notify.get(i), var6 - Minecraft.getMinecraft().fontRendererObj.getStringWidth(global.notify.get(i)) - 5, var7 + 10 - global.notifyOffset.get(i), 0xffffff);
+				Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(global.notify.get(i), global.notifyAnimation.get(i).get(1), global.notifyAnimation.get(i).get(2), 0xffffff);
 			}
 		}
 		
@@ -175,6 +174,46 @@ public class ChatTriggers {
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent e) throws ClassNotFoundException {
+		
+		for (int i=0; i<global.notify.size(); i++) {
+			if (global.notifyAnimation.get(i).get(0)==0) {
+				ScaledResolution var5 = new ScaledResolution(Minecraft.getMinecraft(), Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+				float var6 = var5.getScaledWidth(); 
+				global.notifyAnimation.get(i).set(4, var6 - Minecraft.getMinecraft().fontRendererObj.getStringWidth(global.notify.get(i)) - 5);
+				global.notifyAnimation.get(i).set(5, var6);
+				float var7 = var5.getScaledHeight()-50-(global.notifyAnimation.get(i).get(2)*15);
+				global.notifyAnimation.get(i).set(1, var6);
+				global.notifyAnimation.get(i).set(2, var7);
+				global.notifyAnimation.get(i).set(0, (float) 1);
+			} else if (global.notifyAnimation.get(i).get(0)==1) {
+				if (Math.floor(global.notifyAnimation.get(i).get(1)) > global.notifyAnimation.get(i).get(4)) {
+					global.notifyAnimation.get(i).set(1, global.notifyAnimation.get(i).get(1) + (global.notifyAnimation.get(i).get(4)-global.notifyAnimation.get(i).get(1))/10);
+				} else {
+					global.notifyAnimation.get(i).set(0, (float) 2);
+				}
+			} else if (global.notifyAnimation.get(i).get(0)==2) {
+				if (global.notifyAnimation.get(i).get(3)>0) {
+					global.notifyAnimation.get(i).set(3, global.notifyAnimation.get(i).get(3)-1);
+				} else {
+					global.notifyAnimation.get(i).set(0, (float) 3);
+				}
+			} else if (global.notifyAnimation.get(i).get(0)==3) {
+				if (global.notifyAnimation.get(i).get(1) < global.notifyAnimation.get(i).get(5)) {
+					global.notifyAnimation.get(i).set(1, global.notifyAnimation.get(i).get(1) - (global.notifyAnimation.get(i).get(4)-global.notifyAnimation.get(i).get(1))/10);
+				} else {
+					ScaledResolution var5 = new ScaledResolution(Minecraft.getMinecraft(), Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+					float var6 = var5.getScaledHeight(); 
+					if (global.notifyAnimation.get(i).get(2) == var6-50 || global.notify.size()==1) {
+						global.notifySize = 0;
+					}
+					global.notifyAnimation.remove(i);
+					global.notify.remove(i);
+				}
+			}
+			
+			
+		}
+		
 		chat.onClientTick();
 		events.eventTick();
 	}

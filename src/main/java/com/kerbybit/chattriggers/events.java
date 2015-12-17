@@ -71,12 +71,7 @@ public class events {
 			if (!TMP_e.contains(" ")) {TMP_c = TMP_e; TMP_e="";}
 			else {TMP_c = TMP_e.substring(0, TMP_e.indexOf(" ")); TMP_e = TMP_e.substring(TMP_e.indexOf(" ")+1, TMP_e.length());}
 			int TMP_t = 50;
-			if (TMP_e.contains("{time=") && TMP_e.contains("}")) {
-				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("{time=")+6, TMP_e.indexOf("}"));
-				try {TMP_t = Integer.parseInt(TMP_tstring);}
-				catch (NumberFormatException e) {e.printStackTrace();}
-				TMP_e = TMP_e.replace("{time=" + TMP_tstring + "}", "");
-			}
+			int TMP_p = 0;
 			if (toreplace != null) {
 				for (int j=0; j<toreplace.length; j++) {
 					TMP_e = TMP_e.replace(toreplace[j], replacement[j]);
@@ -86,7 +81,20 @@ public class events {
 		//built in strings
 			if (chatEvent!=null) {TMP_e = TMP_e.replace("{msg}", chatEvent.message.getFormattedText());}
 			TMP_e = TMP_e.replace("{trigsize}", global.trigger.size()+"");
+			TMP_e = TMP_e.replace("{notifySize}", global.notifySize+"");
 			TMP_e = TMP_e.replace("{me}", Minecraft.getMinecraft().thePlayer.getDisplayNameString());
+			if (TMP_e.contains("{time=") && TMP_e.contains("}")) {
+				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("{time=")+6, TMP_e.indexOf("}",TMP_e.indexOf("{time=")));
+				try {TMP_t = Integer.parseInt(TMP_tstring);}
+				catch (NumberFormatException e) {e.printStackTrace();}
+				TMP_e = TMP_e.replace("{time=" + TMP_tstring + "}", "");
+			}
+			if (TMP_e.contains("{pos=") && TMP_e.contains("}")) {
+				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("{pos=")+5, TMP_e.indexOf("}",TMP_e.indexOf("{pos=")));
+				try {TMP_p = Integer.parseInt(TMP_tstring);}
+				catch (NumberFormatException e) {e.printStackTrace();}
+				TMP_e = TMP_e.replace("{pos=" + TMP_tstring + "}", "");
+			}
 			
 		//user strings
 			TMP_e = TMP_e.replace("{string<", "{string[");
@@ -336,11 +344,74 @@ public class events {
 			if (TMP_c.equalsIgnoreCase("SOUND")) {sound.play(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("CANCEL") && chatEvent!=null) {chatEvent.setCanceled(true);}
 			if (TMP_c.equalsIgnoreCase("KILLFEED")) {global.killfeed.add(TMP_e); global.killfeedDelay.add(TMP_t);}
-			if (TMP_c.equalsIgnoreCase("NOTIFY")) {global.notify.add(TMP_e); global.notifyAnimate.add(0); global.notifyOffset.add((float) 0);}
+			if (TMP_c.equalsIgnoreCase("NOTIFY")) {
+				global.notify.add(TMP_e);
+				List<Float> temp_list = new ArrayList<Float>();
+				temp_list.add((float) 0);
+				temp_list.add((float) 0);
+				temp_list.add((float) TMP_p);
+				temp_list.add((float) TMP_t);
+				temp_list.add((float) 0);
+				temp_list.add((float) 0);
+				global.notifyAnimation.add(temp_list);
+				global.notifySize++;
+			}
 			if (TMP_c.equalsIgnoreCase("COMMAND")) {global.commandQueue.add(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("TRIGGER")) {doTrigger(TMP_e, chatEvent);}
 			
 		//logic events
+			
+			if (TMP_c.equalsIgnoreCase("WAIT")) {
+				int tabbed_logic = 0;
+				List<String> eventsToWait = new ArrayList<String>();
+				Boolean gotoElse = false;
+				
+				if (i+1 < tmp_event.size()-1) { //check for events after if event
+					for (int j=i; j<tmp_event.size(); j++) {
+						if (j != tmp_event.size()) {
+							
+							//arguments
+							if (toreplace != null) {
+								for (int k=0; k<toreplace.length; k++) {
+									tmp_event.set(j,tmp_event.get(j).replace(toreplace[k], replacement[k]));
+								}
+							}
+							if (chatEvent!=null) {tmp_event.set(j, tmp_event.get(j).replace("{msg}", chatEvent.message.getFormattedText()));}
+							
+							//increase tab
+							if (tmp_event.get(j).toUpperCase().startsWith("IF")
+							|| tmp_event.get(j).toUpperCase().startsWith("FOR")
+							|| tmp_event.get(j).toUpperCase().startsWith("CHOOSE")
+							|| tmp_event.get(j).toUpperCase().startsWith("WAIT")) {
+								tabbed_logic++;
+							}
+							
+							eventsToWait.add(tmp_event.get(j));
+							
+							//decrease tab
+							if (tmp_event.get(j).toUpperCase().startsWith("END")) {tabbed_logic--;}
+							
+							
+						}
+						
+						//check if exit
+						if (tabbed_logic==0) {j=tmp_event.size();}
+					}
+					
+					//move i to end of wait
+					i += eventsToWait.size();
+					eventsToWait.remove(0);
+					eventsToWait.remove(eventsToWait.size()-1);
+					try {
+						global.waitEvents.add(eventsToWait);
+						global.waitTime.add(Integer.parseInt(TMP_e));
+					} catch (NumberFormatException e) {
+						e.printStackTrace();
+						chat.warn(chat.color("red", "Malformed WAIT event - skipping"));
+					}
+					
+				}
+			}
 			
 			if (TMP_c.equalsIgnoreCase("FOR")) {
 				//setup
@@ -375,7 +446,8 @@ public class events {
 							//increase tab
 							if (tmp_event.get(j).toUpperCase().startsWith("IF")
 							|| tmp_event.get(j).toUpperCase().startsWith("FOR")
-							|| tmp_event.get(j).toUpperCase().startsWith("CHOOSE")) {
+							|| tmp_event.get(j).toUpperCase().startsWith("CHOOSE")
+							|| tmp_event.get(j).toUpperCase().startsWith("WAIT")) {
 								tabbed_logic++;
 							}
 							
@@ -390,10 +462,8 @@ public class events {
 					}
 				}
 				
-				System.out.println(eventsToFor);
 				eventsToFor.remove(0);
 				eventsToFor.remove(eventsToFor.size()-1);
-				System.out.println(eventsToFor);
 				
 				
 				if (arrayto.size()>0 && eventsToFor.size() > 0) {
@@ -430,7 +500,8 @@ public class events {
 							//increase tab
 							if (tmp_event.get(j).toUpperCase().startsWith("IF")
 							|| tmp_event.get(j).toUpperCase().startsWith("FOR")
-							|| tmp_event.get(j).toUpperCase().startsWith("CHOOSE")) {
+							|| tmp_event.get(j).toUpperCase().startsWith("CHOOSE")
+							|| tmp_event.get(j).toUpperCase().startsWith("WAIT")) {
 								tabbed_logic++;
 							}
 							
@@ -529,7 +600,8 @@ public class events {
 							//increase tab
 							if (tmp_event.get(j).toUpperCase().startsWith("IF")
 							|| tmp_event.get(j).toUpperCase().startsWith("FOR")
-							|| tmp_event.get(j).toUpperCase().startsWith("CHOOSE")) {
+							|| tmp_event.get(j).toUpperCase().startsWith("CHOOSE")
+							|| tmp_event.get(j).toUpperCase().startsWith("WAIT")) {
 								tabbed_logic++;
 							}
 							
@@ -601,23 +673,27 @@ public class events {
 			}
 		}
 		
-		for (int i=0; i<global.notify.size(); i++) {
-			if (global.notifyAnimate.get(i)==0) {
-				if (Math.ceil(global.notifyOffset.get(i)) < 25) {
-					global.notifyOffset.set(i, global.notifyOffset.get(i) + (25 - global.notifyOffset.get(i))/10);
-				} else {
-					global.notifyAnimate.set(i, 1);
+		if (global.waitEvents.size()>0) {
+			if (global.waitEvents.size() == global.waitTime.size()) {
+				
+				for (int i=0; i<global.waitTime.size(); i++) {
+					if (global.waitTime.get(i)>0) {
+						global.waitTime.set(i, global.waitTime.get(i)-1);
+					} else {
+						doEvents(global.waitEvents.get(i), null);
+						global.waitEvents.remove(i);
+						global.waitTime.remove(i);
+					}
 				}
 			} else {
-				if (global.notifyOffset.get(i) > 0) {
-					global.notifyOffset.set(i, global.notifyOffset.get(i) - (25 - global.notifyOffset.get(i))/10);
-				} else {
-					global.notify.remove(i);
-					global.notifyAnimate.remove(i);
-					global.notifyOffset.remove(i);
-				}
+				chat.warn(chat.color("red","SOMETHING WENT WRONG!!!"));
+				global.waitEvents.clear();
+				global.waitTime.clear();
 			}
 		}
+		
+		
+		
 	}
 	
 	public static int randInt(int min, int max) {
