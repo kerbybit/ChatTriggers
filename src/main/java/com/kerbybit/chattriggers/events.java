@@ -37,7 +37,14 @@ public class events {
 				TMP_trig = TMP_trig.replace("{s}", ""); 
 				TMP_trig = TMP_trig.replace("{c}", ""); 
 				TMP_trig = TMP_trig.replace("{e}", "");
-				if (TMP_trig.contains("{list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("=")+1, TMP_trig.indexOf("}")); TMP_trig = TMP_trig.replace("{list="+TMP_list+"}","");}
+				TMP_trig = TMP_trig.replace("<s>", ""); 
+				TMP_trig = TMP_trig.replace("<c>", ""); 
+				TMP_trig = TMP_trig.replace("<e>", "");
+				TMP_trig = TMP_trig.replace("<start>", ""); 
+				TMP_trig = TMP_trig.replace("<contain>", ""); 
+				TMP_trig = TMP_trig.replace("<end>", "");
+				if (TMP_trig.contains("{list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("{list=")+6, TMP_trig.indexOf("}", TMP_trig.indexOf("{list="))); TMP_trig = TMP_trig.replace("{list="+TMP_list+"}","");}
+				if (TMP_trig.contains("<list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
 				
 				//check match
 				if (TMP_trig.equals(triggerName)) {
@@ -83,17 +90,31 @@ public class events {
 			TMP_e = TMP_e.replace("{trigsize}", global.trigger.size()+"");
 			TMP_e = TMP_e.replace("{notifySize}", global.notifySize+"");
 			TMP_e = TMP_e.replace("{me}", Minecraft.getMinecraft().thePlayer.getDisplayNameString());
+			
+		//tags
 			if (TMP_e.contains("{time=") && TMP_e.contains("}")) {
 				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("{time=")+6, TMP_e.indexOf("}",TMP_e.indexOf("{time=")));
 				try {TMP_t = Integer.parseInt(TMP_tstring);}
 				catch (NumberFormatException e) {e.printStackTrace();}
 				TMP_e = TMP_e.replace("{time=" + TMP_tstring + "}", "");
 			}
+			if (TMP_e.contains("<time=") && TMP_e.contains(">")) {
+				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("<time=")+6, TMP_e.indexOf(">",TMP_e.indexOf("<time=")));
+				try {TMP_t = Integer.parseInt(TMP_tstring);}
+				catch (NumberFormatException e) {e.printStackTrace();}
+				TMP_e = TMP_e.replace("<time=" + TMP_tstring + ">", "");
+			}
 			if (TMP_e.contains("{pos=") && TMP_e.contains("}")) {
 				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("{pos=")+5, TMP_e.indexOf("}",TMP_e.indexOf("{pos=")));
 				try {TMP_p = Integer.parseInt(TMP_tstring);}
 				catch (NumberFormatException e) {e.printStackTrace();}
 				TMP_e = TMP_e.replace("{pos=" + TMP_tstring + "}", "");
+			}
+			if (TMP_e.contains("<pos=") && TMP_e.contains(">")) {
+				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("<pos=")+5, TMP_e.indexOf(">",TMP_e.indexOf("<pos=")));
+				try {TMP_p = Integer.parseInt(TMP_tstring);}
+				catch (NumberFormatException e) {e.printStackTrace();}
+				TMP_e = TMP_e.replace("<pos=" + TMP_tstring + ">", "");
 			}
 			
 		//user strings

@@ -74,8 +74,16 @@ public class ChatTriggers {
 				if (TMP_trig.contains("{s}")) {TMP_w = "s"; TMP_trig = TMP_trig.replace("{s}", "");}
 				if (TMP_trig.contains("{c}")) {TMP_w = "c"; TMP_trig = TMP_trig.replace("{c}", "");}
 				if (TMP_trig.contains("{e}")) {TMP_w = "e"; TMP_trig = TMP_trig.replace("{e}", "");}
-				TMP_trig = TMP_trig.replace("{me}", Minecraft.getMinecraft().thePlayer.getDisplayNameString());
-				if (TMP_trig.contains("{list=")) {TMP_trig = TMP_trig.replace(TMP_trig.substring(TMP_trig.indexOf("{"), TMP_trig.indexOf("}")+1), "");}
+				if (TMP_trig.contains("<s>")) {TMP_w = "s"; TMP_trig = TMP_trig.replace("<s>", "");}
+				if (TMP_trig.contains("<c>")) {TMP_w = "c"; TMP_trig = TMP_trig.replace("<c>", "");}
+				if (TMP_trig.contains("<e>")) {TMP_w = "e"; TMP_trig = TMP_trig.replace("<e>", "");}
+				if (TMP_trig.contains("<start>")) {TMP_w = "s"; TMP_trig = TMP_trig.replace("<start>", "");}
+				if (TMP_trig.contains("<contain>")) {TMP_w = "c"; TMP_trig = TMP_trig.replace("<contain>", "");}
+				if (TMP_trig.contains("<end>")) {TMP_w = "e"; TMP_trig = TMP_trig.replace("<end>", "");}
+				
+				if (TMP_trig.contains("{list=") && TMP_trig.contains("}")) {TMP_trig = TMP_trig.replace(TMP_trig.substring(TMP_trig.indexOf("{list="), TMP_trig.indexOf("}", TMP_trig.indexOf("{list="))+1), "");}
+				if (TMP_trig.contains("<list=") && TMP_trig.contains(">")) {TMP_trig = TMP_trig.replace(TMP_trig.substring(TMP_trig.indexOf("<list="), TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))+1), "");}
+				
 				
 				//check if formatted or nah
 				if (TMP_trig.contains("&")) {
@@ -95,6 +103,7 @@ public class ChatTriggers {
 						}
 					}
 				}
+				TMP_trig = TMP_trig.replace("{me}", Minecraft.getMinecraft().thePlayer.getDisplayNameString());
 				
 				
 				//chat check

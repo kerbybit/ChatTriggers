@@ -404,11 +404,18 @@ public class CommandTrigger extends CommandBase {
 					String TMP_list = "";
 					String TMP_w    = "";
 					
-					if (TMP_trig.contains("{s}")) {TMP_trig = TMP_trig.replace("{s}", ""); TMP_w = "start";}
-					if (TMP_trig.contains("{c}")) {TMP_trig = TMP_trig.replace("{c}", ""); TMP_w = "contain";}
-					if (TMP_trig.contains("{e}")) {TMP_trig = TMP_trig.replace("{e}", ""); TMP_w = "end";}
+					if (TMP_trig.contains("{s}")) {TMP_w = "start"; TMP_trig = TMP_trig.replace("{s}", "");}
+					if (TMP_trig.contains("{c}")) {TMP_w = "contain"; TMP_trig = TMP_trig.replace("{c}", "");}
+					if (TMP_trig.contains("{e}")) {TMP_w = "end"; TMP_trig = TMP_trig.replace("{e}", "");}
+					if (TMP_trig.contains("<s>")) {TMP_w = "start"; TMP_trig = TMP_trig.replace("<s>", "");}
+					if (TMP_trig.contains("<c>")) {TMP_w = "contain"; TMP_trig = TMP_trig.replace("<c>", "");}
+					if (TMP_trig.contains("<e>")) {TMP_w = "end"; TMP_trig = TMP_trig.replace("<e>", "");}
+					if (TMP_trig.contains("<start>")) {TMP_w = "start"; TMP_trig = TMP_trig.replace("<start>", "");}
+					if (TMP_trig.contains("<contain>")) {TMP_w = "contain"; TMP_trig = TMP_trig.replace("<contain>", "");}
+					if (TMP_trig.contains("<end>")) {TMP_w = "end"; TMP_trig = TMP_trig.replace("<end>", "");}
 					
-					if (TMP_trig.contains("{list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("=")+1, TMP_trig.indexOf("}")); TMP_trig = TMP_trig.replace("{list="+TMP_list+"}","");}
+					if (TMP_trig.contains("{list=") && TMP_trig.contains("}")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("{list=")+6, TMP_trig.indexOf("}", TMP_trig.indexOf("{list="))); TMP_trig = TMP_trig.replace("{list="+TMP_list+"}","");}
+					if (TMP_trig.contains("<list=") && TMP_trig.contains(">")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
 					TMP_lists.add(TMP_list);
 					
 					if (TMP_list.equals("")) {
@@ -491,11 +498,18 @@ public class CommandTrigger extends CommandBase {
 					String TMP_list = "";
 					String TMP_w    = "";
 					
-					if (TMP_trig.contains("{s}")) {TMP_trig = TMP_trig.replace("{s}", ""); TMP_w = "start";}
-					if (TMP_trig.contains("{c}")) {TMP_trig = TMP_trig.replace("{c}", ""); TMP_w = "contain";}
-					if (TMP_trig.contains("{e}")) {TMP_trig = TMP_trig.replace("{e}", ""); TMP_w = "end";}
+					if (TMP_trig.contains("{s}")) {TMP_w = "start"; TMP_trig = TMP_trig.replace("{s}", "");}
+					if (TMP_trig.contains("{c}")) {TMP_w = "contain"; TMP_trig = TMP_trig.replace("{c}", "");}
+					if (TMP_trig.contains("{e}")) {TMP_w = "end"; TMP_trig = TMP_trig.replace("{e}", "");}
+					if (TMP_trig.contains("<s>")) {TMP_w = "start"; TMP_trig = TMP_trig.replace("<s>", "");}
+					if (TMP_trig.contains("<c>")) {TMP_w = "contain"; TMP_trig = TMP_trig.replace("<c>", "");}
+					if (TMP_trig.contains("<e>")) {TMP_w = "end"; TMP_trig = TMP_trig.replace("<e>", "");}
+					if (TMP_trig.contains("<start>")) {TMP_w = "start"; TMP_trig = TMP_trig.replace("<start>", "");}
+					if (TMP_trig.contains("<contain>")) {TMP_w = "contain"; TMP_trig = TMP_trig.replace("<contain>", "");}
+					if (TMP_trig.contains("<end>")) {TMP_w = "end"; TMP_trig = TMP_trig.replace("<end>", "");}
 					
-					if (TMP_trig.contains("{list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("=")+1, TMP_trig.indexOf("}")); TMP_trig = TMP_trig.replace("{list="+TMP_list+"}","");}
+					if (TMP_trig.contains("{list=") && TMP_trig.contains("}")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("{list=")+6, TMP_trig.indexOf("}", TMP_trig.indexOf("{list="))); TMP_trig = TMP_trig.replace("{list="+TMP_list+"}","");}
+					if (TMP_trig.contains("<list=") && TMP_trig.contains(">")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
 					
 					if (TMP_check.equals(TMP_list)) {
 						TMP_test++;
@@ -551,7 +565,7 @@ public class CommandTrigger extends CommandBase {
 				}
 				if (TMP_test==0) {
 					chat.warn(chat.color("red", "There is no list with name " + TMP_check));
-					chat.warn(chat.color("red", "Create list " + TMP_check + " by using {list=" + TMP_check + "} when you create a trigger"));
+					chat.warn(chat.color("red", "Create list " + TMP_check + " by using <list=" + TMP_check + "> when you create a trigger"));
 				}
 			}
 			chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
