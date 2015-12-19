@@ -148,8 +148,11 @@ public class file {
 		List<String> lists = new ArrayList<String>();
 		
 		for (int i=0; i<trigger.size(); i++) {
-			if (trigger.get(i).get(1).contains("{list=")) {
-				lists.add(trigger.get(i).get(1).substring(trigger.get(i).get(1).indexOf("{list="), trigger.get(i).get(1).indexOf("}")+1));
+			if (trigger.get(i).get(1).contains("{list=") && trigger.get(i).get(1).contains("}")) {
+				lists.add(trigger.get(i).get(1).substring(trigger.get(i).get(1).indexOf("{list="), trigger.get(i).get(1).indexOf("}",trigger.get(i).get(1).indexOf("{list="))+1));
+			}
+			if (trigger.get(i).get(1).contains("<list=") && trigger.get(i).get(1).contains(">")) {
+				lists.add(trigger.get(i).get(1).substring(trigger.get(i).get(1).indexOf("<list="), trigger.get(i).get(1).indexOf(">",trigger.get(i).get(1).indexOf("<list="))+1));
 			}
 		}
 		
