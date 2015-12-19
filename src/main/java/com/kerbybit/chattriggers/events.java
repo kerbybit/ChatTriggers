@@ -88,7 +88,7 @@ public class events {
 		//built in strings
 			if (chatEvent!=null) {TMP_e = TMP_e.replace("{msg}", chatEvent.message.getFormattedText());}
 			TMP_e = TMP_e.replace("{trigsize}", global.trigger.size()+"");
-			TMP_e = TMP_e.replace("{notifySize}", global.notifySize+"");
+			TMP_e = TMP_e.replace("{notifysize}", global.notifySize+"");
 			TMP_e = TMP_e.replace("{me}", Minecraft.getMinecraft().thePlayer.getDisplayNameString());
 			
 		//tags
