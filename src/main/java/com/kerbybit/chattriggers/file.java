@@ -194,7 +194,7 @@ public class file {
 		}
 		writer.println("NO LIST");
 		for (int i=0; i<trigger.size(); i++) {
-			if (!trigger.get(i).get(1).contains("{list=")) {
+			if (!(trigger.get(i).get(1).contains("{list=") || trigger.get(i).get(1).contains("<list="))) {
 				writer.println("trigger:"+trigger.get(i).get(1));
 				writer.println("type:"+trigger.get(i).get(0));
 				
