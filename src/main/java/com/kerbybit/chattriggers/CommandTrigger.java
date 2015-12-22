@@ -138,7 +138,14 @@ public class CommandTrigger extends CommandBase {
 					TMP_trig = TMP_trig.replace("{s}", ""); 
 					TMP_trig = TMP_trig.replace("{c}", ""); 
 					TMP_trig = TMP_trig.replace("{e}", "");
-					if (TMP_trig.contains("{list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("=")+1, TMP_trig.indexOf("}")); TMP_trig = TMP_trig.replace("{list="+TMP_list+"}","");}
+					TMP_trig = TMP_trig.replace("<s>", ""); 
+					TMP_trig = TMP_trig.replace("<c>", ""); 
+					TMP_trig = TMP_trig.replace("<e>", "");
+					TMP_trig = TMP_trig.replace("<start>", ""); 
+					TMP_trig = TMP_trig.replace("<contain>", ""); 
+					TMP_trig = TMP_trig.replace("<end>", "");
+					if (TMP_trig.contains("{list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("{list=")+6, TMP_trig.indexOf("}", TMP_trig.indexOf("{list="))); TMP_trig = TMP_trig.replace("{list="+TMP_list+"}","");}
+					if (TMP_trig.contains("<list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
 					if (TMP_trig.equals(TMP_e)) {
 						List<String> TMP_events = new ArrayList<String>();
 						for (int i=2; i<global.trigger.get(k).size(); i++) {
