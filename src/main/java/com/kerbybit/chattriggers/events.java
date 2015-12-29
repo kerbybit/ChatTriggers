@@ -841,43 +841,47 @@ public class events {
 							for (int j=0; j<global.USR_string.size(); j++) {
 								if (global.USR_string.get(j).get(0).equals(stringName)) {
 									int checkbefore = msg.indexOf(split_trig[i-1])+split_trig[i-1].length();
-									int checkafter = msg.substring(checkbefore, msg.length()).indexOf(split_trig[i+1]) + checkbefore;
-									String set_string = msg.substring(checkbefore, checkafter);
-									msg = msg.substring(checkbefore, msg.length());
-									if (stringLength > 0) {
-										int check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
-										if (check_stringLength == stringLength) {
-											global.USR_string.get(j).set(1, set_string);
-											split_trig[i] = global.USR_string.get(j).get(1);
-										}
-									} else if (stringLength < 0) {
-										for (String value : stringListSplit) {
-											int check_stringLength = 0;
-											if (checkCharacter==true) {
-												check_stringLength = set_string.length();
-											} else {
-												check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
+									int checkafter = -1;
+									try {checkafter = msg.indexOf(split_trig[i+1], checkbefore);}
+									catch (StringIndexOutOfBoundsException e) {checkafter=-1;}
+									if (checkbefore < checkafter) {
+										String set_string = msg.substring(checkbefore, checkafter);
+										msg = msg.substring(checkbefore, msg.length());
+										if (stringLength > 0) {
+											int check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
+											if (check_stringLength == stringLength) {
+												global.USR_string.get(j).set(1, set_string);
+												split_trig[i] = global.USR_string.get(j).get(1);
 											}
-											try {
-												if (check_stringLength == Integer.parseInt(value)) {
-													global.USR_string.get(j).set(1, set_string);
-													split_trig[i] = global.USR_string.get(j).get(1);
+										} else if (stringLength < 0) {
+											for (String value : stringListSplit) {
+												int check_stringLength = 0;
+												if (checkCharacter==true) {
+													check_stringLength = set_string.length();
+												} else {
+													check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
 												}
-											} catch (NumberFormatException e) {
-												String[] fromtoSplit = value.split("-");
 												try {
-													int fromSplit = Integer.parseInt(fromtoSplit[0]);
-													int toSplit = Integer.parseInt(fromtoSplit[fromtoSplit.length-1]);
-													if (fromSplit <= check_stringLength && toSplit >= check_stringLength) {
+													if (check_stringLength == Integer.parseInt(value)) {
 														global.USR_string.get(j).set(1, set_string);
 														split_trig[i] = global.USR_string.get(j).get(1);
 													}
-												} catch (NumberFormatException e1) {} catch (ArrayIndexOutOfBoundsException e1) {}
+												} catch (NumberFormatException e) {
+													String[] fromtoSplit = value.split("-");
+													try {
+														int fromSplit = Integer.parseInt(fromtoSplit[0]);
+														int toSplit = Integer.parseInt(fromtoSplit[fromtoSplit.length-1]);
+														if (fromSplit <= check_stringLength && toSplit >= check_stringLength) {
+															global.USR_string.get(j).set(1, set_string);
+															split_trig[i] = global.USR_string.get(j).get(1);
+														}
+													} catch (NumberFormatException e1) {} catch (ArrayIndexOutOfBoundsException e1) {}
+												}
 											}
+										} else {
+											global.USR_string.get(j).set(1, set_string);
+											split_trig[i] = global.USR_string.get(j).get(1);
 										}
-									} else {
-										global.USR_string.get(j).set(1, set_string);
-										split_trig[i] = global.USR_string.get(j).get(1);
 									}
 								}
 							}

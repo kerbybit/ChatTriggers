@@ -24,6 +24,45 @@ import org.apache.commons.io.FileUtils;
 import net.minecraft.client.Minecraft;
 
 public class file {
+	public static void loadVersion(String url) {
+		try {
+			URL web = new URL(url);
+			InputStream fis = web.openStream();
+			List<String> lines = new ArrayList<String>();
+			String line = null;
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
+			while ((line = bufferedReader.readLine()) != null) {
+				lines.add(line);
+			}
+			bufferedReader.close();
+			
+			if (!global.settings.get(2).equals("null")) {
+				if (!lines.get(0).equals(global.settings.get(2))) {
+					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------"));
+					chat.warn(chat.color("red", "You are running on an outdated version of ChatTriggers!"));
+					List<String> TMP_out = new ArrayList<String>();
+					TMP_out.add("text:'http://kerbybit.github.io/ChatTriggers/download',color:red,hoverEvent:{action:'show_text',value:'Click to download update'},clickEvent:{action:'open_url',value:'http://kerbybit.github.io/ChatTriggers/download'}");
+					chat.sendJson(TMP_out);
+					chat.warn(chat.color("red", "Current stable version: " + lines.get(0)));
+					chat.warn(chat.color("red", "Your version: " + global.settings.get(2)));
+					chat.warn(chat.color("red", "You will only see this message once until the next update"));
+					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
+					global.settings.set(2,lines.get(0));
+					file.saveAll();
+				}
+			} else {
+				global.settings.set(2, lines.get(0));
+				file.saveAll();
+			}
+		} catch (MalformedURLException e) {
+			chat.warn(chat.color("red", "Can't grab update! Report this to kerbybit ASAP"));
+			e.printStackTrace();
+		} catch (IOException e) {
+			chat.warn(chat.color("red", "Can't grab update! Report this to kerbybit ASAP"));
+			e.printStackTrace();
+		}
+	}
+	
 	public static void saveExport(List<List<String>> trigger, List<List<String>> USR_string, String fileName) throws IOException {
 		String username = Minecraft.getMinecraft().thePlayer.getDisplayNameString();
 		List<String> tmp_list = new ArrayList<String>();
@@ -240,6 +279,7 @@ public class file {
 		PrintWriter writer = new PrintWriter(fileName,"UTF-8");
 		writer.println("color:"+listName.get(0));
 		writer.println("colorName:"+listName.get(1));
+		writer.println("version:"+listName.get(2));
 		writer.close();
 	}
 	
@@ -314,6 +354,9 @@ public class file {
 			if (lines.get(i).startsWith("colorName:")) {
 				tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("colorName:") + 10, lines.get(i).length()));
 			}
+			if (lines.get(i).startsWith("version:")) {
+				tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("version:") + 8, lines.get(i).length()));
+			}
 		}
 		
 		return tmp_settings;
@@ -333,6 +376,7 @@ public class file {
 			global.USR_string = loadStrings("./mods/ChatTriggers/strings.txt");
 			global.settings = loadSettings("./mods/ChatTriggers/settings.txt");
 			if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold");}
+			if (global.settings.size() < 3) {global.settings.add("null");}
 			chat.warn(chat.color(global.settings.get(0), "Chat triggers loaded"));
 		} catch (IOException e1) {
 			chat.warn(chat.color("red", "Error loading files!"));
@@ -348,5 +392,6 @@ public class file {
 			catch (IOException e111) {chat.warn(chat.color("red", "Error saving files! report this to kerbybit ASAP!")); e111.printStackTrace();}
 		}
 		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold");}
+		if (global.settings.size() < 3) {global.settings.add("null");}
 	}
 }

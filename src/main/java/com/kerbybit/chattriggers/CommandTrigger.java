@@ -71,7 +71,7 @@ public class CommandTrigger extends CommandBase {
 		String toImport = args[1];
 		chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------"));
 		chat.warn(chat.color("gray", "Importing") + chat.color(global.settings.get(1), toImport));
-		file.loadImport("http://65.27.55.168:88/Import/server/php/files/" + toImport + ".txt");
+		file.loadImport("http://bfgteam.com:88/Import/server/php/files/" + toImport + ".txt");
 		chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
 	}
 	

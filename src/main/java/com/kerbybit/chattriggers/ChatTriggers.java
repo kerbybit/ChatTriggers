@@ -35,7 +35,6 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToSe
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION)
 public class ChatTriggers {
 	
-	
 	@EventHandler
 	public void init(FMLInitializationEvent event) throws ClassNotFoundException, IOException {
 		MinecraftForge.EVENT_BUS.register(this);
@@ -108,7 +107,8 @@ public class ChatTriggers {
 				
 				//chat check
 				if (TMP_w.equals("s")) { //startWith
-					TMP_trig = events.setStrings(msg, TMP_trig);
+					try {TMP_trig = events.setStrings(msg, TMP_trig);}
+					catch (StringIndexOutOfBoundsException e1) {e1.printStackTrace(); chat.warn(chat.color("red", "There was a problem setting strings!"));}
 					if (msg.startsWith(TMP_trig)) { //check
 						//add all events to temp list
 						List<String> TMP_events = new ArrayList<String>();
@@ -118,7 +118,8 @@ public class ChatTriggers {
 						events.doEvents(TMP_events, e);
 					}
 				} else if (TMP_w.equals("c")) { //contains
-					TMP_trig = events.setStrings(msg, TMP_trig);
+					try {TMP_trig = events.setStrings(msg, TMP_trig);}
+					catch (StringIndexOutOfBoundsException e1) {e1.printStackTrace(); chat.warn(chat.color("red", "There was a problem setting strings!"));}
 					if (msg.contains(TMP_trig)) { //check
 						//add all events to temp list
 						List<String> TMP_events = new ArrayList<String>();
@@ -128,7 +129,8 @@ public class ChatTriggers {
 						events.doEvents(TMP_events, e);
 					}
 				} else if (TMP_w.equals("e")) { //endsWith
-					TMP_trig = events.setStrings(msg, TMP_trig);
+					try {TMP_trig = events.setStrings(msg, TMP_trig);}
+					catch (StringIndexOutOfBoundsException e1) {e1.printStackTrace(); chat.warn(chat.color("red", "There was a problem setting strings!"));}
 					if (msg.endsWith(TMP_trig)) {
 						//add all events to temp list
 						List<String> TMP_events = new ArrayList<String>();
@@ -138,7 +140,8 @@ public class ChatTriggers {
 						events.doEvents(TMP_events, e);
 					}
 				} else { //equals
-					TMP_trig = events.setStrings(msg, TMP_trig);
+					try {TMP_trig = events.setStrings(msg, TMP_trig);}
+					catch (StringIndexOutOfBoundsException e1) {e1.printStackTrace(); chat.warn(chat.color("red", "There was a problem setting strings!"));}
 					if (msg.equals(TMP_trig)) { 
 						//add all events to temp list
 						List<String> TMP_events = new ArrayList<String>();
@@ -176,6 +179,9 @@ public class ChatTriggers {
 		if (global.tick==0) {
 			try {file.startup();
 			} catch (ClassNotFoundException e) {e.printStackTrace();}
+			
+			file.loadVersion("http://bfgteam.com:88/ChatTriggers/download/versions/version.txt");
+			
 			global.tick++;
 		}
 	}
