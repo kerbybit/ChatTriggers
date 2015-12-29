@@ -45,6 +45,7 @@ public class events {
 				TMP_trig = TMP_trig.replace("<end>", "");
 				if (TMP_trig.contains("{list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("{list=")+6, TMP_trig.indexOf("}", TMP_trig.indexOf("{list="))); TMP_trig = TMP_trig.replace("{list="+TMP_list+"}","");}
 				if (TMP_trig.contains("<list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
+				if (TMP_trig.contains("<server=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_list+">","");}
 				
 				//check match
 				if (TMP_trig.equals(triggerName)) {
@@ -81,7 +82,7 @@ public class events {
 			int TMP_p = 0;
 			if (toreplace != null) {
 				for (int j=0; j<toreplace.length; j++) {
-					TMP_e = TMP_e.replace(toreplace[j], replacement[j]);
+					TMP_e = TMP_e.replace(toreplace[j], stringInterrupt+replacement[j]);
 				}
 			}
 			
@@ -154,8 +155,17 @@ public class events {
 					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
 				}
 				
+				
+				
 				if (checkTo.length==2) {
 					TMP_e = TMP_e.replace(checkFrom + ".replace(" + checkTo[0] + "," + checkTo[1] + ")", checkFrom.replace(checkTo[0], checkTo[1]));
+				} else if (checkTo.length==1) {
+					TMP_e = TMP_e.replace(checkFrom + ".replace(" + checkTo[0] + ",)", checkFrom.replace(checkTo[0], ""));
+					TMP_e = TMP_e.replace(checkFrom + ".replace(" + checkTo[0] + ")", checkFrom.replace(checkTo[0], ""));
+				} else if (checkTo.length==0) {
+					chat.warn(chat.color("red", "Malformed .replace(toReplace,replacement) function - skipping"));
+					TMP_e = TMP_e.replace(checkFrom + ".replace(,)", checkFrom.replace(checkTo[0], ""));
+					TMP_e = TMP_e.replace(checkFrom + ".replace()", checkFrom.replace(checkTo[0], ""));
 				}
 			}
 			
@@ -339,15 +349,35 @@ public class events {
 						int num = Integer.parseInt(args[0]);
 						if (num>0 && num<global.USR_string.size()) {
 							global.USR_string.get(num).set(1, args[1]);
-							try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
 							TMP_e = TMP_e.replace("string.set(" + args[0] + "," + args[1] + ")", args[1]);
 						}
 					} catch (NumberFormatException e) {
 						for (int j=0; j<global.USR_string.size(); j++) {
 							if (global.USR_string.get(j).get(0).equals(args[0])) {
 								global.USR_string.get(j).set(1, args[1]);
-								try {file.saveAll();} catch (IOException e1) {chat.warn(chat.color("red", "Error saving triggers!"));}
 								TMP_e = TMP_e.replace("string.set(" + args[0] + "," + args[1] + ")", args[1]);
+							}
+						}
+					}
+				}
+			}
+			
+			while (TMP_e.contains("string.save(") && TMP_e.contains(")")) {
+				String[] args = TMP_e.substring(TMP_e.indexOf("string.save(") + 12,TMP_e.indexOf(")",TMP_e.indexOf("string.save("))).split(",");
+				if (args.length==2) {
+					try {
+						int num = Integer.parseInt(args[0]);
+						if (num>0 && num<global.USR_string.size()) {
+							global.USR_string.get(num).set(1, args[1]);
+							try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+							TMP_e = TMP_e.replace("string.save(" + args[0] + "," + args[1] + ")", args[1]);
+						}
+					} catch (NumberFormatException e) {
+						for (int j=0; j<global.USR_string.size(); j++) {
+							if (global.USR_string.get(j).get(0).equals(args[0])) {
+								global.USR_string.get(j).set(1, args[1]);
+								try {file.saveAll();} catch (IOException e1) {chat.warn(chat.color("red", "Error saving triggers!"));}
+								TMP_e = TMP_e.replace("string.save(" + args[0] + "," + args[1] + ")", args[1]);
 							}
 						}
 					}
@@ -394,7 +424,7 @@ public class events {
 							//arguments
 							if (toreplace != null) {
 								for (int k=0; k<toreplace.length; k++) {
-									tmp_event.set(j,tmp_event.get(j).replace(toreplace[k], replacement[k]));
+									tmp_event.set(j,tmp_event.get(j).replace(toreplace[k], stringInterrupt+replacement[k]));
 								}
 							}
 							if (chatEvent!=null) {tmp_event.set(j, tmp_event.get(j).replace("{msg}", chatEvent.message.getFormattedText()));}
@@ -460,7 +490,7 @@ public class events {
 							//arguments
 							if (toreplace != null) {
 								for (int k=0; k<toreplace.length; k++) {
-									tmp_event.set(j,tmp_event.get(j).replace(toreplace[k], replacement[k]));
+									tmp_event.set(j,tmp_event.get(j).replace(toreplace[k], stringInterrupt+replacement[k]));
 								}
 							}
 							
@@ -514,7 +544,7 @@ public class events {
 							//arguments
 							if (toreplace != null) {
 								for (int k=0; k<toreplace.length; k++) {
-									tmp_event.set(j,tmp_event.get(j).replace(toreplace[k], replacement[k]));
+									tmp_event.set(j,tmp_event.get(j).replace(toreplace[k], stringInterrupt+replacement[k]));
 								}
 							}
 							
@@ -614,7 +644,7 @@ public class events {
 							//arguments
 							if (toreplace != null) {
 								for (int k=0; k<toreplace.length; k++) {
-									tmp_event.set(j,tmp_event.get(j).replace(toreplace[k], replacement[k]));
+									tmp_event.set(j,tmp_event.get(j).replace(toreplace[k], stringInterrupt+replacement[k]));
 								}
 							}
 							

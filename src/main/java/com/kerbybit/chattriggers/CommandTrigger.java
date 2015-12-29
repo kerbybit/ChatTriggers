@@ -146,6 +146,7 @@ public class CommandTrigger extends CommandBase {
 					TMP_trig = TMP_trig.replace("<end>", "");
 					if (TMP_trig.contains("{list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("{list=")+6, TMP_trig.indexOf("}", TMP_trig.indexOf("{list="))); TMP_trig = TMP_trig.replace("{list="+TMP_list+"}","");}
 					if (TMP_trig.contains("<list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
+					if (TMP_trig.contains("<server=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_list+">","");}
 					if (TMP_trig.equals(TMP_e)) {
 						List<String> TMP_events = new ArrayList<String>();
 						for (int i=2; i<global.trigger.get(k).size(); i++) {
@@ -410,6 +411,7 @@ public class CommandTrigger extends CommandBase {
 					String TMP_trig = global.trigger.get(i).get(1);
 					String TMP_list = "";
 					String TMP_w    = "";
+					String TMP_server = "";
 					
 					if (TMP_trig.contains("{s}")) {TMP_w = "start"; TMP_trig = TMP_trig.replace("{s}", "");}
 					if (TMP_trig.contains("{c}")) {TMP_w = "contain"; TMP_trig = TMP_trig.replace("{c}", "");}
@@ -424,6 +426,12 @@ public class CommandTrigger extends CommandBase {
 					if (TMP_trig.contains("{list=") && TMP_trig.contains("}")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("{list=")+6, TMP_trig.indexOf("}", TMP_trig.indexOf("{list="))); TMP_trig = TMP_trig.replace("{list="+TMP_list+"}","");}
 					if (TMP_trig.contains("<list=") && TMP_trig.contains(">")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
 					TMP_lists.add(TMP_list);
+					if (TMP_trig.contains("<server=") && TMP_trig.contains(">")) {TMP_server = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_server+">","");}
+					
+					String TMP_tags = "";
+					if (!TMP_w.equals("")) {TMP_tags += "Modifier: " + TMP_w;}
+					if (!TMP_list.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "List: " + TMP_list;}
+					if (!TMP_server.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Server: " + TMP_server;}
 					
 					if (TMP_list.equals("")) {
 						List<String> TMP_out = new ArrayList<String>();
@@ -433,8 +441,7 @@ public class CommandTrigger extends CommandBase {
 						TMP_out.add("text:'" + i + "> ',color:gray,hoverEvent:{action:'show_text',value:'Add an event'},clickEvent:{action:'suggest_command',value:'/trigger add " + i + " '}");
 						TMP_out.add("text:'" + TMP_type + " ',color:dark_gray");
 						TMP_out.add("text:'" + TMP_trig + " ',color:"+global.settings.get(1));
-						if (!TMP_list.equals("")) {TMP_out.add("text:'" + TMP_list + " ',color:gray");}
-						if (!TMP_w.equals("")) {TMP_out.add("text:'" + TMP_w + " ',color:dark_gray");}
+						if (!TMP_tags.equals("")) {TMP_out.add("text:'tags ',color:dark_gray,hoverEvent:{action:'show_text',value:'" + TMP_tags + "'}");}
 						TMP_out.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Remove trigger'},clickEvent:{action:'suggest_command',value:'/trigger delete " + i + " [enter to confirm]'}");
 						chat.sendJson(TMP_out);
 						
@@ -504,6 +511,7 @@ public class CommandTrigger extends CommandBase {
 					String TMP_trig = global.trigger.get(i).get(1);
 					String TMP_list = "";
 					String TMP_w    = "";
+					String TMP_server = "";
 					
 					if (TMP_trig.contains("{s}")) {TMP_w = "start"; TMP_trig = TMP_trig.replace("{s}", "");}
 					if (TMP_trig.contains("{c}")) {TMP_w = "contain"; TMP_trig = TMP_trig.replace("{c}", "");}
@@ -517,6 +525,12 @@ public class CommandTrigger extends CommandBase {
 					
 					if (TMP_trig.contains("{list=") && TMP_trig.contains("}")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("{list=")+6, TMP_trig.indexOf("}", TMP_trig.indexOf("{list="))); TMP_trig = TMP_trig.replace("{list="+TMP_list+"}","");}
 					if (TMP_trig.contains("<list=") && TMP_trig.contains(">")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
+					if (TMP_trig.contains("<server=") && TMP_trig.contains(">")) {TMP_server = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_server+">","");}
+					
+					String TMP_tags = "";
+					if (!TMP_w.equals("")) {TMP_tags += "Modifier: " + TMP_w;}
+					if (!TMP_list.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "List: " + TMP_list;}
+					if (!TMP_server.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Server: " + TMP_server;}
 					
 					if (TMP_check.equals(TMP_list)) {
 						TMP_test++;
@@ -528,8 +542,7 @@ public class CommandTrigger extends CommandBase {
 						TMP_out.add("text:'" + i + "> ',color:gray,hoverEvent:{action:'show_text',value:'Add an event'},clickEvent:{action:'suggest_command',value:'/trigger add " + i + " '}");
 						TMP_out.add("text:'" + TMP_type + " ',color:dark_gray");
 						TMP_out.add("text:'" + TMP_trig + " ',color:"+global.settings.get(1));
-						if (!TMP_list.equals("")) {TMP_out.add("text:'" + TMP_list + " ',color:gray");}
-						if (!TMP_w.equals("")) {TMP_out.add("text:'" + TMP_w + " ',color:dark_gray");}
+						if (!TMP_tags.equals("")) {TMP_out.add("text:'tags ',color:dark_gray,hoverEvent:{action:'show_text',value:'" + TMP_tags + "'}");}
 						TMP_out.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Remove trigger'},clickEvent:{action:'suggest_command',value:'/trigger delete " + i + " [enter to confirm]'}");
 						chat.sendJson(TMP_out);
 						

@@ -36,6 +36,10 @@ public class file {
 			}
 			bufferedReader.close();
 			
+			if (global.settings.size() < 3) {
+				global.settings.add("null");
+			}
+			
 			if (!global.settings.get(2).equals("null")) {
 				if (!lines.get(0).equals(global.settings.get(2))) {
 					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------"));
@@ -375,7 +379,7 @@ public class file {
 			global.trigger = loadTriggers("./mods/ChatTriggers/triggers.txt");
 			global.USR_string = loadStrings("./mods/ChatTriggers/strings.txt");
 			global.settings = loadSettings("./mods/ChatTriggers/settings.txt");
-			if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold");}
+			if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
 			if (global.settings.size() < 3) {global.settings.add("null");}
 			chat.warn(chat.color(global.settings.get(0), "Chat triggers loaded"));
 		} catch (IOException e1) {
@@ -388,10 +392,13 @@ public class file {
 				checkFile.mkdir();
 			} else {checkFile.mkdir();}
 			
+			if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
+			if (global.settings.size() < 3) {global.settings.add("null");}
+			
 			try {file.saveAll(); chat.warn(chat.color("green", "New files created!"));} 
 			catch (IOException e111) {chat.warn(chat.color("red", "Error saving files! report this to kerbybit ASAP!")); e111.printStackTrace();}
 		}
-		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold");}
+		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
 		if (global.settings.size() < 3) {global.settings.add("null");}
 	}
 }

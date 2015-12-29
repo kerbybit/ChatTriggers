@@ -67,7 +67,11 @@ public class ChatTriggers {
 			
 			//////////////chat trigger////////////////////
 			if (TMP_type.equalsIgnoreCase("CHAT")) {
+				//setup
 				String TMP_w = "";
+				String[] TMP_server = {};
+				String current_server = "";
+				Boolean correct_server = false;
 				
 				//tags
 				if (TMP_trig.contains("{s}")) {TMP_w = "s"; TMP_trig = TMP_trig.replace("{s}", "");}
@@ -83,6 +87,29 @@ public class ChatTriggers {
 				if (TMP_trig.contains("{list=") && TMP_trig.contains("}")) {TMP_trig = TMP_trig.replace(TMP_trig.substring(TMP_trig.indexOf("{list="), TMP_trig.indexOf("}", TMP_trig.indexOf("{list="))+1), "");}
 				if (TMP_trig.contains("<list=") && TMP_trig.contains(">")) {TMP_trig = TMP_trig.replace(TMP_trig.substring(TMP_trig.indexOf("<list="), TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))+1), "");}
 				
+				
+				//check server stuff
+				if (TMP_trig.contains("<server=") && TMP_trig.contains(">")) {
+					TMP_server = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))).split(",");
+					TMP_trig = TMP_trig.replace(TMP_trig.substring(TMP_trig.indexOf("<server="), TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))+1),  "");
+					
+				}
+				
+				if (Minecraft.getMinecraft().isSingleplayer()) {
+					current_server = "SinglePlayer";
+				} else {
+					current_server = Minecraft.getMinecraft().getCurrentServerData().serverIP;
+				}
+				
+				for (String value : TMP_server) {
+					if (current_server.contains(value)) {
+						correct_server = true;
+					}
+				}
+				
+				if (TMP_server.length == 0) {
+					correct_server = true;
+				}
 				
 				//check if formatted or nah
 				if (TMP_trig.contains("&")) {
@@ -106,51 +133,54 @@ public class ChatTriggers {
 				
 				
 				//chat check
-				if (TMP_w.equals("s")) { //startWith
-					try {TMP_trig = events.setStrings(msg, TMP_trig);}
-					catch (StringIndexOutOfBoundsException e1) {e1.printStackTrace(); chat.warn(chat.color("red", "There was a problem setting strings!"));}
-					if (msg.startsWith(TMP_trig)) { //check
-						//add all events to temp list
-						List<String> TMP_events = new ArrayList<String>();
-						for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
-						
-						//do events
-						events.doEvents(TMP_events, e);
-					}
-				} else if (TMP_w.equals("c")) { //contains
-					try {TMP_trig = events.setStrings(msg, TMP_trig);}
-					catch (StringIndexOutOfBoundsException e1) {e1.printStackTrace(); chat.warn(chat.color("red", "There was a problem setting strings!"));}
-					if (msg.contains(TMP_trig)) { //check
-						//add all events to temp list
-						List<String> TMP_events = new ArrayList<String>();
-						for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
-						
-						//do events
-						events.doEvents(TMP_events, e);
-					}
-				} else if (TMP_w.equals("e")) { //endsWith
-					try {TMP_trig = events.setStrings(msg, TMP_trig);}
-					catch (StringIndexOutOfBoundsException e1) {e1.printStackTrace(); chat.warn(chat.color("red", "There was a problem setting strings!"));}
-					if (msg.endsWith(TMP_trig)) {
-						//add all events to temp list
-						List<String> TMP_events = new ArrayList<String>();
-						for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
-						
-						//do events
-						events.doEvents(TMP_events, e);
-					}
-				} else { //equals
-					try {TMP_trig = events.setStrings(msg, TMP_trig);}
-					catch (StringIndexOutOfBoundsException e1) {e1.printStackTrace(); chat.warn(chat.color("red", "There was a problem setting strings!"));}
-					if (msg.equals(TMP_trig)) { 
-						//add all events to temp list
-						List<String> TMP_events = new ArrayList<String>();
-						for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
-						
-						//do events
-						events.doEvents(TMP_events, e);
+				if (correct_server) {
+					if (TMP_w.equals("s")) { //startWith
+						try {TMP_trig = events.setStrings(msg, TMP_trig);}
+						catch (StringIndexOutOfBoundsException e1) {e1.printStackTrace(); chat.warn(chat.color("red", "There was a problem setting strings!"));}
+						if (msg.startsWith(TMP_trig)) { //check
+							//add all events to temp list
+							List<String> TMP_events = new ArrayList<String>();
+							for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
+							
+							//do events
+							events.doEvents(TMP_events, e);
+						}
+					} else if (TMP_w.equals("c")) { //contains
+						try {TMP_trig = events.setStrings(msg, TMP_trig);}
+						catch (StringIndexOutOfBoundsException e1) {e1.printStackTrace(); chat.warn(chat.color("red", "There was a problem setting strings!"));}
+						if (msg.contains(TMP_trig)) { //check
+							//add all events to temp list
+							List<String> TMP_events = new ArrayList<String>();
+							for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
+							
+							//do events
+							events.doEvents(TMP_events, e);
+						}
+					} else if (TMP_w.equals("e")) { //endsWith
+						try {TMP_trig = events.setStrings(msg, TMP_trig);}
+						catch (StringIndexOutOfBoundsException e1) {e1.printStackTrace(); chat.warn(chat.color("red", "There was a problem setting strings!"));}
+						if (msg.endsWith(TMP_trig)) {
+							//add all events to temp list
+							List<String> TMP_events = new ArrayList<String>();
+							for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
+							
+							//do events
+							events.doEvents(TMP_events, e);
+						}
+					} else { //equals
+						try {TMP_trig = events.setStrings(msg, TMP_trig);}
+						catch (StringIndexOutOfBoundsException e1) {e1.printStackTrace(); chat.warn(chat.color("red", "There was a problem setting strings!"));}
+						if (msg.equals(TMP_trig)) { 
+							//add all events to temp list
+							List<String> TMP_events = new ArrayList<String>();
+							for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
+							
+							//do events
+							events.doEvents(TMP_events, e);
+						}
 					}
 				}
+				
 			}
 			//////////////////////////////////////////
 		}
