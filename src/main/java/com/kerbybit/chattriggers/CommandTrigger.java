@@ -59,6 +59,8 @@ public class CommandTrigger extends CommandBase {
 			commandSave(args, silent);
 		} else if (args[0].equalsIgnoreCase("LOAD")) {
 			commandLoad(args, silent);
+		} else if (args[0].equalsIgnoreCase("TEST")) {
+			global.showGUI = true;
 		} else {
 			chat.warn(chat.color("red", "/trigger [create/add/list] <...>"));
 			chat.warn(chat.color("red", "/trigger [string/run] <...>"));
@@ -135,16 +137,12 @@ public class CommandTrigger extends CommandBase {
 				for (int k=0; k<global.trigger.size(); k++) {
 					String TMP_trig = global.trigger.get(k).get(1);
 					String TMP_list = "";
-					TMP_trig = TMP_trig.replace("{s}", ""); 
-					TMP_trig = TMP_trig.replace("{c}", ""); 
-					TMP_trig = TMP_trig.replace("{e}", "");
 					TMP_trig = TMP_trig.replace("<s>", ""); 
 					TMP_trig = TMP_trig.replace("<c>", ""); 
 					TMP_trig = TMP_trig.replace("<e>", "");
 					TMP_trig = TMP_trig.replace("<start>", ""); 
 					TMP_trig = TMP_trig.replace("<contain>", ""); 
 					TMP_trig = TMP_trig.replace("<end>", "");
-					if (TMP_trig.contains("{list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("{list=")+6, TMP_trig.indexOf("}", TMP_trig.indexOf("{list="))); TMP_trig = TMP_trig.replace("{list="+TMP_list+"}","");}
 					if (TMP_trig.contains("<list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
 					if (TMP_trig.contains("<server=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_list+">","");}
 					if (TMP_trig.equals(TMP_e)) {
@@ -193,7 +191,10 @@ public class CommandTrigger extends CommandBase {
 			TMP_l.add(TMP_type);
 			TMP_l.add(TMP_trig);
 			if (TMP_type.equalsIgnoreCase("CHAT") 
-			|| TMP_type.equalsIgnoreCase("OTHER")) {
+			|| TMP_type.equalsIgnoreCase("OTHER")
+			|| TMP_type.equalsIgnoreCase("ONWORLDLOAD")
+			|| TMP_type.equalsIgnoreCase("ONWORLDFIRSTLOAD")
+			|| TMP_type.equalsIgnoreCase("ONSERVERCHANGE")) {
 				global.trigger.add(TMP_l);
 				int TMP_num = global.trigger.size() - 1;
 				if (silent==false) {
@@ -423,7 +424,6 @@ public class CommandTrigger extends CommandBase {
 					if (TMP_trig.contains("<contain>")) {TMP_w = "contain"; TMP_trig = TMP_trig.replace("<contain>", "");}
 					if (TMP_trig.contains("<end>")) {TMP_w = "end"; TMP_trig = TMP_trig.replace("<end>", "");}
 					
-					if (TMP_trig.contains("{list=") && TMP_trig.contains("}")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("{list=")+6, TMP_trig.indexOf("}", TMP_trig.indexOf("{list="))); TMP_trig = TMP_trig.replace("{list="+TMP_list+"}","");}
 					if (TMP_trig.contains("<list=") && TMP_trig.contains(">")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
 					TMP_lists.add(TMP_list);
 					if (TMP_trig.contains("<server=") && TMP_trig.contains(">")) {TMP_server = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_server+">","");}
@@ -513,9 +513,6 @@ public class CommandTrigger extends CommandBase {
 					String TMP_w    = "";
 					String TMP_server = "";
 					
-					if (TMP_trig.contains("{s}")) {TMP_w = "start"; TMP_trig = TMP_trig.replace("{s}", "");}
-					if (TMP_trig.contains("{c}")) {TMP_w = "contain"; TMP_trig = TMP_trig.replace("{c}", "");}
-					if (TMP_trig.contains("{e}")) {TMP_w = "end"; TMP_trig = TMP_trig.replace("{e}", "");}
 					if (TMP_trig.contains("<s>")) {TMP_w = "start"; TMP_trig = TMP_trig.replace("<s>", "");}
 					if (TMP_trig.contains("<c>")) {TMP_w = "contain"; TMP_trig = TMP_trig.replace("<c>", "");}
 					if (TMP_trig.contains("<e>")) {TMP_w = "end"; TMP_trig = TMP_trig.replace("<e>", "");}
@@ -523,7 +520,6 @@ public class CommandTrigger extends CommandBase {
 					if (TMP_trig.contains("<contain>")) {TMP_w = "contain"; TMP_trig = TMP_trig.replace("<contain>", "");}
 					if (TMP_trig.contains("<end>")) {TMP_w = "end"; TMP_trig = TMP_trig.replace("<end>", "");}
 					
-					if (TMP_trig.contains("{list=") && TMP_trig.contains("}")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("{list=")+6, TMP_trig.indexOf("}", TMP_trig.indexOf("{list="))); TMP_trig = TMP_trig.replace("{list="+TMP_list+"}","");}
 					if (TMP_trig.contains("<list=") && TMP_trig.contains(">")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
 					if (TMP_trig.contains("<server=") && TMP_trig.contains(">")) {TMP_server = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_server+">","");}
 					
@@ -651,7 +647,4 @@ public class CommandTrigger extends CommandBase {
 			chat.warn(global.settings.get(0) + "Files loaded");
 		} catch (IOException e) {chat.warn(chat.color("red", "Error loading triggers!"));}
 	}
-	
-	
-
 }

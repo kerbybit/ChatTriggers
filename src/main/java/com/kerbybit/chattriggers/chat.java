@@ -52,7 +52,7 @@ public class chat {
 			String TMP_2splt = "";
 			if (cht.indexOf("clickable(") != 0) {TMP_1splt = ",";}
 			if (cht.indexOf(")") != cht.length()) {TMP_2splt = ",";}
-			String TMP_clk = cht.substring(cht.indexOf("clickable(") + 10, cht.indexOf(")"));
+			String TMP_clk = cht.substring(cht.indexOf("clickable(") + 10, cht.indexOf(")", cht.indexOf("clickable(")));
 			
 			
 			
@@ -130,15 +130,6 @@ public class chat {
 		}
 		
 		return formatted;
-	}
-	
-	public static void append(ClientChatReceivedEvent e, String msg) {
-		msg = removeFormatting(msg);
-		if (msg.startsWith("&r&b[MVP] kerbybit&r") || msg.contains("] &r&b[MVP] kerbybit&r")) {
-			msg = msg.replace("&r&b[MVP] kerbybit&r", global.settings.get(0) + "[CT Dev] &r&b[MVP] kerbybit&r");
-			e.setCanceled(true);
-			chat.warn(msg);
-		}
 	}
 	
 	public static void onClientTick() {

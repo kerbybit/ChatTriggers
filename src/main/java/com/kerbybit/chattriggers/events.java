@@ -13,8 +13,7 @@ public class events {
 	
 	
 	public static void doTrigger(String triggerName, ClientChatReceivedEvent chatEvent) {
-		try { 
-			
+		try {
 			//run trigger by number
 			int num = Integer.parseInt(triggerName);
 			if (num >= 0 && num < global.trigger.size()) {
@@ -25,25 +24,19 @@ public class events {
 				//do events
 				doEvents(TMP_events, chatEvent);
 			}
-			
 		} catch (NumberFormatException e1) { 
-			
 			//run trigger by name
 			for (int k=0; k<global.trigger.size(); k++) {
 				String TMP_trig = global.trigger.get(k).get(1);
 				
 				//remove tags
 				String TMP_list = "";
-				TMP_trig = TMP_trig.replace("{s}", ""); 
-				TMP_trig = TMP_trig.replace("{c}", ""); 
-				TMP_trig = TMP_trig.replace("{e}", "");
 				TMP_trig = TMP_trig.replace("<s>", ""); 
 				TMP_trig = TMP_trig.replace("<c>", ""); 
 				TMP_trig = TMP_trig.replace("<e>", "");
 				TMP_trig = TMP_trig.replace("<start>", ""); 
 				TMP_trig = TMP_trig.replace("<contain>", ""); 
 				TMP_trig = TMP_trig.replace("<end>", "");
-				if (TMP_trig.contains("{list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("{list=")+6, TMP_trig.indexOf("}", TMP_trig.indexOf("{list="))); TMP_trig = TMP_trig.replace("{list="+TMP_list+"}","");}
 				if (TMP_trig.contains("<list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
 				if (TMP_trig.contains("<server=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_list+">","");}
 				
@@ -55,9 +48,25 @@ public class events {
 					
 					//do events
 					doEvents(TMP_events, chatEvent);
+				} else {
+					if (TMP_trig.contains("(") && TMP_trig.endsWith(")")) {
+						String TMP_trigtest = TMP_trig.substring(0,TMP_trig.indexOf("("));
+						if (triggerName.startsWith(TMP_trigtest) && triggerName.endsWith(")")) {
+							String TMP_argsIn = triggerName.substring(triggerName.indexOf("(")+1, triggerName.length()-1);
+							String TMP_argsOut = TMP_trig.substring(TMP_trig.indexOf("(")+1, TMP_trig.length()-1);
+							String[] argsIn = TMP_argsIn.split(",");
+							String[] argsOut = TMP_argsOut.split(",");
+							if (argsIn.length == argsOut.length) {
+								List<String> TMP_events = new ArrayList<String>();
+								for (int j=2; j<global.trigger.get(k).size(); j++) {
+									TMP_events.add(global.trigger.get(k).get(j));
+								}
+								events.doEvents(TMP_events, chatEvent, argsOut, argsIn);
+							}
+						}
+					}
 				}
 			}
-			
 		}
 	}
 	
@@ -71,6 +80,7 @@ public class events {
 		
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
 		String stringInterrupt = "stringInterruptorF6cyUQp9stringInterruptor";
+		String stringCommaReplace = "stringCommaReplacementF6cyUQp9stringCommaReplacement";
 		for (int i=0; i<tmp_event.size(); i++) {
 			
 		//SETUP
@@ -80,42 +90,50 @@ public class events {
 			else {TMP_c = TMP_e.substring(0, TMP_e.indexOf(" ")); TMP_e = TMP_e.substring(TMP_e.indexOf(" ")+1, TMP_e.length());}
 			int TMP_t = 50;
 			int TMP_p = 0;
+			int TMP_v = 10000;
+			int TMP_pi = 1;
 			if (toreplace != null) {
 				for (int j=0; j<toreplace.length; j++) {
-					TMP_e = TMP_e.replace(toreplace[j], stringInterrupt+replacement[j]);
+					TMP_e = TMP_e.replace(toreplace[j], stringInterrupt+replacement[j].replace(",",stringCommaReplace));
 				}
 			}
 			
 		//built in strings
 			if (chatEvent!=null) {TMP_e = TMP_e.replace("{msg}", chatEvent.message.getFormattedText());}
-			TMP_e = TMP_e.replace("{trigsize}", global.trigger.size()+"");
-			TMP_e = TMP_e.replace("{notifysize}", global.notifySize+"");
-			TMP_e = TMP_e.replace("{me}", Minecraft.getMinecraft().thePlayer.getDisplayNameString());
+			TMP_e = TMP_e.replace("{trigsize}", stringInterrupt+global.trigger.size()+"");
+			TMP_e = TMP_e.replace("{notifysize}", stringInterrupt+global.notifySize+"");
+			TMP_e = TMP_e.replace("{me}", stringInterrupt+Minecraft.getMinecraft().thePlayer.getDisplayNameString());
+			if (TMP_e.contains("{server}")) {
+				String current_server = "";
+				if (Minecraft.getMinecraft().isSingleplayer()) {current_server = "SinglePlayer";} 
+				else {current_server = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
+				TMP_e = TMP_e.replace("{server}", stringInterrupt+current_server);
+			}
 			
 		//tags
-			if (TMP_e.contains("{time=") && TMP_e.contains("}")) {
-				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("{time=")+6, TMP_e.indexOf("}",TMP_e.indexOf("{time=")));
-				try {TMP_t = Integer.parseInt(TMP_tstring);}
-				catch (NumberFormatException e) {e.printStackTrace();}
-				TMP_e = TMP_e.replace("{time=" + TMP_tstring + "}", "");
-			}
 			if (TMP_e.contains("<time=") && TMP_e.contains(">")) {
 				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("<time=")+6, TMP_e.indexOf(">",TMP_e.indexOf("<time=")));
 				try {TMP_t = Integer.parseInt(TMP_tstring);}
 				catch (NumberFormatException e) {e.printStackTrace();}
 				TMP_e = TMP_e.replace("<time=" + TMP_tstring + ">", "");
 			}
-			if (TMP_e.contains("{pos=") && TMP_e.contains("}")) {
-				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("{pos=")+5, TMP_e.indexOf("}",TMP_e.indexOf("{pos=")));
-				try {TMP_p = Integer.parseInt(TMP_tstring);}
-				catch (NumberFormatException e) {e.printStackTrace();}
-				TMP_e = TMP_e.replace("{pos=" + TMP_tstring + "}", "");
-			}
 			if (TMP_e.contains("<pos=") && TMP_e.contains(">")) {
 				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("<pos=")+5, TMP_e.indexOf(">",TMP_e.indexOf("<pos=")));
 				try {TMP_p = Integer.parseInt(TMP_tstring);}
 				catch (NumberFormatException e) {e.printStackTrace();}
 				TMP_e = TMP_e.replace("<pos=" + TMP_tstring + ">", "");
+			}
+			if (TMP_e.contains("<vol=") && TMP_e.contains(">")) {
+				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("<vol=")+5, TMP_e.indexOf(">",TMP_e.indexOf("<vol=")));
+				try {TMP_v = Integer.parseInt(TMP_tstring);}
+				catch (NumberFormatException e) {e.printStackTrace();}
+				TMP_e = TMP_e.replace("<vol=" + TMP_tstring + ">", "");
+			}
+			if (TMP_e.contains("<pitch=") && TMP_e.contains(">")) {
+				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("<pitch=")+7, TMP_e.indexOf(">",TMP_e.indexOf("<pitch=")));
+				try {TMP_pi = Integer.parseInt(TMP_tstring);}
+				catch (NumberFormatException e) {e.printStackTrace();}
+				TMP_e = TMP_e.replace("<pitch=" + TMP_tstring + ">", "");
 			}
 			
 		//user strings
@@ -130,7 +148,7 @@ public class events {
 						TMP_sn = global.USR_string.get(k).get(1);
 					}
 				}
-				TMP_e = TMP_e.replace("{string[" + TMP_s + "]}", stringInterrupt + TMP_sn);
+				TMP_e = TMP_e.replace("{string[" + TMP_s + "]}", stringInterrupt + TMP_sn.replace(",", stringCommaReplace));
 				TMP_e = TMP_e.replace("{string<", "{string[");
 				TMP_e = TMP_e.replace(">}", "]}");
 			}
@@ -155,8 +173,6 @@ public class events {
 					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
 				}
 				
-				
-				
 				if (checkTo.length==2) {
 					TMP_e = TMP_e.replace(checkFrom + ".replace(" + checkTo[0] + "," + checkTo[1] + ")", checkFrom.replace(checkTo[0], checkTo[1]));
 				} else if (checkTo.length==1) {
@@ -176,7 +192,7 @@ public class events {
 					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
 				}
 				
-				TMP_e = TMP_e.replace(checkFrom + ".toUpper()", checkFrom.toUpperCase());
+				TMP_e = TMP_e.replace(checkFrom + ".toUpper()", checkFrom.toUpperCase().replace(stringInterrupt.toUpperCase(), stringInterrupt).replace(stringCommaReplace.toUpperCase(), stringCommaReplace));
 			}
 			
 			while (TMP_e.contains(".toLower()")) {
@@ -186,7 +202,7 @@ public class events {
 					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
 				}
 				
-				TMP_e = TMP_e.replace(checkFrom + ".toLower()", checkFrom.toLowerCase());
+				TMP_e = TMP_e.replace(checkFrom + ".toLower()", checkFrom.toLowerCase().replace(stringInterrupt.toLowerCase(), stringInterrupt).replace(stringCommaReplace.toLowerCase(), stringCommaReplace));
 			}
 			
 			while (TMP_e.contains(".prefix(") && TMP_e.contains(")")) {
@@ -197,7 +213,7 @@ public class events {
 					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
 				}
 				
-				TMP_e = TMP_e.replace(checkFrom + ".prefix(" + checkTo + ")", checkTo + checkFrom);
+				TMP_e = TMP_e.replace(checkFrom + ".prefix(" + checkTo + ")", checkTo.replace(stringInterrupt, "") + checkFrom);
 			}
 			
 			while (TMP_e.contains(".suffix(") && TMP_e.contains(")")) {
@@ -208,7 +224,7 @@ public class events {
 					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
 				}
 				
-				TMP_e = TMP_e.replace(checkFrom + ".suffix(" + checkTo + ")", checkFrom + checkTo);
+				TMP_e = TMP_e.replace(checkFrom + ".suffix(" + checkTo + ")", checkFrom + checkTo.replace(stringInterrupt, ""));
 			}
 			
 			while (TMP_e.contains("{array[") && TMP_e.contains("]}.add(") && TMP_e.contains(")")) {
@@ -218,7 +234,7 @@ public class events {
 				
 				for (int j=0; j<global.USR_array.size(); j++) {
 					if (global.USR_array.get(j).get(0).equals(checkFrom)) {
-						global.USR_array.get(j).add(checkTo);
+						global.USR_array.get(j).add(checkTo.replace(stringInterrupt, ""));
 						isArray = true;
 					}
 				}
@@ -230,7 +246,37 @@ public class events {
 					global.USR_array.add(prearray);
 				}
 				
-				TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.add(" + checkTo + ")", stringInterrupt+checkTo);
+				TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.add(" + checkTo + ")", stringInterrupt+checkTo.replace(stringInterrupt, ""));
+			}
+			
+			while (TMP_e.contains("{array[") && TMP_e.contains("]}.clear()")) {
+				String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.clear()", TMP_e.indexOf("{array[")));
+				
+				for (int j=0; j<global.USR_array.size(); j++) {
+					if (global.USR_array.get(j).get(0).equals(checkFrom)) {
+						global.USR_array.remove(j);
+					}
+				}
+				
+				TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.clear()", stringInterrupt+checkFrom + " cleared.");
+			}
+			
+			while (TMP_e.contains("{array[") && TMP_e.contains("]}.has(") && TMP_e.contains(")")) {
+				String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.has(", TMP_e.indexOf("{array[")));
+				String checkTo = TMP_e.substring(TMP_e.indexOf("]}.has(")+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.has(")));
+				String checkThis = "false";
+				
+				for (int j=0; j<global.USR_array.size(); j++) {
+					if (global.USR_array.get(j).get(0).equals(checkFrom)) {
+						for (int k=1; k<global.USR_array.get(j).size(); k++) {
+							if (global.USR_array.get(j).get(k).equals(checkTo.replace(stringInterrupt, ""))) {
+								checkThis = "true";
+							}
+						}
+					}
+				}
+				
+				TMP_e = TMP_e.replace("{array["+checkFrom+"]}.has("+checkTo+")", checkThis);
 			}
 			
 			while (TMP_e.contains("{array[") && TMP_e.contains("]}.remove(") && TMP_e.contains(")")) {
@@ -241,7 +287,7 @@ public class events {
 				int toRemoveArray = -1;
 				
 				try {
-					toRemove = Integer.parseInt(checkTo);
+					toRemove = Integer.parseInt(checkTo.replace(stringInterrupt, ""));
 					if (toRemove > 0) {
 						for (int j=0; j<global.USR_array.size(); j++) {
 							if (global.USR_array.get(j).get(0).equals(checkFrom)) {
@@ -282,6 +328,26 @@ public class events {
 				TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.size()", stringInterrupt+arraysize);
 			}
 			
+			while (TMP_e.contains("{array[") && TMP_e.contains("]}.importJsonFile(") && TMP_e.contains(",") && TMP_e.contains(")")) {
+				String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.importJsonFile(", TMP_e.indexOf("{array[")));
+				String checkFile = TMP_e.substring(TMP_e.indexOf("]}.importJsonFile(")+18, TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile(")));
+				String checkTo = TMP_e.substring(TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile("))+1, TMP_e.indexOf(")", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile("+checkFile+",")));
+				
+				file.importJsonFile(checkFile.replace(stringInterrupt, ""), checkFrom + "=>" + checkTo.replace(stringInterrupt, ""));
+				
+				TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonFile("+checkFile+","+checkTo+")", "Imported json from "+checkFile.replace(stringInterrupt, ""));
+			}
+			
+			while (TMP_e.contains("{array[") && TMP_e.contains("]}.importJsonURL(") && TMP_e.contains(",") && TMP_e.contains(")")) {
+				String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.importJsonURL(", TMP_e.indexOf("{array[")));
+				String checkFile = TMP_e.substring(TMP_e.indexOf("]}.importJsonURL(")+17, TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL(")));
+				String checkTo = TMP_e.substring(TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL("))+1, TMP_e.indexOf(")", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL("+checkFile+",")));
+				
+				file.importJsonURL(checkFile.replace(stringInterrupt, ""), checkFrom + "=>" + checkTo.replace(stringInterrupt, ""));
+				
+				TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonURL("+checkFile+","+checkTo+")", "Imported json from "+checkFile.replace(stringInterrupt, ""));
+			}
+			
 			while (TMP_e.contains(".equals(") && TMP_e.contains(")")) {
 				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".equals("));
 				String checkTo = TMP_e.substring(TMP_e.indexOf(".equals(")+8, TMP_e.indexOf(")", TMP_e.indexOf(".equals(")));
@@ -290,71 +356,59 @@ public class events {
 					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
 				}
 				
-				if (checkFrom.equals(checkTo)) {
-					TMP_e = TMP_e.replace(checkFrom + ".equals(" + checkTo + ")", "true");
-				} else {
-					TMP_e = TMP_e.replace(checkFrom + ".equals(" + checkTo + ")", "false");
-				}
+				if (checkFrom.equals(checkTo.replace(stringInterrupt, ""))) {TMP_e = TMP_e.replace(checkFrom + ".equals(" + checkTo + ")", "true");} 
+				else {TMP_e = TMP_e.replace(checkFrom + ".equals(" + checkTo + ")", "false");}
 			}
 			
 			while (TMP_e.contains(".startsWith(") && TMP_e.contains(")")) {
 				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".startsWith("));
-				String checkTo = TMP_e.substring(TMP_e.indexOf(".startsWith(")+12, TMP_e.indexOf(")", TMP_e.indexOf(".equals(")));
+				String checkTo = TMP_e.substring(TMP_e.indexOf(".startsWith(")+12, TMP_e.indexOf(")", TMP_e.indexOf(".startsWith(")));
 				
 				while (checkFrom.contains(stringInterrupt)) {
 					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
 				}
 				
-				if (checkFrom.startsWith(checkTo)) {
-					TMP_e = TMP_e.replace(checkFrom + ".startsWith(" + checkTo + ")", "true");
-				} else {
-					TMP_e = TMP_e.replace(checkFrom + ".startsWith(" + checkTo + ")", "false");
-				}
+				if (checkFrom.startsWith(checkTo.replace(stringInterrupt, ""))) {TMP_e = TMP_e.replace(checkFrom + ".startsWith(" + checkTo + ")", "true");} 
+				else {TMP_e = TMP_e.replace(checkFrom + ".startsWith(" + checkTo + ")", "false");}
 			}
 			
 			while (TMP_e.contains(".contains(") && TMP_e.contains(")")) {
 				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".contains("));
-				String checkTo = TMP_e.substring(TMP_e.indexOf(".contains(")+10, TMP_e.indexOf(")", TMP_e.indexOf(".equals(")));
+				String checkTo = TMP_e.substring(TMP_e.indexOf(".contains(")+10, TMP_e.indexOf(")", TMP_e.indexOf(".contains(")));
 				
 				while (checkFrom.contains(stringInterrupt)) {
 					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
 				}
 				
-				if (checkFrom.contains(checkTo)) {
-					TMP_e = TMP_e.replace(checkFrom + ".contains(" + checkTo + ")", "true");
-				} else {
-					TMP_e = TMP_e.replace(checkFrom + ".contains(" + checkTo + ")", "false");
-				}
+				if (checkFrom.contains(checkTo.replace(stringInterrupt, ""))) {TMP_e = TMP_e.replace(checkFrom + ".contains(" + checkTo + ")", "true");} 
+				else {TMP_e = TMP_e.replace(checkFrom + ".contains(" + checkTo + ")", "false");}
 			}
 			
 			while (TMP_e.contains(".endsWith(") && TMP_e.contains(")")) {
 				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".endsWith("));
-				String checkTo = TMP_e.substring(TMP_e.indexOf(".endsWith(")+10, TMP_e.indexOf(")", TMP_e.indexOf(".equals(")));
+				String checkTo = TMP_e.substring(TMP_e.indexOf(".endsWith(")+10, TMP_e.indexOf(")", TMP_e.indexOf(".endsWith(")));
 				
 				while (checkFrom.contains(stringInterrupt)) {
 					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
 				}
 				
-				if (checkFrom.endsWith(checkTo)) {
-					TMP_e = TMP_e.replace(checkFrom + ".endsWith(" + checkTo + ")", "true");
-				} else {
-					TMP_e = TMP_e.replace(checkFrom + ".endsWith(" + checkTo + ")", "false");
-				}
+				if (checkFrom.endsWith(checkTo.replace(stringInterrupt, ""))) {TMP_e = TMP_e.replace(checkFrom + ".endsWith(" + checkTo + ")", "true");} 
+				else {TMP_e = TMP_e.replace(checkFrom + ".endsWith(" + checkTo + ")", "false");}
 			}
 			
 			while (TMP_e.contains("string.set(") && TMP_e.contains(")")) {
 				String[] args = TMP_e.substring(TMP_e.indexOf("string.set(") + 11,TMP_e.indexOf(")",TMP_e.indexOf("string.set("))).split(",");
 				if (args.length==2) {
 					try {
-						int num = Integer.parseInt(args[0]);
+						int num = Integer.parseInt(args[0].replace(stringInterrupt, ""));
 						if (num>0 && num<global.USR_string.size()) {
-							global.USR_string.get(num).set(1, args[1]);
+							global.USR_string.get(num).set(1, args[1].replace(stringInterrupt, ""));
 							TMP_e = TMP_e.replace("string.set(" + args[0] + "," + args[1] + ")", args[1]);
 						}
 					} catch (NumberFormatException e) {
 						for (int j=0; j<global.USR_string.size(); j++) {
-							if (global.USR_string.get(j).get(0).equals(args[0])) {
-								global.USR_string.get(j).set(1, args[1]);
+							if (global.USR_string.get(j).get(0).equals(args[0].replace(stringInterrupt, ""))) {
+								global.USR_string.get(j).set(1, args[1].replace(stringInterrupt, ""));
 								TMP_e = TMP_e.replace("string.set(" + args[0] + "," + args[1] + ")", args[1]);
 							}
 						}
@@ -366,16 +420,16 @@ public class events {
 				String[] args = TMP_e.substring(TMP_e.indexOf("string.save(") + 12,TMP_e.indexOf(")",TMP_e.indexOf("string.save("))).split(",");
 				if (args.length==2) {
 					try {
-						int num = Integer.parseInt(args[0]);
+						int num = Integer.parseInt(args[0].replace(stringInterrupt, ""));
 						if (num>0 && num<global.USR_string.size()) {
-							global.USR_string.get(num).set(1, args[1]);
+							global.USR_string.get(num).set(1, args[1].replace(stringInterrupt, ""));
 							try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
 							TMP_e = TMP_e.replace("string.save(" + args[0] + "," + args[1] + ")", args[1]);
 						}
 					} catch (NumberFormatException e) {
 						for (int j=0; j<global.USR_string.size(); j++) {
-							if (global.USR_string.get(j).get(0).equals(args[0])) {
-								global.USR_string.get(j).set(1, args[1]);
+							if (global.USR_string.get(j).get(0).equals(args[0].replace(stringInterrupt, ""))) {
+								global.USR_string.get(j).set(1, args[1].replace(stringInterrupt, ""));
 								try {file.saveAll();} catch (IOException e1) {chat.warn(chat.color("red", "Error saving triggers!"));}
 								TMP_e = TMP_e.replace("string.save(" + args[0] + "," + args[1] + ")", args[1]);
 							}
@@ -390,9 +444,11 @@ public class events {
 			TMP_e = TMP_e.replace(stringInterrupt, "");
 			
 		//non-logic events
+			if (TMP_c.equalsIgnoreCase("TRIGGER")) {doTrigger(TMP_e, chatEvent);}
+			TMP_e = TMP_e.replace(stringCommaReplace, ",");
 			if (TMP_c.equalsIgnoreCase("SAY")) {global.chatQueue.add(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("CHAT")) {chat.warn(TMP_e);}
-			if (TMP_c.equalsIgnoreCase("SOUND")) {sound.play(TMP_e);}
+			if (TMP_c.equalsIgnoreCase("SOUND")) {sound.play(TMP_e, TMP_v, TMP_pi);}
 			if (TMP_c.equalsIgnoreCase("CANCEL") && chatEvent!=null) {chatEvent.setCanceled(true);}
 			if (TMP_c.equalsIgnoreCase("KILLFEED")) {global.killfeed.add(TMP_e); global.killfeedDelay.add(TMP_t);}
 			if (TMP_c.equalsIgnoreCase("NOTIFY")) {
@@ -408,7 +464,7 @@ public class events {
 				global.notifySize++;
 			}
 			if (TMP_c.equalsIgnoreCase("COMMAND")) {global.commandQueue.add(TMP_e);}
-			if (TMP_c.equalsIgnoreCase("TRIGGER")) {doTrigger(TMP_e, chatEvent);}
+			
 			
 		//logic events
 			
@@ -420,7 +476,6 @@ public class events {
 				if (i+1 < tmp_event.size()-1) { //check for events after if event
 					for (int j=i; j<tmp_event.size(); j++) {
 						if (j != tmp_event.size()) {
-							
 							//arguments
 							if (toreplace != null) {
 								for (int k=0; k<toreplace.length; k++) {
@@ -437,12 +492,11 @@ public class events {
 								tabbed_logic++;
 							}
 							
+							//add to list
 							eventsToWait.add(tmp_event.get(j));
 							
 							//decrease tab
 							if (tmp_event.get(j).toUpperCase().startsWith("END")) {tabbed_logic--;}
-							
-							
 						}
 						
 						//check if exit
@@ -460,7 +514,6 @@ public class events {
 						e.printStackTrace();
 						chat.warn(chat.color("red", "Malformed WAIT event - skipping"));
 					}
-					
 				}
 			}
 			
@@ -502,6 +555,7 @@ public class events {
 								tabbed_logic++;
 							}
 							
+							//add to list
 							eventsToFor.add(tmp_event.get(j));
 							
 							//decrease tab
@@ -559,13 +613,12 @@ public class events {
 							//move to else
 							if (tmp_event.get(j).toUpperCase().startsWith("ELSE") && tabbed_logic==1) {gotoElse=true;}
 							
+							//add to list
 							if (gotoElse==false) {eventsToIf.add(tmp_event.get(j));} 
 							else {eventsToElse.add(tmp_event.get(j));}
 							
 							//decrease tab
 							if (tmp_event.get(j).toUpperCase().startsWith("END")) {tabbed_logic--;}
-							
-							
 						}
 						
 						//check if exit
@@ -580,42 +633,32 @@ public class events {
 					for (int j=1; j<checkSplit.length; j++) {
 						if (checkSplit[j].equals("&&")) {
 							if (checkSplit[j-1].equalsIgnoreCase("TRUE") && checkSplit[j+1].equalsIgnoreCase("TRUE")) {
-								checkSplit[j-1] = "";
-								checkSplit[j] = "";
-								checkSplit[j+1] = "TRUE";
+								checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "TRUE";
 							} else {
-								checkSplit[j-1] = "";
-								checkSplit[j] = "";
-								checkSplit[j+1] = "FALSE";
+								checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "FALSE";
 							}
 						}
 						if (checkSplit[j].equals("||")) {
 							if (checkSplit[j-1].equalsIgnoreCase("TRUE") || checkSplit[j+1].equalsIgnoreCase("TRUE")) {
-								checkSplit[j-1] = "";
-								checkSplit[j] = "";
-								checkSplit[j+1] = "TRUE";
+								checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "TRUE";
 							} else {
-								checkSplit[j-1] = "";
-								checkSplit[j] = "";
-								checkSplit[j+1] = "FALSE";
+								checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "FALSE";
 							}
 						}
 						if (checkSplit[j].equals("^")) {
 							if (checkSplit[j-1].equalsIgnoreCase("TRUE") ^ checkSplit[j+1].equalsIgnoreCase("TRUE")) {
-								checkSplit[j-1] = "";
-								checkSplit[j] = "";
-								checkSplit[j+1] = "TRUE";
+								checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "TRUE";
 							} else {
-								checkSplit[j-1] = "";
-								checkSplit[j] = "";
-								checkSplit[j+1] = "FALSE";
+								checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "FALSE";
 							}
 						}
 					}
-					TMP_e = checkSplit[checkSplit.length-1];
+					TMP_e = "";
+					for (String value : checkSplit) {TMP_e += value + " ";}
+					TMP_e = TMP_e.trim();
 					
 					//check condition and do events
-					if (TMP_e.equalsIgnoreCase("TRUE")) {
+					if (TMP_e.equalsIgnoreCase("TRUE") || TMP_e.equalsIgnoreCase("NOT FALSE")) {
 						if (eventsToIf.size()>0) {
 							eventsToIf.remove(0);
 							doEvents(eventsToIf, chatEvent);
@@ -626,7 +669,6 @@ public class events {
 							doEvents(eventsToElse, chatEvent);
 						}
 					}
-					
 				}
 			}
 			
@@ -689,7 +731,6 @@ public class events {
 									eventsToChooseSub.clear(); //clear sub choose
 								}
 							}
-						
 						}
 					
 						//check if choose exit
@@ -706,11 +747,8 @@ public class events {
 					int moveEvents = 0;
 					for (int j=0; j<eventsToChoose.size(); j++) {moveEvents += eventsToChoose.get(j).size();}
 					i += moveEvents-1;
-
 				}
 			}
-			
-			
 		}
 	}
 	
@@ -742,9 +780,6 @@ public class events {
 				global.waitTime.clear();
 			}
 		}
-		
-		
-		
 	}
 	
 	public static int randInt(int min, int max) {
@@ -756,6 +791,7 @@ public class events {
 	public static String setStrings(String msg, String trig) {
 		//some magic shit is going on here
 		//trust me, this used to be a LOT worse and only sort of kinda worked
+		//it works pretty well now
 		if (trig.contains("{string[") && trig.contains("]") && trig.contains("}")) {
 			trig = trig.replace("}", "{");
 			String[] split_trig = trig.split("\\{");
@@ -924,7 +960,4 @@ public class events {
 		}
 		return trig;
 	}
-	
-	
-	
 }

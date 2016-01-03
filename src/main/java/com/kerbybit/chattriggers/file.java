@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -66,6 +67,132 @@ public class file {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	
+	public static void importJsonFile(String fileName, String toImport) {
+		List<String> lines = new ArrayList<String>();
+		String line = null;
+		BufferedReader bufferedReader;
+		try {
+			bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName),"UTF-8"));
+			while ((line = bufferedReader.readLine()) != null) {
+				lines.add(line);
+			}
+			bufferedReader.close();
+			
+			String jsonString = "";
+			for (String value : lines) {jsonString += value;}
+			
+			if (toImport.contains("=>")) {
+				String arrayToSave = toImport.substring(0,toImport.indexOf("=>"));
+				
+				int whatArray = -1;
+				for (int i=0; i<global.USR_array.size(); i++) {
+					if (arrayToSave.equals(global.USR_array.get(i))) {
+						whatArray = i;
+					}
+				}
+				
+				if (whatArray == -1) {
+					List<String> temporary = new ArrayList<String>();
+					temporary.add(arrayToSave);
+					global.USR_array.add(temporary);
+					whatArray = global.USR_array.size()-1;
+				}
+				
+				String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+				
+				String check = "\""+jsonGet+"\""+":\"";
+				if (jsonString.contains(check)) {
+					while (jsonString.contains(check)) {
+						String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+						global.USR_array.get(whatArray).add(jsonGot);
+						jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
+					}
+				} else {
+					chat.warn(chat.color("red", "No "+jsonGet+" in json!"));
+				}
+				
+			} else {
+				chat.warn(chat.color("red", "No array! use 'array => nodes'"));
+			}
+		} catch (UnsupportedEncodingException e) {
+			chat.warn(chat.color("red","Unsupported encoding!"));
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			chat.warn(chat.color("red","File not found!"));
+			e.printStackTrace();
+		} catch (IOException e) {
+			chat.warn(chat.color("red","IO exception!"));
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	public static void importJsonURL(String url, String toImport) {
+		try {
+			URL web = new URL(url);
+			InputStream fis = web.openStream();
+			List<String> lines = new ArrayList<String>();
+			String line = null;
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
+			while ((line = bufferedReader.readLine()) != null) {
+				lines.add(line);
+			}
+			bufferedReader.close();
+			
+			String jsonString = "";
+			for (String value : lines) {jsonString += value;}
+			
+			if (toImport.contains("=>")) {
+				String arrayToSave = toImport.substring(0,toImport.indexOf("=>"));
+				
+				int whatArray = -1;
+				for (int i=0; i<global.USR_array.size(); i++) {
+					if (arrayToSave.equals(global.USR_array.get(i))) {
+						whatArray = i;
+					}
+				}
+				
+				if (whatArray == -1) {
+					List<String> temporary = new ArrayList<String>();
+					temporary.add(arrayToSave);
+					global.USR_array.add(temporary);
+					whatArray = global.USR_array.size()-1;
+				}
+				
+				String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+				
+				String check = "\""+jsonGet+"\""+":\"";
+				if (jsonString.contains(check)) {
+					while (jsonString.contains(check)) {
+						String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+						global.USR_array.get(whatArray).add(jsonGot);
+						jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
+					}
+				} else {
+					chat.warn(chat.color("red", "No "+jsonGet+" in json!"));
+				}
+				
+			} else {
+				chat.warn(chat.color("red", "No array! use 'array => nodes'"));
+			}
+		} catch (UnsupportedEncodingException e) {
+			chat.warn(chat.color("red","Unsupported encoding!"));
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			chat.warn(chat.color("red","File not found!"));
+			e.printStackTrace();
+		} catch (IOException e) {
+			chat.warn(chat.color("red","IO exception!"));
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
 	
 	public static void saveExport(List<List<String>> trigger, List<List<String>> USR_string, String fileName) throws IOException {
 		String username = Minecraft.getMinecraft().thePlayer.getDisplayNameString();

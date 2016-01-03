@@ -7,6 +7,10 @@ import java.util.List;
 import com.sun.glass.events.KeyEvent;
 
 public class global {
+	public static Boolean worldLoaded = false;
+	public static Boolean worldFirstLoad = true;
+	public static String connectedToServer = "";
+	
 	public static String lastmsg = "";
 	public static int tick = 0;
 	public static List<String> chatQueue = new ArrayList<String>();
@@ -24,6 +28,9 @@ public class global {
 	public static int notifySize = 0;
 	
 	public static boolean debug = false;
+	
+	public static boolean showGUI = false;
+	public static boolean showAltInputGui = false;
 
 	
 	//////////////////Trigger matrix////////////////////
