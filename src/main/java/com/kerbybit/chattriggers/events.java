@@ -113,25 +113,25 @@ public class events {
 		//tags
 			if (TMP_e.contains("<time=") && TMP_e.contains(">")) {
 				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("<time=")+6, TMP_e.indexOf(">",TMP_e.indexOf("<time=")));
-				try {TMP_t = Integer.parseInt(TMP_tstring);}
+				try {TMP_t = Integer.parseInt(TMP_tstring.replace(stringInterrupt, ""));}
 				catch (NumberFormatException e) {e.printStackTrace();}
 				TMP_e = TMP_e.replace("<time=" + TMP_tstring + ">", "");
 			}
 			if (TMP_e.contains("<pos=") && TMP_e.contains(">")) {
 				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("<pos=")+5, TMP_e.indexOf(">",TMP_e.indexOf("<pos=")));
-				try {TMP_p = Integer.parseInt(TMP_tstring);}
+				try {TMP_p = Integer.parseInt(TMP_tstring.replace(stringInterrupt, ""));}
 				catch (NumberFormatException e) {e.printStackTrace();}
 				TMP_e = TMP_e.replace("<pos=" + TMP_tstring + ">", "");
 			}
 			if (TMP_e.contains("<vol=") && TMP_e.contains(">")) {
 				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("<vol=")+5, TMP_e.indexOf(">",TMP_e.indexOf("<vol=")));
-				try {TMP_v = Integer.parseInt(TMP_tstring);}
+				try {TMP_v = Integer.parseInt(TMP_tstring.replace(stringInterrupt, ""));}
 				catch (NumberFormatException e) {e.printStackTrace();}
 				TMP_e = TMP_e.replace("<vol=" + TMP_tstring + ">", "");
 			}
 			if (TMP_e.contains("<pitch=") && TMP_e.contains(">")) {
 				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("<pitch=")+7, TMP_e.indexOf(">",TMP_e.indexOf("<pitch=")));
-				try {TMP_pi = Integer.parseInt(TMP_tstring);}
+				try {TMP_pi = Integer.parseInt(TMP_tstring.replace(stringInterrupt, ""));}
 				catch (NumberFormatException e) {e.printStackTrace();}
 				TMP_e = TMP_e.replace("<pitch=" + TMP_tstring + ">", "");
 			}
