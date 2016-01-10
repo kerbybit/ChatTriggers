@@ -2,6 +2,7 @@ package com.kerbybit.chattriggers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -11,64 +12,7 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class events {
 	
-	
-	public static void doTrigger(String triggerName, ClientChatReceivedEvent chatEvent) {
-		try {
-			//run trigger by number
-			int num = Integer.parseInt(triggerName);
-			if (num >= 0 && num < global.trigger.size()) {
-				//add all events to temp list
-				List<String> TMP_events = new ArrayList<String>();
-				for (int i=2; i<global.trigger.get(num).size(); i++) {TMP_events.add(global.trigger.get(num).get(i));}
-				
-				//do events
-				doEvents(TMP_events, chatEvent);
-			}
-		} catch (NumberFormatException e1) { 
-			//run trigger by name
-			for (int k=0; k<global.trigger.size(); k++) {
-				String TMP_trig = global.trigger.get(k).get(1);
-				
-				//remove tags
-				String TMP_list = "";
-				TMP_trig = TMP_trig.replace("<s>", ""); 
-				TMP_trig = TMP_trig.replace("<c>", ""); 
-				TMP_trig = TMP_trig.replace("<e>", "");
-				TMP_trig = TMP_trig.replace("<start>", ""); 
-				TMP_trig = TMP_trig.replace("<contain>", ""); 
-				TMP_trig = TMP_trig.replace("<end>", "");
-				if (TMP_trig.contains("<list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
-				if (TMP_trig.contains("<server=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_list+">","");}
-				
-				//check match
-				if (TMP_trig.equals(triggerName)) {
-					//add all events to temp list
-					List<String> TMP_events = new ArrayList<String>();
-					for (int i=2; i<global.trigger.get(k).size(); i++) {TMP_events.add(global.trigger.get(k).get(i));}
-					
-					//do events
-					doEvents(TMP_events, chatEvent);
-				} else {
-					if (TMP_trig.contains("(") && TMP_trig.endsWith(")")) {
-						String TMP_trigtest = TMP_trig.substring(0,TMP_trig.indexOf("("));
-						if (triggerName.startsWith(TMP_trigtest) && triggerName.endsWith(")")) {
-							String TMP_argsIn = triggerName.substring(triggerName.indexOf("(")+1, triggerName.length()-1);
-							String TMP_argsOut = TMP_trig.substring(TMP_trig.indexOf("(")+1, TMP_trig.length()-1);
-							String[] argsIn = TMP_argsIn.split(",");
-							String[] argsOut = TMP_argsOut.split(",");
-							if (argsIn.length == argsOut.length) {
-								List<String> TMP_events = new ArrayList<String>();
-								for (int j=2; j<global.trigger.get(k).size(); j++) {
-									TMP_events.add(global.trigger.get(k).get(j));
-								}
-								events.doEvents(TMP_events, chatEvent, argsOut, argsIn);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+	static List<List<String>> backupUSR_strings = new ArrayList<List<String>>();
 	
 	public static void doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent) {
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
@@ -76,11 +20,709 @@ public class events {
 		doEvents(tmp_event, chatEvent, snull, snull);
 	}
 	
+	public static String arrayFunctions(String TMP_e, String stringInterrupt) {
+		while (TMP_e.contains("{array[") && TMP_e.contains("]}.add(") && TMP_e.contains(")")) {
+			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.add(", TMP_e.indexOf("{array[")));
+			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.add(")+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.add(")));
+			Boolean isArray = false;
+			
+			for (int j=0; j<global.USR_array.size(); j++) {
+				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
+					global.USR_array.get(j).add(checkTo.replace(stringInterrupt, ""));
+					isArray = true;
+				}
+			}
+			
+			if (isArray == false) {
+				List<String> prearray = new ArrayList<String>();
+				prearray.add(checkFrom);
+				prearray.add(checkTo);
+				global.USR_array.add(prearray);
+			}
+			
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.add(" + checkTo + ")", stringInterrupt+checkTo.replace(stringInterrupt, ""));
+		}
+		
+		while (TMP_e.contains("{array[") && TMP_e.contains("]}.clear()")) {
+			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.clear()", TMP_e.indexOf("{array[")));
+			
+			for (int j=0; j<global.USR_array.size(); j++) {
+				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
+					global.USR_array.remove(j);
+				}
+			}
+			
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.clear()", stringInterrupt+checkFrom + " cleared.");
+		}
+		
+		while (TMP_e.contains("{array[") && TMP_e.contains("]}.has(") && TMP_e.contains(")")) {
+			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.has(", TMP_e.indexOf("{array[")));
+			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.has(")+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.has(")));
+			String checkThis = "false";
+			
+			for (int j=0; j<global.USR_array.size(); j++) {
+				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
+					for (int k=1; k<global.USR_array.get(j).size(); k++) {
+						if (global.USR_array.get(j).get(k).equals(checkTo.replace(stringInterrupt, ""))) {
+							checkThis = "true";
+						}
+					}
+				}
+			}
+			
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.has("+checkTo+")", checkThis);
+		}
+		
+		while (TMP_e.contains("{array[") && TMP_e.contains("]}.remove(") && TMP_e.contains(")")) {
+			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.remove(", TMP_e.indexOf("{array[")));
+			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.remove(")+10, TMP_e.indexOf(")", TMP_e.indexOf("]}.remove(")));
+			String removed = "";
+			int toRemove = -1;
+			int toRemoveArray = -1;
+			
+			try {
+				toRemove = Integer.parseInt(checkTo.replace(stringInterrupt, ""));
+				if (toRemove > 0) {
+					for (int j=0; j<global.USR_array.size(); j++) {
+						if (global.USR_array.get(j).get(0).equals(checkFrom)) {
+							if (toRemove < global.USR_array.get(j).size()) {
+								removed = global.USR_array.get(j).remove(toRemove);
+								if (global.USR_array.get(j).size()==1) {
+									toRemoveArray = j;
+								}
+							} else {
+								chat.warn(chat.color("red", "{array}.remove($value) - $value over bounds (index " + toRemove + ")"));
+							}
+						}
+					}
+				} else {
+					chat.warn(chat.color("red", "{array}.remove($value) - $value under bounds (index " + toRemove + ")"));
+				}
+			} catch (NumberFormatException e) {
+				chat.warn(chat.color("red", "{array}.remove($value) - $value must be an integer!"));
+			}
+			
+			if (toRemoveArray != -1) {
+				global.USR_array.remove(toRemoveArray);
+			}
+			
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.remove(" + checkTo + ")", stringInterrupt+removed);
+		}
+		
+		while (TMP_e.contains("{array[") && TMP_e.contains("]}.size()")) {
+			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.size()", TMP_e.indexOf("{array[")));
+			int arraysize = 0;
+			
+			for (int j=0; j<global.USR_array.size(); j++) {
+				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
+					arraysize = global.USR_array.get(j).size()-1;
+				}
+			}
+			
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.size()", stringInterrupt+arraysize);
+		}
+		
+		while (TMP_e.contains("{array[") && TMP_e.contains("]}.importJsonFile(") && TMP_e.contains(",") && TMP_e.contains(")")) {
+			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.importJsonFile(", TMP_e.indexOf("{array[")));
+			String checkFile = TMP_e.substring(TMP_e.indexOf("]}.importJsonFile(")+18, TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile(")));
+			String checkTo = TMP_e.substring(TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile("))+1, TMP_e.indexOf(")", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile("+checkFile+",")));
+			
+			String checkJson = file.importJsonFile("array",checkFile.replace(stringInterrupt, ""), checkFrom.replace(stringInterrupt, "") + "=>" + checkTo.replace(stringInterrupt, ""));
+			
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonFile("+checkFile+","+checkTo+")", stringInterrupt + checkJson);
+		}
+		
+		while (TMP_e.contains("{array[") && TMP_e.contains("]}.importJsonURL(") && TMP_e.contains(",") && TMP_e.contains(")")) {
+			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.importJsonURL(", TMP_e.indexOf("{array[")));
+			String checkFile = TMP_e.substring(TMP_e.indexOf("]}.importJsonURL(")+17, TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL(")));
+			String checkTo = TMP_e.substring(TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL("))+1, TMP_e.indexOf(")", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL("+checkFile+",")));
+			
+			String checkJson = file.importJsonURL("array",checkFile.replace(stringInterrupt, ""), checkFrom.replace(stringInterrupt, "") + "=>" + checkTo.replace(stringInterrupt, ""));
+			
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonURL("+checkFile+","+checkTo+")", stringInterrupt + checkJson);
+		}
+		
+		return TMP_e;
+	}
+	
+	public static String doStringFunctions(String sn, String func, String args) {
+		String returnstring = "something went wrong!{string["+sn+"]}";
+		int stringnum = -1;
+		
+		while (args.contains("{string[") && args.contains("]}")) {
+			String testfor = args.substring(args.indexOf("]}", args.indexOf("{string["))+2);
+			if (testfor.contains("]}.")) {
+				if (testfor.indexOf("]}.") < testfor.indexOf("(")) {
+					testfor = "."+testfor.substring(testfor.indexOf("]}.")+3);
+				}
+			}
+			if (testfor.startsWith(".") && testfor.contains("(") && testfor.contains(")")) {
+				String snalt = args.substring(args.indexOf("{string[")+8, args.indexOf("]}.", args.indexOf("{string[")));
+				String funcalt = args.substring(args.indexOf("]}.", args.indexOf("{string["))+3, args.indexOf("(", args.indexOf("]}.", args.indexOf("{string["))));
+				String argsalt = args.substring(args.indexOf("(", args.indexOf("]}.", args.indexOf("{string[")))+1, args.indexOf(")",  args.indexOf("(", args.indexOf("]}.", args.indexOf("{string[")))));
+				while (snalt.contains("{string[")) {
+					snalt = sn.substring(sn.indexOf("{string[")+8, sn.indexOf("]}", sn.indexOf(snalt)+snalt.length()));
+					
+					String first = snalt.substring(0, snalt.indexOf("{string["));
+					String replacement = "stringOpenStringF6cyUQp9stringOpenString";
+					String second = snalt.substring(snalt.indexOf("{string[")+8);
+					
+					String efirst = sn.substring(0, sn.indexOf("{string[", sn.indexOf("{string[")+8));
+					String ereplacement = "stringOpenStringF6cyUQp9stringOpenString";
+					String esecond = sn.substring(sn.indexOf("{string[", sn.indexOf("{string[")+8)+8);
+					
+					sn = efirst + replacement + esecond;
+					snalt = first + replacement + second;
+				}
+				sn = sn.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
+				snalt = snalt.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
+				
+				String efirst = sn.substring(0, sn.indexOf(snalt));
+				String esecond = sn.substring(sn.indexOf(snalt)+snalt.length());
+				snalt = stringFunctions(snalt);
+				while (argsalt.contains("(")) {
+					argsalt = args.substring(args.indexOf("(", args.indexOf("]}.", args.indexOf("{string[")))+1, args.indexOf(")", args.indexOf(argsalt)+argsalt.length()));
+					String first = argsalt.substring(0,argsalt.indexOf("("));
+					String second = argsalt.substring(argsalt.indexOf("(")+1);
+					argsalt = first + "stringOpenBracketF6cyUQp9stringOpenBracket" + second;
+				}
+				argsalt = argsalt.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(");
+				
+				String fullreplace = "{string["+snalt+"]}."+funcalt+"("+argsalt+")";
+				String firstpart = args.substring(0, args.indexOf(fullreplace));
+				String secondpart = args.substring(args.indexOf(fullreplace)+fullreplace.length());
+				
+				args = firstpart + doStringFunctions(snalt,funcalt,argsalt) + secondpart;
+			} else {
+				String snalt = args.substring(args.indexOf("{string[")+8, args.indexOf("]}", args.indexOf("{string[")));
+				String returnString = "Not a string!";
+				while (snalt.contains("{string[")) {
+					snalt = sn.substring(sn.indexOf("{string[")+8, sn.indexOf("]}", sn.indexOf(snalt)+snalt.length()+2));
+					
+					String first = snalt.substring(0, snalt.indexOf("{string["));
+					String replacement = "stringOpenStringF6cyUQp9stringOpenString";
+					String second = snalt.substring(snalt.indexOf("{string[")+8);
+					
+					String efirst = sn.substring(0, sn.indexOf("{string[", sn.indexOf("{string[")+8));
+					String ereplacement = "stringOpenStringF6cyUQp9stringOpenString";
+					String esecond = sn.substring(sn.indexOf("{string[", sn.indexOf("{string[")+8)+8);
+					
+					sn = efirst + replacement + esecond;
+					snalt = first + replacement + second;
+				}
+				sn = sn.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
+				snalt = snalt.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
+				
+				String efirst = sn.substring(0, sn.indexOf(snalt));
+				String esecond = sn.substring(sn.indexOf(snalt)+snalt.length());
+				snalt = stringFunctions(snalt);
+				
+				for (int i=0; i<global.USR_string.size(); i++) {
+					if (global.USR_string.get(i).get(0).equals(snalt)) {
+						returnString = global.USR_string.get(i).get(1);
+					}
+				}
+				
+				String fullreplace = "{string["+snalt+"]}";
+				String firstpart = args.substring(0, args.indexOf(fullreplace));
+				String secondpart = args.substring(args.indexOf(fullreplace)+fullreplace.length());
+				
+				args = firstpart + returnString + secondpart;
+				global.USR_string.clear();
+				for (int i=0; i<backupUSR_strings.size(); i++) {
+					String first = backupUSR_strings.get(i).get(0);
+					String second = backupUSR_strings.get(i).get(1);
+					List<String> temporary = new ArrayList<String>();
+					temporary.add(first);
+					temporary.add(second);
+					global.USR_string.add(temporary);
+				}
+			}
+		}
+		
+		while (sn.contains("{string[") && sn.contains("]}")) {
+			String testfor = sn.substring(sn.indexOf("]}", sn.indexOf("{string["))+2);
+			if (testfor.contains("]}.")) {
+				if (testfor.indexOf("]}.") < testfor.indexOf("(")) {
+					testfor = "."+testfor.substring(testfor.indexOf("]}.")+3);
+				}
+			}
+			if (testfor.startsWith(".") && testfor.contains("(") && testfor.contains(")")) {
+				String snalt = sn.substring(sn.indexOf("{string[")+8, sn.indexOf("]}.", sn.indexOf("{string[")));
+				String funcalt = sn.substring(sn.indexOf("]}.", sn.indexOf("{string["))+3, sn.indexOf("(", sn.indexOf("]}.", sn.indexOf("{string["))));
+				String argsalt = sn.substring(sn.indexOf("(", sn.indexOf("]}.", sn.indexOf("{string[")))+1, sn.indexOf(")",  sn.indexOf("(", sn.indexOf("]}.", sn.indexOf("{string[")))));
+				while (snalt.contains("{string[")) {
+					snalt = sn.substring(sn.indexOf("{string[")+8, sn.indexOf("]}", sn.indexOf(snalt)+snalt.length()));
+					
+					String first = snalt.substring(0, snalt.indexOf("{string["));
+					String replacement = "stringOpenStringF6cyUQp9stringOpenString";
+					String second = snalt.substring(snalt.indexOf("{string[")+8);
+					
+					String efirst = sn.substring(0, sn.indexOf("{string[", sn.indexOf("{string[")+8));
+					String ereplacement = "stringOpenStringF6cyUQp9stringOpenString";
+					String esecond = sn.substring(sn.indexOf("{string[", sn.indexOf("{string[")+8)+8);
+					
+					sn = efirst + replacement + esecond;
+					snalt = first + replacement + second;
+				}
+				sn = sn.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
+				snalt = snalt.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
+				
+				String efirst = sn.substring(0, sn.indexOf(snalt));
+				String esecond = sn.substring(sn.indexOf(snalt)+snalt.length());
+				snalt = stringFunctions(snalt);
+				
+				while (argsalt.contains("(")) {
+					argsalt = sn.substring(sn.indexOf("(", sn.indexOf("]}.", sn.indexOf("{string[")))+1, sn.indexOf(")", sn.indexOf(argsalt)+argsalt.length()));
+					String first = argsalt.substring(0,argsalt.indexOf("("));
+					String second = argsalt.substring(argsalt.indexOf("(")+1);
+					argsalt = first + "stringOpenBracketF6cyUQp9stringOpenBracket" + second;
+				}
+				argsalt = argsalt.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(");
+				
+				String fullreplace = "{string["+snalt+"]}."+funcalt+"("+argsalt+")";
+				String firstpart = sn.substring(0, sn.indexOf(fullreplace));
+				String secondpart = sn.substring(sn.indexOf(fullreplace)+fullreplace.length());
+				
+				sn = firstpart + doStringFunctions(snalt,funcalt,argsalt) + secondpart;
+			} else {
+				String snalt = sn.substring(sn.indexOf("{string[")+8, sn.indexOf("]}", sn.indexOf("{string[")));
+				while (snalt.contains("{string[")) {
+					snalt = sn.substring(sn.indexOf("{string[")+8, sn.indexOf("]}", sn.indexOf(snalt)+snalt.length()));
+					
+					String first = snalt.substring(0, snalt.indexOf("{string["));
+					String replacement = "stringOpenStringF6cyUQp9stringOpenString";
+					String second = snalt.substring(snalt.indexOf("{string[")+8);
+					
+					String efirst = sn.substring(0, sn.indexOf("{string[", sn.indexOf("{string[")+8));
+					String ereplacement = "stringOpenStringF6cyUQp9stringOpenString";
+					String esecond = sn.substring(sn.indexOf("{string[", sn.indexOf("{string[")+8)+8);
+					
+					sn = efirst + replacement + esecond;
+					snalt = first + replacement + second;
+				}
+				sn = sn.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
+				snalt = snalt.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
+				
+				String efirst = sn.substring(0, sn.indexOf(snalt));
+				String esecond = sn.substring(sn.indexOf(snalt)+snalt.length());
+				snalt = stringFunctions(snalt);
+				
+				String returnString = "Not a string!";
+				
+				for (int i=0; i<global.USR_string.size(); i++) {
+					if (global.USR_string.get(i).get(0).equals(snalt)) {
+						returnString = global.USR_string.get(i).get(1);
+					}
+				}
+				
+				String fullreplace = "{string["+snalt+"]}";
+				String firstpart = sn.substring(0, sn.indexOf(fullreplace));
+				String secondpart = sn.substring(sn.indexOf(fullreplace)+fullreplace.length());
+				
+				sn = firstpart + returnString + secondpart;
+				
+				global.USR_string.clear();
+				for (int i=0; i<backupUSR_strings.size(); i++) {
+					String first = backupUSR_strings.get(i).get(0);
+					String second = backupUSR_strings.get(i).get(1);
+					List<String> temporary = new ArrayList<String>();
+					temporary.add(first);
+					temporary.add(second);
+					global.USR_string.add(temporary);
+				}
+			}
+		}
+		
+		for (int i=0; i<global.USR_string.size(); i++) {
+			if (global.USR_string.get(i).get(0).equals(sn)) {
+				stringnum=i;
+			}
+		}
+		
+		if (stringnum==-1) {
+			returnstring = "That is not a string!";
+		} else {
+			if (func.equalsIgnoreCase("SET")) {
+				global.USR_string.get(stringnum).set(1, args);
+				backupUSR_strings.get(stringnum).set(1, args);
+				returnstring = args;
+			} else if (func.equalsIgnoreCase("SAVE")) {
+				global.USR_string.get(stringnum).set(1, args);
+				backupUSR_strings.get(stringnum).set(1, args);
+				try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+				returnstring = args;
+			} else if (func.equalsIgnoreCase("ADD") || func.equalsIgnoreCase("PLUS")) {
+				try {
+					int strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));
+					try {
+						int argnmbr = Integer.parseInt(args);
+						global.USR_string.get(stringnum).set(1, strnmbr + argnmbr + "");
+						returnstring = "{string["+sn+"]}";
+					} catch (NumberFormatException e) {
+						returnstring=args+" is not a number!{string["+sn+"]}";
+					}
+				} catch (NumberFormatException e) {
+					returnstring=sn+" is not a number!{string["+sn+"]}";
+				}
+			} else if (func.equalsIgnoreCase("SUBTRACT") || func.equalsIgnoreCase("MINUS")) {
+				try {
+					int strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));
+					try {
+						int argnmbr = Integer.parseInt(args);
+						global.USR_string.get(stringnum).set(1, strnmbr - argnmbr + "");
+						returnstring = "{string["+sn+"]}";
+					} catch (NumberFormatException e) {
+						returnstring=args+" is not a number!{string["+sn+"]}";
+					}
+				} catch (NumberFormatException e) {
+					returnstring=sn+" is not a number!{string["+sn+"]}";
+				}
+			} else if (func.equalsIgnoreCase("MULTIPLY") || func.equalsIgnoreCase("MULT") || func.equalsIgnoreCase("TIMES")) {
+				try {
+					int strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));
+					try {
+						int argnmbr = Integer.parseInt(args);
+						global.USR_string.get(stringnum).set(1, strnmbr * argnmbr + "");
+						returnstring = "{string["+sn+"]}";
+					} catch (NumberFormatException e) {
+						returnstring=args+" is not a number!{string["+sn+"]}";
+					}
+				} catch (NumberFormatException e) {
+					returnstring=sn+" is not a number!{string["+sn+"]}";
+				}
+			} else if (func.equalsIgnoreCase("DIVIDE") || func.equalsIgnoreCase("DIV")) {
+				try {
+					int strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));
+					try {
+						int argnmbr = Integer.parseInt(args);
+						global.USR_string.get(stringnum).set(1, strnmbr / argnmbr + "");
+						returnstring = "{string["+sn+"]}";
+					} catch (NumberFormatException e) {
+						returnstring=args+" is not a number!{string["+sn+"]}";
+					}
+				} catch (NumberFormatException e) {
+					returnstring=sn+" is not a number!{string["+sn+"]}";
+				}
+			} else if (func.equalsIgnoreCase("POW") || func.equalsIgnoreCase("POWER")) {
+				try {
+					int strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));
+					try {
+						int argnmbr = Integer.parseInt(args);
+						global.USR_string.get(stringnum).set(1, strnmbr / argnmbr + "");
+						returnstring = "{string["+sn+"]}";
+					} catch (NumberFormatException e) {
+						returnstring=args+" is not a number!{string["+sn+"]}";
+					}
+				} catch (NumberFormatException e) {
+					returnstring=sn+" is not a number!{string["+sn+"]}";
+				}
+			} else if (func.equalsIgnoreCase("REPLACE")) {
+				if (args.contains(",")) {
+					String replaced = args.substring(0, args.indexOf(","));
+					String replacer = args.substring(args.indexOf(",")+1);
+					if (replaced!=null) {
+						global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).replace(replaced, replacer));
+						returnstring = "{string["+sn+"]}";
+					} else {
+						returnstring = "Improper format! use replace(toreplace,replacement){string["+sn+"]}";
+					}
+				} else {
+					global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).replace(args, ""));
+					returnstring = "{string["+sn+"]}";
+				}
+			} else if (func.equalsIgnoreCase("PREFIX")) {
+				global.USR_string.get(stringnum).set(1, args + global.USR_string.get(stringnum).get(1));
+				returnstring = "{string["+sn+"]}";
+			} else if (func.equalsIgnoreCase("SUFFIX")) {
+				global.USR_string.get(stringnum).set(1, args + global.USR_string.get(stringnum).get(1));
+				returnstring = "{string["+sn+"]}";
+			} else if (func.equalsIgnoreCase("TOUPPER") || func.equalsIgnoreCase("TOUPPERCASE")) {
+				global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).toUpperCase());
+				returnstring = "{string["+sn+"]}";
+			} else if (func.equalsIgnoreCase("TOLOWER") || func.equalsIgnoreCase("TOLOWERCASE")) {
+				global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).toLowerCase());
+				returnstring = "{string["+sn+"]}";
+			} else if (func.equalsIgnoreCase("IMPORTJSONFILE")){
+				String sj = "Improper format! use importJsonFile(file,node)";
+				if (args.contains(",")) {
+					sj = file.importJsonFile("string", args.substring(0, args.indexOf(",")), sn + "=>" + args.substring(args.indexOf(",")+1));
+					global.USR_string.get(stringnum).set(1, sj);
+					backupUSR_strings.get(stringnum).set(1, sj);
+				} else {
+					global.USR_string.get(stringnum).set(1, sj);
+				}
+				returnstring = "{string["+sn+"]}";
+			} else if (func.equalsIgnoreCase("IMPORTJSONURL")) {
+				String sj = "Improper format! use importJsonFile(file,node)";
+				if (args.contains(",")) {
+					sj = file.importJsonURL("string", args.substring(0, args.indexOf(",")), sn + "=>" + args.substring(args.indexOf(",")+1));
+					global.USR_string.get(stringnum).set(1, sj);
+					backupUSR_strings.get(stringnum).set(1, sj);
+				} else {
+					global.USR_string.get(stringnum).set(1, sj);
+				}
+				returnstring = "{string["+sn+"]}";
+			} else if (func.equalsIgnoreCase("EQUALS")) {
+				if (global.USR_string.get(stringnum).get(1).equals(args)) {
+					global.USR_string.get(stringnum).set(1, "true");
+				} else {global.USR_string.get(stringnum).set(1, "false");}
+				returnstring = "{string["+sn+"]}";
+			} else if (func.equalsIgnoreCase("STARTSWITH")) {
+				if (global.USR_string.get(stringnum).get(1).startsWith(args)) {
+					global.USR_string.get(stringnum).set(1, "true");
+				} else {global.USR_string.get(stringnum).set(1, "false");}
+				returnstring = "{string["+sn+"]}";
+			} else if (func.equalsIgnoreCase("CONTAINS")) {
+				if (global.USR_string.get(stringnum).get(1).contains(args)) {
+					global.USR_string.get(stringnum).set(1, "true");
+				} else {global.USR_string.get(stringnum).set(1, "false");}
+				returnstring = "{string["+sn+"]}";
+			} else if (func.equalsIgnoreCase("ENDSWITH")) {
+				if (global.USR_string.get(stringnum).get(1).endsWith(args)) {
+					global.USR_string.get(stringnum).set(1, "true");
+				} else {global.USR_string.get(stringnum).set(1, "false");}
+				returnstring = "{string["+sn+"]}";
+			} else {
+				returnstring = func + " is not a function!{string["+sn+"]}";
+			}
+		}
+		
+		return returnstring;
+	}
+
+	public static String stringFunctions(String TMP_e) {
+		
+		while (TMP_e.contains("{string[") && TMP_e.contains("]}")) {
+			String testfor = TMP_e.substring(TMP_e.indexOf("]}", TMP_e.indexOf("{string["))+2);
+			if (testfor.contains("]}.")) {
+				if (testfor.indexOf("]}.") < testfor.indexOf("(")) {
+					testfor = "."+testfor.substring(testfor.indexOf("]}.")+3);
+				}
+			}
+			if (testfor.startsWith(".") && testfor.contains("(") && testfor.contains(")")) {
+				String sn = TMP_e.substring(TMP_e.indexOf("{string[")+8, TMP_e.indexOf("]}.", TMP_e.indexOf("{string[")));
+				String func = TMP_e.substring(TMP_e.indexOf("]}.", TMP_e.indexOf("{string["))+3, TMP_e.indexOf("(", TMP_e.indexOf("]}.", TMP_e.indexOf("{string["))));
+				String args = TMP_e.substring(TMP_e.indexOf("(", TMP_e.indexOf("]}.", TMP_e.indexOf("{string[")))+1, TMP_e.indexOf(")",  TMP_e.indexOf("(", TMP_e.indexOf("]}.", TMP_e.indexOf("{string[")))));
+				while (sn.contains("{string[")) {
+					sn = TMP_e.substring(TMP_e.indexOf("{string[")+8, TMP_e.indexOf("]}", TMP_e.indexOf(sn)+sn.length()));
+					
+					String first = sn.substring(0, sn.indexOf("{string["));
+					String replacement = "stringOpenStringF6cyUQp9stringOpenString";
+					String second = sn.substring(sn.indexOf("{string[")+8);
+					
+					String efirst = TMP_e.substring(0, TMP_e.indexOf("{string[", TMP_e.indexOf("{string[")+8));
+					String ereplacement = "stringOpenStringF6cyUQp9stringOpenString";
+					String esecond = TMP_e.substring(TMP_e.indexOf("{string[", TMP_e.indexOf("{string[")+8)+8);
+					
+					TMP_e = efirst + replacement + esecond;
+					sn = first + replacement + second;
+				}
+				TMP_e = TMP_e.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
+				sn = sn.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
+				
+				String efirst = TMP_e.substring(0, TMP_e.indexOf(sn));
+				String esecond = TMP_e.substring(TMP_e.indexOf(sn)+sn.length());
+				sn = stringFunctions(sn);
+				
+				TMP_e = efirst + sn + esecond;
+				sn = sn.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
+				while (args.contains("(")) {
+					args = TMP_e.substring(TMP_e.indexOf("(", TMP_e.indexOf("]}.", TMP_e.indexOf("{string[")))+1, TMP_e.indexOf(")", TMP_e.indexOf(args)+args.length())+1);
+					String first = args.substring(0,args.indexOf("("));
+					String second = args.substring(args.indexOf("(")+1);
+					args = first + "stringOpenBracketF6cyUQp9stringOpenBracket" + second;
+				}
+				args = args.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(");
+				
+				String fullreplace = "{string["+sn+"]}."+func+"("+args+")";
+				String firstpart = TMP_e.substring(0, TMP_e.indexOf(fullreplace));
+				String secondpart = TMP_e.substring(TMP_e.indexOf(fullreplace)+fullreplace.length());
+				
+				TMP_e = firstpart + doStringFunctions(sn,func,args) + secondpart;
+			} else {
+				String sn = TMP_e.substring(TMP_e.indexOf("{string[")+8, TMP_e.indexOf("]}", TMP_e.indexOf("{string[")));
+				while (sn.contains("{string[")) {
+					sn = TMP_e.substring(TMP_e.indexOf("{string[")+8, TMP_e.indexOf("]}", TMP_e.indexOf(sn)+sn.length()+2));
+					
+					String first = sn.substring(0, sn.indexOf("{string["));
+					String replacement = "stringOpenStringF6cyUQp9stringOpenString";
+					String second = sn.substring(sn.indexOf("{string[")+8);
+					
+					String efirst = TMP_e.substring(0, TMP_e.indexOf("{string[", TMP_e.indexOf("{string[")+8));
+					String ereplacement = "stringOpenStringF6cyUQp9stringOpenString";
+					String esecond = TMP_e.substring(TMP_e.indexOf("{string[", TMP_e.indexOf("{string[")+8)+8);
+					
+					TMP_e = efirst + replacement + esecond;
+					sn = first + replacement + second;
+				}
+				TMP_e = TMP_e.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
+				sn = sn.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
+				
+				String efirst = TMP_e.substring(0, TMP_e.indexOf(sn));
+				String esecond = TMP_e.substring(TMP_e.indexOf(sn)+sn.length());
+				sn = stringFunctions(sn);
+				
+				TMP_e = efirst + sn + esecond;
+				
+				
+				String returnString = "Not a string!";
+				
+				for (int i=0; i<global.USR_string.size(); i++) {
+					if (global.USR_string.get(i).get(0).equals(sn)) {
+						returnString = global.USR_string.get(i).get(1);
+					}
+				}
+				String fullreplace = "{string["+sn+"]}";
+				String firstpart = TMP_e.substring(0, TMP_e.indexOf(fullreplace));
+				String secondpart = TMP_e.substring(TMP_e.indexOf(fullreplace)+fullreplace.length());
+				
+				TMP_e = firstpart + returnString + secondpart;
+				
+				global.USR_string.clear();
+				for (int i=0; i<backupUSR_strings.size(); i++) {
+					String first = backupUSR_strings.get(i).get(0);
+					String second = backupUSR_strings.get(i).get(1);
+					List<String> temporary = new ArrayList<String>();
+					temporary.add(first);
+					temporary.add(second);
+					global.USR_string.add(temporary);
+				}
+			}
+		}
+		
+		return TMP_e;
+	}
+	
+	public static String legacyFunctions(String TMP_e, String stringInterrupt, String stringCommaReplace) {
+		while (TMP_e.contains(".replace(") && TMP_e.contains(")")) {
+			String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".replace("));
+			String[] checkTo = TMP_e.substring(TMP_e.indexOf(".replace(")+9, TMP_e.indexOf(")", TMP_e.indexOf(".replace("))).split(",");
+			
+			while (checkFrom.contains(stringInterrupt)) {
+				checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
+			}
+			
+			if (checkTo.length==2) {
+				TMP_e = TMP_e.replace(checkFrom + ".replace(" + checkTo[0] + "," + checkTo[1] + ")", checkFrom.replace(checkTo[0], checkTo[1]));
+			} else if (checkTo.length==1) {
+				TMP_e = TMP_e.replace(checkFrom + ".replace(" + checkTo[0] + ",)", checkFrom.replace(checkTo[0], ""));
+				TMP_e = TMP_e.replace(checkFrom + ".replace(" + checkTo[0] + ")", checkFrom.replace(checkTo[0], ""));
+			} else if (checkTo.length==0) {
+				chat.warn(chat.color("red", "Malformed .replace(toReplace,replacement) function - skipping"));
+				TMP_e = TMP_e.replace(checkFrom + ".replace(,)", checkFrom.replace(checkTo[0], ""));
+				TMP_e = TMP_e.replace(checkFrom + ".replace()", checkFrom.replace(checkTo[0], ""));
+			}
+		}
+		
+		while (TMP_e.contains(".toUpper()")) {
+			String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".toUpper()"));
+			
+			while (checkFrom.contains(stringInterrupt)) {
+				checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
+			}
+			
+			TMP_e = TMP_e.replace(checkFrom + ".toUpper()", checkFrom.toUpperCase().replace(stringInterrupt.toUpperCase(), stringInterrupt).replace(stringCommaReplace.toUpperCase(), stringCommaReplace));
+		}
+			
+		while (TMP_e.contains(".toLower()")) {
+			String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".toLower()"));
+			
+			while (checkFrom.contains(stringInterrupt)) {
+				checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
+			}
+			
+			TMP_e = TMP_e.replace(checkFrom + ".toLower()", checkFrom.toLowerCase().replace(stringInterrupt.toLowerCase(), stringInterrupt).replace(stringCommaReplace.toLowerCase(), stringCommaReplace));
+		}
+		
+		while (TMP_e.contains(".prefix(") && TMP_e.contains(")")) {
+			String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".prefix("));
+			String checkTo = TMP_e.substring(TMP_e.indexOf(".prefix(")+8, TMP_e.indexOf(")"));
+			
+			while (checkFrom.contains(stringInterrupt)) {
+				checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
+			}
+			
+			TMP_e = TMP_e.replace(checkFrom + ".prefix(" + checkTo + ")", checkTo.replace(stringInterrupt, "") + checkFrom);
+		}
+		
+		while (TMP_e.contains(".suffix(") && TMP_e.contains(")")) {
+			String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".suffix("));
+			String checkTo = TMP_e.substring(TMP_e.indexOf(".suffix(")+8, TMP_e.indexOf(")"));
+			
+			while (checkFrom.contains(stringInterrupt)) {
+				checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
+			}
+			
+			TMP_e = TMP_e.replace(checkFrom + ".suffix(" + checkTo + ")", checkFrom + checkTo.replace(stringInterrupt, ""));
+		}
+		
+		while (TMP_e.contains("string.set(") && TMP_e.contains(")")) {
+			String[] args = TMP_e.substring(TMP_e.indexOf("string.set(") + 11,TMP_e.indexOf(")",TMP_e.indexOf("string.set("))).split(",");
+			if (args.length==2) {
+				try {
+					int num = Integer.parseInt(args[0].replace(stringInterrupt, ""));
+					if (num>0 && num<global.USR_string.size()) {
+						global.USR_string.get(num).set(1, args[1].replace(stringInterrupt, ""));
+						TMP_e = TMP_e.replace("string.set(" + args[0] + "," + args[1] + ")", args[1]);
+					}
+				} catch (NumberFormatException e) {
+					for (int j=0; j<global.USR_string.size(); j++) {
+						if (global.USR_string.get(j).get(0).equals(args[0].replace(stringInterrupt, ""))) {
+							global.USR_string.get(j).set(1, args[1].replace(stringInterrupt, ""));
+							TMP_e = TMP_e.replace("string.set(" + args[0] + "," + args[1] + ")", args[1]);
+						}
+					}
+				}
+			}
+		}
+		
+		while (TMP_e.contains("string.save(") && TMP_e.contains(")")) {
+			String[] args = TMP_e.substring(TMP_e.indexOf("string.save(") + 12,TMP_e.indexOf(")",TMP_e.indexOf("string.save("))).split(",");
+			if (args.length==2) {
+				try {
+					int num = Integer.parseInt(args[0].replace(stringInterrupt, ""));
+					if (num>0 && num<global.USR_string.size()) {
+						global.USR_string.get(num).set(1, args[1].replace(stringInterrupt, ""));
+						try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+						TMP_e = TMP_e.replace("string.save(" + args[0] + "," + args[1] + ")", args[1]);
+					}
+				} catch (NumberFormatException e) {
+					for (int j=0; j<global.USR_string.size(); j++) {
+						if (global.USR_string.get(j).get(0).equals(args[0].replace(stringInterrupt, ""))) {
+							global.USR_string.get(j).set(1, args[1].replace(stringInterrupt, ""));
+							try {file.saveAll();} catch (IOException e1) {chat.warn(chat.color("red", "Error saving triggers!"));}
+							TMP_e = TMP_e.replace("string.save(" + args[0] + "," + args[1] + ")", args[1]);
+						}
+					}
+				}
+			}
+		}
+		
+		return TMP_e;
+	}
+	
 	public static void doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, String[] toreplace, String[] replacement) {
 		
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
 		String stringInterrupt = "stringInterruptorF6cyUQp9stringInterruptor";
 		String stringCommaReplace = "stringCommaReplacementF6cyUQp9stringCommaReplacement";
+		
+		if (toreplace != null) {
+			for (int i=0; i<toreplace.length; i++) {
+				List<String> temporary = new ArrayList<String>();
+				temporary.add("TriggerArgument"+i);
+				temporary.add(replacement[i]);
+				global.USR_string.add(temporary);
+			}
+			for (int i=0; i<tmp_event.size(); i++) {
+				for (int j=0; j<toreplace.length; j++) {
+					tmp_event.set(i, tmp_event.get(i).replace(toreplace[j], "{string[TriggerArgument"+j+"]}"));
+				}
+			}
+		}
+		
+		
 		for (int i=0; i<tmp_event.size(); i++) {
 			
 		//SETUP
@@ -92,11 +734,6 @@ public class events {
 			int TMP_p = 0;
 			int TMP_v = 10000;
 			int TMP_pi = 1;
-			if (toreplace != null) {
-				for (int j=0; j<toreplace.length; j++) {
-					TMP_e = TMP_e.replace(toreplace[j], stringInterrupt+replacement[j].replace(",",stringCommaReplace));
-				}
-			}
 			
 		//built in strings
 			if (chatEvent!=null) {TMP_e = TMP_e.replace("{msg}", chatEvent.message.getFormattedText());}
@@ -136,23 +773,6 @@ public class events {
 				TMP_e = TMP_e.replace("<pitch=" + TMP_tstring + ">", "");
 			}
 			
-		//user strings
-			TMP_e = TMP_e.replace("{string<", "{string[");
-			TMP_e = TMP_e.replace(">}", "]}");
-			while (TMP_e.contains("{string[") && TMP_e.contains("]}")) {
-				String TMP_test = TMP_e.substring(0, TMP_e.indexOf("]}"));
-				String TMP_s = TMP_test.substring(TMP_e.indexOf("{string[") + 8, TMP_e.indexOf("]}"));
-				String TMP_sn = "";
-				for (int k=0; k<global.USR_string.size(); k++) {
-					if (TMP_s.equals(global.USR_string.get(k).get(0))) {
-						TMP_sn = global.USR_string.get(k).get(1);
-					}
-				}
-				TMP_e = TMP_e.replace("{string[" + TMP_s + "]}", stringInterrupt + TMP_sn.replace(",", stringCommaReplace));
-				TMP_e = TMP_e.replace("{string<", "{string[");
-				TMP_e = TMP_e.replace(">}", "]}");
-			}
-			
 		//add formatting where needed
 			if (TMP_c.equalsIgnoreCase("SAY") || TMP_c.equalsIgnoreCase("CHAT") || TMP_c.equalsIgnoreCase("KILLFEED") || TMP_c.equalsIgnoreCase("NOTIFY")) {
 				if (TMP_c.equalsIgnoreCase("SAY")) {
@@ -165,188 +785,26 @@ public class events {
 			}
 			
 		//functions
-			while (TMP_e.contains(".replace(") && TMP_e.contains(")")) {
-				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".replace("));
-				String[] checkTo = TMP_e.substring(TMP_e.indexOf(".replace(")+9, TMP_e.indexOf(")", TMP_e.indexOf(".replace("))).split(",");
-				
-				while (checkFrom.contains(stringInterrupt)) {
-					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
-				}
-				
-				if (checkTo.length==2) {
-					TMP_e = TMP_e.replace(checkFrom + ".replace(" + checkTo[0] + "," + checkTo[1] + ")", checkFrom.replace(checkTo[0], checkTo[1]));
-				} else if (checkTo.length==1) {
-					TMP_e = TMP_e.replace(checkFrom + ".replace(" + checkTo[0] + ",)", checkFrom.replace(checkTo[0], ""));
-					TMP_e = TMP_e.replace(checkFrom + ".replace(" + checkTo[0] + ")", checkFrom.replace(checkTo[0], ""));
-				} else if (checkTo.length==0) {
-					chat.warn(chat.color("red", "Malformed .replace(toReplace,replacement) function - skipping"));
-					TMP_e = TMP_e.replace(checkFrom + ".replace(,)", checkFrom.replace(checkTo[0], ""));
-					TMP_e = TMP_e.replace(checkFrom + ".replace()", checkFrom.replace(checkTo[0], ""));
-				}
+			TMP_e = TMP_e.replace("{string<", "{string[").replace("{array<", "{array[").replace(">}", "]}");
+			
+			//setup backup for functions so strings dont get overwritten
+			backupUSR_strings.clear();
+			for (int j=0; j<global.USR_string.size(); j++) {
+				String first = global.USR_string.get(j).get(0);
+				String second = global.USR_string.get(j).get(1);
+				List<String> temporary = new ArrayList<String>();
+				temporary.add(first);
+				temporary.add(second);
+				backupUSR_strings.add(temporary);
 			}
 			
-			while (TMP_e.contains(".toUpper()")) {
-				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".toUpper()"));
-				
-				while (checkFrom.contains(stringInterrupt)) {
-					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
-				}
-				
-				TMP_e = TMP_e.replace(checkFrom + ".toUpper()", checkFrom.toUpperCase().replace(stringInterrupt.toUpperCase(), stringInterrupt).replace(stringCommaReplace.toUpperCase(), stringCommaReplace));
-			}
+			TMP_e = stringFunctions(TMP_e);
+			TMP_e = arrayFunctions(TMP_e, stringInterrupt);
 			
-			while (TMP_e.contains(".toLower()")) {
-				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".toLower()"));
-				
-				while (checkFrom.contains(stringInterrupt)) {
-					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
-				}
-				
-				TMP_e = TMP_e.replace(checkFrom + ".toLower()", checkFrom.toLowerCase().replace(stringInterrupt.toLowerCase(), stringInterrupt).replace(stringCommaReplace.toLowerCase(), stringCommaReplace));
-			}
 			
-			while (TMP_e.contains(".prefix(") && TMP_e.contains(")")) {
-				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".prefix("));
-				String checkTo = TMP_e.substring(TMP_e.indexOf(".prefix(")+8, TMP_e.indexOf(")"));
-				
-				while (checkFrom.contains(stringInterrupt)) {
-					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
-				}
-				
-				TMP_e = TMP_e.replace(checkFrom + ".prefix(" + checkTo + ")", checkTo.replace(stringInterrupt, "") + checkFrom);
-			}
+
+			//TMP_e = legacyFunctions(TMP_e, stringInterrupt, stringCommaReplace);
 			
-			while (TMP_e.contains(".suffix(") && TMP_e.contains(")")) {
-				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".suffix("));
-				String checkTo = TMP_e.substring(TMP_e.indexOf(".suffix(")+8, TMP_e.indexOf(")"));
-				
-				while (checkFrom.contains(stringInterrupt)) {
-					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
-				}
-				
-				TMP_e = TMP_e.replace(checkFrom + ".suffix(" + checkTo + ")", checkFrom + checkTo.replace(stringInterrupt, ""));
-			}
-			
-			while (TMP_e.contains("{array[") && TMP_e.contains("]}.add(") && TMP_e.contains(")")) {
-				String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.add(", TMP_e.indexOf("{array[")));
-				String checkTo = TMP_e.substring(TMP_e.indexOf("]}.add(")+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.add(")));
-				Boolean isArray = false;
-				
-				for (int j=0; j<global.USR_array.size(); j++) {
-					if (global.USR_array.get(j).get(0).equals(checkFrom)) {
-						global.USR_array.get(j).add(checkTo.replace(stringInterrupt, ""));
-						isArray = true;
-					}
-				}
-				
-				if (isArray == false) {
-					List<String> prearray = new ArrayList<String>();
-					prearray.add(checkFrom);
-					prearray.add(checkTo);
-					global.USR_array.add(prearray);
-				}
-				
-				TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.add(" + checkTo + ")", stringInterrupt+checkTo.replace(stringInterrupt, ""));
-			}
-			
-			while (TMP_e.contains("{array[") && TMP_e.contains("]}.clear()")) {
-				String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.clear()", TMP_e.indexOf("{array[")));
-				
-				for (int j=0; j<global.USR_array.size(); j++) {
-					if (global.USR_array.get(j).get(0).equals(checkFrom)) {
-						global.USR_array.remove(j);
-					}
-				}
-				
-				TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.clear()", stringInterrupt+checkFrom + " cleared.");
-			}
-			
-			while (TMP_e.contains("{array[") && TMP_e.contains("]}.has(") && TMP_e.contains(")")) {
-				String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.has(", TMP_e.indexOf("{array[")));
-				String checkTo = TMP_e.substring(TMP_e.indexOf("]}.has(")+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.has(")));
-				String checkThis = "false";
-				
-				for (int j=0; j<global.USR_array.size(); j++) {
-					if (global.USR_array.get(j).get(0).equals(checkFrom)) {
-						for (int k=1; k<global.USR_array.get(j).size(); k++) {
-							if (global.USR_array.get(j).get(k).equals(checkTo.replace(stringInterrupt, ""))) {
-								checkThis = "true";
-							}
-						}
-					}
-				}
-				
-				TMP_e = TMP_e.replace("{array["+checkFrom+"]}.has("+checkTo+")", checkThis);
-			}
-			
-			while (TMP_e.contains("{array[") && TMP_e.contains("]}.remove(") && TMP_e.contains(")")) {
-				String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.remove(", TMP_e.indexOf("{array[")));
-				String checkTo = TMP_e.substring(TMP_e.indexOf("]}.remove(")+10, TMP_e.indexOf(")", TMP_e.indexOf("]}.remove(")));
-				String removed = "";
-				int toRemove = -1;
-				int toRemoveArray = -1;
-				
-				try {
-					toRemove = Integer.parseInt(checkTo.replace(stringInterrupt, ""));
-					if (toRemove > 0) {
-						for (int j=0; j<global.USR_array.size(); j++) {
-							if (global.USR_array.get(j).get(0).equals(checkFrom)) {
-								if (toRemove < global.USR_array.get(j).size()) {
-									removed = global.USR_array.get(j).remove(toRemove);
-									if (global.USR_array.get(j).size()==1) {
-										toRemoveArray = j;
-									}
-								} else {
-									chat.warn(chat.color("red", "{array}.remove($value) - $value over bounds (index " + toRemove + ")"));
-								}
-							}
-						}
-					} else {
-						chat.warn(chat.color("red", "{array}.remove($value) - $value under bounds (index " + toRemove + ")"));
-					}
-				} catch (NumberFormatException e) {
-					chat.warn(chat.color("red", "{array}.remove($value) - $value must be an integer!"));
-				}
-				
-				if (toRemoveArray != -1) {
-					global.USR_array.remove(toRemoveArray);
-				}
-				
-				TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.remove(" + checkTo + ")", stringInterrupt+removed);
-			}
-			
-			while (TMP_e.contains("{array[") && TMP_e.contains("]}.size()")) {
-				String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.size()", TMP_e.indexOf("{array[")));
-				int arraysize = 0;
-				
-				for (int j=0; j<global.USR_array.size(); j++) {
-					if (global.USR_array.get(j).get(0).equals(checkFrom)) {
-						arraysize = global.USR_array.get(j).size()-1;
-					}
-				}
-				
-				TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.size()", stringInterrupt+arraysize);
-			}
-			
-			while (TMP_e.contains("{array[") && TMP_e.contains("]}.importJsonFile(") && TMP_e.contains(",") && TMP_e.contains(")")) {
-				String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.importJsonFile(", TMP_e.indexOf("{array[")));
-				String checkFile = TMP_e.substring(TMP_e.indexOf("]}.importJsonFile(")+18, TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile(")));
-				String checkTo = TMP_e.substring(TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile("))+1, TMP_e.indexOf(")", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile("+checkFile+",")));
-				
-				file.importJsonFile(checkFile.replace(stringInterrupt, ""), checkFrom + "=>" + checkTo.replace(stringInterrupt, ""));
-				
-				TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonFile("+checkFile+","+checkTo+")", "Imported json from "+checkFile.replace(stringInterrupt, ""));
-			}
-			
-			while (TMP_e.contains("{array[") && TMP_e.contains("]}.importJsonURL(") && TMP_e.contains(",") && TMP_e.contains(")")) {
-				String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.importJsonURL(", TMP_e.indexOf("{array[")));
-				String checkFile = TMP_e.substring(TMP_e.indexOf("]}.importJsonURL(")+17, TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL(")));
-				String checkTo = TMP_e.substring(TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL("))+1, TMP_e.indexOf(")", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL("+checkFile+",")));
-				
-				file.importJsonURL(checkFile.replace(stringInterrupt, ""), checkFrom + "=>" + checkTo.replace(stringInterrupt, ""));
-				
-				TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonURL("+checkFile+","+checkTo+")", "Imported json from "+checkFile.replace(stringInterrupt, ""));
-			}
 			
 			while (TMP_e.contains(".equals(") && TMP_e.contains(")")) {
 				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".equals("));
@@ -396,47 +854,7 @@ public class events {
 				else {TMP_e = TMP_e.replace(checkFrom + ".endsWith(" + checkTo + ")", "false");}
 			}
 			
-			while (TMP_e.contains("string.set(") && TMP_e.contains(")")) {
-				String[] args = TMP_e.substring(TMP_e.indexOf("string.set(") + 11,TMP_e.indexOf(")",TMP_e.indexOf("string.set("))).split(",");
-				if (args.length==2) {
-					try {
-						int num = Integer.parseInt(args[0].replace(stringInterrupt, ""));
-						if (num>0 && num<global.USR_string.size()) {
-							global.USR_string.get(num).set(1, args[1].replace(stringInterrupt, ""));
-							TMP_e = TMP_e.replace("string.set(" + args[0] + "," + args[1] + ")", args[1]);
-						}
-					} catch (NumberFormatException e) {
-						for (int j=0; j<global.USR_string.size(); j++) {
-							if (global.USR_string.get(j).get(0).equals(args[0].replace(stringInterrupt, ""))) {
-								global.USR_string.get(j).set(1, args[1].replace(stringInterrupt, ""));
-								TMP_e = TMP_e.replace("string.set(" + args[0] + "," + args[1] + ")", args[1]);
-							}
-						}
-					}
-				}
-			}
 			
-			while (TMP_e.contains("string.save(") && TMP_e.contains(")")) {
-				String[] args = TMP_e.substring(TMP_e.indexOf("string.save(") + 12,TMP_e.indexOf(")",TMP_e.indexOf("string.save("))).split(",");
-				if (args.length==2) {
-					try {
-						int num = Integer.parseInt(args[0].replace(stringInterrupt, ""));
-						if (num>0 && num<global.USR_string.size()) {
-							global.USR_string.get(num).set(1, args[1].replace(stringInterrupt, ""));
-							try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
-							TMP_e = TMP_e.replace("string.save(" + args[0] + "," + args[1] + ")", args[1]);
-						}
-					} catch (NumberFormatException e) {
-						for (int j=0; j<global.USR_string.size(); j++) {
-							if (global.USR_string.get(j).get(0).equals(args[0].replace(stringInterrupt, ""))) {
-								global.USR_string.get(j).set(1, args[1].replace(stringInterrupt, ""));
-								try {file.saveAll();} catch (IOException e1) {chat.warn(chat.color("red", "Error saving triggers!"));}
-								TMP_e = TMP_e.replace("string.save(" + args[0] + "," + args[1] + ")", args[1]);
-							}
-						}
-					}
-				}
-			}
 			
 			
 			
@@ -476,12 +894,6 @@ public class events {
 				if (i+1 < tmp_event.size()-1) { //check for events after if event
 					for (int j=i; j<tmp_event.size(); j++) {
 						if (j != tmp_event.size()) {
-							//arguments
-							if (toreplace != null) {
-								for (int k=0; k<toreplace.length; k++) {
-									tmp_event.set(j,tmp_event.get(j).replace(toreplace[k], stringInterrupt+replacement[k]));
-								}
-							}
 							if (chatEvent!=null) {tmp_event.set(j, tmp_event.get(j).replace("{msg}", chatEvent.message.getFormattedText()));}
 							
 							//increase tab
@@ -540,12 +952,6 @@ public class events {
 				if (i+1 < tmp_event.size()) {
 					for (int j=i; j<tmp_event.size(); j++) {
 						if (j != tmp_event.size()) {
-							//arguments
-							if (toreplace != null) {
-								for (int k=0; k<toreplace.length; k++) {
-									tmp_event.set(j,tmp_event.get(j).replace(toreplace[k], stringInterrupt+replacement[k]));
-								}
-							}
 							
 							//increase tab
 							if (tmp_event.get(j).toUpperCase().startsWith("IF")
@@ -573,11 +979,9 @@ public class events {
 				
 				if (arrayto.size()>0 && eventsToFor.size() > 0) {
 					for (int j=1; j<arrayto.size(); j++) {
-						List<String> tmp_eventsToFor = new ArrayList<String>(eventsToFor);
-						for (int k=0; k<eventsToFor.size(); k++) {
-							tmp_eventsToFor.set(k, tmp_eventsToFor.get(k).replace(valin,arrayto.get(j)));
-						}
-						doEvents(tmp_eventsToFor, chatEvent);
+						String[] first = {valin};
+						String[] second = {arrayto.get(j)};
+						doEvents(eventsToFor, chatEvent, first, second);
 					}
 				}
 				
@@ -594,13 +998,6 @@ public class events {
 				if (i+1 < tmp_event.size()-1) { //check for events after if event
 					for (int j=i; j<tmp_event.size(); j++) {
 						if (j != tmp_event.size()) {
-							
-							//arguments
-							if (toreplace != null) {
-								for (int k=0; k<toreplace.length; k++) {
-									tmp_event.set(j,tmp_event.get(j).replace(toreplace[k], stringInterrupt+replacement[k]));
-								}
-							}
 							
 							//increase tab
 							if (tmp_event.get(j).toUpperCase().startsWith("IF")
@@ -683,13 +1080,6 @@ public class events {
 
 						if (j != tmp_event.size()) {
 							
-							//arguments
-							if (toreplace != null) {
-								for (int k=0; k<toreplace.length; k++) {
-									tmp_event.set(j,tmp_event.get(j).replace(toreplace[k], stringInterrupt+replacement[k]));
-								}
-							}
-							
 							//increase tab
 							if (tmp_event.get(j).toUpperCase().startsWith("IF")
 							|| tmp_event.get(j).toUpperCase().startsWith("FOR")
@@ -747,6 +1137,75 @@ public class events {
 					int moveEvents = 0;
 					for (int j=0; j<eventsToChoose.size(); j++) {moveEvents += eventsToChoose.get(j).size();}
 					i += moveEvents-1;
+				}
+			}
+		}
+		
+		if (toreplace != null) {
+			List<List<String>> tempchecklist = new ArrayList<List<String>>();
+			for (int i=0; i<global.USR_string.size(); i++) {
+				if (!global.USR_string.get(i).get(0).startsWith("TriggerArgument")) {
+					tempchecklist.add(global.USR_string.get(i));
+				}
+			}
+			global.USR_string.clear();
+			global.USR_string.addAll(tempchecklist);
+		}
+	}
+	
+	public static void doTrigger(String triggerName, ClientChatReceivedEvent chatEvent) {
+		try {
+			//run trigger by number
+			int num = Integer.parseInt(triggerName);
+			if (num >= 0 && num < global.trigger.size()) {
+				//add all events to temp list
+				List<String> TMP_events = new ArrayList<String>();
+				for (int i=2; i<global.trigger.get(num).size(); i++) {TMP_events.add(global.trigger.get(num).get(i));}
+				
+				//do events
+				doEvents(TMP_events, chatEvent);
+			}
+		} catch (NumberFormatException e1) { 
+			//run trigger by name
+			for (int k=0; k<global.trigger.size(); k++) {
+				String TMP_trig = global.trigger.get(k).get(1);
+				
+				//remove tags
+				String TMP_list = "";
+				TMP_trig = TMP_trig.replace("<s>", ""); 
+				TMP_trig = TMP_trig.replace("<c>", ""); 
+				TMP_trig = TMP_trig.replace("<e>", "");
+				TMP_trig = TMP_trig.replace("<start>", ""); 
+				TMP_trig = TMP_trig.replace("<contain>", ""); 
+				TMP_trig = TMP_trig.replace("<end>", "");
+				if (TMP_trig.contains("<list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
+				if (TMP_trig.contains("<server=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_list+">","");}
+				
+				//check match
+				if (TMP_trig.equals(triggerName)) {
+					//add all events to temp list
+					List<String> TMP_events = new ArrayList<String>();
+					for (int i=2; i<global.trigger.get(k).size(); i++) {TMP_events.add(global.trigger.get(k).get(i));}
+					
+					//do events
+					doEvents(TMP_events, chatEvent);
+				} else {
+					if (TMP_trig.contains("(") && TMP_trig.endsWith(")")) {
+						String TMP_trigtest = TMP_trig.substring(0,TMP_trig.indexOf("("));
+						if (triggerName.startsWith(TMP_trigtest) && triggerName.endsWith(")")) {
+							String TMP_argsIn = triggerName.substring(triggerName.indexOf("(")+1, triggerName.length()-1);
+							String TMP_argsOut = TMP_trig.substring(TMP_trig.indexOf("(")+1, TMP_trig.length()-1);
+							String[] argsIn = TMP_argsIn.split(",");
+							String[] argsOut = TMP_argsOut.split(",");
+							if (argsIn.length == argsOut.length) {
+								List<String> TMP_events = new ArrayList<String>();
+								for (int j=2; j<global.trigger.get(k).size(); j++) {
+									TMP_events.add(global.trigger.get(k).get(j));
+								}
+								events.doEvents(TMP_events, chatEvent, argsOut, argsIn);
+							}
+						}
+					}
 				}
 			}
 		}

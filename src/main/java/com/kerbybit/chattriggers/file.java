@@ -70,11 +70,12 @@ public class file {
 	
 	
 	
-	public static void importJsonFile(String fileName, String toImport) {
-		List<String> lines = new ArrayList<String>();
-		String line = null;
-		BufferedReader bufferedReader;
+	public static String importJsonFile(String type, String fileName, String toImport) {
+		String returnString = "Something went wrong!";
 		try {
+			List<String> lines = new ArrayList<String>();
+			String line = null;
+			BufferedReader bufferedReader;
 			bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName),"UTF-8"));
 			while ((line = bufferedReader.readLine()) != null) {
 				lines.add(line);
@@ -85,53 +86,73 @@ public class file {
 			for (String value : lines) {jsonString += value;}
 			
 			if (toImport.contains("=>")) {
-				String arrayToSave = toImport.substring(0,toImport.indexOf("=>"));
-				
-				int whatArray = -1;
-				for (int i=0; i<global.USR_array.size(); i++) {
-					if (arrayToSave.equals(global.USR_array.get(i))) {
-						whatArray = i;
+				if (type.equalsIgnoreCase("ARRAY")) {
+					String arrayToSave = toImport.substring(0,toImport.indexOf("=>"));
+					
+					int whatArray = -1;
+					for (int i=0; i<global.USR_array.size(); i++) {
+						if (arrayToSave.equals(global.USR_array.get(i))) {
+							whatArray = i;
+						}
+					}
+					
+					if (whatArray == -1) {
+						List<String> temporary = new ArrayList<String>();
+						temporary.add(arrayToSave);
+						global.USR_array.add(temporary);
+						whatArray = global.USR_array.size()-1;
+					}
+					
+					String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+					
+					String check = "\""+jsonGet+"\""+":\"";
+					if (jsonString.contains(check)) {
+						returnString = "[";
+						while (jsonString.contains(check)) {
+							String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+							global.USR_array.get(whatArray).add(jsonGot);
+							jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
+							returnString += jsonGot+",";
+						}
+						returnString = returnString.substring(0,returnString.length()-1)+"]";
+					} else {
+						returnString = "No "+jsonGet+" in json!";
+					}
+				} else if (type.equalsIgnoreCase("STRING")) {
+					String stringToSave = toImport.substring(0,toImport.indexOf("=>"));
+					
+					for (int i=0; i<global.USR_string.size(); i++) {
+						if (stringToSave.equals(global.USR_string.get(i).get(0))) {
+							String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+							
+							String check = "\""+jsonGet+"\":\"";
+							if (jsonString.contains(check)) {
+								String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+								global.USR_string.get(i).set(1, jsonGot);
+								returnString = jsonGot;
+							}
+						}
 					}
 				}
-				
-				if (whatArray == -1) {
-					List<String> temporary = new ArrayList<String>();
-					temporary.add(arrayToSave);
-					global.USR_array.add(temporary);
-					whatArray = global.USR_array.size()-1;
-				}
-				
-				String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
-				
-				String check = "\""+jsonGet+"\""+":\"";
-				if (jsonString.contains(check)) {
-					while (jsonString.contains(check)) {
-						String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
-						global.USR_array.get(whatArray).add(jsonGot);
-						jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
-					}
-				} else {
-					chat.warn(chat.color("red", "No "+jsonGet+" in json!"));
-				}
-				
 			} else {
-				chat.warn(chat.color("red", "No array! use 'array => nodes'"));
+				returnString = "No array! use 'array=>nodes'";
 			}
 		} catch (UnsupportedEncodingException e) {
-			chat.warn(chat.color("red","Unsupported encoding!"));
+			returnString = "Unsupported encoding!";
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
-			chat.warn(chat.color("red","File not found!"));
+			returnString = "File not found!";
 			e.printStackTrace();
 		} catch (IOException e) {
-			chat.warn(chat.color("red","IO exception!"));
+			returnString = "IO exception!";
 			e.printStackTrace();
 		}
-		
+		return returnString;
 	}
 	
 	
-	public static void importJsonURL(String url, String toImport) {
+	public static String importJsonURL(String type, String url, String toImport) {
+		String returnString = "Something went wrong!";
 		try {
 			URL web = new URL(url);
 			InputStream fis = web.openStream();
@@ -147,49 +168,69 @@ public class file {
 			for (String value : lines) {jsonString += value;}
 			
 			if (toImport.contains("=>")) {
-				String arrayToSave = toImport.substring(0,toImport.indexOf("=>"));
-				
-				int whatArray = -1;
-				for (int i=0; i<global.USR_array.size(); i++) {
-					if (arrayToSave.equals(global.USR_array.get(i))) {
-						whatArray = i;
+				if (type.equalsIgnoreCase("ARRAY")) {
+					String arrayToSave = toImport.substring(0,toImport.indexOf("=>"));
+					
+					int whatArray = -1;
+					for (int i=0; i<global.USR_array.size(); i++) {
+						if (arrayToSave.equals(global.USR_array.get(i))) {
+							whatArray = i;
+						}
+					}
+					
+					if (whatArray == -1) {
+						List<String> temporary = new ArrayList<String>();
+						temporary.add(arrayToSave);
+						global.USR_array.add(temporary);
+						whatArray = global.USR_array.size()-1;
+					}
+					
+					String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+					
+					String check = "\""+jsonGet+"\":\"";
+					if (jsonString.contains(check)) {
+						returnString = "[";
+						while (jsonString.contains(check)) {
+							String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+							global.USR_array.get(whatArray).add(jsonGot);
+							jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
+							returnString += jsonGot+",";
+						}
+						returnString = returnString.substring(0, returnString.length()-1) + "]";
+					} else {
+						returnString = "No "+jsonGet+" in json!";
+					}
+				} else if (type.equalsIgnoreCase("STRING")) {
+					String stringToSave = toImport.substring(0,toImport.indexOf("=>"));
+					
+					for (int i=0; i<global.USR_string.size(); i++) {
+						if (stringToSave.equals(global.USR_string.get(i).get(0))) {
+							String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+							
+							String check = "\""+jsonGet+"\":\"";
+							if (jsonString.contains(check)) {
+								String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+								global.USR_string.get(i).set(1, jsonGot);
+								returnString = jsonGot;
+							}
+						}
 					}
 				}
-				
-				if (whatArray == -1) {
-					List<String> temporary = new ArrayList<String>();
-					temporary.add(arrayToSave);
-					global.USR_array.add(temporary);
-					whatArray = global.USR_array.size()-1;
-				}
-				
-				String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
-				
-				String check = "\""+jsonGet+"\""+":\"";
-				if (jsonString.contains(check)) {
-					while (jsonString.contains(check)) {
-						String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
-						global.USR_array.get(whatArray).add(jsonGot);
-						jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
-					}
-				} else {
-					chat.warn(chat.color("red", "No "+jsonGet+" in json!"));
-				}
-				
 			} else {
-				chat.warn(chat.color("red", "No array! use 'array => nodes'"));
+				returnString = "No array! use 'array=>nodes'";
 			}
 		} catch (UnsupportedEncodingException e) {
-			chat.warn(chat.color("red","Unsupported encoding!"));
+			returnString = "Unsupported encoding!";
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
-			chat.warn(chat.color("red","File not found!"));
+			returnString = "File not found!";
 			e.printStackTrace();
 		} catch (IOException e) {
-			chat.warn(chat.color("red","IO exception!"));
+			returnString = "IO exception!";
 			e.printStackTrace();
 		}
 		
+		return returnString;
 	}
 	
 	
@@ -411,6 +452,7 @@ public class file {
 		writer.println("color:"+listName.get(0));
 		writer.println("colorName:"+listName.get(1));
 		writer.println("version:"+listName.get(2));
+		writer.println("killfeed pos:"+listName.get(3));
 		writer.close();
 	}
 	
@@ -480,13 +522,16 @@ public class file {
 		
 		for (int i=0; i<lines.size(); i++) {
 			if (lines.get(i).startsWith("color:")) {
-				tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("color:") + 6, lines.get(i).length()));
+				tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("color:") + 6));
 			}
 			if (lines.get(i).startsWith("colorName:")) {
-				tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("colorName:") + 10, lines.get(i).length()));
+				tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("colorName:") + 10));
 			}
 			if (lines.get(i).startsWith("version:")) {
-				tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("version:") + 8, lines.get(i).length()));
+				tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("version:") + 8));
+			}
+			if (lines.get(i).startsWith("killfeed pos:")) {
+				tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("killfeed pos:")+13));
 			}
 		}
 		
@@ -508,6 +553,7 @@ public class file {
 			global.settings = loadSettings("./mods/ChatTriggers/settings.txt");
 			if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
 			if (global.settings.size() < 3) {global.settings.add("null");}
+			if (global.settings.size() < 4) {global.settings.add("top-left");}
 			chat.warn(chat.color(global.settings.get(0), "Chat triggers loaded"));
 		} catch (IOException e1) {
 			chat.warn(chat.color("red", "Error loading files!"));
@@ -521,11 +567,13 @@ public class file {
 			
 			if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
 			if (global.settings.size() < 3) {global.settings.add("null");}
+			if (global.settings.size() < 4) {global.settings.add("top-left");}
 			
 			try {file.saveAll(); chat.warn(chat.color("green", "New files created!"));} 
 			catch (IOException e111) {chat.warn(chat.color("red", "Error saving files! report this to kerbybit ASAP!")); e111.printStackTrace();}
 		}
 		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
 		if (global.settings.size() < 3) {global.settings.add("null");}
+		if (global.settings.size() < 4) {global.settings.add("top-left");}
 	}
 }

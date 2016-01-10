@@ -188,6 +188,12 @@ public class ChatTriggers {
 	public void onWorldLoad(WorldEvent.Load e) {
 		global.worldLoaded=true;
 	}
+	
+	@SubscribeEvent
+	public void onWorldUnload(WorldEvent.Unload e) {
+		global.waitEvents.clear();
+		global.waitTime.clear();
+	}
 		
 		
 	@SubscribeEvent
@@ -197,7 +203,13 @@ public class ChatTriggers {
 		if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
 			//draw killfeed
 			for (int i=0; i<global.killfeed.size(); i++) {
-				MC.fontRendererObj.drawStringWithShadow(global.killfeed.get(i), 5, i*10 + 5, 0xffffff);
+				if (global.settings.get(3).equalsIgnoreCase("TOP-RIGHT") || global.settings.get(3).equalsIgnoreCase("TR")) {
+					ScaledResolution var5 = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
+					float var6 = var5.getScaledWidth();
+					MC.fontRendererObj.drawStringWithShadow(global.killfeed.get(i), var6 - MC.fontRendererObj.getStringWidth(global.killfeed.get(i)) - 5, i*10 + 5, 0xffffff);
+				} else {
+					MC.fontRendererObj.drawStringWithShadow(global.killfeed.get(i), 5, i*10 + 5, 0xffffff);
+				}
 			}
 			//draw notify
 			for (int i=0; i<global.notify.size(); i++) {
@@ -232,16 +244,6 @@ public class ChatTriggers {
 				String TMP_type = global.trigger.get(i).get(0);
 				String TMP_trig = global.trigger.get(i).get(1);
 				
-				if (TMP_type.equalsIgnoreCase("ONWORLDLOAD")) {
-					//add all events to temp list
-					List<String> TMP_events = new ArrayList<String>();
-					for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
-					
-					//do events
-					ClientChatReceivedEvent e1 = null;
-					events.doEvents(TMP_events, e1);
-				}
-				
 				if (global.worldFirstLoad==true) {
 					if (TMP_type.equalsIgnoreCase("ONWORLDFIRSTLOAD")) {
 						global.worldFirstLoad = false;
@@ -253,6 +255,16 @@ public class ChatTriggers {
 						ClientChatReceivedEvent e1 = null;
 						events.doEvents(TMP_events, e1);
 					}
+				}
+				
+				if (TMP_type.equalsIgnoreCase("ONWORLDLOAD")) {
+					//add all events to temp list
+					List<String> TMP_events = new ArrayList<String>();
+					for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
+					
+					//do events
+					ClientChatReceivedEvent e1 = null;
+					events.doEvents(TMP_events, e1);
 				}
 				
 				if (TMP_type.equalsIgnoreCase("ONSERVERCHANGE")) {

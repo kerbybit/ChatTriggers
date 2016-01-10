@@ -208,6 +208,7 @@ public class gui extends GuiScreen {
 						if (value.get(j).toUpperCase().startsWith("IF")
 						|| value.get(j).toUpperCase().startsWith("CHOOSE")
 						|| value.get(j).toUpperCase().startsWith("FOR")
+						|| value.get(j).toUpperCase().startsWith("WAIT")
 						|| value.get(j).toUpperCase().startsWith("ELSE")) {
 							tabbedLogic++;
 							System.out.println(tabbedLogic);

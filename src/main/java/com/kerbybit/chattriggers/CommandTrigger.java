@@ -250,15 +250,13 @@ public class CommandTrigger extends CommandBase {
 				String TMP_etype = TMP_e;
 				if (TMP_e.contains(" ")) {TMP_etype = TMP_e.substring(0,TMP_e.indexOf(" "));}
 				
-				if (TMP_etype.equalsIgnoreCase("CHAT") 
-				|| TMP_etype.equalsIgnoreCase("SAY") 
+				if (TMP_etype.equalsIgnoreCase("CHAT")
 				|| TMP_etype.equalsIgnoreCase("CANCEL") 
 				|| TMP_etype.equalsIgnoreCase("CHOOSE") 
 				|| TMP_etype.equalsIgnoreCase("KILLFEED")
 				|| TMP_etype.equalsIgnoreCase("NOTIFY")
 				|| TMP_etype.equalsIgnoreCase("TRIGGER") 
 				|| TMP_etype.equalsIgnoreCase("SOUND")
-				|| TMP_etype.equalsIgnoreCase("COMMAND")
 				|| TMP_etype.equalsIgnoreCase("DO")
 				|| TMP_etype.equalsIgnoreCase("IF")
 				|| TMP_etype.equalsIgnoreCase("ELSE")
@@ -590,7 +588,7 @@ public class CommandTrigger extends CommandBase {
 	
 	public static void commandSettings(String args[], Boolean silent) {
 		if (args.length < 2) {
-			chat.warn(chat.color("red", "/trigger settings [debug/color]"));
+			chat.warn(chat.color("red", "/trigger settings [debug/color/killfeed] <...>"));
 		} else {
 			if (args[1].equalsIgnoreCase("DEBUG")) {
 				if (global.debug==false) {chat.warn(chat.color("gray", "Toggled debug mode") + chat.color(global.settings.get(0), "on")); global.debug=true;}
@@ -621,8 +619,32 @@ public class CommandTrigger extends CommandBase {
 					else {chat.warn(chat.color("red", "Not a valid color"));}
 					try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
 				}
+			} else if (args[1].equalsIgnoreCase("KILLFEED")) {
+				if (args.length>2) {
+					if (args[2].equalsIgnoreCase("POS") || args[2].equalsIgnoreCase("POSITION")) {
+						if (args.length>3) {
+							if (args[3].equalsIgnoreCase("TOP-LEFT") || args[3].equalsIgnoreCase("TL")) {
+								global.settings.set(3, "top-left");
+								chat.warn(chat.color("gray", "Changed killfeed position to ") + chat.color(global.settings.get(0), "top-left"));
+								try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+							} else if (args[3].equalsIgnoreCase("TOP-RIGHT") || args[3].equalsIgnoreCase("TR")) {
+								global.settings.set(3, "top-right");
+								chat.warn(chat.color("gray", "Changed killfeed position to ") + chat.color(global.settings.get(0), "top-right"));
+								try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+							} else {
+								chat.warn(chat.color("red", "/trigger settings killfeed position [top-left/top-right]"));
+							}
+						} else {
+							chat.warn(chat.color("red", "/trigger settings killfeed position [top-left/top-right]"));
+						}
+					} else {
+						chat.warn(chat.color("red", "/trigger settings killfeed [position] <...>"));
+					}
+				} else {
+					chat.warn(chat.color("red", "/trigger settings killfeed [position] <...>"));
+				}
 			} else {
-				chat.warn(chat.color("red", "/trigger settings [debug/color]"));
+				chat.warn(chat.color("red", "/trigger settings [debug/color/killfeed] <...>"));
 			}
 		}
 	}
