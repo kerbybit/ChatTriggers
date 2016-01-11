@@ -213,9 +213,11 @@ public class events {
 				sn = sn.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
 				snalt = snalt.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
 				
-				String efirst = sn.substring(0, sn.indexOf(snalt));
-				String esecond = sn.substring(sn.indexOf(snalt)+snalt.length());
-				snalt = stringFunctions(snalt);
+				if (sn.contains(snalt)) {
+					String efirst = sn.substring(0, sn.indexOf(snalt));
+					String esecond = sn.substring(sn.indexOf(snalt)+snalt.length());
+					snalt = stringFunctions(snalt);
+				}
 				
 				for (int i=0; i<global.USR_string.size(); i++) {
 					if (global.USR_string.get(i).get(0).equals(snalt)) {
@@ -242,7 +244,7 @@ public class events {
 		
 		while (sn.contains("{string[") && sn.contains("]}")) {
 			String testfor = sn.substring(sn.indexOf("]}", sn.indexOf("{string["))+2);
-			if (testfor.contains("]}.")) {
+			if (testfor.contains("]}.") && !testfor.contains("{string[")) {
 				if (testfor.indexOf("]}.") < testfor.indexOf("(")) {
 					testfor = "."+testfor.substring(testfor.indexOf("]}.")+3);
 				}
@@ -304,9 +306,11 @@ public class events {
 				sn = sn.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
 				snalt = snalt.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
 				
-				String efirst = sn.substring(0, sn.indexOf(snalt));
-				String esecond = sn.substring(sn.indexOf(snalt)+snalt.length());
-				snalt = stringFunctions(snalt);
+				if (sn.contains(snalt)) {
+					String efirst = sn.substring(0, sn.indexOf(snalt));
+					String esecond = sn.substring(sn.indexOf(snalt)+snalt.length());
+					snalt = stringFunctions(snalt);
+				}
 				
 				String returnString = "Not a string!";
 				
@@ -495,7 +499,7 @@ public class events {
 		
 		while (TMP_e.contains("{string[") && TMP_e.contains("]}")) {
 			String testfor = TMP_e.substring(TMP_e.indexOf("]}", TMP_e.indexOf("{string["))+2);
-			if (testfor.contains("]}.")) {
+			if (testfor.contains("]}.") && !testfor.contains("{string[")) {
 				if (testfor.indexOf("]}.") < testfor.indexOf("(")) {
 					testfor = "."+testfor.substring(testfor.indexOf("]}.")+3);
 				}
@@ -521,6 +525,9 @@ public class events {
 				TMP_e = TMP_e.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
 				sn = sn.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
 				
+				//if (TMP_e.contains(sn)) {
+					//TODO
+				//}
 				String efirst = TMP_e.substring(0, TMP_e.indexOf(sn));
 				String esecond = TMP_e.substring(TMP_e.indexOf(sn)+sn.length());
 				sn = stringFunctions(sn);
