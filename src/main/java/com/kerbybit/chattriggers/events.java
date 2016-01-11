@@ -151,7 +151,7 @@ public class events {
 		
 		while (args.contains("{string[") && args.contains("]}")) {
 			String testfor = args.substring(args.indexOf("]}", args.indexOf("{string["))+2);
-			if (testfor.contains("]}.")) {
+			if (testfor.contains("]}.") && !testfor.contains("{string[")) {
 				if (testfor.indexOf("]}.") < testfor.indexOf("(")) {
 					testfor = "."+testfor.substring(testfor.indexOf("]}.")+3);
 				}
