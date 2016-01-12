@@ -669,4 +669,10 @@ public class CommandTrigger extends CommandBase {
 			chat.warn(global.settings.get(0) + "Files loaded");
 		} catch (IOException e) {chat.warn(chat.color("red", "Error loading triggers!"));}
 	}
+
+	public String getCommandName() {return "trigger";}
+
+	public void processCommand(ICommandSender sender, String[] args) throws CommandException {
+		doCommand(args, false);
+	}
 }
