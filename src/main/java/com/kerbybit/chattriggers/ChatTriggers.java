@@ -204,7 +204,7 @@ public class ChatTriggers {
 			//draw killfeed
 			for (int i=0; i<global.killfeed.size(); i++) {
 				if (global.settings.get(3).equalsIgnoreCase("TOP-RIGHT") || global.settings.get(3).equalsIgnoreCase("TR")) {
-					ScaledResolution var5 = new ScaledResolution(MC);
+					ScaledResolution var5 = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
 					float var6 = var5.getScaledWidth();
 					MC.fontRendererObj.drawStringWithShadow(global.killfeed.get(i), var6 - MC.fontRendererObj.getStringWidth(global.killfeed.get(i)) - 5, i*10 + 5, 0xffffff);
 				} else {
@@ -293,7 +293,7 @@ public class ChatTriggers {
 	public void onClientTick(ClientTickEvent e) throws ClassNotFoundException {
 		for (int i=0; i<global.notify.size(); i++) {
 			if (global.notifyAnimation.get(i).get(0)==0) {
-				ScaledResolution var5 = new ScaledResolution(MC);
+				ScaledResolution var5 = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
 				float var6 = var5.getScaledWidth(); 
 				global.notifyAnimation.get(i).set(4, var6 - MC.fontRendererObj.getStringWidth(global.notify.get(i)) - 5);
 				global.notifyAnimation.get(i).set(5, var6);
@@ -317,7 +317,7 @@ public class ChatTriggers {
 				if (global.notifyAnimation.get(i).get(1) < global.notifyAnimation.get(i).get(5)) {
 					global.notifyAnimation.get(i).set(1, global.notifyAnimation.get(i).get(1) - (global.notifyAnimation.get(i).get(4)-global.notifyAnimation.get(i).get(1))/10);
 				} else {
-					ScaledResolution var5 = new ScaledResolution(MC);
+					ScaledResolution var5 = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
 					float var6 = var5.getScaledHeight(); 
 					if (global.notifyAnimation.get(i).get(2) == var6-50 || global.notify.size()==1) {
 						global.notifySize = 0;

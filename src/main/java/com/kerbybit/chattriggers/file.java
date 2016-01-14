@@ -575,5 +575,6 @@ public class file {
 		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
 		if (global.settings.size() < 3) {global.settings.add("null");}
 		if (global.settings.size() < 4) {global.settings.add("top-left");}
+		try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
 	}
 }

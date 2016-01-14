@@ -157,6 +157,11 @@ public class events {
 				}
 			}
 			if (testfor.startsWith(".") && testfor.contains("(") && testfor.contains(")")) {
+				if (testfor.substring(testfor.indexOf("."), testfor.indexOf("(")).contains(" ")) {
+					testfor = testfor.substring(1);
+				}
+			}
+			if (testfor.startsWith(".") && testfor.contains("(") && testfor.contains(")")) {
 				String snalt = args.substring(args.indexOf("{string[")+8, args.indexOf("]}.", args.indexOf("{string[")));
 				String funcalt = args.substring(args.indexOf("]}.", args.indexOf("{string["))+3, args.indexOf("(", args.indexOf("]}.", args.indexOf("{string["))));
 				String argsalt = args.substring(args.indexOf("(", args.indexOf("]}.", args.indexOf("{string[")))+1, args.indexOf(")",  args.indexOf("(", args.indexOf("]}.", args.indexOf("{string[")))));
@@ -247,6 +252,11 @@ public class events {
 			if (testfor.contains("]}.") && !testfor.contains("{string[")) {
 				if (testfor.indexOf("]}.") < testfor.indexOf("(")) {
 					testfor = "."+testfor.substring(testfor.indexOf("]}.")+3);
+				}
+			}
+			if (testfor.startsWith(".") && testfor.contains("(") && testfor.contains(")")) {
+				if (testfor.substring(testfor.indexOf("."), testfor.indexOf("(")).contains(" ")) {
+					testfor = testfor.substring(1);
 				}
 			}
 			if (testfor.startsWith(".") && testfor.contains("(") && testfor.contains(")")) {
@@ -494,7 +504,7 @@ public class events {
 		
 		return returnstring;
 	}
-
+ 
 	public static String stringFunctions(String TMP_e) {
 		
 		while (TMP_e.contains("{string[") && TMP_e.contains("]}")) {
@@ -502,6 +512,11 @@ public class events {
 			if (testfor.contains("]}.") && !testfor.contains("{string[")) {
 				if (testfor.indexOf("]}.") < testfor.indexOf("(")) {
 					testfor = "."+testfor.substring(testfor.indexOf("]}.")+3);
+				}
+			}
+			if (testfor.startsWith(".") && testfor.contains("(") && testfor.contains(")")) {
+				if (testfor.substring(testfor.indexOf("."), testfor.indexOf("(")).contains(" ")) {
+					testfor = testfor.substring(1);
 				}
 			}
 			if (testfor.startsWith(".") && testfor.contains("(") && testfor.contains(")")) {
@@ -602,68 +617,6 @@ public class events {
 	}
 	
 	public static String legacyFunctions(String TMP_e, String stringInterrupt, String stringCommaReplace) {
-		while (TMP_e.contains(".replace(") && TMP_e.contains(")")) {
-			String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".replace("));
-			String[] checkTo = TMP_e.substring(TMP_e.indexOf(".replace(")+9, TMP_e.indexOf(")", TMP_e.indexOf(".replace("))).split(",");
-			
-			while (checkFrom.contains(stringInterrupt)) {
-				checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
-			}
-			
-			if (checkTo.length==2) {
-				TMP_e = TMP_e.replace(checkFrom + ".replace(" + checkTo[0] + "," + checkTo[1] + ")", checkFrom.replace(checkTo[0], checkTo[1]));
-			} else if (checkTo.length==1) {
-				TMP_e = TMP_e.replace(checkFrom + ".replace(" + checkTo[0] + ",)", checkFrom.replace(checkTo[0], ""));
-				TMP_e = TMP_e.replace(checkFrom + ".replace(" + checkTo[0] + ")", checkFrom.replace(checkTo[0], ""));
-			} else if (checkTo.length==0) {
-				chat.warn(chat.color("red", "Malformed .replace(toReplace,replacement) function - skipping"));
-				TMP_e = TMP_e.replace(checkFrom + ".replace(,)", checkFrom.replace(checkTo[0], ""));
-				TMP_e = TMP_e.replace(checkFrom + ".replace()", checkFrom.replace(checkTo[0], ""));
-			}
-		}
-		
-		while (TMP_e.contains(".toUpper()")) {
-			String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".toUpper()"));
-			
-			while (checkFrom.contains(stringInterrupt)) {
-				checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
-			}
-			
-			TMP_e = TMP_e.replace(checkFrom + ".toUpper()", checkFrom.toUpperCase().replace(stringInterrupt.toUpperCase(), stringInterrupt).replace(stringCommaReplace.toUpperCase(), stringCommaReplace));
-		}
-			
-		while (TMP_e.contains(".toLower()")) {
-			String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".toLower()"));
-			
-			while (checkFrom.contains(stringInterrupt)) {
-				checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
-			}
-			
-			TMP_e = TMP_e.replace(checkFrom + ".toLower()", checkFrom.toLowerCase().replace(stringInterrupt.toLowerCase(), stringInterrupt).replace(stringCommaReplace.toLowerCase(), stringCommaReplace));
-		}
-		
-		while (TMP_e.contains(".prefix(") && TMP_e.contains(")")) {
-			String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".prefix("));
-			String checkTo = TMP_e.substring(TMP_e.indexOf(".prefix(")+8, TMP_e.indexOf(")"));
-			
-			while (checkFrom.contains(stringInterrupt)) {
-				checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
-			}
-			
-			TMP_e = TMP_e.replace(checkFrom + ".prefix(" + checkTo + ")", checkTo.replace(stringInterrupt, "") + checkFrom);
-		}
-		
-		while (TMP_e.contains(".suffix(") && TMP_e.contains(")")) {
-			String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".suffix("));
-			String checkTo = TMP_e.substring(TMP_e.indexOf(".suffix(")+8, TMP_e.indexOf(")"));
-			
-			while (checkFrom.contains(stringInterrupt)) {
-				checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
-			}
-			
-			TMP_e = TMP_e.replace(checkFrom + ".suffix(" + checkTo + ")", checkFrom + checkTo.replace(stringInterrupt, ""));
-		}
-		
 		while (TMP_e.contains("string.set(") && TMP_e.contains(")")) {
 			String[] args = TMP_e.substring(TMP_e.indexOf("string.set(") + 11,TMP_e.indexOf(")",TMP_e.indexOf("string.set("))).split(",");
 			if (args.length==2) {
@@ -780,18 +733,7 @@ public class events {
 				TMP_e = TMP_e.replace("<pitch=" + TMP_tstring + ">", "");
 			}
 			
-		//add formatting where needed
-			if (TMP_c.equalsIgnoreCase("SAY") || TMP_c.equalsIgnoreCase("CHAT") || TMP_c.equalsIgnoreCase("KILLFEED") || TMP_c.equalsIgnoreCase("NOTIFY")) {
-				if (TMP_c.equalsIgnoreCase("SAY")) {
-					if (Minecraft.getMinecraft().isSingleplayer()==false) {
-						TMP_e = chat.addFormatting(TMP_e);
-					}
-				} else {
-					TMP_e = chat.addFormatting(TMP_e);
-				}
-			}
-			
-		//functions
+		//user strings and functions
 			TMP_e = TMP_e.replace("{string<", "{string[").replace("{array<", "{array[").replace(">}", "]}");
 			
 			//setup backup for functions so strings dont get overwritten
@@ -810,58 +752,19 @@ public class events {
 			
 			
 
-			//TMP_e = legacyFunctions(TMP_e, stringInterrupt, stringCommaReplace);
+			TMP_e = legacyFunctions(TMP_e, stringInterrupt, stringCommaReplace);
 			
 			
-			while (TMP_e.contains(".equals(") && TMP_e.contains(")")) {
-				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".equals("));
-				String checkTo = TMP_e.substring(TMP_e.indexOf(".equals(")+8, TMP_e.indexOf(")", TMP_e.indexOf(".equals(")));
-				
-				while (checkFrom.contains(stringInterrupt)) {
-					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
+		//add formatting where needed
+			if (TMP_c.equalsIgnoreCase("SAY") || TMP_c.equalsIgnoreCase("CHAT") || TMP_c.equalsIgnoreCase("KILLFEED") || TMP_c.equalsIgnoreCase("NOTIFY")) {
+				if (TMP_c.equalsIgnoreCase("SAY")) {
+					if (Minecraft.getMinecraft().isSingleplayer()==false) {
+						TMP_e = chat.addFormatting(TMP_e);
+					}
+				} else {
+					TMP_e = chat.addFormatting(TMP_e);
 				}
-				
-				if (checkFrom.equals(checkTo.replace(stringInterrupt, ""))) {TMP_e = TMP_e.replace(checkFrom + ".equals(" + checkTo + ")", "true");} 
-				else {TMP_e = TMP_e.replace(checkFrom + ".equals(" + checkTo + ")", "false");}
 			}
-			
-			while (TMP_e.contains(".startsWith(") && TMP_e.contains(")")) {
-				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".startsWith("));
-				String checkTo = TMP_e.substring(TMP_e.indexOf(".startsWith(")+12, TMP_e.indexOf(")", TMP_e.indexOf(".startsWith(")));
-				
-				while (checkFrom.contains(stringInterrupt)) {
-					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
-				}
-				
-				if (checkFrom.startsWith(checkTo.replace(stringInterrupt, ""))) {TMP_e = TMP_e.replace(checkFrom + ".startsWith(" + checkTo + ")", "true");} 
-				else {TMP_e = TMP_e.replace(checkFrom + ".startsWith(" + checkTo + ")", "false");}
-			}
-			
-			while (TMP_e.contains(".contains(") && TMP_e.contains(")")) {
-				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".contains("));
-				String checkTo = TMP_e.substring(TMP_e.indexOf(".contains(")+10, TMP_e.indexOf(")", TMP_e.indexOf(".contains(")));
-				
-				while (checkFrom.contains(stringInterrupt)) {
-					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
-				}
-				
-				if (checkFrom.contains(checkTo.replace(stringInterrupt, ""))) {TMP_e = TMP_e.replace(checkFrom + ".contains(" + checkTo + ")", "true");} 
-				else {TMP_e = TMP_e.replace(checkFrom + ".contains(" + checkTo + ")", "false");}
-			}
-			
-			while (TMP_e.contains(".endsWith(") && TMP_e.contains(")")) {
-				String checkFrom = TMP_e.substring(0, TMP_e.indexOf(".endsWith("));
-				String checkTo = TMP_e.substring(TMP_e.indexOf(".endsWith(")+10, TMP_e.indexOf(")", TMP_e.indexOf(".endsWith(")));
-				
-				while (checkFrom.contains(stringInterrupt)) {
-					checkFrom = checkFrom.substring(checkFrom.indexOf(stringInterrupt) + stringInterrupt.length(),checkFrom.length());
-				}
-				
-				if (checkFrom.endsWith(checkTo.replace(stringInterrupt, ""))) {TMP_e = TMP_e.replace(checkFrom + ".endsWith(" + checkTo + ")", "true");} 
-				else {TMP_e = TMP_e.replace(checkFrom + ".endsWith(" + checkTo + ")", "false");}
-			}
-			
-			
 			
 			
 			
