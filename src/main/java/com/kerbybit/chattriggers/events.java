@@ -20,7 +20,7 @@ public class events {
 		doEvents(tmp_event, chatEvent, snull, snull);
 	}
 	
-	public static String arrayFunctions(String TMP_e, String stringInterrupt) {
+	public static String arrayFunctions(String TMP_e) {
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.add(") && TMP_e.contains(")")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.add(", TMP_e.indexOf("{array[")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.add(")+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.add(")));
@@ -28,7 +28,7 @@ public class events {
 			
 			for (int j=0; j<global.USR_array.size(); j++) {
 				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
-					global.USR_array.get(j).add(checkTo.replace(stringInterrupt, ""));
+					global.USR_array.get(j).add(checkTo);
 					isArray = true;
 				}
 			}
@@ -40,19 +40,29 @@ public class events {
 				global.USR_array.add(prearray);
 			}
 			
-			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.add(" + checkTo + ")", stringInterrupt+checkTo.replace(stringInterrupt, ""));
+			List<String> temporary = new ArrayList<String>();
+			temporary.add("ArrayToString->"+checkFrom+"ADD"+checkTo+"-"+(global.USR_string.size()+1));
+			temporary.add(checkTo);
+			global.USR_string.add(temporary);
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.add(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"ADD"+checkTo+"-"+global.USR_string.size()+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.clear()")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.clear()", TMP_e.indexOf("{array[")));
+			String returnString = checkFrom + " is not an array!";
 			
 			for (int j=0; j<global.USR_array.size(); j++) {
 				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
 					global.USR_array.remove(j);
+					returnString = checkFrom + " cleared.";
 				}
 			}
 			
-			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.clear()", stringInterrupt+checkFrom + " cleared.");
+			List<String> temporary = new ArrayList<String>();
+			temporary.add("ArrayToString->"+checkFrom+"CLEAR"+"-"+(global.USR_string.size()+1));
+			temporary.add(returnString);
+			global.USR_string.add(temporary);
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.clear()", "{string[ArrayToString->"+checkFrom+"CLEAR"+"-"+global.USR_string.size()+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.has(") && TMP_e.contains(")")) {
@@ -63,14 +73,18 @@ public class events {
 			for (int j=0; j<global.USR_array.size(); j++) {
 				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
 					for (int k=1; k<global.USR_array.get(j).size(); k++) {
-						if (global.USR_array.get(j).get(k).equals(checkTo.replace(stringInterrupt, ""))) {
+						if (global.USR_array.get(j).get(k).equals(checkTo)) {
 							checkThis = "true";
 						}
 					}
 				}
 			}
 			
-			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.has("+checkTo+")", checkThis);
+			List<String> temporary = new ArrayList<String>();
+			temporary.add("ArrayToString->"+checkFrom+"HAS"+checkTo+"-"+(global.USR_string.size()+1));
+			temporary.add(checkThis);
+			global.USR_string.add(temporary);
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.has("+checkTo+")", "{string[ArrayToString->"+checkFrom+"HAS"+checkTo+"-"+global.USR_string.size()+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.remove(") && TMP_e.contains(")")) {
@@ -79,34 +93,40 @@ public class events {
 			String removed = "";
 			int toRemove = -1;
 			int toRemoveArray = -1;
+			String returnString = checkFrom + " is not an array!";
 			
 			try {
-				toRemove = Integer.parseInt(checkTo.replace(stringInterrupt, ""));
+				toRemove = Integer.parseInt(checkTo);
 				if (toRemove > 0) {
 					for (int j=0; j<global.USR_array.size(); j++) {
 						if (global.USR_array.get(j).get(0).equals(checkFrom)) {
 							if (toRemove < global.USR_array.get(j).size()) {
 								removed = global.USR_array.get(j).remove(toRemove);
+								returnString = removed;
 								if (global.USR_array.get(j).size()==1) {
 									toRemoveArray = j;
 								}
 							} else {
-								chat.warn(chat.color("red", "{array}.remove($value) - $value over bounds (index " + toRemove + ")"));
+								returnString = "Value over bounds! (index "+toRemove+" - expecting "+global.USR_array.size()+")";
 							}
 						}
 					}
 				} else {
-					chat.warn(chat.color("red", "{array}.remove($value) - $value under bounds (index " + toRemove + ")"));
+					returnString = "{array}.remove($value) - Value under bounds! (index "+toRemove+" - expecting 1)";
 				}
 			} catch (NumberFormatException e) {
-				chat.warn(chat.color("red", "{array}.remove($value) - $value must be an integer!"));
+				returnString = "Value must be an integer!";
 			}
 			
 			if (toRemoveArray != -1) {
 				global.USR_array.remove(toRemoveArray);
 			}
 			
-			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.remove(" + checkTo + ")", stringInterrupt+removed);
+			List<String> temporary = new ArrayList<String>();
+			temporary.add("ArrayToString->"+checkFrom+"REMOVE"+checkTo+"-"+(global.USR_string.size()+1));
+			temporary.add(returnString);
+			global.USR_string.add(temporary);
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.remove(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"REMOVE"+checkTo+"-"+global.USR_string.size()+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.size()")) {
@@ -119,7 +139,11 @@ public class events {
 				}
 			}
 			
-			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.size()", stringInterrupt+arraysize);
+			List<String> temporary = new ArrayList<String>();
+			temporary.add("ArrayToString->"+checkFrom+"SIZE"+"-"+(global.USR_string.size()+1));
+			temporary.add(arraysize+"");
+			global.USR_string.add(temporary);
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.size()", "{string[ArrayToString->"+checkFrom+"SIZE"+"-"+global.USR_string.size()+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.importJsonFile(") && TMP_e.contains(",") && TMP_e.contains(")")) {
@@ -127,9 +151,13 @@ public class events {
 			String checkFile = TMP_e.substring(TMP_e.indexOf("]}.importJsonFile(")+18, TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile(")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile("))+1, TMP_e.indexOf(")", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile("+checkFile+",")));
 			
-			String checkJson = file.importJsonFile("array",checkFile.replace(stringInterrupt, ""), checkFrom.replace(stringInterrupt, "") + "=>" + checkTo.replace(stringInterrupt, ""));
+			String checkJson = file.importJsonFile("array",checkFile, checkFrom+"=>"+checkTo);
 			
-			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonFile("+checkFile+","+checkTo+")", stringInterrupt + checkJson);
+			List<String> temporary = new ArrayList<String>();
+			temporary.add("ArrayToString->"+checkFrom+"IMPORTJSONFILE"+checkTo+"FROM"+checkFile+"-"+(global.USR_string.size()+1));
+			temporary.add(checkJson);
+			global.USR_string.add(temporary);
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonFile("+checkFile+","+checkTo+")", "{string[ArrayToString->"+checkFrom+"IMPORTJSONFILE"+checkTo+"FROM"+checkFile+"-"+global.USR_string.size()+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.importJsonURL(") && TMP_e.contains(",") && TMP_e.contains(")")) {
@@ -137,9 +165,13 @@ public class events {
 			String checkFile = TMP_e.substring(TMP_e.indexOf("]}.importJsonURL(")+17, TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL(")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL("))+1, TMP_e.indexOf(")", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL("+checkFile+",")));
 			
-			String checkJson = file.importJsonURL("array",checkFile.replace(stringInterrupt, ""), checkFrom.replace(stringInterrupt, "") + "=>" + checkTo.replace(stringInterrupt, ""));
+			String checkJson = file.importJsonURL("array",checkFile, checkFrom + "=>" + checkTo);
 			
-			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonURL("+checkFile+","+checkTo+")", stringInterrupt + checkJson);
+			List<String> temporary = new ArrayList<String>();
+			temporary.add("ArrayToString->"+checkFrom+"IMPORTJSONURL"+checkTo+"FROM"+checkFile+"-"+(global.USR_string.size()+1));
+			temporary.add(checkJson);
+			global.USR_string.add(temporary);
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonURL("+checkFile+","+checkTo+")", "{string[ArrayToString->"+checkFrom+"IMPORTJSONURL"+checkTo+"FROM"+checkFile+"-"+global.USR_string.size()+"]}");
 		}
 		
 		return TMP_e;
@@ -234,7 +266,7 @@ public class events {
 				String firstpart = args.substring(0, args.indexOf(fullreplace));
 				String secondpart = args.substring(args.indexOf(fullreplace)+fullreplace.length());
 				
-				args = firstpart + returnString + secondpart;
+				args = firstpart + returnString.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement") + secondpart;
 				global.USR_string.clear();
 				for (int i=0; i<backupUSR_strings.size(); i++) {
 					String first = backupUSR_strings.get(i).get(0);
@@ -334,7 +366,7 @@ public class events {
 				String firstpart = sn.substring(0, sn.indexOf(fullreplace));
 				String secondpart = sn.substring(sn.indexOf(fullreplace)+fullreplace.length());
 				
-				sn = firstpart + returnString + secondpart;
+				sn = firstpart + returnString.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement") + secondpart;
 				
 				global.USR_string.clear();
 				for (int i=0; i<backupUSR_strings.size(); i++) {
@@ -540,9 +572,6 @@ public class events {
 				TMP_e = TMP_e.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
 				sn = sn.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
 				
-				//if (TMP_e.contains(sn)) {
-					//TODO
-				//}
 				String efirst = TMP_e.substring(0, TMP_e.indexOf(sn));
 				String esecond = TMP_e.substring(TMP_e.indexOf(sn)+sn.length());
 				sn = stringFunctions(sn);
@@ -599,7 +628,7 @@ public class events {
 				String firstpart = TMP_e.substring(0, TMP_e.indexOf(fullreplace));
 				String secondpart = TMP_e.substring(TMP_e.indexOf(fullreplace)+fullreplace.length());
 				
-				TMP_e = firstpart + returnString + secondpart;
+				TMP_e = firstpart + returnString.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement") + secondpart;
 				
 				global.USR_string.clear();
 				for (int i=0; i<backupUSR_strings.size(); i++) {
@@ -616,20 +645,20 @@ public class events {
 		return TMP_e;
 	}
 	
-	public static String legacyFunctions(String TMP_e, String stringInterrupt, String stringCommaReplace) {
+	public static String legacyFunctions(String TMP_e) {
 		while (TMP_e.contains("string.set(") && TMP_e.contains(")")) {
 			String[] args = TMP_e.substring(TMP_e.indexOf("string.set(") + 11,TMP_e.indexOf(")",TMP_e.indexOf("string.set("))).split(",");
 			if (args.length==2) {
 				try {
-					int num = Integer.parseInt(args[0].replace(stringInterrupt, ""));
+					int num = Integer.parseInt(args[0]);
 					if (num>0 && num<global.USR_string.size()) {
-						global.USR_string.get(num).set(1, args[1].replace(stringInterrupt, ""));
+						global.USR_string.get(num).set(1, args[1]);
 						TMP_e = TMP_e.replace("string.set(" + args[0] + "," + args[1] + ")", args[1]);
 					}
 				} catch (NumberFormatException e) {
 					for (int j=0; j<global.USR_string.size(); j++) {
-						if (global.USR_string.get(j).get(0).equals(args[0].replace(stringInterrupt, ""))) {
-							global.USR_string.get(j).set(1, args[1].replace(stringInterrupt, ""));
+						if (global.USR_string.get(j).get(0).equals(args[0])) {
+							global.USR_string.get(j).set(1, args[1]);
 							TMP_e = TMP_e.replace("string.set(" + args[0] + "," + args[1] + ")", args[1]);
 						}
 					}
@@ -641,16 +670,16 @@ public class events {
 			String[] args = TMP_e.substring(TMP_e.indexOf("string.save(") + 12,TMP_e.indexOf(")",TMP_e.indexOf("string.save("))).split(",");
 			if (args.length==2) {
 				try {
-					int num = Integer.parseInt(args[0].replace(stringInterrupt, ""));
+					int num = Integer.parseInt(args[0]);
 					if (num>0 && num<global.USR_string.size()) {
-						global.USR_string.get(num).set(1, args[1].replace(stringInterrupt, ""));
+						global.USR_string.get(num).set(1, args[1]);
 						try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
 						TMP_e = TMP_e.replace("string.save(" + args[0] + "," + args[1] + ")", args[1]);
 					}
 				} catch (NumberFormatException e) {
 					for (int j=0; j<global.USR_string.size(); j++) {
-						if (global.USR_string.get(j).get(0).equals(args[0].replace(stringInterrupt, ""))) {
-							global.USR_string.get(j).set(1, args[1].replace(stringInterrupt, ""));
+						if (global.USR_string.get(j).get(0).equals(args[0])) {
+							global.USR_string.get(j).set(1, args[1]);
 							try {file.saveAll();} catch (IOException e1) {chat.warn(chat.color("red", "Error saving triggers!"));}
 							TMP_e = TMP_e.replace("string.save(" + args[0] + "," + args[1] + ")", args[1]);
 						}
@@ -665,7 +694,6 @@ public class events {
 	public static void doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, String[] toreplace, String[] replacement) {
 		
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
-		String stringInterrupt = "stringInterruptorF6cyUQp9stringInterruptor";
 		String stringCommaReplace = "stringCommaReplacementF6cyUQp9stringCommaReplacement";
 		
 		if (toreplace != null) {
@@ -697,38 +725,38 @@ public class events {
 			
 		//built in strings
 			if (chatEvent!=null) {TMP_e = TMP_e.replace("{msg}", chatEvent.message.getFormattedText());}
-			TMP_e = TMP_e.replace("{trigsize}", stringInterrupt+global.trigger.size()+"");
-			TMP_e = TMP_e.replace("{notifysize}", stringInterrupt+global.notifySize+"");
-			TMP_e = TMP_e.replace("{me}", stringInterrupt+Minecraft.getMinecraft().thePlayer.getDisplayNameString());
+			TMP_e = TMP_e.replace("{trigsize}", global.trigger.size()+"");
+			TMP_e = TMP_e.replace("{notifysize}", global.notifySize+"");
+			TMP_e = TMP_e.replace("{me}", Minecraft.getMinecraft().thePlayer.getDisplayNameString());
 			if (TMP_e.contains("{server}")) {
 				String current_server = "";
 				if (Minecraft.getMinecraft().isSingleplayer()) {current_server = "SinglePlayer";} 
 				else {current_server = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
-				TMP_e = TMP_e.replace("{server}", stringInterrupt+current_server);
+				TMP_e = TMP_e.replace("{server}", current_server);
 			}
 			
 		//tags
 			if (TMP_e.contains("<time=") && TMP_e.contains(">")) {
 				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("<time=")+6, TMP_e.indexOf(">",TMP_e.indexOf("<time=")));
-				try {TMP_t = Integer.parseInt(TMP_tstring.replace(stringInterrupt, ""));}
+				try {TMP_t = Integer.parseInt(TMP_tstring);}
 				catch (NumberFormatException e) {e.printStackTrace();}
 				TMP_e = TMP_e.replace("<time=" + TMP_tstring + ">", "");
 			}
 			if (TMP_e.contains("<pos=") && TMP_e.contains(">")) {
 				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("<pos=")+5, TMP_e.indexOf(">",TMP_e.indexOf("<pos=")));
-				try {TMP_p = Integer.parseInt(TMP_tstring.replace(stringInterrupt, ""));}
+				try {TMP_p = Integer.parseInt(TMP_tstring);}
 				catch (NumberFormatException e) {e.printStackTrace();}
 				TMP_e = TMP_e.replace("<pos=" + TMP_tstring + ">", "");
 			}
 			if (TMP_e.contains("<vol=") && TMP_e.contains(">")) {
 				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("<vol=")+5, TMP_e.indexOf(">",TMP_e.indexOf("<vol=")));
-				try {TMP_v = Integer.parseInt(TMP_tstring.replace(stringInterrupt, ""));}
+				try {TMP_v = Integer.parseInt(TMP_tstring);}
 				catch (NumberFormatException e) {e.printStackTrace();}
 				TMP_e = TMP_e.replace("<vol=" + TMP_tstring + ">", "");
 			}
 			if (TMP_e.contains("<pitch=") && TMP_e.contains(">")) {
 				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("<pitch=")+7, TMP_e.indexOf(">",TMP_e.indexOf("<pitch=")));
-				try {TMP_pi = Integer.parseInt(TMP_tstring.replace(stringInterrupt, ""));}
+				try {TMP_pi = Integer.parseInt(TMP_tstring);}
 				catch (NumberFormatException e) {e.printStackTrace();}
 				TMP_e = TMP_e.replace("<pitch=" + TMP_tstring + ">", "");
 			}
@@ -748,11 +776,10 @@ public class events {
 			}
 			
 			TMP_e = stringFunctions(TMP_e);
-			TMP_e = arrayFunctions(TMP_e, stringInterrupt);
+			TMP_e = arrayFunctions(TMP_e);
+			TMP_e = stringFunctions(TMP_e);
 			
-			
-
-			TMP_e = legacyFunctions(TMP_e, stringInterrupt, stringCommaReplace);
+			TMP_e = legacyFunctions(TMP_e);
 			
 			
 		//add formatting where needed
@@ -765,11 +792,6 @@ public class events {
 					TMP_e = chat.addFormatting(TMP_e);
 				}
 			}
-			
-			
-			
-		//clear out interrupt
-			TMP_e = TMP_e.replace(stringInterrupt, "");
 			
 		//non-logic events
 			if (TMP_c.equalsIgnoreCase("TRIGGER")) {doTrigger(TMP_e, chatEvent);}

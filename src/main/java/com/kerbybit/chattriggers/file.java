@@ -233,8 +233,6 @@ public class file {
 		return returnString;
 	}
 	
-	
-	
 	public static void saveExport(List<List<String>> trigger, List<List<String>> USR_string, String fileName) throws IOException {
 		String username = Minecraft.getMinecraft().thePlayer.getDisplayNameString();
 		List<String> tmp_list = new ArrayList<String>();
