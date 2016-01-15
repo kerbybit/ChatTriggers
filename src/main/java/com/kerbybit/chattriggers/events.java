@@ -695,6 +695,7 @@ public class events {
 		
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
 		String stringCommaReplace = "stringCommaReplacementF6cyUQp9stringCommaReplacement";
+		Boolean hasTempString = false;
 		
 		if (toreplace != null) {
 			for (int i=0; i<toreplace.length; i++) {
@@ -724,15 +725,51 @@ public class events {
 			int TMP_pi = 1;
 			
 		//built in strings
-			if (chatEvent!=null) {TMP_e = TMP_e.replace("{msg}", chatEvent.message.getFormattedText());}
-			TMP_e = TMP_e.replace("{trigsize}", global.trigger.size()+"");
-			TMP_e = TMP_e.replace("{notifysize}", global.notifySize+"");
-			TMP_e = TMP_e.replace("{me}", Minecraft.getMinecraft().thePlayer.getDisplayNameString());
+			if (chatEvent!=null) {
+				if (TMP_e.contains("{msg}")) {
+					List<String> temporary = new ArrayList<String>();
+					temporary.add("DefaultString->MSG-"+(global.USR_string.size()+1));
+					temporary.add(chatEvent.message.getFormattedText());
+					global.USR_string.add(temporary);
+					TMP_e = TMP_e.replace("{msg}", "{string[DefaultString->MSG-"+global.USR_string.size()+"]}");
+					hasTempString = true;
+				}
+			}
+			if (TMP_e.contains("{trigsize}")) {
+				List<String> temporary = new ArrayList<String>();
+				temporary.add("DefaultString->TRIGSIZE-"+(global.USR_string.size()+1));
+				temporary.add(global.trigger.size()+"");
+				global.USR_string.add(temporary);
+				TMP_e = TMP_e.replace("{trigsize}", "{string[DefaultString->TRIGSIZE-"+global.USR_string.size()+"]}");
+				hasTempString = true;
+			}
+			if (TMP_e.contains("{notifysize")) {
+				List<String> temporary = new ArrayList<String>();
+				temporary.add("DefaultString->NOTIFYSIZE-"+(global.USR_string.size()+1));
+				temporary.add(global.notifySize+"");
+				global.USR_string.add(temporary);
+				TMP_e = TMP_e.replace("{notifysize}", "{string[DefaultString->NOTIFYSIZE-"+global.USR_string.size()+"]}");
+				hasTempString = true;
+			}
+			if (TMP_e.contains("{me}")) {
+				List<String> temporary = new ArrayList<String>();
+				temporary.add("DefaultString->ME-"+(global.USR_string.size()+1));
+				temporary.add(Minecraft.getMinecraft().thePlayer.getDisplayNameString());
+				global.USR_string.add(temporary);
+				TMP_e = TMP_e.replace("{me}", "{string[DefaultString->ME-"+global.USR_string.size()+"]}");
+				hasTempString = true;
+			}
 			if (TMP_e.contains("{server}")) {
 				String current_server = "";
 				if (Minecraft.getMinecraft().isSingleplayer()) {current_server = "SinglePlayer";} 
 				else {current_server = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
-				TMP_e = TMP_e.replace("{server}", current_server);
+				
+				List<String> temporary = new ArrayList<String>();
+				temporary.add("DefaultString->SERVER-"+(global.USR_string.size()+1));
+				temporary.add(current_server);
+				global.USR_string.add(temporary);
+				TMP_e = TMP_e.replace("{server}", "{string[DefaultString->SERVER-"+global.USR_string.size()+"]}");
+				hasTempString = true;
 			}
 			
 		//tags
@@ -1073,10 +1110,13 @@ public class events {
 			}
 		}
 		
-		if (toreplace != null) {
+		if (toreplace != null || hasTempString == true) {
 			List<List<String>> tempchecklist = new ArrayList<List<String>>();
 			for (int i=0; i<global.USR_string.size(); i++) {
-				if (!global.USR_string.get(i).get(0).startsWith("TriggerArgument")) {
+				if (global.USR_string.get(i).get(0).startsWith("TriggerArgument")
+				|| global.USR_string.get(i).get(0).startsWith("DefaultString->")) {
+					//do nothing
+				} else {
 					tempchecklist.add(global.USR_string.get(i));
 				}
 			}
