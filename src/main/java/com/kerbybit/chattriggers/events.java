@@ -44,6 +44,7 @@ public class events {
 			temporary.add("ArrayToString->"+checkFrom+"ADD"+checkTo+"-"+(global.USR_string.size()+1));
 			temporary.add(checkTo);
 			global.USR_string.add(temporary);
+			backupUSR_strings.add(temporary);
 			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.add(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"ADD"+checkTo+"-"+global.USR_string.size()+"]}");
 		}
 		
@@ -62,6 +63,7 @@ public class events {
 			temporary.add("ArrayToString->"+checkFrom+"CLEAR"+"-"+(global.USR_string.size()+1));
 			temporary.add(returnString);
 			global.USR_string.add(temporary);
+			backupUSR_strings.add(temporary);
 			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.clear()", "{string[ArrayToString->"+checkFrom+"CLEAR"+"-"+global.USR_string.size()+"]}");
 		}
 		
@@ -84,6 +86,7 @@ public class events {
 			temporary.add("ArrayToString->"+checkFrom+"HAS"+checkTo+"-"+(global.USR_string.size()+1));
 			temporary.add(checkThis);
 			global.USR_string.add(temporary);
+			backupUSR_strings.add(temporary);
 			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.has("+checkTo+")", "{string[ArrayToString->"+checkFrom+"HAS"+checkTo+"-"+global.USR_string.size()+"]}");
 		}
 		
@@ -126,6 +129,7 @@ public class events {
 			temporary.add("ArrayToString->"+checkFrom+"REMOVE"+checkTo+"-"+(global.USR_string.size()+1));
 			temporary.add(returnString);
 			global.USR_string.add(temporary);
+			backupUSR_strings.add(temporary);
 			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.remove(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"REMOVE"+checkTo+"-"+global.USR_string.size()+"]}");
 		}
 		
@@ -143,6 +147,7 @@ public class events {
 			temporary.add("ArrayToString->"+checkFrom+"SIZE"+"-"+(global.USR_string.size()+1));
 			temporary.add(arraysize+"");
 			global.USR_string.add(temporary);
+			backupUSR_strings.add(temporary);
 			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.size()", "{string[ArrayToString->"+checkFrom+"SIZE"+"-"+global.USR_string.size()+"]}");
 		}
 		
@@ -157,6 +162,7 @@ public class events {
 			temporary.add("ArrayToString->"+checkFrom+"IMPORTJSONFILE"+checkTo+"FROM"+checkFile+"-"+(global.USR_string.size()+1));
 			temporary.add(checkJson);
 			global.USR_string.add(temporary);
+			backupUSR_strings.add(temporary);
 			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonFile("+checkFile+","+checkTo+")", "{string[ArrayToString->"+checkFrom+"IMPORTJSONFILE"+checkTo+"FROM"+checkFile+"-"+global.USR_string.size()+"]}");
 		}
 		
@@ -171,6 +177,7 @@ public class events {
 			temporary.add("ArrayToString->"+checkFrom+"IMPORTJSONURL"+checkTo+"FROM"+checkFile+"-"+(global.USR_string.size()+1));
 			temporary.add(checkJson);
 			global.USR_string.add(temporary);
+			backupUSR_strings.add(temporary);
 			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonURL("+checkFile+","+checkTo+")", "{string[ArrayToString->"+checkFrom+"IMPORTJSONURL"+checkTo+"FROM"+checkFile+"-"+global.USR_string.size()+"]}");
 		}
 		
@@ -720,7 +727,7 @@ public class events {
 			if (!TMP_e.contains(" ")) {TMP_c = TMP_e; TMP_e="";}
 			else {TMP_c = TMP_e.substring(0, TMP_e.indexOf(" ")); TMP_e = TMP_e.substring(TMP_e.indexOf(" ")+1, TMP_e.length());}
 			int TMP_t = 50;
-			int TMP_p = 0;
+			int TMP_p = global.notifySize;
 			int TMP_v = 10000;
 			int TMP_pi = 1;
 			
@@ -742,6 +749,7 @@ public class events {
 					temporary.add("DefaultString->MSG-"+(global.USR_string.size()+1));
 					temporary.add(chatEvent.message.getFormattedText());
 					global.USR_string.add(temporary);
+					backupUSR_strings.add(temporary);
 					TMP_e = TMP_e.replace("{msg}", "{string[DefaultString->MSG-"+global.USR_string.size()+"]}");
 					hasTempString = true;
 				}
@@ -751,6 +759,7 @@ public class events {
 				temporary.add("DefaultString->TRIGSIZE-"+(global.USR_string.size()+1));
 				temporary.add(global.trigger.size()+"");
 				global.USR_string.add(temporary);
+				backupUSR_strings.add(temporary);
 				TMP_e = TMP_e.replace("{trigsize}", "{string[DefaultString->TRIGSIZE-"+global.USR_string.size()+"]}");
 				hasTempString = true;
 			}
@@ -759,6 +768,7 @@ public class events {
 				temporary.add("DefaultString->NOTIFYSIZE-"+(global.USR_string.size()+1));
 				temporary.add(global.notifySize+"");
 				global.USR_string.add(temporary);
+				backupUSR_strings.add(temporary);
 				TMP_e = TMP_e.replace("{notifysize}", "{string[DefaultString->NOTIFYSIZE-"+global.USR_string.size()+"]}");
 				hasTempString = true;
 			}
@@ -767,6 +777,7 @@ public class events {
 				temporary.add("DefaultString->ME-"+(global.USR_string.size()+1));
 				temporary.add(Minecraft.getMinecraft().thePlayer.getDisplayNameString());
 				global.USR_string.add(temporary);
+				backupUSR_strings.add(temporary);
 				TMP_e = TMP_e.replace("{me}", "{string[DefaultString->ME-"+global.USR_string.size()+"]}");
 				hasTempString = true;
 			}
@@ -779,6 +790,7 @@ public class events {
 				temporary.add("DefaultString->SERVER-"+(global.USR_string.size()+1));
 				temporary.add(current_server);
 				global.USR_string.add(temporary);
+				backupUSR_strings.add(temporary);
 				TMP_e = TMP_e.replace("{server}", "{string[DefaultString->SERVER-"+global.USR_string.size()+"]}");
 				hasTempString = true;
 			}
@@ -791,6 +803,7 @@ public class events {
 				temporary.add("DefaultString->SERVERMOTD-"+(global.USR_string.size()+1));
 				temporary.add(returnString);
 				global.USR_string.add(temporary);
+				backupUSR_strings.add(temporary);
 				TMP_e = TMP_e.replace("{serverMOTD}", "{string[DefaultString->SERVERMOTD-"+global.USR_string.size()+"]}");
 				hasTempString = true;
 			}
@@ -803,6 +816,7 @@ public class events {
 				temporary.add("DefaultString->SERVERIP-"+(global.USR_string.size()+1));
 				temporary.add(returnString);
 				global.USR_string.add(temporary);
+				backupUSR_strings.add(temporary);
 				TMP_e = TMP_e.replace("{serverIP}", "{string[DefaultString->SERVERIP-"+global.USR_string.size()+"]}");
 				hasTempString = true;
 			}
@@ -815,6 +829,7 @@ public class events {
 				temporary.add("DefaultString->SERVERPING-"+(global.USR_string.size()+1));
 				temporary.add(returnString);
 				global.USR_string.add(temporary);
+				backupUSR_strings.add(temporary);
 				TMP_e = TMP_e.replace("{ping}", "{string[DefaultString->SERVERPING-"+global.USR_string.size()+"]}");
 				hasTempString = true;
 			}
@@ -827,6 +842,7 @@ public class events {
 				temporary.add("DefaultString->SERVERVERSION-"+(global.USR_string.size()+1));
 				temporary.add(returnString);
 				global.USR_string.add(temporary);
+				backupUSR_strings.add(temporary);
 				TMP_e = TMP_e.replace("{serverversion}", "{string[DefaultString->SERVERVERSION-"+global.USR_string.size()+"]}");
 				hasTempString = true;
 			}
@@ -835,15 +851,15 @@ public class events {
 				temporary.add("DefaultString->DEBUG-"+(global.USR_string.size()+1));
 				temporary.add(global.debug+"");
 				global.USR_string.add(temporary);
+				backupUSR_strings.add(temporary);
 				TMP_e = TMP_e.replace("{debug}", "{string[DefaultString->DEBUG-"+global.USR_string.size()+"]}");
 				hasTempString = true;
 			}
 			
-		
-			
 		//user strings and functions
 			TMP_e = TMP_e.replace("{string<", "{string[").replace("{array<", "{array[").replace(">}", "]}");
 			
+			if (TMP_e.contains("{array[")) {hasTempString=true;}
 			TMP_e = stringFunctions(TMP_e);
 			TMP_e = arrayFunctions(TMP_e);
 			TMP_e = stringFunctions(TMP_e);
@@ -1164,10 +1180,12 @@ public class events {
 			}
 		}
 		
-		if (toreplace != null) {
+		if (toreplace != null || hasTempString==true) {
 			List<List<String>> tempchecklist = new ArrayList<List<String>>();
 			for (int i=0; i<global.USR_string.size(); i++) {
-				if (!global.USR_string.get(i).get(0).startsWith("TriggerArgument")) {
+				if (!(global.USR_string.get(i).get(0).startsWith("TriggerArgument")
+				|| global.USR_string.get(i).get(0).startsWith("DefaultString->")
+				|| global.USR_string.get(i).get(0).startsWith("ArrayToString->"))) {
 					tempchecklist.add(global.USR_string.get(i));
 				}
 			}
