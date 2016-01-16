@@ -724,6 +724,17 @@ public class events {
 			int TMP_v = 10000;
 			int TMP_pi = 1;
 			
+		//setup backup for functions so strings dont get overwritten
+			backupUSR_strings.clear();
+			for (int j=0; j<global.USR_string.size(); j++) {
+				String first = global.USR_string.get(j).get(0);
+				String second = global.USR_string.get(j).get(1);
+				List<String> temporary = new ArrayList<String>();
+				temporary.add(first);
+				temporary.add(second);
+				backupUSR_strings.add(temporary);
+			}
+			
 		//built in strings
 			if (chatEvent!=null) {
 				if (TMP_e.contains("{msg}")) {
@@ -743,7 +754,7 @@ public class events {
 				TMP_e = TMP_e.replace("{trigsize}", "{string[DefaultString->TRIGSIZE-"+global.USR_string.size()+"]}");
 				hasTempString = true;
 			}
-			if (TMP_e.contains("{notifysize")) {
+			if (TMP_e.contains("{notifysize}")) {
 				List<String> temporary = new ArrayList<String>();
 				temporary.add("DefaultString->NOTIFYSIZE-"+(global.USR_string.size()+1));
 				temporary.add(global.notifySize+"");
@@ -762,7 +773,7 @@ public class events {
 			if (TMP_e.contains("{server}")) {
 				String current_server = "";
 				if (Minecraft.getMinecraft().isSingleplayer()) {current_server = "SinglePlayer";} 
-				else {current_server = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
+				else {current_server = Minecraft.getMinecraft().getCurrentServerData().serverName;}
 				
 				List<String> temporary = new ArrayList<String>();
 				temporary.add("DefaultString->SERVER-"+(global.USR_string.size()+1));
@@ -771,6 +782,73 @@ public class events {
 				TMP_e = TMP_e.replace("{server}", "{string[DefaultString->SERVER-"+global.USR_string.size()+"]}");
 				hasTempString = true;
 			}
+			if (TMP_e.contains("{serverMOTD}")) {
+				String returnString = "";
+				if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "Single Player world";}
+				else {returnString = Minecraft.getMinecraft().getCurrentServerData().serverMOTD;}
+				
+				List<String> temporary = new ArrayList<String>();
+				temporary.add("DefaultString->SERVERMOTD-"+(global.USR_string.size()+1));
+				temporary.add(returnString);
+				global.USR_string.add(temporary);
+				TMP_e = TMP_e.replace("{serverMOTD}", "{string[DefaultString->SERVERMOTD-"+global.USR_string.size()+"]}");
+				hasTempString = true;
+			}
+			if (TMP_e.contains("{serverIP}")) {
+				String returnString = "";
+				if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "localhost";}
+				else {returnString = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
+				
+				List<String> temporary = new ArrayList<String>();
+				temporary.add("DefaultString->SERVERIP-"+(global.USR_string.size()+1));
+				temporary.add(returnString);
+				global.USR_string.add(temporary);
+				TMP_e = TMP_e.replace("{serverIP}", "{string[DefaultString->SERVERIP-"+global.USR_string.size()+"]}");
+				hasTempString = true;
+			}
+			if (TMP_e.contains("{ping}")) {
+				String returnString = "";
+				if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "5";}
+				else {returnString = Minecraft.getMinecraft().getCurrentServerData().pingToServer+"";}
+				
+				List<String> temporary = new ArrayList<String>();
+				temporary.add("DefaultString->SERVERPING-"+(global.USR_string.size()+1));
+				temporary.add(returnString);
+				global.USR_string.add(temporary);
+				TMP_e = TMP_e.replace("{ping}", "{string[DefaultString->SERVERPING-"+global.USR_string.size()+"]}");
+				hasTempString = true;
+			}
+			if (TMP_e.contains("{serverversion}")) {
+				String returnString = "";
+				if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "1.8";}
+				else {returnString = Minecraft.getMinecraft().getCurrentServerData().gameVersion;}
+				
+				List<String> temporary = new ArrayList<String>();
+				temporary.add("DefaultString->SERVERVERSION-"+(global.USR_string.size()+1));
+				temporary.add(returnString);
+				global.USR_string.add(temporary);
+				TMP_e = TMP_e.replace("{serverversion}", "{string[DefaultString->SERVERVERSION-"+global.USR_string.size()+"]}");
+				hasTempString = true;
+			}
+			if (TMP_e.contains("{debug}")) {
+				List<String> temporary = new ArrayList<String>();
+				temporary.add("DefaultString->DEBUG-"+(global.USR_string.size()+1));
+				temporary.add(global.debug+"");
+				global.USR_string.add(temporary);
+				TMP_e = TMP_e.replace("{debug}", "{string[DefaultString->DEBUG-"+global.USR_string.size()+"]}");
+				hasTempString = true;
+			}
+			
+		
+			
+		//user strings and functions
+			TMP_e = TMP_e.replace("{string<", "{string[").replace("{array<", "{array[").replace(">}", "]}");
+			
+			TMP_e = stringFunctions(TMP_e);
+			TMP_e = arrayFunctions(TMP_e);
+			TMP_e = stringFunctions(TMP_e);
+			
+			TMP_e = legacyFunctions(TMP_e);
 			
 		//tags
 			if (TMP_e.contains("<time=") && TMP_e.contains(">")) {
@@ -798,27 +876,6 @@ public class events {
 				TMP_e = TMP_e.replace("<pitch=" + TMP_tstring + ">", "");
 			}
 			
-		//user strings and functions
-			TMP_e = TMP_e.replace("{string<", "{string[").replace("{array<", "{array[").replace(">}", "]}");
-			
-			//setup backup for functions so strings dont get overwritten
-			backupUSR_strings.clear();
-			for (int j=0; j<global.USR_string.size(); j++) {
-				String first = global.USR_string.get(j).get(0);
-				String second = global.USR_string.get(j).get(1);
-				List<String> temporary = new ArrayList<String>();
-				temporary.add(first);
-				temporary.add(second);
-				backupUSR_strings.add(temporary);
-			}
-			
-			TMP_e = stringFunctions(TMP_e);
-			TMP_e = arrayFunctions(TMP_e);
-			TMP_e = stringFunctions(TMP_e);
-			
-			TMP_e = legacyFunctions(TMP_e);
-			
-			
 		//add formatting where needed
 			if (TMP_c.equalsIgnoreCase("SAY") || TMP_c.equalsIgnoreCase("CHAT") || TMP_c.equalsIgnoreCase("KILLFEED") || TMP_c.equalsIgnoreCase("NOTIFY")) {
 				if (TMP_c.equalsIgnoreCase("SAY")) {
@@ -841,12 +898,9 @@ public class events {
 			if (TMP_c.equalsIgnoreCase("NOTIFY")) {
 				global.notify.add(TMP_e);
 				List<Float> temp_list = new ArrayList<Float>();
-				temp_list.add((float) 0);
-				temp_list.add((float) 0);
-				temp_list.add((float) TMP_p);
-				temp_list.add((float) TMP_t);
-				temp_list.add((float) 0);
-				temp_list.add((float) 0);
+				temp_list.add((float) 0);temp_list.add((float) 0);
+				temp_list.add((float) TMP_p);temp_list.add((float) TMP_t);
+				temp_list.add((float) 0);temp_list.add((float) 0);
 				global.notifyAnimation.add(temp_list);
 				global.notifySize++;
 			}
@@ -1110,13 +1164,10 @@ public class events {
 			}
 		}
 		
-		if (toreplace != null || hasTempString == true) {
+		if (toreplace != null) {
 			List<List<String>> tempchecklist = new ArrayList<List<String>>();
 			for (int i=0; i<global.USR_string.size(); i++) {
-				if (global.USR_string.get(i).get(0).startsWith("TriggerArgument")
-				|| global.USR_string.get(i).get(0).startsWith("DefaultString->")) {
-					//do nothing
-				} else {
+				if (!global.USR_string.get(i).get(0).startsWith("TriggerArgument")) {
 					tempchecklist.add(global.USR_string.get(i));
 				}
 			}
