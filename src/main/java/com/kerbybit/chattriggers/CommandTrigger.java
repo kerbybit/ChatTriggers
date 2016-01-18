@@ -60,7 +60,7 @@ public class CommandTrigger extends CommandBase {
 		} else if (args[0].equalsIgnoreCase("LOAD")) {
 			commandLoad(args, silent);
 		} else if (args[0].equalsIgnoreCase("TEST")) {
-			global.showGUI = true;
+			chat.warn(chat.color("&7", "This command does nothing :D"));
 		} else {
 			chat.warn(chat.color("red", "/trigger [create/add/list] <...>"));
 			chat.warn(chat.color("red", "/trigger [string/run] <...>"));

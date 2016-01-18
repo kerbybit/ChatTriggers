@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.sun.glass.events.KeyEvent;
 
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
+
 public class global {
 	public static Boolean worldLoaded = false;
 	public static Boolean worldFirstLoad = true;

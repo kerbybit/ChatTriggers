@@ -914,9 +914,9 @@ public class events {
 			if (TMP_c.equalsIgnoreCase("NOTIFY")) {
 				global.notify.add(TMP_e);
 				List<Float> temp_list = new ArrayList<Float>();
-				temp_list.add((float) 0);temp_list.add((float) 0);
+				temp_list.add((float) 0);temp_list.add((float) -1000);
 				temp_list.add((float) TMP_p);temp_list.add((float) TMP_t);
-				temp_list.add((float) 0);temp_list.add((float) 0);
+				temp_list.add((float) 0);temp_list.add((float) -1000);
 				global.notifyAnimation.add(temp_list);
 				global.notifySize++;
 			}
