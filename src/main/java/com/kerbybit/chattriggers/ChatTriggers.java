@@ -228,7 +228,7 @@ public class ChatTriggers {
 			try {file.startup();
 			} catch (ClassNotFoundException e) {e.printStackTrace();}
 			
-			file.loadVersion("http://bfgteam.com:88/ChatTriggers/download/versions/version.txt");
+			file.loadVersion("http://kerbybit.github.io/ChatTriggers/download/version.txt");
 			
 			global.tick++;
 		}
