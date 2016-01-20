@@ -225,12 +225,29 @@ public class events {
 				String esecond = sn.substring(sn.indexOf(snalt)+snalt.length());
 				snalt = stringFunctions(snalt);
 				while (argsalt.contains("(")) {
-					argsalt = args.substring(args.indexOf("(", args.indexOf("]}.", args.indexOf("{string[")))+1, args.indexOf(")", args.indexOf(argsalt)+argsalt.length()));
-					String first = argsalt.substring(0,argsalt.indexOf("("));
-					String second = argsalt.substring(argsalt.indexOf("(")+1);
+					argsalt = args.substring(args.indexOf(argsalt), args.indexOf(")", args.indexOf(")")+1));
+					
+					String first = "";
+					String second = "";
+					String argsbefore = "";
+					
+					first = argsalt.substring(0,argsalt.indexOf("("));
+					second = argsalt.substring(argsalt.indexOf("(")+1);
+					argsbefore = argsalt;
 					argsalt = first + "stringOpenBracketF6cyUQp9stringOpenBracket" + second;
+					args = args.replace(argsbefore, argsalt);
+					
+					
+					first = argsalt.substring(0,argsalt.indexOf(")"));
+					second = argsalt.substring(argsalt.indexOf(")")+1);
+					argsbefore = argsalt;
+					args = first + "stringCloseBracketF6cyUQp9stringCloseBracket" + second;
+					args = args.replace(argsbefore, argsalt);
 				}
 				argsalt = argsalt.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(");
+				argsalt = argsalt.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
+				args = args.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(");
+				args = args.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
 				
 				String fullreplace = "{string["+snalt+"]}."+funcalt+"("+argsalt+")";
 				String firstpart = args.substring(0, args.indexOf(fullreplace));
@@ -324,12 +341,29 @@ public class events {
 				snalt = stringFunctions(snalt);
 				
 				while (argsalt.contains("(")) {
-					argsalt = sn.substring(sn.indexOf("(", sn.indexOf("]}.", sn.indexOf("{string[")))+1, sn.indexOf(")", sn.indexOf(argsalt)+argsalt.length()));
-					String first = argsalt.substring(0,argsalt.indexOf("("));
-					String second = argsalt.substring(argsalt.indexOf("(")+1);
+					argsalt = sn.substring(sn.indexOf(argsalt), sn.indexOf(")", sn.indexOf(")")+1));
+					
+					String first = "";
+					String second = "";
+					String argsbefore = "";
+					
+					first = argsalt.substring(0,argsalt.indexOf("("));
+					second = argsalt.substring(argsalt.indexOf("(")+1);
+					argsbefore = argsalt;
 					argsalt = first + "stringOpenBracketF6cyUQp9stringOpenBracket" + second;
+					sn = sn.replace(argsbefore, argsalt);
+					
+					
+					first = argsalt.substring(0,argsalt.indexOf(")"));
+					second = argsalt.substring(argsalt.indexOf(")")+1);
+					argsbefore = argsalt;
+					args = first + "stringCloseBracketF6cyUQp9stringCloseBracket" + second;
+					sn = sn.replace(argsbefore, argsalt);
 				}
 				argsalt = argsalt.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(");
+				argsalt = argsalt.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
+				sn = sn.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(");
+				sn = sn.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
 				
 				String fullreplace = "{string["+snalt+"]}."+funcalt+"("+argsalt+")";
 				String firstpart = sn.substring(0, sn.indexOf(fullreplace));
@@ -586,13 +620,30 @@ public class events {
 				TMP_e = efirst + sn + esecond;
 				sn = sn.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
 				while (args.contains("(")) {
-					args = TMP_e.substring(TMP_e.indexOf("(", TMP_e.indexOf("]}.", TMP_e.indexOf("{string[")))+1, TMP_e.indexOf(")", TMP_e.indexOf(args)+args.length())+1);
-					String first = args.substring(0,args.indexOf("("));
-					String second = args.substring(args.indexOf("(")+1);
+					args = TMP_e.substring(TMP_e.indexOf(args), TMP_e.indexOf(")", TMP_e.indexOf(")")+1));
+					
+					String first = "";
+					String second = "";
+					String argsbefore = "";
+					
+					first = args.substring(0,args.indexOf("("));
+					second = args.substring(args.indexOf("(")+1);
+					argsbefore = args;
 					args = first + "stringOpenBracketF6cyUQp9stringOpenBracket" + second;
+					TMP_e = TMP_e.replace(argsbefore, args);
+					
+					
+					first = args.substring(0,args.indexOf(")"));
+					second = args.substring(args.indexOf(")")+1);
+					argsbefore = args;
+					args = first + "stringCloseBracketF6cyUQp9stringCloseBracket" + second;
+					TMP_e = TMP_e.replace(argsbefore, args);
 				}
 				args = args.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(");
-				
+				args = args.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
+				TMP_e = TMP_e.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(");
+				TMP_e = TMP_e.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
+				System.out.println(args);
 				String fullreplace = "{string["+sn+"]}."+func+"("+args+")";
 				String firstpart = TMP_e.substring(0, TMP_e.indexOf(fullreplace));
 				String secondpart = TMP_e.substring(TMP_e.indexOf(fullreplace)+fullreplace.length());
