@@ -1,5 +1,8 @@
 package com.kerbybit.chattriggers;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -702,52 +705,7 @@ public class events {
 		
 		return TMP_e;
 	}
-	
-	public static String legacyFunctions(String TMP_e) {
-		while (TMP_e.contains("string.set(") && TMP_e.contains(")")) {
-			String[] args = TMP_e.substring(TMP_e.indexOf("string.set(") + 11,TMP_e.indexOf(")",TMP_e.indexOf("string.set("))).split(",");
-			if (args.length==2) {
-				try {
-					int num = Integer.parseInt(args[0]);
-					if (num>0 && num<global.USR_string.size()) {
-						global.USR_string.get(num).set(1, args[1]);
-						TMP_e = TMP_e.replace("string.set(" + args[0] + "," + args[1] + ")", args[1]);
-					}
-				} catch (NumberFormatException e) {
-					for (int j=0; j<global.USR_string.size(); j++) {
-						if (global.USR_string.get(j).get(0).equals(args[0])) {
-							global.USR_string.get(j).set(1, args[1]);
-							TMP_e = TMP_e.replace("string.set(" + args[0] + "," + args[1] + ")", args[1]);
-						}
-					}
-				}
-			}
-		}
-		
-		while (TMP_e.contains("string.save(") && TMP_e.contains(")")) {
-			String[] args = TMP_e.substring(TMP_e.indexOf("string.save(") + 12,TMP_e.indexOf(")",TMP_e.indexOf("string.save("))).split(",");
-			if (args.length==2) {
-				try {
-					int num = Integer.parseInt(args[0]);
-					if (num>0 && num<global.USR_string.size()) {
-						global.USR_string.get(num).set(1, args[1]);
-						try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
-						TMP_e = TMP_e.replace("string.save(" + args[0] + "," + args[1] + ")", args[1]);
-					}
-				} catch (NumberFormatException e) {
-					for (int j=0; j<global.USR_string.size(); j++) {
-						if (global.USR_string.get(j).get(0).equals(args[0])) {
-							global.USR_string.get(j).set(1, args[1]);
-							try {file.saveAll();} catch (IOException e1) {chat.warn(chat.color("red", "Error saving triggers!"));}
-							TMP_e = TMP_e.replace("string.save(" + args[0] + "," + args[1] + ")", args[1]);
-						}
-					}
-				}
-			}
-		}
-		
-		return TMP_e;
-	}
+
 	
 	public static void doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, String[] toreplace, String[] replacement) {
 		
@@ -915,8 +873,6 @@ public class events {
 			TMP_e = arrayFunctions(TMP_e);
 			TMP_e = stringFunctions(TMP_e);
 			
-			TMP_e = legacyFunctions(TMP_e);
-			
 		//tags
 			if (TMP_e.contains("<time=") && TMP_e.contains(">")) {
 				String TMP_tstring = TMP_e.substring(TMP_e.indexOf("<time=")+6, TMP_e.indexOf(">",TMP_e.indexOf("<time=")));
@@ -972,6 +928,10 @@ public class events {
 				global.notifySize++;
 			}
 			if (TMP_c.equalsIgnoreCase("COMMAND")) {global.commandQueue.add(TMP_e);}
+			if (TMP_c.equalsIgnoreCase("COPY")) {
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clipboard.setContents(new StringSelection(TMP_e), null);
+			}
 			
 			
 		//logic events
