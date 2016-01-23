@@ -228,7 +228,12 @@ public class ChatTriggers {
 			try {file.startup();
 			} catch (ClassNotFoundException e) {e.printStackTrace();}
 			
-			file.loadVersion("http://kerbybit.github.io/ChatTriggers/download/version.txt");
+			if (global.settings.get(4).equals("false")) {
+				file.loadVersion("http://kerbybit.github.io/ChatTriggers/download/version.txt");
+			} else {
+				file.loadVersion("http://kerbybit.github.io/ChatTriggers/download/betaversion.txt");
+			}
+			
 			
 			global.tick++;
 		}

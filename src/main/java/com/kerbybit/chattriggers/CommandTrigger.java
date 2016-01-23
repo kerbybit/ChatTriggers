@@ -647,6 +647,44 @@ public class CommandTrigger extends CommandBase {
 				} else {
 					chat.warn(chat.color("red", "/trigger settings killfeed [position] <...>"));
 				}
+			} else if (args[1].equalsIgnoreCase("BETA")) {
+				if (args.length>2) {
+					if (args[2].equalsIgnoreCase("TOGGLE")) {
+						if (global.settings.get(4).equals("false")) {
+							global.settings.set(4, "true");
+							chat.warn(chat.color("red", "You have turned nightly notifications")+chat.color("green","on!"));
+							chat.warn(chat.color("red", "For more info, do </trigger settings beta>"));
+							file.loadVersion("http://kerbybit.github.io/ChatTriggers/download/betaversion.txt");
+						} else {
+							global.settings.set(4, "false");
+							chat.warn(chat.color("red", "You have turned nightly notifications off!"));
+							chat.warn(chat.color("red", "For more info, do </trigger settings beta>"));
+							file.loadVersion("http://kerbybit.github.io/ChatTriggers/download/version.txt");
+						}
+					} else {
+						chat.warn(chat.color("red", "/trigger settings beta [toggle]"));
+					}
+				} else {
+					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------"));
+					if (global.settings.get(4).equals("false")) {
+						chat.warn(chat.color("red", "You currently have the beta version disabled!"));
+						chat.warn(chat.color("red", "Although this doesnt prevent you from downloading"));
+						chat.warn(chat.color("red", "and using the beta version,"));
+						chat.warn(chat.color("red", "You will NOT get notified of nightly builds"));
+						chat.warn(chat.color("red", "To opt into the beta, do </trigger settings beta toggle>"));
+						chat.warn(chat.color("red", ""));
+						chat.warn(chat.color("red", "The beta versions may have unforseen bugs"));
+						chat.warn(chat.color("red", "but gets updated regularly with new features"));
+					} else {
+						chat.warn(chat.color("red", "You currently have the beta version")+ chat.color("green","enabled!"));
+						chat.warn(chat.color("red", "You will recieve notifications on nightly builds"));
+						chat.warn(chat.color("red", "To change this, do </trigger settings beta toggle>"));
+						chat.warn(chat.color("red", ""));
+						chat.warn(chat.color("red", "The beta versions may have unforseen bugs"));
+						chat.warn(chat.color("red", "but gets updated regularly with new features"));
+					}
+					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
+				}
 			} else {
 				chat.warn(chat.color("red", "/trigger settings [debug/color/killfeed] <...>"));
 			}

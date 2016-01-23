@@ -37,18 +37,22 @@ public class file {
 			}
 			bufferedReader.close();
 			
-			if (global.settings.size() < 3) {
-				global.settings.add("null");
-			}
-			
 			if (!global.settings.get(2).equals("null")) {
 				if (!lines.get(0).equals(global.settings.get(2))) {
 					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------"));
-					chat.warn(chat.color("red", "You are running on an outdated version of ChatTriggers!"));
-					List<String> TMP_out = new ArrayList<String>();
-					TMP_out.add("text:'http://kerbybit.github.io/ChatTriggers/download',color:red,hoverEvent:{action:'show_text',value:'Click to download update'},clickEvent:{action:'open_url',value:'http://kerbybit.github.io/ChatTriggers/download'}");
-					chat.sendJson(TMP_out);
-					chat.warn(chat.color("red", "Current stable version: " + lines.get(0)));
+					if (global.settings.get(4).equals("false")) {
+						chat.warn(chat.color("red", "You are running on an outdated version of ChatTriggers!"));
+						List<String> TMP_out = new ArrayList<String>();
+						TMP_out.add("text:'http://kerbybit.github.io/ChatTriggers/download',color:red,hoverEvent:{action:'show_text',value:'Click to download update'},clickEvent:{action:'open_url',value:'http://kerbybit.github.io/ChatTriggers/download'}");
+						chat.sendJson(TMP_out);
+						chat.warn(chat.color("red", "Current stable version: " + lines.get(0)));
+					} else {
+						chat.warn(chat.color("red", "You are running on an outdated version of ChatTriggers!"));
+						List<String> TMP_out = new ArrayList<String>();
+						TMP_out.add("text:'http://kerbybit.github.io/ChatTriggers/download',color:red,hoverEvent:{action:'show_text',value:'Click to download update'},clickEvent:{action:'open_url',value:'http://kerbybit.github.io/ChatTriggers/download'}");
+						chat.sendJson(TMP_out);
+						chat.warn(chat.color("red", "Current beta version: " + lines.get(0)));
+					}
 					chat.warn(chat.color("red", "Your version: " + global.settings.get(2)));
 					chat.warn(chat.color("red", "You will only see this message once until the next update"));
 					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
@@ -451,6 +455,7 @@ public class file {
 		writer.println("colorName:"+listName.get(1));
 		writer.println("version:"+listName.get(2));
 		writer.println("killfeed pos:"+listName.get(3));
+		writer.println("isBeta:"+listName.get(4));
 		writer.close();
 	}
 	
@@ -531,6 +536,9 @@ public class file {
 			if (lines.get(i).startsWith("killfeed pos:")) {
 				tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("killfeed pos:")+13));
 			}
+			if (lines.get(i).startsWith("isBeta:")) {
+				tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("isBeta:")+7));
+			}
 		}
 		
 		return tmp_settings;
@@ -552,6 +560,7 @@ public class file {
 			if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
 			if (global.settings.size() < 3) {global.settings.add("null");}
 			if (global.settings.size() < 4) {global.settings.add("top-left");}
+			if (global.settings.size() < 5) {global.settings.add("false");}
 			chat.warn(chat.color(global.settings.get(0), "Chat triggers loaded"));
 		} catch (IOException e1) {
 			chat.warn(chat.color("red", "Error loading files!"));
@@ -566,6 +575,7 @@ public class file {
 			if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
 			if (global.settings.size() < 3) {global.settings.add("null");}
 			if (global.settings.size() < 4) {global.settings.add("top-left");}
+			if (global.settings.size() < 5) {global.settings.add("false");}
 			
 			try {file.saveAll(); chat.warn(chat.color("green", "New files created!"));} 
 			catch (IOException e111) {chat.warn(chat.color("red", "Error saving files! report this to kerbybit ASAP!")); e111.printStackTrace();}
@@ -573,6 +583,7 @@ public class file {
 		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
 		if (global.settings.size() < 3) {global.settings.add("null");}
 		if (global.settings.size() < 4) {global.settings.add("top-left");}
+		if (global.settings.size() < 5) {global.settings.add("false");}
 		try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
 	}
 }
