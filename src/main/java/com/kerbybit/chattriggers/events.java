@@ -595,7 +595,11 @@ public class events {
 						returnstring = "Improper format! use replace(toreplace,replacement){string["+sn+"]}";
 					}
 				} else {
-					global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).replace(args, ""));
+					if (stringnum!=-1) {
+						global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).replace(args, ""));
+					} else {
+						global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).replace(args, ""));
+					}
 					returnstring = "{string["+sn+"]}";
 				}
 			} else if (func.equalsIgnoreCase("PREFIX")) {
@@ -918,6 +922,7 @@ public class events {
 					temporary.add("DefaultString->MSG-"+(global.TMP_string.size()+1));
 					temporary.add(chatEvent.message.getFormattedText());
 					global.TMP_string.add(temporary);
+					backupTMP_strings.add(temporary);
 					TMP_e = TMP_e.replace("{msg}", "{string[DefaultString->MSG-"+global.TMP_string.size()+"]}");
 					hasTempString = true;
 				}
@@ -927,6 +932,7 @@ public class events {
 				temporary.add("DefaultString->TRIGSIZE-"+(global.TMP_string.size()+1));
 				temporary.add(global.trigger.size()+"");
 				global.TMP_string.add(temporary);
+				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{trigsize}", "{string[DefaultString->TRIGSIZE-"+global.TMP_string.size()+"]}");
 				hasTempString = true;
 			}
@@ -935,6 +941,7 @@ public class events {
 				temporary.add("DefaultString->NOTIFYSIZE-"+(global.TMP_string.size()+1));
 				temporary.add(global.notifySize+"");
 				global.TMP_string.add(temporary);
+				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{notifysize}", "{string[DefaultString->NOTIFYSIZE-"+global.TMP_string.size()+"]}");
 				hasTempString = true;
 			}
@@ -943,6 +950,7 @@ public class events {
 				temporary.add("DefaultString->ME-"+(global.TMP_string.size()+1));
 				temporary.add(Minecraft.getMinecraft().thePlayer.getDisplayNameString());
 				global.TMP_string.add(temporary);
+				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{me}", "{string[DefaultString->ME-"+global.TMP_string.size()+"]}");
 				hasTempString = true;
 			}
@@ -955,6 +963,7 @@ public class events {
 				temporary.add("DefaultString->SERVER-"+(global.TMP_string.size()+1));
 				temporary.add(current_server);
 				global.TMP_string.add(temporary);
+				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{server}", "{string[DefaultString->SERVER-"+global.TMP_string.size()+"]}");
 				hasTempString = true;
 			}
@@ -967,6 +976,7 @@ public class events {
 				temporary.add("DefaultString->SERVERMOTD-"+(global.TMP_string.size()+1));
 				temporary.add(returnString);
 				global.TMP_string.add(temporary);
+				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{serverMOTD}", "{string[DefaultString->SERVERMOTD-"+global.TMP_string.size()+"]}");
 				hasTempString = true;
 			}
@@ -979,6 +989,7 @@ public class events {
 				temporary.add("DefaultString->SERVERIP-"+(global.TMP_string.size()+1));
 				temporary.add(returnString);
 				global.TMP_string.add(temporary);
+				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{serverIP}", "{string[DefaultString->SERVERIP-"+global.TMP_string.size()+"]}");
 				hasTempString = true;
 			}
@@ -991,6 +1002,7 @@ public class events {
 				temporary.add("DefaultString->SERVERPING-"+(global.TMP_string.size()+1));
 				temporary.add(returnString);
 				global.TMP_string.add(temporary);
+				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{ping}", "{string[DefaultString->SERVERPING-"+global.TMP_string.size()+"]}");
 				hasTempString = true;
 			}
@@ -1003,6 +1015,7 @@ public class events {
 				temporary.add("DefaultString->SERVERVERSION-"+(global.TMP_string.size()+1));
 				temporary.add(returnString);
 				global.TMP_string.add(temporary);
+				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{serverversion}", "{string[DefaultString->SERVERVERSION-"+global.TMP_string.size()+"]}");
 				hasTempString = true;
 			}
@@ -1011,6 +1024,7 @@ public class events {
 				temporary.add("DefaultString->DEBUG-"+(global.TMP_string.size()+1));
 				temporary.add(global.debug+"");
 				global.TMP_string.add(temporary);
+				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{debug}", "{string[DefaultString->DEBUG-"+global.TMP_string.size()+"]}");
 				hasTempString = true;
 			}
