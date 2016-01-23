@@ -9,6 +9,8 @@ import com.sun.glass.events.KeyEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class global {
+	public static List<String> asyncEvents = new ArrayList<String>();
+	
 	public static Boolean worldLoaded = false;
 	public static Boolean worldFirstLoad = true;
 	public static String connectedToServer = "";
@@ -50,6 +52,7 @@ public class global {
 	// get(1) = saved string
 	/////////////////////////////////////////////////////
 	public static List<List<String>> USR_string = new ArrayList<List<String>>();
+	public static List<List<String>> TMP_string = new ArrayList<List<String>>();
 	
 	
 	/////////////////Array matrix///////////////////////

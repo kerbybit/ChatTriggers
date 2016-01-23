@@ -150,8 +150,7 @@ public class file {
 		return returnString;
 	}
 	
-	
-	public static String importJsonURL(String type, String url, String toImport) {
+	public static String importJsonURL(String type, String url, String toImport) { //TODO
 		String returnString = "Something went wrong!";
 		try {
 			URL web = new URL(url);
@@ -229,7 +228,6 @@ public class file {
 			returnString = "IO exception!";
 			e.printStackTrace();
 		}
-		
 		return returnString;
 	}
 	
@@ -392,7 +390,8 @@ public class file {
 							|| TMP_c.toUpperCase().startsWith("FOR")
 							|| TMP_c.toUpperCase().startsWith("CHOOSE")
 							|| TMP_c.toUpperCase().startsWith("WAIT")
-							|| TMP_c.toUpperCase().startsWith("ELSE")) {
+							|| TMP_c.toUpperCase().startsWith("ELSE")
+							|| TMP_c.toUpperCase().startsWith("ASYNC")) {
 								tabbed_logic++;
 							}
 						}
@@ -424,7 +423,8 @@ public class file {
 					|| TMP_c.toUpperCase().startsWith("FOR")
 					|| TMP_c.toUpperCase().startsWith("CHOOSE")
 					|| TMP_c.toUpperCase().startsWith("WAIT")
-					|| TMP_c.toUpperCase().startsWith("ELSE")) {
+					|| TMP_c.toUpperCase().startsWith("ELSE")
+					|| TMP_c.toUpperCase().startsWith("ASYNC")) {
 						tabbed_logic++;
 					}
 						

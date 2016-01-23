@@ -208,7 +208,8 @@ public class gui extends GuiScreen {
 						|| value.get(j).toUpperCase().startsWith("CHOOSE")
 						|| value.get(j).toUpperCase().startsWith("FOR")
 						|| value.get(j).toUpperCase().startsWith("WAIT")
-						|| value.get(j).toUpperCase().startsWith("ELSE")) {
+						|| value.get(j).toUpperCase().startsWith("ELSE")
+						|| value.get(j).toUpperCase().startsWith("ASYNC")) {
 							tabbedLogic++;
 						}
 						

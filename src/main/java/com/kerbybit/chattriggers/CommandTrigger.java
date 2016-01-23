@@ -264,7 +264,8 @@ public class CommandTrigger extends CommandBase {
 				|| TMP_etype.equalsIgnoreCase("ELSEIF")
 				|| TMP_etype.equalsIgnoreCase("FOR")
 				|| TMP_etype.equalsIgnoreCase("WAIT")
-				|| TMP_etype.equalsIgnoreCase("END")) {
+				|| TMP_etype.equalsIgnoreCase("END")
+				|| TMP_etype.equalsIgnoreCase("ASYNC")) {
 					global.trigger.get(num).add(TMP_e);
 					if (silent==false) {
 						chat.warnUnformatted(chat.color("gray", "Added event") + chat.color(global.settings.get(0), TMP_e) + chat.color("gray", "to trigger") + chat.color(global.settings.get(0), global.trigger.get(num).get(1)));
@@ -476,7 +477,8 @@ public class CommandTrigger extends CommandBase {
 							|| TMP_c.toUpperCase().startsWith("FOR")
 							|| TMP_c.toUpperCase().startsWith("CHOOSE")
 							|| TMP_c.toUpperCase().startsWith("WAIT")
-							|| TMP_c.toUpperCase().startsWith("ELSE")) {
+							|| TMP_c.toUpperCase().startsWith("ELSE")
+							|| TMP_c.toUpperCase().startsWith("ASYNC")) {
 								tabbed_logic++;
 							}
 						}
@@ -571,7 +573,8 @@ public class CommandTrigger extends CommandBase {
 							|| TMP_c.toUpperCase().startsWith("FOR")
 							|| TMP_c.toUpperCase().startsWith("CHOOSE")
 							|| TMP_c.toUpperCase().startsWith("WAIT")
-							|| TMP_c.toUpperCase().startsWith("ELSE")) {
+							|| TMP_c.toUpperCase().startsWith("ELSE")
+							|| TMP_c.toUpperCase().startsWith("ASYNC")) {
 								tabbed_logic++;
 							}
 							
