@@ -1138,7 +1138,8 @@ public class events {
 							if (tmp_event.get(j).toUpperCase().startsWith("IF")
 							|| tmp_event.get(j).toUpperCase().startsWith("FOR")
 							|| tmp_event.get(j).toUpperCase().startsWith("CHOOSE")
-							|| tmp_event.get(j).toUpperCase().startsWith("WAIT")) {
+							|| tmp_event.get(j).toUpperCase().startsWith("WAIT")
+							|| tmp_event.get(j).toUpperCase().startsWith("ASYNC")) {
 								tabbed_logic++;
 							}
 							
@@ -1200,7 +1201,8 @@ public class events {
 							if (tmp_event.get(j).toUpperCase().startsWith("IF")
 							|| tmp_event.get(j).toUpperCase().startsWith("FOR")
 							|| tmp_event.get(j).toUpperCase().startsWith("CHOOSE")
-							|| tmp_event.get(j).toUpperCase().startsWith("WAIT")) {
+							|| tmp_event.get(j).toUpperCase().startsWith("WAIT")
+							|| tmp_event.get(j).toUpperCase().startsWith("ASYNC")) {
 								tabbed_logic++;
 							}
 							
@@ -1246,7 +1248,8 @@ public class events {
 							if (tmp_event.get(j).toUpperCase().startsWith("IF")
 							|| tmp_event.get(j).toUpperCase().startsWith("FOR")
 							|| tmp_event.get(j).toUpperCase().startsWith("CHOOSE")
-							|| tmp_event.get(j).toUpperCase().startsWith("WAIT")) {
+							|| tmp_event.get(j).toUpperCase().startsWith("WAIT")
+							|| tmp_event.get(j).toUpperCase().startsWith("ASYNC")) {
 								tabbed_logic++;
 							}
 							
@@ -1327,7 +1330,8 @@ public class events {
 							if (tmp_event.get(j).toUpperCase().startsWith("IF")
 							|| tmp_event.get(j).toUpperCase().startsWith("FOR")
 							|| tmp_event.get(j).toUpperCase().startsWith("CHOOSE")
-							|| tmp_event.get(j).toUpperCase().startsWith("WAIT")) {
+							|| tmp_event.get(j).toUpperCase().startsWith("WAIT")
+							|| tmp_event.get(j).toUpperCase().startsWith("ASYNC")) {
 								tabbed_logic++;
 							}
 							
@@ -1383,20 +1387,6 @@ public class events {
 				}
 			}
 		}
-		
-		/*if (toreplace != null || hasTempString==true) {
-			List<List<String>> tempchecklist = new ArrayList<List<String>>();
-			for (int i=0; i<global.USR_string.size(); i++) {
-				if (!(global.USR_string.get(i).get(0).startsWith("TriggerArgument")
-				|| global.USR_string.get(i).get(0).startsWith("DefaultString->")
-				|| global.USR_string.get(i).get(0).startsWith("ArrayToString->"))) {
-					tempchecklist.add(global.USR_string.get(i));
-				}
-			}
-			global.USR_string.clear();
-			global.USR_string.addAll(tempchecklist);
-		}*/
-		//TODO
 	}
 	
 	public static void doTrigger(String triggerName, ClientChatReceivedEvent chatEvent) {
