@@ -137,7 +137,13 @@ public class ChatTriggers {
 							for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
 							
 							//do events
-							events.doEvents(TMP_events, e);
+							if (global.temporary_replace.size()==0) {
+								events.doEvents(TMP_events, e);
+							} else {
+								events.doEvents(TMP_events, e, global.temporary_replace.toArray(new String[global.temporary_replace.size()]), global.temporary_replacement.toArray(new String[global.temporary_replacement.size()]));
+								global.temporary_replace.clear();
+								global.temporary_replacement.clear();
+							}
 						}
 					} else if (TMP_w.equals("c")) { //contains
 						try {TMP_trig = events.setStrings(msg, TMP_trig);}
@@ -148,7 +154,13 @@ public class ChatTriggers {
 							for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
 							
 							//do events
-							events.doEvents(TMP_events, e);
+							if (global.temporary_replace.size()==0) {
+								events.doEvents(TMP_events, e);
+							} else {
+								events.doEvents(TMP_events, e, global.temporary_replace.toArray(new String[global.temporary_replace.size()]), global.temporary_replacement.toArray(new String[global.temporary_replacement.size()]));
+								global.temporary_replace.clear();
+								global.temporary_replacement.clear();
+							}
 						}
 					} else if (TMP_w.equals("e")) { //endsWith
 						try {TMP_trig = events.setStrings(msg, TMP_trig);}
@@ -159,7 +171,13 @@ public class ChatTriggers {
 							for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
 							
 							//do events
-							events.doEvents(TMP_events, e);
+							if (global.temporary_replace.size()==0) {
+								events.doEvents(TMP_events, e);
+							} else {
+								events.doEvents(TMP_events, e, global.temporary_replace.toArray(new String[global.temporary_replace.size()]), global.temporary_replacement.toArray(new String[global.temporary_replacement.size()]));
+								global.temporary_replace.clear();
+								global.temporary_replacement.clear();
+							}
 						}
 					} else { //equals
 						try {TMP_trig = events.setStrings(msg, TMP_trig);}
@@ -170,13 +188,17 @@ public class ChatTriggers {
 							for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
 							
 							//do events
-							events.doEvents(TMP_events, e);
+							if (global.temporary_replace.size()==0) {
+								events.doEvents(TMP_events, e);
+							} else {
+								events.doEvents(TMP_events, e, global.temporary_replace.toArray(new String[global.temporary_replace.size()]), global.temporary_replacement.toArray(new String[global.temporary_replacement.size()]));
+								global.temporary_replace.clear();
+								global.temporary_replacement.clear();
+							}
 						}
 					}
 				}
-				
 			}
-			//////////////////////////////////////////
 		}
 	}
 	

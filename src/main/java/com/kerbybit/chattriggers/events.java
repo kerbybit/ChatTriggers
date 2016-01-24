@@ -242,7 +242,6 @@ public class events {
 					argsalt = first + "stringOpenBracketF6cyUQp9stringOpenBracket" + second;
 					args = args.replace(argsbefore, argsalt);
 					
-					
 					first = argsalt.substring(0,argsalt.indexOf(")"));
 					second = argsalt.substring(argsalt.indexOf(")")+1);
 					argsbefore = argsalt;
@@ -374,7 +373,6 @@ public class events {
 					argsalt = first + "stringOpenBracketF6cyUQp9stringOpenBracket" + second;
 					sn = sn.replace(argsbefore, argsalt);
 					
-					
 					first = argsalt.substring(0,argsalt.indexOf(")"));
 					second = argsalt.substring(argsalt.indexOf(")")+1);
 					argsbefore = argsalt;
@@ -500,135 +498,82 @@ public class events {
 					int strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));
 					try {
 						int argnmbr = Integer.parseInt(args);
-						if (stringnum!=-1) {
-							global.USR_string.get(stringnum).set(1, strnmbr + argnmbr + "");
-						} else {
-							global.TMP_string.get(tmpstringnum).set(1, strnmbr + argnmbr + "");
-						}
+						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, strnmbr + argnmbr + "");} 
+						else {global.TMP_string.get(tmpstringnum).set(1, strnmbr + argnmbr + "");}
 						returnstring = "{string["+sn+"]}";
-					} catch (NumberFormatException e) {
-						returnstring=args+" is not a number!{string["+sn+"]}";
-					}
-				} catch (NumberFormatException e) {
-					returnstring=sn+" is not a number!{string["+sn+"]}";
-				}
+					} catch (NumberFormatException e) {returnstring=args+" is not a number!{string["+sn+"]}";}
+				} catch (NumberFormatException e) {returnstring=sn+" is not a number!{string["+sn+"]}";}
 			} else if (func.equalsIgnoreCase("SUBTRACT") || func.equalsIgnoreCase("MINUS")) {
 				try {
 					int strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));
 					try {
 						int argnmbr = Integer.parseInt(args);
-						if (stringnum!=-1) {
-							global.USR_string.get(stringnum).set(1, strnmbr - argnmbr + "");
-						} else {
-							global.TMP_string.get(tmpstringnum).set(1, strnmbr - argnmbr + "");
-						}
+						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, strnmbr - argnmbr + "");} 
+						else {global.TMP_string.get(tmpstringnum).set(1, strnmbr - argnmbr + "");}
 						returnstring = "{string["+sn+"]}";
-					} catch (NumberFormatException e) {
-						returnstring=args+" is not a number!{string["+sn+"]}";
-					}
-				} catch (NumberFormatException e) {
-					returnstring=sn+" is not a number!{string["+sn+"]}";
-				}
+					} catch (NumberFormatException e) {returnstring=args+" is not a number!{string["+sn+"]}";}
+				} catch (NumberFormatException e) {returnstring=sn+" is not a number!{string["+sn+"]}";}
 			} else if (func.equalsIgnoreCase("MULTIPLY") || func.equalsIgnoreCase("MULT") || func.equalsIgnoreCase("TIMES")) {
 				try {
 					int strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));
 					try {
 						int argnmbr = Integer.parseInt(args);
-						if (stringnum!=-1) {
-							global.USR_string.get(stringnum).set(1, strnmbr * argnmbr + "");
-						} else {
-							global.TMP_string.get(tmpstringnum).set(1, strnmbr * argnmbr + "");
-						}
+						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, strnmbr * argnmbr + "");} 
+						else {global.TMP_string.get(tmpstringnum).set(1, strnmbr * argnmbr + "");}
 						returnstring = "{string["+sn+"]}";
-					} catch (NumberFormatException e) {
-						returnstring=args+" is not a number!{string["+sn+"]}";
-					}
-				} catch (NumberFormatException e) {
-					returnstring=sn+" is not a number!{string["+sn+"]}";
-				}
+					} catch (NumberFormatException e) {returnstring=args+" is not a number!{string["+sn+"]}";}
+				} catch (NumberFormatException e) {returnstring=sn+" is not a number!{string["+sn+"]}";}
 			} else if (func.equalsIgnoreCase("DIVIDE") || func.equalsIgnoreCase("DIV")) {
 				try {
 					int strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));
 					try {
 						int argnmbr = Integer.parseInt(args);
-						if (stringnum!=-1) {
-							global.USR_string.get(stringnum).set(1, strnmbr / argnmbr + "");
-						} else {
-							global.TMP_string.get(tmpstringnum).set(1, strnmbr / argnmbr + "");
-						}
+						System.out.println(strnmbr + "/" + argnmbr);
+						Float returnNum = ((float) strnmbr)/((float) argnmbr);
+						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, returnNum+"");} 
+						else {global.TMP_string.get(tmpstringnum).set(1, returnNum+"");}
 						returnstring = "{string["+sn+"]}";
-					} catch (NumberFormatException e) {
-						returnstring=args+" is not a number!{string["+sn+"]}";
-					}
-				} catch (NumberFormatException e) {
-					returnstring=sn+" is not a number!{string["+sn+"]}";
-				}
+					} catch (NumberFormatException e) {returnstring=args+" is not a number!{string["+sn+"]}";}
+				} catch (NumberFormatException e) {returnstring=sn+" is not a number!{string["+sn+"]}";}
 			} else if (func.equalsIgnoreCase("POW") || func.equalsIgnoreCase("POWER")) {
 				try {
 					int strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));
 					try {
 						int argnmbr = Integer.parseInt(args);
-						if (stringnum!=-1) {
-							global.USR_string.get(stringnum).set(1, strnmbr / argnmbr + "");
-						} else {
-							global.TMP_string.get(tmpstringnum).set(1, strnmbr / argnmbr + "");
-						}
+						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, Math.pow(strnmbr,argnmbr) + "");} 
+						else {global.TMP_string.get(tmpstringnum).set(1, Math.pow(strnmbr,argnmbr) + "");}
 						returnstring = "{string["+sn+"]}";
-					} catch (NumberFormatException e) {
-						returnstring=args+" is not a number!{string["+sn+"]}";
-					}
-				} catch (NumberFormatException e) {
-					returnstring=sn+" is not a number!{string["+sn+"]}";
-				}
+					} catch (NumberFormatException e) {returnstring=args+" is not a number!{string["+sn+"]}";}
+				} catch (NumberFormatException e) {returnstring=sn+" is not a number!{string["+sn+"]}";}
 			} else if (func.equalsIgnoreCase("REPLACE")) {
 				if (args.contains(",")) {
 					String replaced = args.substring(0, args.indexOf(","));
 					String replacer = args.substring(args.indexOf(",")+1);
 					if (replaced!=null) {
-						if (stringnum!=-1) {
-							global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).replace(replaced, replacer));
-						} else {
-							global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).replace(replaced, replacer));
-						}
+						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).replace(replaced, replacer));} 
+						else {global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).replace(replaced, replacer));}
 						returnstring = "{string["+sn+"]}";
-					} else {
-						returnstring = "Improper format! use replace(toreplace,replacement){string["+sn+"]}";
-					}
+					} else {returnstring = "Improper format! use replace(toreplace,replacement){string["+sn+"]}";}
 				} else {
-					if (stringnum!=-1) {
-						global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).replace(args, ""));
-					} else {
-						global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).replace(args, ""));
-					}
+					if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).replace(args, ""));} 
+					else {global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).replace(args, ""));}
 					returnstring = "{string["+sn+"]}";
 				}
 			} else if (func.equalsIgnoreCase("PREFIX")) {
-				if (stringnum!=-1) {
-					global.USR_string.get(stringnum).set(1, args + global.USR_string.get(stringnum).get(1));
-				} else {
-					global.TMP_string.get(tmpstringnum).set(1, args + global.TMP_string.get(tmpstringnum).get(1));
-				}
+				if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, args + global.USR_string.get(stringnum).get(1));} 
+				else {global.TMP_string.get(tmpstringnum).set(1, args + global.TMP_string.get(tmpstringnum).get(1));}
 				returnstring = "{string["+sn+"]}";
 			} else if (func.equalsIgnoreCase("SUFFIX")) {
-				if (stringnum!=-1) {
-					global.USR_string.get(stringnum).set(1, args + global.USR_string.get(stringnum).get(1));
-				} else {
-					global.TMP_string.get(tmpstringnum).set(1, args + global.TMP_string.get(tmpstringnum).get(1));
-				}
+				if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, args + global.USR_string.get(stringnum).get(1));} 
+				else {global.TMP_string.get(tmpstringnum).set(1, args + global.TMP_string.get(tmpstringnum).get(1));}
 				returnstring = "{string["+sn+"]}";
 			} else if (func.equalsIgnoreCase("TOUPPER") || func.equalsIgnoreCase("TOUPPERCASE")) {
-				if (stringnum!=-1) {
-					global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).toUpperCase());
-				} else {
-					global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).toUpperCase());
-				}
+				if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).toUpperCase());} 
+				else {global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).toUpperCase());}
 				returnstring = "{string["+sn+"]}";
 			} else if (func.equalsIgnoreCase("TOLOWER") || func.equalsIgnoreCase("TOLOWERCASE")) {
-				if (stringnum!=-1) {
-					global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).toLowerCase());
-				} else {
-					global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).toLowerCase());
-				}
+				if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).toLowerCase());} 
+				else {global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).toLowerCase());}
 				returnstring = "{string["+sn+"]}";
 			} else if (func.equalsIgnoreCase("IMPORTJSONFILE")){
 				String sj = "Improper format! use importJsonFile(file,node)";
@@ -642,11 +587,8 @@ public class events {
 						backupTMP_strings.get(tmpstringnum).set(1, sj);
 					}
 				} else {
-					if (stringnum!=-1) {
-						global.USR_string.get(stringnum).set(1, sj);
-					} else {
-						global.TMP_string.get(tmpstringnum).set(1, sj);
-					}
+					if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, sj);} 
+					else {global.TMP_string.get(tmpstringnum).set(1, sj);}
 				}
 				returnstring = "{string["+sn+"]}";
 			} else if (func.equalsIgnoreCase("IMPORTJSONURL")) {
@@ -661,11 +603,8 @@ public class events {
 						backupTMP_strings.get(tmpstringnum).set(1, sj);
 					}
 				} else {
-					if (stringnum!=-1) {
-						global.USR_string.get(stringnum).set(1, sj);
-					} else {
-						global.TMP_string.get(tmpstringnum).set(1, sj);
-					}
+					if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, sj);} 
+					else {global.TMP_string.get(tmpstringnum).set(1, sj);}
 				}
 				returnstring = "{string["+sn+"]}";
 			} else if (func.equalsIgnoreCase("EQUALS")) {
@@ -774,7 +713,6 @@ public class events {
 					args = first + "stringOpenBracketF6cyUQp9stringOpenBracket" + second;
 					TMP_e = TMP_e.replace(argsbefore, args);
 					
-					
 					first = args.substring(0,args.indexOf(")"));
 					second = args.substring(args.indexOf(")")+1);
 					argsbefore = args;
@@ -814,7 +752,6 @@ public class events {
 				sn = stringFunctions(sn);
 				
 				TMP_e = efirst + sn + esecond;
-				
 				
 				String returnString = "Not a string!";
 				
@@ -1527,136 +1464,239 @@ public class events {
 					}
 					if (i==0) {
 						if (msg.contains(split_trig[i+1])) {
+							int stringnum = -1;
+							int tmpstringnum = -1;
+							
 							for (int j=0; j<global.USR_string.size(); j++) {
 								if (global.USR_string.get(j).get(0).equals(stringName)) {
-									String set_string = msg.substring(0, msg.indexOf(split_trig[i+1]));
-									if (stringLength > 0) {
-										int check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
-										if (check_stringLength == stringLength) {
-											global.USR_string.get(j).set(1, set_string);
-											split_trig[i] = global.USR_string.get(j).get(1);
-										}
-									} else if (stringLength < 0) {
-										for (String value : stringListSplit) {
-											int check_stringLength = 0;
-											if (checkCharacter==true) {
-												check_stringLength = set_string.length();
-											} else {
-												check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
-											}
-											try {
-												if (check_stringLength == Integer.parseInt(value)) {
-													global.USR_string.get(j).set(1, set_string);
-													split_trig[i] = global.USR_string.get(j).get(1);
-												}
-											} catch (NumberFormatException e) {
-												String[] fromtoSplit = value.split("-");
-												try {
-													int fromSplit = Integer.parseInt(fromtoSplit[0]);
-													int toSplit = Integer.parseInt(fromtoSplit[fromtoSplit.length-1]);
-													if (fromSplit <= check_stringLength && toSplit >= check_stringLength) {
-														global.USR_string.get(j).set(1, set_string);
-														split_trig[i] = global.USR_string.get(j).get(1);
-													}
-												} catch (NumberFormatException e1) {} catch (ArrayIndexOutOfBoundsException e1) {}
-											}
-										}
+									stringnum = j;
+								}
+							}
+							if (stringnum==-1) {
+								List<String> temporary = new ArrayList<String>();
+								temporary.add("TEMP-USER-STRING-"+(global.TMP_string.size())+"->"+stringName);
+								temporary.add("");
+								global.TMP_string.add(temporary);
+								tmpstringnum = global.TMP_string.size()-1;
+								global.temporary_replace.add("{string["+stringName+"]");
+								global.temporary_replacement.add("{string[TEMP-USER-STRING-"+(global.TMP_string.size()-1)+"->"+stringName+"]");
+							}
+							
+							
+							String set_string = msg.substring(0, msg.indexOf(split_trig[i+1]));
+							if (stringLength > 0) {
+								int check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
+								if (check_stringLength == stringLength) {
+									if (stringnum!=-1) {
+										global.USR_string.get(stringnum).set(1, set_string);
+										split_trig[i] = global.USR_string.get(stringnum).get(1);
 									} else {
-										global.USR_string.get(j).set(1, set_string);
-										split_trig[i] = global.USR_string.get(j).get(1);
+										global.TMP_string.get(tmpstringnum).set(1, set_string);
+										split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
 									}
+								}
+							} else if (stringLength < 0) {
+								for (String value : stringListSplit) {
+									int check_stringLength = 0;
+									if (checkCharacter==true) {
+										check_stringLength = set_string.length();
+									} else {
+										check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
+									}
+									try {
+										if (check_stringLength == Integer.parseInt(value)) {
+											if (stringnum!=-1) {
+												global.USR_string.get(stringnum).set(1, set_string);
+												split_trig[i] = global.USR_string.get(stringnum).get(1);
+											} else {
+												global.TMP_string.get(tmpstringnum).set(1, set_string);
+												split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+											}
+										}
+									} catch (NumberFormatException e) {
+										String[] fromtoSplit = value.split("-");
+										try {
+											int fromSplit = Integer.parseInt(fromtoSplit[0]);
+											int toSplit = Integer.parseInt(fromtoSplit[fromtoSplit.length-1]);
+											if (fromSplit <= check_stringLength && toSplit >= check_stringLength) {
+												if (stringnum!=-1) {
+													global.USR_string.get(stringnum).set(1, set_string);
+													split_trig[i] = global.USR_string.get(stringnum).get(1);
+												} else {
+													global.TMP_string.get(tmpstringnum).set(1, set_string);
+													split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+												}
+											}
+										} catch (NumberFormatException e1) {} catch (ArrayIndexOutOfBoundsException e1) {}
+									}
+								}
+							} else {
+								if (stringnum!=-1) {
+									global.USR_string.get(stringnum).set(1, set_string);
+									split_trig[i] = global.USR_string.get(stringnum).get(1);
+								} else {
+									global.TMP_string.get(tmpstringnum).set(1, set_string);
+									split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
 								}
 							}
 						}
 					} else if (i==split_trig.length-1) {
 						if (msg.contains(split_trig[i-1])) {
+							int stringnum = -1;
+							int tmpstringnum = -1;
+							
 							for (int j=0; j<global.USR_string.size(); j++) {
 								if (global.USR_string.get(j).get(0).equals(stringName)) {
-									String set_string = msg.substring(msg.indexOf(split_trig[i-1])+split_trig[i-1].length(), msg.length());
-									if (stringLength > 0) {
-										int check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
-										if (check_stringLength == stringLength) {
-											global.USR_string.get(j).set(1, set_string);
-											split_trig[i] = global.USR_string.get(j).get(1);
-										}
-									} else if (stringLength < 0) {
-										for (String value : stringListSplit) {
-											int check_stringLength = 0;
-											if (checkCharacter==true) {
-												check_stringLength = set_string.length();
-											} else {
-												check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
-											}
-											try {
-												if (check_stringLength == Integer.parseInt(value)) {
-													global.USR_string.get(j).set(1, set_string);
-													split_trig[i] = global.USR_string.get(j).get(1);
-												}
-											} catch (NumberFormatException e) {
-												String[] fromtoSplit = value.split("-");
-												try {
-													int fromSplit = Integer.parseInt(fromtoSplit[0]);
-													int toSplit = Integer.parseInt(fromtoSplit[fromtoSplit.length-1]);
-													if (fromSplit <= check_stringLength && toSplit >= check_stringLength) {
-														global.USR_string.get(j).set(1, set_string);
-														split_trig[i] = global.USR_string.get(j).get(1);
-													}
-												} catch (NumberFormatException e1) {} catch (ArrayIndexOutOfBoundsException e1) {}
-											}
-										}
+									stringnum = j;
+								}
+							}
+							if (stringnum==-1) {
+								List<String> temporary = new ArrayList<String>();
+								temporary.add("TEMP-USER-STRING-"+(global.TMP_string.size())+"->"+stringName);
+								temporary.add("");
+								global.TMP_string.add(temporary);
+								tmpstringnum = global.TMP_string.size()-1;
+								global.temporary_replace.add("{string["+stringName+"]");
+								global.temporary_replacement.add("{string[TEMP-USER-STRING-"+(global.TMP_string.size()-1)+"->"+stringName+"]");
+							}
+							
+							String set_string = msg.substring(msg.indexOf(split_trig[i-1])+split_trig[i-1].length(), msg.length());
+							if (stringLength > 0) {
+								int check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
+								if (check_stringLength == stringLength) {
+									if (stringnum!=-1) {
+										global.USR_string.get(stringnum).set(1, set_string);
+										split_trig[i] = global.USR_string.get(stringnum).get(1);
 									} else {
-										global.USR_string.get(j).set(1, set_string);
-										split_trig[i] = global.USR_string.get(j).get(1);
+										global.TMP_string.get(tmpstringnum).set(1, set_string);
+										split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
 									}
+								}
+							} else if (stringLength < 0) {
+								for (String value : stringListSplit) {
+									int check_stringLength = 0;
+									if (checkCharacter==true) {
+										check_stringLength = set_string.length();
+									} else {
+										check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
+									}
+									try {
+										if (check_stringLength == Integer.parseInt(value)) {
+											if (stringnum!=-1) {
+												global.USR_string.get(stringnum).set(1, set_string);
+												split_trig[i] = global.USR_string.get(stringnum).get(1);
+											} else {
+												global.TMP_string.get(tmpstringnum).set(1, set_string);
+												split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+											}
+										}
+									} catch (NumberFormatException e) {
+										String[] fromtoSplit = value.split("-");
+										try {
+											int fromSplit = Integer.parseInt(fromtoSplit[0]);
+											int toSplit = Integer.parseInt(fromtoSplit[fromtoSplit.length-1]);
+											if (fromSplit <= check_stringLength && toSplit >= check_stringLength) {
+												if (stringnum!=-1) {
+													global.USR_string.get(stringnum).set(1, set_string);
+													split_trig[i] = global.USR_string.get(stringnum).get(1);
+												} else {
+													global.TMP_string.get(tmpstringnum).set(1, set_string);
+													split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+												}
+											}
+										} catch (NumberFormatException e1) {} catch (ArrayIndexOutOfBoundsException e1) {}
+									}
+								}
+							} else {
+								if (stringnum!=-1) {
+									global.USR_string.get(stringnum).set(1, set_string);
+									split_trig[i] = global.USR_string.get(stringnum).get(1);
+								} else {
+									global.TMP_string.get(tmpstringnum).set(1, set_string);
+									split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
 								}
 							}
 						}
 					} else {
 						if (msg.contains(split_trig[i-1]) && msg.contains(split_trig[i+1])) {
+							int stringnum = -1;
+							int tmpstringnum = -1;
+							
 							for (int j=0; j<global.USR_string.size(); j++) {
 								if (global.USR_string.get(j).get(0).equals(stringName)) {
-									int checkbefore = msg.indexOf(split_trig[i-1])+split_trig[i-1].length();
-									int checkafter = -1;
-									try {checkafter = msg.indexOf(split_trig[i+1], checkbefore);}
-									catch (StringIndexOutOfBoundsException e) {checkafter=-1;}
-									if (checkbefore < checkafter) {
-										String set_string = msg.substring(checkbefore, checkafter);
-										msg = msg.substring(checkbefore, msg.length());
-										if (stringLength > 0) {
-											int check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
-											if (check_stringLength == stringLength) {
-												global.USR_string.get(j).set(1, set_string);
-												split_trig[i] = global.USR_string.get(j).get(1);
-											}
-										} else if (stringLength < 0) {
-											for (String value : stringListSplit) {
-												int check_stringLength = 0;
-												if (checkCharacter==true) {
-													check_stringLength = set_string.length();
-												} else {
-													check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
-												}
-												try {
-													if (check_stringLength == Integer.parseInt(value)) {
-														global.USR_string.get(j).set(1, set_string);
-														split_trig[i] = global.USR_string.get(j).get(1);
-													}
-												} catch (NumberFormatException e) {
-													String[] fromtoSplit = value.split("-");
-													try {
-														int fromSplit = Integer.parseInt(fromtoSplit[0]);
-														int toSplit = Integer.parseInt(fromtoSplit[fromtoSplit.length-1]);
-														if (fromSplit <= check_stringLength && toSplit >= check_stringLength) {
-															global.USR_string.get(j).set(1, set_string);
-															split_trig[i] = global.USR_string.get(j).get(1);
-														}
-													} catch (NumberFormatException e1) {} catch (ArrayIndexOutOfBoundsException e1) {}
-												}
-											}
+									stringnum = j;
+								}
+							}
+							if (stringnum==-1) {
+								List<String> temporary = new ArrayList<String>();
+								temporary.add("TEMP-USER-STRING-"+(global.TMP_string.size())+"->"+stringName);
+								temporary.add("");
+								global.TMP_string.add(temporary);
+								tmpstringnum = global.TMP_string.size()-1;
+								global.temporary_replace.add("{string["+stringName+"]");
+								global.temporary_replacement.add("{string[TEMP-USER-STRING-"+(global.TMP_string.size()-1)+"->"+stringName+"]");
+							}
+							
+							int checkbefore = msg.indexOf(split_trig[i-1])+split_trig[i-1].length();
+							int checkafter = -1;
+							try {checkafter = msg.indexOf(split_trig[i+1], checkbefore);}
+							catch (StringIndexOutOfBoundsException e) {checkafter=-1;}
+							if (checkbefore < checkafter) {
+								String set_string = msg.substring(checkbefore, checkafter);
+								msg = msg.substring(checkbefore, msg.length());
+								if (stringLength > 0) {
+									int check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
+									if (check_stringLength == stringLength) {
+										if (stringnum!=-1) {
+											global.USR_string.get(stringnum).set(1, set_string);
+											split_trig[i] = global.USR_string.get(stringnum).get(1);
 										} else {
-											global.USR_string.get(j).set(1, set_string);
-											split_trig[i] = global.USR_string.get(j).get(1);
+											global.TMP_string.get(tmpstringnum).set(1, set_string);
+											split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
 										}
+									}
+								} else if (stringLength < 0) {
+									for (String value : stringListSplit) {
+										int check_stringLength = 0;
+										if (checkCharacter==true) {
+											check_stringLength = set_string.length();
+										} else {
+											check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
+										}
+										try {
+											if (check_stringLength == Integer.parseInt(value)) {
+												if (stringnum!=-1) {
+													global.USR_string.get(stringnum).set(1, set_string);
+													split_trig[i] = global.USR_string.get(stringnum).get(1);
+												} else {
+													global.TMP_string.get(tmpstringnum).set(1, set_string);
+													split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+												}
+											}
+										} catch (NumberFormatException e) {
+											String[] fromtoSplit = value.split("-");
+											try {
+												int fromSplit = Integer.parseInt(fromtoSplit[0]);
+												int toSplit = Integer.parseInt(fromtoSplit[fromtoSplit.length-1]);
+												if (fromSplit <= check_stringLength && toSplit >= check_stringLength) {
+													if (stringnum!=-1) {
+														global.USR_string.get(stringnum).set(1, set_string);
+														split_trig[i] = global.USR_string.get(stringnum).get(1);
+													} else {
+														global.TMP_string.get(tmpstringnum).set(1, set_string);
+														split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+													}
+												}
+											} catch (NumberFormatException e1) {} catch (ArrayIndexOutOfBoundsException e1) {}
+										}
+									}
+								} else {
+									if (stringnum!=-1) {
+										global.USR_string.get(stringnum).set(1, set_string);
+										split_trig[i] = global.USR_string.get(stringnum).get(1);
+									} else {
+										global.TMP_string.get(tmpstringnum).set(1, set_string);
+										split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
 									}
 								}
 							}
