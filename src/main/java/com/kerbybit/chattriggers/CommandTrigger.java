@@ -36,9 +36,11 @@ public class CommandTrigger extends CommandBase {
 			chat.warn(chat.color("red", "/trigger [save/load]"));
 			chat.warn(chat.color("red", "/trigger [import/export] <...>"));
 		} else if (args[0].equalsIgnoreCase("IMPORT")) {
-			commandImport(args, silent);
+			chat.warn(chat.color("red", "Command currently getting changed! Check back in a newer version."));
+			//commandImport(args, silent);
 		} else if (args[0].equalsIgnoreCase("EXPORT")) {
-			commandExport(args, silent);
+			chat.warn(chat.color("red", "Command currently getting changed! Check back in a newer version."));
+			//commandExport(args, silent);
 		} else if (args[0].equalsIgnoreCase("RUN")) {
 			commandRun(args, silent);
 		} else if (args[0].equalsIgnoreCase("CREATE")) {
@@ -60,7 +62,8 @@ public class CommandTrigger extends CommandBase {
 		} else if (args[0].equalsIgnoreCase("LOAD")) {
 			commandLoad(args, silent);
 		} else if (args[0].equalsIgnoreCase("TEST")) {
-			chat.warn(chat.color("&7", "This command does nothing :D"));
+			chat.warn(chat.color("&7", "Importing import folder"));
+			file.loadImports("./mods/ChatTriggers/Imports/");
 		} else {
 			chat.warn(chat.color("red", "/trigger [create/add/list] <...>"));
 			chat.warn(chat.color("red", "/trigger [string/run] <...>"));
@@ -708,6 +711,7 @@ public class CommandTrigger extends CommandBase {
 			global.trigger = file.loadTriggers("./mods/ChatTriggers/triggers.txt");
 			global.USR_string = file.loadStrings("./mods/ChatTriggers/strings.txt");
 			global.settings = file.loadSettings("./mods/ChatTriggers/settings.txt");
+			file.loadImports("./mods/ChatTriggers/Imports/");
 			chat.warn(global.settings.get(0) + "Files loaded");
 		} catch (IOException e) {chat.warn(chat.color("red", "Error loading triggers!"));}
 	}

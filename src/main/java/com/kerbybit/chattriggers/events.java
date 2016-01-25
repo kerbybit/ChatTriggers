@@ -1479,7 +1479,7 @@ public class events {
 								global.TMP_string.add(temporary);
 								tmpstringnum = global.TMP_string.size()-1;
 								global.temporary_replace.add("{string["+stringName+"]");
-								global.temporary_replacement.add("{string[TEMP-USER-STRING-"+(global.TMP_string.size()-1)+"->"+stringName+"]");
+								global.temporary_replacement.add("{string[TEMP-USER-STRING-"+(global.TMP_string.size()-1)+"->"+stringName+"]"); 
 							}
 							
 							

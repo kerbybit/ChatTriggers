@@ -73,6 +73,23 @@ public class file {
 	}
 	
 	
+	public static void loadImports(String dest) {
+		File dir = new File(dest);
+		if (!dir.exists()) {
+			dir.mkdir();
+		}
+		File[] files = dir.listFiles();
+		for (File file : files) {
+			if (file.isFile()) {
+				System.out.println(file.getName());
+				if (file.getName().endsWith(".txt")) {
+					try {global.trigger.addAll(loadTriggers(dest + file.getName()));}
+					catch (IOException e) {chat.warn(chat.color("red", "Unable to load import!"));}
+				}
+			}
+		}
+	}
+	
 	
 	public static String importJsonFile(String type, String fileName, String toImport) {
 		String returnString = "Something went wrong!";
@@ -555,6 +572,7 @@ public class file {
 		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold");}
 		try {
 			global.trigger = loadTriggers("./mods/ChatTriggers/triggers.txt");
+			loadImports("./mods/ChatTriggers/Imports");
 			global.USR_string = loadStrings("./mods/ChatTriggers/strings.txt");
 			global.settings = loadSettings("./mods/ChatTriggers/settings.txt");
 			if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
