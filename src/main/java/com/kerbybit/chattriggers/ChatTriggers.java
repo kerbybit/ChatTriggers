@@ -91,7 +91,7 @@ public class ChatTriggers {
 				if (TMP_trig.contains("<contain>")) {TMP_w = "c"; TMP_trig = TMP_trig.replace("<contain>", "");}
 				if (TMP_trig.contains("<end>")) {TMP_w = "e"; TMP_trig = TMP_trig.replace("<end>", "");}
 				if (TMP_trig.contains("<list=") && TMP_trig.contains(">")) {TMP_trig = TMP_trig.replace(TMP_trig.substring(TMP_trig.indexOf("<list="), TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))+1), "");}
-				
+				if (TMP_trig.contains("<import>")) {TMP_trig = TMP_trig.replace("<import>", "");}
 				
 				//check server stuff
 				if (TMP_trig.contains("<server=") && TMP_trig.contains(">")) {

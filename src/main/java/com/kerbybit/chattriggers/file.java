@@ -81,15 +81,36 @@ public class file {
 		File[] files = dir.listFiles();
 		for (File file : files) {
 			if (file.isFile()) {
-				System.out.println(file.getName());
 				if (file.getName().endsWith(".txt")) {
-					try {global.trigger.addAll(loadTriggers(dest + file.getName()));}
-					catch (IOException e) {chat.warn(chat.color("red", "Unable to load import!"));}
+					try {global.trigger.addAll(loadTriggers(dest + file.getName(), true));}
+					catch (IOException e) {chat.warn(chat.color("red", "Unable to load import!")); e.printStackTrace();}
 				}
 			}
 		}
 	}
 	
+	public static void loadImport(String filename) { //TODO
+		chat.warn(chat.color("gray", "Getting import..."));
+		try {
+			String url = "http://http://bfgteam.com/ChatTriggers/exports/" + filename;
+			URL web = new URL(url);
+			InputStream fis = web.openStream();
+			List<String> lines = new ArrayList<String>();
+			String line = null;
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
+			while ((line = bufferedReader.readLine()) != null) {
+				lines.add(line);
+			}
+			bufferedReader.close();
+			
+		} catch (MalformedURLException e) {
+			chat.warn(chat.color("red", "Not a valid import! bad URL"));
+			e.printStackTrace();
+		} catch (IOException e) {
+			chat.warn(chat.color("red", "Not a valid import! IO exception"));
+			e.printStackTrace();
+		}
+	}
 	
 	public static String importJsonFile(String type, String fileName, String toImport) {
 		String returnString = "Something went wrong!";
@@ -321,7 +342,7 @@ public class file {
 		writer.close();
 	}
 	
-	public static void loadImport(String url) {
+	public static void loadImportOLD(String url) {
 		List<List<String>> tmp_triggers = new ArrayList<List<String>>();
 		List<List<String>> tmp_strings = new ArrayList<List<String>>();
 		List<String> templist = new ArrayList<String>();
@@ -376,10 +397,7 @@ public class file {
 		List<String> lists = new ArrayList<String>();
 		
 		for (int i=0; i<trigger.size(); i++) {
-			if (trigger.get(i).get(1).contains("{list=") && trigger.get(i).get(1).contains("}")) {
-				lists.add(trigger.get(i).get(1).substring(trigger.get(i).get(1).indexOf("{list="), trigger.get(i).get(1).indexOf("}",trigger.get(i).get(1).indexOf("{list="))+1));
-			}
-			if (trigger.get(i).get(1).contains("<list=") && trigger.get(i).get(1).contains(">")) {
+			if (trigger.get(i).get(1).contains("<list=") && trigger.get(i).get(1).contains(">") && !trigger.get(i).get(1).contains("<imported>")) {
 				lists.add(trigger.get(i).get(1).substring(trigger.get(i).get(1).indexOf("<list="), trigger.get(i).get(1).indexOf(">",trigger.get(i).get(1).indexOf("<list="))+1));
 			}
 		}
@@ -423,7 +441,7 @@ public class file {
 		}
 		writer.println("NO LIST");
 		for (int i=0; i<trigger.size(); i++) {
-			if (!(trigger.get(i).get(1).contains("{list=") || trigger.get(i).get(1).contains("<list="))) {
+			if (!trigger.get(i).get(1).contains("<list=") && !trigger.get(i).get(1).contains("<imported>")) {
 				writer.println("trigger:"+trigger.get(i).get(1));
 				writer.println("type:"+trigger.get(i).get(0));
 				
@@ -476,7 +494,7 @@ public class file {
 		writer.close();
 	}
 	
-	public static List<List<String>> loadTriggers(String fileName) throws IOException {
+	public static List<List<String>> loadTriggers(String fileName, Boolean isImport) throws IOException {
 		List<List<String>> tmp_triggers = new ArrayList<List<String>>();
 		List<String> lines = new ArrayList<String>();
 		String line = null;
@@ -497,7 +515,9 @@ public class file {
 					chat.warn(chat.color("red", "Set type to") + chat.color("gray", "other"));
 					tmp_list.add("other");
 				}
-				tmp_list.add(lines.get(i).substring(lines.get(i).indexOf("trigger:") + 8, lines.get(i).length()));
+				String importTag = "";
+				if (isImport) {importTag="<imported>";}
+				tmp_list.add(importTag+lines.get(i).substring(lines.get(i).indexOf("trigger:") + 8, lines.get(i).length()));
 				tmp_triggers.add(tmp_list);
 				j++;
 			}
@@ -571,7 +591,7 @@ public class file {
 		chat.warn(chat.color("gray", "Loading chat triggers..."));
 		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold");}
 		try {
-			global.trigger = loadTriggers("./mods/ChatTriggers/triggers.txt");
+			global.trigger = loadTriggers("./mods/ChatTriggers/triggers.txt", false);
 			loadImports("./mods/ChatTriggers/Imports");
 			global.USR_string = loadStrings("./mods/ChatTriggers/strings.txt");
 			global.settings = loadSettings("./mods/ChatTriggers/settings.txt");

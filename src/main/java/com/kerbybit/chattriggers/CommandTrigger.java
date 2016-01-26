@@ -416,6 +416,7 @@ public class CommandTrigger extends CommandBase {
 					String TMP_list = "";
 					String TMP_w    = "";
 					String TMP_server = "";
+					Boolean TMP_imported = false;
 					
 					if (TMP_trig.contains("{s}")) {TMP_w = "start"; TMP_trig = TMP_trig.replace("{s}", "");}
 					if (TMP_trig.contains("{c}")) {TMP_w = "contain"; TMP_trig = TMP_trig.replace("{c}", "");}
@@ -430,9 +431,11 @@ public class CommandTrigger extends CommandBase {
 					if (TMP_trig.contains("<list=") && TMP_trig.contains(">")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
 					TMP_lists.add(TMP_list);
 					if (TMP_trig.contains("<server=") && TMP_trig.contains(">")) {TMP_server = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_server+">","");}
+					if (TMP_trig.contains("<imported>")) {TMP_imported = true; TMP_trig = TMP_trig.replace("<imported>", "");}
 					
 					String TMP_tags = "";
-					if (!TMP_w.equals("")) {TMP_tags += "Modifier: " + TMP_w;}
+					if (TMP_imported==true) {TMP_tags+="Imported";}
+					if (!TMP_w.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Modifier: " + TMP_w;}
 					if (!TMP_list.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "List: " + TMP_list;}
 					if (!TMP_server.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Server: " + TMP_server;}
 					
@@ -516,6 +519,7 @@ public class CommandTrigger extends CommandBase {
 					String TMP_list = "";
 					String TMP_w    = "";
 					String TMP_server = "";
+					Boolean TMP_imported = false;
 					
 					if (TMP_trig.contains("<s>")) {TMP_w = "start"; TMP_trig = TMP_trig.replace("<s>", "");}
 					if (TMP_trig.contains("<c>")) {TMP_w = "contain"; TMP_trig = TMP_trig.replace("<c>", "");}
@@ -526,11 +530,14 @@ public class CommandTrigger extends CommandBase {
 					
 					if (TMP_trig.contains("<list=") && TMP_trig.contains(">")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
 					if (TMP_trig.contains("<server=") && TMP_trig.contains(">")) {TMP_server = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_server+">","");}
+					if (TMP_trig.contains("<imported>")) {TMP_imported = true; TMP_trig = TMP_trig.replace("<imported>", "");}
 					
 					String TMP_tags = "";
-					if (!TMP_w.equals("")) {TMP_tags += "Modifier: " + TMP_w;}
+					if (TMP_imported==true) {TMP_tags+="Imported";}
+					if (!TMP_w.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Modifier: " + TMP_w;}
 					if (!TMP_list.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "List: " + TMP_list;}
 					if (!TMP_server.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Server: " + TMP_server;}
+					
 					
 					if (TMP_check.equals(TMP_list)) {
 						TMP_test++;
@@ -697,7 +704,7 @@ public class CommandTrigger extends CommandBase {
 	public static void commandSave(String args[], Boolean silent) {
 		try {
 			file.saveAll();
-			global.trigger = file.loadTriggers("./mods/ChatTriggers/triggers.txt");
+			global.trigger = file.loadTriggers("./mods/ChatTriggers/triggers.txt", false);
 			global.USR_string = file.loadStrings("./mods/ChatTriggers/strings.txt");
 			global.settings = file.loadSettings("./mods/ChatTriggers/settings.txt");
 			chat.warn(chat.color(global.settings.get(0), "Organized and saved files"));
@@ -708,7 +715,7 @@ public class CommandTrigger extends CommandBase {
 	
 	public static void commandLoad(String args[], Boolean silent) {
 		try {
-			global.trigger = file.loadTriggers("./mods/ChatTriggers/triggers.txt");
+			global.trigger = file.loadTriggers("./mods/ChatTriggers/triggers.txt", false);
 			global.USR_string = file.loadStrings("./mods/ChatTriggers/strings.txt");
 			global.settings = file.loadSettings("./mods/ChatTriggers/settings.txt");
 			file.loadImports("./mods/ChatTriggers/Imports/");
