@@ -35,9 +35,9 @@ public class CommandTrigger extends CommandBase {
 			chat.warn(chat.color("red", "/trigger [string/run] <...>"));
 			chat.warn(chat.color("red", "/trigger [save/load]"));
 			chat.warn(chat.color("red", "/trigger [import/export] <...>"));
-		} else if (args[0].equalsIgnoreCase("IMPORT")) {
-			chat.warn(chat.color("red", "Command currently getting changed! Check back in a newer version."));
-			//commandImport(args, silent);
+		} else if (args[0].equalsIgnoreCase("IMPORT")) {//TODO
+			//chat.warn(chat.color("red", "Command currently getting changed! Check back in a newer version."));
+			commandImport(args, silent);
 		} else if (args[0].equalsIgnoreCase("EXPORT")) {
 			chat.warn(chat.color("red", "Command currently getting changed! Check back in a newer version."));
 			//commandExport(args, silent);
@@ -72,15 +72,18 @@ public class CommandTrigger extends CommandBase {
 		}
 	}
 	
-	public static void commandImport(String args[], Boolean silent) {
-		String toImport = args[1];
-		chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------"));
-		chat.warn(chat.color("gray", "Importing") + chat.color(global.settings.get(1), toImport));
-		file.loadImport("http://bfgteam.com:88/Import/server/php/files/" + toImport + ".txt");
-		chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
+	public static void commandImport(String args[], Boolean silent) { //TODO
+		if (args.length==2) {
+			String toImport = args[1];
+			file.getImport("http://bfgteam.com/ChatTriggers/exports/" + toImport + ".txt");
+		} else if (args.length<2) {
+			chat.warn(chat.color("red", "/trigger import [import name]"));
+		} else {
+			chat.warn(chat.color("red", "You can only import one thing at a time!"));
+		}
 	}
 	
-	public static void commandExport(String args[], Boolean silent) {
+	public static void commandExport(String args[], Boolean silent) { //TODO
 		String TMP_list = args[1];
 		List<List<String>> TMP_triggers = new ArrayList<List<String>>();
 		for (int i=0; i<global.trigger.size(); i++) {
@@ -99,10 +102,10 @@ public class CommandTrigger extends CommandBase {
 		try {
 			File checkFile = new File("./mods/ChatTriggersExport");
 			if (checkFile.exists()) {
-				file.saveExport(TMP_triggers, global.USR_string, "./mods/ChatTriggersExport/" + Minecraft.getMinecraft().thePlayer.getDisplayNameString() + "-" + TMP_list + ".txt");
+				file.saveExportOLD(TMP_triggers, global.USR_string, "./mods/ChatTriggersExport/" + Minecraft.getMinecraft().thePlayer.getDisplayNameString() + "-" + TMP_list + ".txt");
 			} else {
 				checkFile.mkdir();
-				file.saveExport(TMP_triggers, global.USR_string, "./mods/ChatTriggersExport/" + Minecraft.getMinecraft().thePlayer.getDisplayNameString() + "-" + TMP_list + ".txt");
+				file.saveExportOLD(TMP_triggers, global.USR_string, "./mods/ChatTriggersExport/" + Minecraft.getMinecraft().thePlayer.getDisplayNameString() + "-" + TMP_list + ".txt");
 			}
 			chat.warn(chat.color("gray", "Head over to"));
 			List<String> TMP_out = new ArrayList<String>();
@@ -602,7 +605,7 @@ public class CommandTrigger extends CommandBase {
 	
 	public static void commandSettings(String args[], Boolean silent) {
 		if (args.length < 2) {
-			chat.warn(chat.color("red", "/trigger settings [debug/color/killfeed] <...>"));
+			chat.warn(chat.color("red", "/trigger settings [debug/color/killfeed/beta] <...>"));
 		} else {
 			if (args[1].equalsIgnoreCase("DEBUG")) {
 				if (global.debug==false) {chat.warn(chat.color("gray", "Toggled debug mode") + chat.color(global.settings.get(0), "on")); global.debug=true;}
@@ -696,7 +699,7 @@ public class CommandTrigger extends CommandBase {
 					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
 				}
 			} else {
-				chat.warn(chat.color("red", "/trigger settings [debug/color/killfeed] <...>"));
+				chat.warn(chat.color("red", "/trigger settings [debug/color/killfeed/beta] <...>"));
 			}
 		}
 	}

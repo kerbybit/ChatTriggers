@@ -14,6 +14,10 @@ public class global {
 	public static Boolean worldLoaded = false;
 	public static Boolean worldFirstLoad = true;
 	public static String connectedToServer = "";
+	public static String versionURL = "";
+	
+	public static String importURL = "";
+	public static Boolean canImport = true;
 	
 	public static String lastmsg = "";
 	public static int tick = 0;

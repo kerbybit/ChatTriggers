@@ -26,50 +26,56 @@ import net.minecraft.client.Minecraft;
 
 public class file {
 	public static void loadVersion(String url) {
-		try {
-			URL web = new URL(url);
-			InputStream fis = web.openStream();
-			List<String> lines = new ArrayList<String>();
-			String line = null;
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
-			while ((line = bufferedReader.readLine()) != null) {
-				lines.add(line);
-			}
-			bufferedReader.close();
-			
-			if (!global.settings.get(2).equals("null")) {
-				if (!lines.get(0).equals(global.settings.get(2))) {
-					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------"));
-					if (global.settings.get(4).equals("false")) {
-						chat.warn(chat.color("red", "You are running on an outdated version of ChatTriggers!"));
-						List<String> TMP_out = new ArrayList<String>();
-						TMP_out.add("text:'http://kerbybit.github.io/ChatTriggers/download',color:red,hoverEvent:{action:'show_text',value:'Click to download update'},clickEvent:{action:'open_url',value:'http://kerbybit.github.io/ChatTriggers/download'}");
-						chat.sendJson(TMP_out);
-						chat.warn(chat.color("red", "Current stable version: " + lines.get(0)));
-					} else {
-						chat.warn(chat.color("red", "You are running on an outdated version of ChatTriggers!"));
-						List<String> TMP_out = new ArrayList<String>();
-						TMP_out.add("text:'http://kerbybit.github.io/ChatTriggers/download',color:red,hoverEvent:{action:'show_text',value:'Click to download update'},clickEvent:{action:'open_url',value:'http://kerbybit.github.io/ChatTriggers/download'}");
-						chat.sendJson(TMP_out);
-						chat.warn(chat.color("red", "Current beta version: " + lines.get(0)));
-					}
-					chat.warn(chat.color("red", "Your version: " + global.settings.get(2)));
-					chat.warn(chat.color("red", "You will only see this message once until the next update"));
-					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
-					global.settings.set(2,lines.get(0));
-					file.saveAll();
-				}
-			} else {
-				global.settings.set(2, lines.get(0));
-				file.saveAll();
-			}
-		} catch (MalformedURLException e) {
-			chat.warn(chat.color("red", "Can't grab update! Report this to kerbybit ASAP"));
-			e.printStackTrace();
-		} catch (IOException e) {
-			chat.warn(chat.color("red", "Can't grab update! Report this to kerbybit ASAP"));
-			e.printStackTrace();
-		}
+		global.versionURL = url;
+		Thread t1 = new Thread(new Runnable() {
+		     public void run() {
+		    	 try {
+		 			URL web = new URL(global.versionURL);
+		 			InputStream fis = web.openStream();
+		 			List<String> lines = new ArrayList<String>();
+		 			String line = null;
+		 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
+		 			while ((line = bufferedReader.readLine()) != null) {
+		 				lines.add(line);
+		 			}
+		 			bufferedReader.close();
+		 			
+		 			if (!global.settings.get(2).equals("null")) {
+		 				if (!lines.get(0).equals(global.settings.get(2))) {
+		 					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------"));
+		 					if (global.settings.get(4).equals("false")) {
+		 						chat.warn(chat.color("red", "You are running on an outdated version of ChatTriggers!"));
+		 						List<String> TMP_out = new ArrayList<String>();
+		 						TMP_out.add("text:'http://kerbybit.github.io/ChatTriggers/download',color:red,hoverEvent:{action:'show_text',value:'Click to download update'},clickEvent:{action:'open_url',value:'http://kerbybit.github.io/ChatTriggers/download'}");
+		 						chat.sendJson(TMP_out);
+		 						chat.warn(chat.color("red", "Current stable version: " + lines.get(0)));
+		 					} else {
+		 						chat.warn(chat.color("red", "You are running on an outdated version of ChatTriggers!"));
+		 						List<String> TMP_out = new ArrayList<String>();
+		 						TMP_out.add("text:'http://kerbybit.github.io/ChatTriggers/download',color:red,hoverEvent:{action:'show_text',value:'Click to download update'},clickEvent:{action:'open_url',value:'http://kerbybit.github.io/ChatTriggers/download'}");
+		 						chat.sendJson(TMP_out);
+		 						chat.warn(chat.color("red", "Current beta version: " + lines.get(0)));
+		 					}
+		 					chat.warn(chat.color("red", "Your version: " + global.settings.get(2)));
+		 					chat.warn(chat.color("red", "You will only see this message once until the next update"));
+		 					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
+		 					global.settings.set(2,lines.get(0));
+		 					file.saveAll();
+		 				}
+		 			} else {
+		 				global.settings.set(2, lines.get(0));
+		 				file.saveAll();
+		 			}
+		 		} catch (MalformedURLException e) {
+		 			chat.warn(chat.color("red", "Can't grab update! Report this to kerbybit ASAP"));
+		 			e.printStackTrace();
+		 		} catch (IOException e) {
+		 			chat.warn(chat.color("red", "Can't grab update! Report this to kerbybit ASAP"));
+		 			e.printStackTrace();
+		 		}
+		     }
+		});
+		t1.start();
 	}
 	
 	
@@ -89,27 +95,54 @@ public class file {
 		}
 	}
 	
-	public static void loadImport(String filename) { //TODO
-		chat.warn(chat.color("gray", "Getting import..."));
-		try {
-			String url = "http://http://bfgteam.com/ChatTriggers/exports/" + filename;
-			URL web = new URL(url);
-			InputStream fis = web.openStream();
-			List<String> lines = new ArrayList<String>();
-			String line = null;
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
-			while ((line = bufferedReader.readLine()) != null) {
-				lines.add(line);
-			}
-			bufferedReader.close();
-			
-		} catch (MalformedURLException e) {
-			chat.warn(chat.color("red", "Not a valid import! bad URL"));
-			e.printStackTrace();
-		} catch (IOException e) {
-			chat.warn(chat.color("red", "Not a valid import! IO exception"));
-			e.printStackTrace();
+	public static void getImport(String filename) { //TODO
+		global.importURL = filename;
+		if (global.canImport==true) {
+			global.canImport=false;
+			Thread t1 = new Thread(new Runnable() {
+			     public void run() {
+			    	chat.warn(chat.color("gray", "Getting import..."));
+			 		try {
+			 			String url = global.importURL;
+			 			String file = new File(global.importURL).getName();
+			 			URL web = new URL(url);
+			 			if (global.debug==true) {chat.warn(chat.color("&7", "Getting import from "+global.importURL));}
+			 			InputStream fis = web.openStream();
+			 			List<String> lines = new ArrayList<String>();
+			 			String line = null;
+			 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
+			 			while ((line = bufferedReader.readLine()) != null) {
+			 				lines.add(line);
+			 			}
+			 			bufferedReader.close();
+			 			
+			 			if (global.debug==true) {chat.warn(chat.color("&7", "Setting up files to save"));}
+			 			File dir = new File("./mods/ChatTriggers/Imports/");
+			 			if (!dir.exists()) {dir.mkdir();}
+			 			File fin = new File("./mods/ChatTriggers/Imports/"+file);
+			 			if (!fin.exists()) {fin.mkdir();}
+			 			
+			 			if (global.debug==true) {chat.warn(chat.color("&7", "Saving file to "+fin.getName()+" to "+fin.getPath()));}
+			 			PrintWriter writer = new PrintWriter(fin,"UTF-8");
+			 			for (String value : lines) {writer.println(value);}
+			 			writer.close();
+			 			loadImports("./mods/ChatTriggers/Imports/");
+			 			chat.warn(chat.color(global.settings.get(0), "Got "+file+" successfully!"));
+			 		} catch (MalformedURLException e) {
+			 			chat.warn(chat.color("red", "Not a valid import! bad URL"));
+			 			e.printStackTrace();
+			 		} catch (IOException e) {
+			 			chat.warn(chat.color("red", "Not a valid import! IO exception"));
+			 			e.printStackTrace();
+			 		}
+			 		global.canImport=true;
+			     }
+			});
+			t1.start();
+		} else {
+			chat.warn(chat.color("red", "You are trying to do this too quick! slow down!"));
 		}
+		
 	}
 	
 	public static String importJsonFile(String type, String fileName, String toImport) {
@@ -192,7 +225,7 @@ public class file {
 		return returnString;
 	}
 	
-	public static String importJsonURL(String type, String url, String toImport) { //TODO
+	public static String importJsonURL(String type, String url, String toImport) {
 		String returnString = "Something went wrong!";
 		try {
 			URL web = new URL(url);
@@ -273,7 +306,7 @@ public class file {
 		return returnString;
 	}
 	
-	public static void saveExport(List<List<String>> trigger, List<List<String>> USR_string, String fileName) throws IOException {
+	public static void saveExportOLD(List<List<String>> trigger, List<List<String>> USR_string, String fileName) throws IOException {
 		String username = Minecraft.getMinecraft().thePlayer.getDisplayNameString();
 		List<String> tmp_list = new ArrayList<String>();
 		PrintWriter writer = new PrintWriter(fileName,"UTF-8");
@@ -342,56 +375,6 @@ public class file {
 		writer.close();
 	}
 	
-	public static void loadImportOLD(String url) {
-		List<List<String>> tmp_triggers = new ArrayList<List<String>>();
-		List<List<String>> tmp_strings = new ArrayList<List<String>>();
-		List<String> templist = new ArrayList<String>();
-		try {
-			URL web = new URL(url);
-			InputStream fis = web.openStream();
-			List<String> lines = new ArrayList<String>();
-			String line = null;
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
-			while ((line = bufferedReader.readLine()) != null) {
-				lines.add(line);
-			}
-			bufferedReader.close();
-			
-			int j=-1;
-			for (int i=0; i<lines.size()-1; i++) {
-				if (lines.get(i).startsWith("trigger:") && lines.get(i+1).startsWith("type:")) {
-					List<String> tmp_list = new ArrayList<String>();
-					tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("type:") + 5, lines.get(i+1).length()));
-					tmp_list.add(lines.get(i).substring(lines.get(i).indexOf("trigger:") + 8, lines.get(i).length()));
-					tmp_triggers.add(tmp_list);
-					j++;
-				}
-				if (lines.get(i).trim().startsWith("event:") && j>-1) {
-					tmp_triggers.get(j).add(lines.get(i).substring(lines.get(i).indexOf("  event:") + 8, lines.get(i).length()));
-				}
-				if (lines.get(i).contains("string:") && lines.get(i+1).startsWith("  value:")) {
-					List<String> tmp_list = new ArrayList<String>();
-					tmp_list.add(lines.get(i).substring(lines.get(i).indexOf("string:") + 7, lines.get(i).length()));
-					tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("  value:") + 8, lines.get(i+1).length()));
-					tmp_strings.add(tmp_list);
-				}
-			}
-			
-			global.trigger.addAll(tmp_triggers);
-			global.USR_string.addAll(tmp_strings);
-			
-			chat.warn("&7Imported " + global.settings.get(0) + tmp_triggers.size() + " &7triggers");
-			chat.warn("&7and " + global.settings.get(0) + tmp_strings.size() + " &7strings");
-			
-		} catch (MalformedURLException e) {
-			chat.warn(chat.color("red", "Not a valid import!"));
-			e.printStackTrace();
-		} catch (IOException e) {
-			chat.warn(chat.color("red", "Not a valid import!"));
-			e.printStackTrace();
-		}
-	}
-	
 	public static void saveTriggers(List<List<String>> trigger, String fileName) throws IOException {
 		PrintWriter writer = new PrintWriter(fileName,"UTF-8");
 		List<String> lists = new ArrayList<String>();
@@ -443,7 +426,7 @@ public class file {
 		for (int i=0; i<trigger.size(); i++) {
 			if (!trigger.get(i).get(1).contains("<list=") && !trigger.get(i).get(1).contains("<imported>")) {
 				writer.println("trigger:"+trigger.get(i).get(1));
-				writer.println("type:"+trigger.get(i).get(0));
+				writer.println("type:"+trigger.get(i).get(0)); 
 				
 				int tabbed_logic = 0;
 				for (int j=2; j<trigger.get(i).size(); j++) {
@@ -592,7 +575,7 @@ public class file {
 		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold");}
 		try {
 			global.trigger = loadTriggers("./mods/ChatTriggers/triggers.txt", false);
-			loadImports("./mods/ChatTriggers/Imports");
+			loadImports("./mods/ChatTriggers/Imports/");
 			global.USR_string = loadStrings("./mods/ChatTriggers/strings.txt");
 			global.settings = loadSettings("./mods/ChatTriggers/settings.txt");
 			if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
