@@ -120,12 +120,13 @@ public class file {
 			 			File dir = new File("./mods/ChatTriggers/Imports/");
 			 			if (!dir.exists()) {dir.mkdir();}
 			 			File fin = new File("./mods/ChatTriggers/Imports/"+file);
-			 			if (!fin.exists()) {fin.mkdir();}
+			 			if (!fin.exists()) {fin.createNewFile();}
 			 			
-			 			if (global.debug==true) {chat.warn(chat.color("&7", "Saving file to "+fin.getName()+" to "+fin.getPath()));}
+			 			if (global.debug==true) {chat.warn(chat.color("&7", "Saving file to "+fin.getName()));}
 			 			PrintWriter writer = new PrintWriter(fin,"UTF-8");
 			 			for (String value : lines) {writer.println(value);}
 			 			writer.close();
+			 			if (global.debug==true) {chat.warn(chat.color("&7", "Loading imports into triggers"));}
 			 			loadImports("./mods/ChatTriggers/Imports/");
 			 			chat.warn(chat.color(global.settings.get(0), "Got "+file+" successfully!"));
 			 		} catch (MalformedURLException e) {
