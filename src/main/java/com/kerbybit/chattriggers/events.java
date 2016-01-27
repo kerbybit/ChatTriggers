@@ -1481,6 +1481,8 @@ public class events {
 								tmpstringnum = global.TMP_string.size()-1;
 								global.temporary_replace.add("{string["+stringName+"]");
 								global.temporary_replacement.add("{string[TEMP-USER-STRING-"+(global.TMP_string.size()-1)+"->"+stringName+"]"); 
+								global.temporary_replace.add("{string<"+stringName+">");
+								global.temporary_replacement.add("{string[TEMP-USER-STRING-"+(global.TMP_string.size()-1)+"->"+stringName+"]"); 
 							}
 							
 							
@@ -1559,6 +1561,8 @@ public class events {
 								tmpstringnum = global.TMP_string.size()-1;
 								global.temporary_replace.add("{string["+stringName+"]");
 								global.temporary_replacement.add("{string[TEMP-USER-STRING-"+(global.TMP_string.size()-1)+"->"+stringName+"]");
+								global.temporary_replace.add("{string<"+stringName+">");
+								global.temporary_replacement.add("{string[TEMP-USER-STRING-"+(global.TMP_string.size()-1)+"->"+stringName+"]");
 							}
 							
 							String set_string = msg.substring(msg.indexOf(split_trig[i-1])+split_trig[i-1].length(), msg.length());
@@ -1635,6 +1639,8 @@ public class events {
 								global.TMP_string.add(temporary);
 								tmpstringnum = global.TMP_string.size()-1;
 								global.temporary_replace.add("{string["+stringName+"]");
+								global.temporary_replacement.add("{string[TEMP-USER-STRING-"+(global.TMP_string.size()-1)+"->"+stringName+"]");
+								global.temporary_replace.add("{string<"+stringName+">");
 								global.temporary_replacement.add("{string[TEMP-USER-STRING-"+(global.TMP_string.size()-1)+"->"+stringName+"]");
 							}
 							

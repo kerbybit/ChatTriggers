@@ -508,6 +508,44 @@ public class file {
 			if (lines.get(i).trim().startsWith("event:") && j>-1) {
 				tmp_triggers.get(j).add(lines.get(i).substring(lines.get(i).indexOf("  event:") + 8, lines.get(i).length()));
 			}
+			if (lines.get(i).trim().startsWith("!")) {
+				String importFunction = lines.get(i).trim().substring(lines.get(i).trim().indexOf("!")+1);
+				if (importFunction.toUpperCase().startsWith("CREATE STRING ")) {
+					String sn = importFunction.substring(importFunction.toUpperCase().indexOf("CREATE STRING ")+14);
+					String sv = "";
+					if (sn.toUpperCase().contains("WITH ")) {
+						sv = sn.substring(sn.toUpperCase().indexOf("WITH ")+5);
+					}
+					if (sn.contains(" ")) {sn = sn.substring(0, sn.indexOf(" ")).trim();}
+					if (global.debug==true) {
+						if (sv!="") {chat.warn(chat.color("gray", "Importing string "+sn+" with value "+sv));}
+						else {chat.warn(chat.color("gray", "Importing string "+sn+" with no value"));}
+					}
+					
+					Boolean canCreate = true;
+					for (int k=0; k<global.USR_string.size(); k++) {
+						if (global.USR_string.get(k).get(0).equals(sn)) {
+							canCreate=false;
+							if (sv!="") {
+								global.USR_string.get(k).set(1, sv);
+								if (global.debug==true) {chat.warn(chat.color("gray", "Set value "+sv+" in string "+sn));}
+							} else {
+								if (global.debug==true) {chat.warn(chat.color("gray", "String already exsists"));}
+							}
+						}
+					}
+					if (canCreate==true) {
+						List<String> temporary = new ArrayList<String>();
+						temporary.add(sn); temporary.add(sv);
+						global.USR_string.add(temporary);
+						if (global.debug==true) {
+							if (sv!="") {chat.warn(chat.color("gray", "Created string "+sn+" with value "+sv));} 
+							else {chat.warn(chat.color("gray", "Created string "+sn+" with no value"));}
+						}
+					}
+					try {saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+				}
+			}
 		}
 		return tmp_triggers;
 	}
