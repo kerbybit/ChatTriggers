@@ -149,6 +149,7 @@ public class CommandTrigger extends CommandBase {
 					TMP_trig = TMP_trig.replace("<start>", ""); 
 					TMP_trig = TMP_trig.replace("<contain>", ""); 
 					TMP_trig = TMP_trig.replace("<end>", "");
+					TMP_trig = TMP_trig.replace("<imported>", "");
 					if (TMP_trig.contains("<list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
 					if (TMP_trig.contains("<server=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_list+">","");}
 					if (TMP_trig.equals(TMP_e)) {
