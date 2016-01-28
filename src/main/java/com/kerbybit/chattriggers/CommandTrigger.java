@@ -230,11 +230,17 @@ public class CommandTrigger extends CommandBase {
 			try {num = Integer.parseInt(args[1]);} 
 			catch(NumberFormatException e) {num = -1;}
 			if (num>-1 && num<global.trigger.size()) {
-				String TMP_rem = global.trigger.remove(num).get(1);
-				if (silent==false) {
-					chat.warnUnformatted(chat.color("gray", "Deleted trigger") + chat.color(global.settings.get(0), TMP_rem) + chat.color("gray", "and all of its events"));
+				String TMP_rem = global.trigger.get(num).get(1);
+				if (!TMP_rem.contains("<imported>")) {
+					if (silent==false) {
+						chat.warnUnformatted(chat.color("gray", "Deleted trigger") + chat.color(global.settings.get(0), TMP_rem) + chat.color("gray", "and all of its events"));
+					}
+					global.trigger.remove(num).get(1);
+					try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+				} else {
+					chat.warnUnformatted(chat.color("red", "You cannot edit imported triggers!"));
+					chat.warnUnformatted(chat.color("red", "You must edit them from the imported file!"));
 				}
-				try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
 			} else {
 				chat.warn(chat.color("red", "/trigger delete [trigger number]"));
 			}
@@ -254,34 +260,38 @@ public class CommandTrigger extends CommandBase {
 				else {TMP_e += args[i] + " ";}
 			}
 			if (num>-1 && num<global.trigger.size()) {
-				String TMP_etype = TMP_e;
-				if (TMP_e.contains(" ")) {TMP_etype = TMP_e.substring(0,TMP_e.indexOf(" "));}
-				
-				if (TMP_etype.equalsIgnoreCase("CHAT")
-				|| TMP_etype.equalsIgnoreCase("CANCEL") 
-				|| TMP_etype.equalsIgnoreCase("CHOOSE") 
-				|| TMP_etype.equalsIgnoreCase("KILLFEED")
-				|| TMP_etype.equalsIgnoreCase("NOTIFY")
-				|| TMP_etype.equalsIgnoreCase("TRIGGER") 
-				|| TMP_etype.equalsIgnoreCase("SOUND")
-				|| TMP_etype.equalsIgnoreCase("COPY")
-				|| TMP_etype.equalsIgnoreCase("DO")
-				|| TMP_etype.equalsIgnoreCase("IF")
-				|| TMP_etype.equalsIgnoreCase("ELSE")
-				|| TMP_etype.equalsIgnoreCase("ELSEIF")
-				|| TMP_etype.equalsIgnoreCase("FOR")
-				|| TMP_etype.equalsIgnoreCase("WAIT")
-				|| TMP_etype.equalsIgnoreCase("END")
-				|| TMP_etype.equalsIgnoreCase("ASYNC")) {
-					global.trigger.get(num).add(TMP_e);
-					if (silent==false) {
-						chat.warnUnformatted(chat.color("gray", "Added event") + chat.color(global.settings.get(0), TMP_e) + chat.color("gray", "to trigger") + chat.color(global.settings.get(0), global.trigger.get(num).get(1)));
+				if (!global.trigger.get(num).get(1).contains("<imported>")) {
+					String TMP_etype = TMP_e;
+					if (TMP_e.contains(" ")) {TMP_etype = TMP_e.substring(0,TMP_e.indexOf(" "));}
+					
+					if (TMP_etype.equalsIgnoreCase("CHAT")
+					|| TMP_etype.equalsIgnoreCase("CANCEL") 
+					|| TMP_etype.equalsIgnoreCase("CHOOSE") 
+					|| TMP_etype.equalsIgnoreCase("KILLFEED")
+					|| TMP_etype.equalsIgnoreCase("NOTIFY")
+					|| TMP_etype.equalsIgnoreCase("TRIGGER") 
+					|| TMP_etype.equalsIgnoreCase("SOUND")
+					|| TMP_etype.equalsIgnoreCase("COPY")
+					|| TMP_etype.equalsIgnoreCase("DO")
+					|| TMP_etype.equalsIgnoreCase("IF")
+					|| TMP_etype.equalsIgnoreCase("ELSE")
+					|| TMP_etype.equalsIgnoreCase("ELSEIF")
+					|| TMP_etype.equalsIgnoreCase("FOR")
+					|| TMP_etype.equalsIgnoreCase("WAIT")
+					|| TMP_etype.equalsIgnoreCase("END")
+					|| TMP_etype.equalsIgnoreCase("ASYNC")) {
+						global.trigger.get(num).add(TMP_e);
+						if (silent==false) {
+							chat.warnUnformatted(chat.color("gray", "Added event") + chat.color(global.settings.get(0), TMP_e) + chat.color("gray", "to trigger") + chat.color(global.settings.get(0), global.trigger.get(num).get(1)));
+						}
+						try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+					} else {
+						chat.warn(chat.color("red", "Not a valid event type!"));
 					}
-					try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
 				} else {
-					chat.warn(chat.color("red", "Not a valid event type!"));
+					chat.warnUnformatted(chat.color("red", "You cannot edit imported triggers!"));
+					chat.warnUnformatted(chat.color("red", "You must edit them from the imported file!"));
 				}
-				
 			} else {
 				chat.warn(chat.color("red", "/trigger add [trigger number] [event] [event argument(s)]"));
 			}
@@ -296,17 +306,22 @@ public class CommandTrigger extends CommandBase {
 			try {num = Integer.parseInt(args[1]);} 
 			catch(NumberFormatException e) {num = -1;}
 			if (num>-1 && num<global.trigger.size()) {
-				int num2 = 1;
-				try {num2 = Integer.parseInt(args[2]);}
-				catch(NumberFormatException e) {num2 = 1;}
-				if (num2>1 && num2<global.trigger.get(num).size()) {
-					String TMP_rem = global.trigger.get(num).remove(num2);
-					if (silent==false) {
-						chat.warnUnformatted(chat.color("gray", "Removed event") + chat.color(global.settings.get(0), TMP_rem) + chat.color("gray", "from trigger") + chat.color(global.settings.get(0), global.trigger.get(num).get(1)));
+				if (!global.trigger.get(num).get(1).contains("<imported>")) {
+					int num2 = 1;
+					try {num2 = Integer.parseInt(args[2]);}
+					catch(NumberFormatException e) {num2 = 1;}
+					if (num2>1 && num2<global.trigger.get(num).size()) {
+						String TMP_rem = global.trigger.get(num).remove(num2);
+						if (silent==false) {
+							chat.warnUnformatted(chat.color("gray", "Removed event") + chat.color(global.settings.get(0), TMP_rem) + chat.color("gray", "from trigger") + chat.color(global.settings.get(0), global.trigger.get(num).get(1)));
+						}
+						try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+					} else {
+						chat.warn(chat.color("red", "/trigger remove [trigger number] [event number]"));
 					}
-					try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
 				} else {
-					chat.warn(chat.color("red", "/trigger remove [trigger number] [event number]"));
+					chat.warnUnformatted(chat.color("red", "You cannot edit imported triggers!"));
+					chat.warnUnformatted(chat.color("red", "You must edit them from the imported file!"));
 				}
 			} else {
 				chat.warn(chat.color("red", "/trigger remove [trigger number] [event number]"));
@@ -448,11 +463,12 @@ public class CommandTrigger extends CommandBase {
 						TMP_type = TMP_type.replace("'", "\\'");
 						TMP_trig = TMP_trig.replace("'", "\\'");
 						TMP_list = TMP_list.replace("'", "\\'");
-						TMP_out.add("text:'" + i + "> ',color:gray,hoverEvent:{action:'show_text',value:'Add an event'},clickEvent:{action:'suggest_command',value:'/trigger add " + i + " '}");
+						if (TMP_imported) {TMP_out.add("text:'" + i + "> ',color:gray,hoverEvent:{action:'show_text',value:'You cannot edit\nimported triggers'}");} 
+						else {TMP_out.add("text:'" + i + "> ',color:gray,hoverEvent:{action:'show_text',value:'Add an event'},clickEvent:{action:'suggest_command',value:'/trigger add " + i + " '}");}
 						TMP_out.add("text:'" + TMP_type + " ',color:dark_gray");
 						TMP_out.add("text:'" + TMP_trig + " ',color:"+global.settings.get(1));
 						if (!TMP_tags.equals("")) {TMP_out.add("text:'tags ',color:dark_gray,hoverEvent:{action:'show_text',value:'" + TMP_tags + "'}");}
-						TMP_out.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Remove trigger'},clickEvent:{action:'suggest_command',value:'/trigger delete " + i + " [enter to confirm]'}");
+						if (!TMP_imported) {TMP_out.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Remove trigger'},clickEvent:{action:'suggest_command',value:'/trigger delete " + i + " [enter to confirm]'}");}
 						chat.sendJson(TMP_out);
 						
 						int tabbed_logic = 0;
@@ -477,7 +493,8 @@ public class CommandTrigger extends CommandBase {
 								TMP_c = TMP_c.replace("'", "\\'");
 								TMP_e = TMP_e.replace("'", "\\'");
 								TMP_eventout.add("text:'" + TMP_extraspaces + "   '");
-								TMP_eventout.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Remove event'},clickEvent:{action:'suggest_command',value:'/trigger remove " + i + " " + j + " [enter to confirm]'}");
+								if (TMP_imported) {TMP_eventout.add("text:' '");} 
+								else {TMP_eventout.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Remove event'},clickEvent:{action:'suggest_command',value:'/trigger remove " + i + " " + j + " [enter to confirm]'}");}
 								TMP_eventout.add("text:' " + TMP_c + " ',color:dark_gray");
 								TMP_eventout.add("text:'" + TMP_e + "',color:gray");
 								chat.sendJson(TMP_eventout);
@@ -550,11 +567,12 @@ public class CommandTrigger extends CommandBase {
 						TMP_type = TMP_type.replace("'", "\\'");
 						TMP_trig = TMP_trig.replace("'", "\\'");
 						TMP_list = TMP_list.replace("'", "\\'");
-						TMP_out.add("text:'" + i + "> ',color:gray,hoverEvent:{action:'show_text',value:'Add an event'},clickEvent:{action:'suggest_command',value:'/trigger add " + i + " '}");
+						if (TMP_imported) {TMP_out.add("text:'" + i + "> ',color:gray,hoverEvent:{action:'show_text',value:'You cannot edit\nimported triggers'}");} 
+						else {TMP_out.add("text:'" + i + "> ',color:gray,hoverEvent:{action:'show_text',value:'Add an event'},clickEvent:{action:'suggest_command',value:'/trigger add " + i + " '}");}
 						TMP_out.add("text:'" + TMP_type + " ',color:dark_gray");
 						TMP_out.add("text:'" + TMP_trig + " ',color:"+global.settings.get(1));
 						if (!TMP_tags.equals("")) {TMP_out.add("text:'tags ',color:dark_gray,hoverEvent:{action:'show_text',value:'" + TMP_tags + "'}");}
-						TMP_out.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Remove trigger'},clickEvent:{action:'suggest_command',value:'/trigger delete " + i + " [enter to confirm]'}");
+						if (!TMP_imported) {TMP_out.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Remove trigger'},clickEvent:{action:'suggest_command',value:'/trigger delete " + i + " [enter to confirm]'}");}
 						chat.sendJson(TMP_out);
 						
 						int tabbed_logic=0;
@@ -578,7 +596,8 @@ public class CommandTrigger extends CommandBase {
 								TMP_c = TMP_c.replace("'", "\\'");
 								TMP_e = TMP_e.replace("'", "\\'");
 								TMP_eventout.add("text:'" + TMP_extraspaces + "   '");
-								TMP_eventout.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Remove event'},clickEvent:{action:'suggest_command',value:'/trigger remove " + i + " " + j + " [enter to confirm]'}");
+								if (TMP_imported) {TMP_eventout.add("text:' '");} 
+								else {TMP_eventout.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Remove event'},clickEvent:{action:'suggest_command',value:'/trigger remove " + i + " " + j + " [enter to confirm]'}");}
 								TMP_eventout.add("text:' " + TMP_c + " ',color:dark_gray");
 								TMP_eventout.add("text:'" + TMP_e + "',color:gray");
 								chat.sendJson(TMP_eventout);

@@ -470,6 +470,10 @@ public class file {
 	
 	public static void saveSettings(List listName, String fileName) throws IOException {
 		PrintWriter writer = new PrintWriter(fileName,"UTF-8");
+		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
+		if (global.settings.size() < 3) {global.settings.add("null");}
+		if (global.settings.size() < 4) {global.settings.add("top-left");}
+		if (global.settings.size() < 5) {global.settings.add("false");}
 		writer.println("color:"+listName.get(0));
 		writer.println("colorName:"+listName.get(1));
 		writer.println("version:"+listName.get(2));
