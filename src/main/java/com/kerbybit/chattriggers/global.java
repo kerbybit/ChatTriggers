@@ -36,10 +36,10 @@ public class global {
 	public static int notifySize = 0;
 	
 	public static boolean debug = false;
+	public static boolean canSave = true;
 	
 	public static boolean showGUI = false;
 	public static boolean showAltInputGui = false;
-
 	
 	//////////////////Trigger matrix////////////////////
 	// layout

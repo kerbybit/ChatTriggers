@@ -125,8 +125,6 @@ public class ChatTriggers {
 				}
 				TMP_trig = TMP_trig.replace("{me}", Minecraft.getMinecraft().thePlayer.getDisplayNameString());
 				
-				
-				//chat check
 				if (correct_server) {
 					if (TMP_w.equals("s")) { //startWith
 						try {TMP_trig = events.setStrings(msg, TMP_trig);}
@@ -216,8 +214,6 @@ public class ChatTriggers {
 		
 	@SubscribeEvent
 	public void RenderGameOverlayEvent(RenderGameOverlayEvent event) {
-		
-		
 		if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
 			//draw killfeed
 			for (int i=0; i<global.killfeed.size(); i++) {
@@ -250,11 +246,8 @@ public class ChatTriggers {
 			try {file.startup();
 			} catch (ClassNotFoundException e) {e.printStackTrace();}
 
-	    	if (global.settings.get(4).equals("false")) {
-				file.loadVersion("http://kerbybit.github.io/ChatTriggers/download/version.txt");
-			} else {
-				file.loadVersion("http://kerbybit.github.io/ChatTriggers/download/betaversion.txt");
-			}
+	    	if (global.settings.get(4).equals("false")) {file.loadVersion("http://kerbybit.github.io/ChatTriggers/download/version.txt");} 
+	    	else {file.loadVersion("http://kerbybit.github.io/ChatTriggers/download/betaversion.txt");}
 			global.tick++;
 		}
 		

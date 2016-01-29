@@ -493,11 +493,17 @@ public class file {
 		bufferedReader.close();
 
 		int j=-1;
-		for (int i=0; i<lines.size()-1; i++) {
+		for (int i=0; i<lines.size(); i++) {
 			if (lines.get(i).startsWith("trigger:")) {
 				List<String> tmp_list = new ArrayList<String>();
-				if (lines.get(i+1).startsWith("type:")) {
-					tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("type:") + 5, lines.get(i+1).length()));
+				if (i < lines.size()-1) {
+					if (lines.get(i+1).startsWith("type:")) {
+						tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("type:") + 5, lines.get(i+1).length()));
+					} else {
+						chat.warn(chat.color("red","No trigger type specified for") + chat.color("gray",lines.get(i).substring(lines.get(i).indexOf("trigger:") + 8, lines.get(i).length())));
+						chat.warn(chat.color("red", "Set type to") + chat.color("gray", "other"));
+						tmp_list.add("other");
+					}
 				} else {
 					chat.warn(chat.color("red","No trigger type specified for") + chat.color("gray",lines.get(i).substring(lines.get(i).indexOf("trigger:") + 8, lines.get(i).length())));
 					chat.warn(chat.color("red", "Set type to") + chat.color("gray", "other"));
@@ -587,30 +593,25 @@ public class file {
 		bufferedReader.close();
 		
 		for (int i=0; i<lines.size(); i++) {
-			if (lines.get(i).startsWith("color:")) {
-				tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("color:") + 6));
-			}
-			if (lines.get(i).startsWith("colorName:")) {
-				tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("colorName:") + 10));
-			}
-			if (lines.get(i).startsWith("version:")) {
-				tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("version:") + 8));
-			}
-			if (lines.get(i).startsWith("killfeed pos:")) {
-				tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("killfeed pos:")+13));
-			}
-			if (lines.get(i).startsWith("isBeta:")) {
-				tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("isBeta:")+7));
-			}
+			if (lines.get(i).startsWith("color:")) {tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("color:") + 6));}
+			if (lines.get(i).startsWith("colorName:")) {tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("colorName:") + 10));}
+			if (lines.get(i).startsWith("version:")) {tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("version:") + 8));}
+			if (lines.get(i).startsWith("killfeed pos:")) {tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("killfeed pos:")+13));}
+			if (lines.get(i).startsWith("isBeta:")) {tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("isBeta:")+7));}
 		}
 		
 		return tmp_settings;
 	}
 	
 	public static void saveAll() throws IOException {
-		saveTriggers(global.trigger, "./mods/ChatTriggers/triggers.txt");
-		saveStrings(global.USR_string, "./mods/ChatTriggers/strings.txt");
-		saveSettings(global.settings, "./mods/ChatTriggers/settings.txt");
+		if (global.canSave==true) {
+			saveTriggers(global.trigger, "./mods/ChatTriggers/triggers.txt");
+			saveStrings(global.USR_string, "./mods/ChatTriggers/strings.txt");
+			saveSettings(global.settings, "./mods/ChatTriggers/settings.txt");
+		} else {
+			chat.warn(chat.color("red", "You cannot save to the files while you are testing an import!"));
+			chat.warn(chat.color("red", "These changes are not getting saved. do </trigger load> to leave testing"));
+		}
 	}
 	
 	public static void startup() throws ClassNotFoundException {
@@ -618,9 +619,9 @@ public class file {
 		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold");}
 		try {
 			global.trigger = loadTriggers("./mods/ChatTriggers/triggers.txt", false);
-			loadImports("./mods/ChatTriggers/Imports/");
 			global.USR_string = loadStrings("./mods/ChatTriggers/strings.txt");
 			global.settings = loadSettings("./mods/ChatTriggers/settings.txt");
+			loadImports("./mods/ChatTriggers/Imports/");
 			if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
 			if (global.settings.size() < 3) {global.settings.add("null");}
 			if (global.settings.size() < 4) {global.settings.add("top-left");}
