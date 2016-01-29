@@ -495,7 +495,9 @@ public class events {
 				returnstring = args;
 			} else if (func.equalsIgnoreCase("ADD") || func.equalsIgnoreCase("PLUS")) {
 				try {
-					int strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));
+					int strnmbr = -99999;
+					if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));} 
+					else {strnmbr = Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1));}
 					try {
 						int argnmbr = Integer.parseInt(args);
 						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, strnmbr + argnmbr + "");} 
@@ -505,7 +507,9 @@ public class events {
 				} catch (NumberFormatException e) {returnstring=sn+" is not a number!{string["+sn+"]}";}
 			} else if (func.equalsIgnoreCase("SUBTRACT") || func.equalsIgnoreCase("MINUS")) {
 				try {
-					int strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));
+					int strnmbr = -99999;
+					if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));} 
+					else {strnmbr = Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1));}
 					try {
 						int argnmbr = Integer.parseInt(args);
 						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, strnmbr - argnmbr + "");} 
@@ -515,7 +519,9 @@ public class events {
 				} catch (NumberFormatException e) {returnstring=sn+" is not a number!{string["+sn+"]}";}
 			} else if (func.equalsIgnoreCase("MULTIPLY") || func.equalsIgnoreCase("MULT") || func.equalsIgnoreCase("TIMES")) {
 				try {
-					int strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));
+					int strnmbr = -99999;
+					if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));} 
+					else {strnmbr = Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1));}
 					try {
 						int argnmbr = Integer.parseInt(args);
 						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, strnmbr * argnmbr + "");} 
@@ -525,7 +531,9 @@ public class events {
 				} catch (NumberFormatException e) {returnstring=sn+" is not a number!{string["+sn+"]}";}
 			} else if (func.equalsIgnoreCase("DIVIDE") || func.equalsIgnoreCase("DIV")) {
 				try {
-					int strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));
+					int strnmbr = -99999;
+					if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));} 
+					else {strnmbr = Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1));}
 					try {
 						int argnmbr = Integer.parseInt(args);
 						System.out.println(strnmbr + "/" + argnmbr);
@@ -537,7 +545,9 @@ public class events {
 				} catch (NumberFormatException e) {returnstring=sn+" is not a number!{string["+sn+"]}";}
 			} else if (func.equalsIgnoreCase("POW") || func.equalsIgnoreCase("POWER")) {
 				try {
-					int strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));
+					int strnmbr = -99999;
+					if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));} 
+					else {strnmbr = Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1));}
 					try {
 						int argnmbr = Integer.parseInt(args);
 						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, Math.pow(strnmbr,argnmbr) + "");} 
@@ -581,7 +591,7 @@ public class events {
 							.replace("&0","").replace("&1","").replace("&2","").replace("&3","").replace("&4","").replace("&5","").replace("&6","").replace("&7","").replace("&8","").replace("&9","").replace("&a","").replace("&b","").replace("&c","").replace("&d","").replace("&e","").replace("&f","")
 							.replace("&k", "").replace("&l", "").replace("&m", "").replace("&n", "").replace("&o", "").replace("&r", ""));
 				} else {
-					global.TMP_string.get(stringnum).set(1, global.TMP_string.get(tmpstringnum).get(1)
+					global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1)
 							.replace("&0","").replace("&1","").replace("&2","").replace("&3","").replace("&4","").replace("&5","").replace("&6","").replace("&7","").replace("&8","").replace("&9","").replace("&a","").replace("&b","").replace("&c","").replace("&d","").replace("&e","").replace("&f","")
 							.replace("&k", "").replace("&l", "").replace("&m", "").replace("&n", "").replace("&o", "").replace("&r", ""));
 				}
