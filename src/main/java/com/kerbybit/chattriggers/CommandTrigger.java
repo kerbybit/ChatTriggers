@@ -61,9 +61,30 @@ public class CommandTrigger extends CommandBase {
 			commandSave(args, silent);
 		} else if (args[0].equalsIgnoreCase("LOAD")) {
 			commandLoad(args, silent);
+		} else if (args[0].equalsIgnoreCase("TESTIMPORT")) {
+			if (args.length < 2) {
+				chat.warn(chat.color("red", "/trigger testImport [import name]"));
+			} else if (args.length == 2) {
+				String dir = "./mods/ChatTriggers/Imports/"+args[1]+".txt";
+				File f = new File(dir);
+				if (f.exists() && f.isFile()) {
+					global.trigger.clear();
+					global.USR_string.clear();
+					global.TMP_string.clear();
+					global.waitEvents.clear();
+					global.asyncEvents.clear();
+					chat.warn(chat.color(global.settings.get(0), "You are now in testing mode for import '"+f.getName()+"'"));
+					chat.warn(chat.color(global.settings.get(0), "To reload all of your triggers and strings, do </trigger load>"));
+					try {global.trigger.addAll(file.loadTriggers(dir, true));}
+					catch (IOException e) {chat.warn(chat.color("red", "Unable to load import!")); e.printStackTrace();}
+				} else {
+					chat.warn(chat.color("red", "Not an import!"));
+				}
+			} else {
+				chat.warn(chat.color("red", "/trigger testImport [import name]"));
+			}
 		} else if (args[0].equalsIgnoreCase("TEST")) {
-			chat.warn(chat.color("&7", "Importing import folder"));
-			file.loadImports("./mods/ChatTriggers/Imports/");
+			chat.warn(chat.color("&7", "This command does nothing :D"));
 		} else {
 			chat.warn(chat.color("red", "/trigger [create/add/list] <...>"));
 			chat.warn(chat.color("red", "/trigger [string/run] <...>"));
