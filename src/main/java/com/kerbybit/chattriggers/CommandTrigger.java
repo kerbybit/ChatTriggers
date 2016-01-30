@@ -170,6 +170,7 @@ public class CommandTrigger extends CommandBase {
 					TMP_trig = TMP_trig.replace("<contain>", ""); 
 					TMP_trig = TMP_trig.replace("<end>", "");
 					TMP_trig = TMP_trig.replace("<imported>", "");
+					TMP_trig = TMP_trig.replace("<formatted>", "");
 					if (TMP_trig.contains("<list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
 					if (TMP_trig.contains("<server=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_list+">","");}
 					if (TMP_trig.equals(TMP_e)) {
@@ -456,6 +457,7 @@ public class CommandTrigger extends CommandBase {
 					String TMP_w    = "";
 					String TMP_server = "";
 					Boolean TMP_imported = false;
+					Boolean TMP_formatted = false;
 					
 					if (TMP_trig.contains("{s}")) {TMP_w = "start"; TMP_trig = TMP_trig.replace("{s}", "");}
 					if (TMP_trig.contains("{c}")) {TMP_w = "contain"; TMP_trig = TMP_trig.replace("{c}", "");}
@@ -471,12 +473,14 @@ public class CommandTrigger extends CommandBase {
 					TMP_lists.add(TMP_list);
 					if (TMP_trig.contains("<server=") && TMP_trig.contains(">")) {TMP_server = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_server+">","");}
 					if (TMP_trig.contains("<imported>")) {TMP_imported = true; TMP_trig = TMP_trig.replace("<imported>", "");}
+					if (TMP_trig.contains("<formatted>")) {TMP_formatted = true; TMP_trig = TMP_trig.replace("<formatted>", "");}
 					
 					String TMP_tags = "";
-					if (TMP_imported==true) {TMP_tags+="Imported";}
+					if (TMP_imported) {TMP_tags+="Imported";}
 					if (!TMP_w.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Modifier: " + TMP_w;}
 					if (!TMP_list.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "List: " + TMP_list;}
 					if (!TMP_server.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Server: " + TMP_server;}
+					if (TMP_formatted) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Formatted";}
 					
 					if (TMP_list.equals("")) {
 						List<String> TMP_out = new ArrayList<String>();
@@ -561,6 +565,7 @@ public class CommandTrigger extends CommandBase {
 					String TMP_w    = "";
 					String TMP_server = "";
 					Boolean TMP_imported = false;
+					Boolean TMP_formatted = false;
 					
 					if (TMP_trig.contains("<s>")) {TMP_w = "start"; TMP_trig = TMP_trig.replace("<s>", "");}
 					if (TMP_trig.contains("<c>")) {TMP_w = "contain"; TMP_trig = TMP_trig.replace("<c>", "");}
@@ -572,12 +577,14 @@ public class CommandTrigger extends CommandBase {
 					if (TMP_trig.contains("<list=") && TMP_trig.contains(">")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
 					if (TMP_trig.contains("<server=") && TMP_trig.contains(">")) {TMP_server = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_server+">","");}
 					if (TMP_trig.contains("<imported>")) {TMP_imported = true; TMP_trig = TMP_trig.replace("<imported>", "");}
+					if (TMP_trig.contains("<formatted>")) {TMP_formatted = true; TMP_trig = TMP_trig.replace("<formatted>", "");}
 					
 					String TMP_tags = "";
 					if (TMP_imported==true) {TMP_tags+="Imported";}
 					if (!TMP_w.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Modifier: " + TMP_w;}
 					if (!TMP_list.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "List: " + TMP_list;}
 					if (!TMP_server.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Server: " + TMP_server;}
+					if (TMP_formatted) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Formatted";}
 					
 					
 					if (TMP_check.equals(TMP_list)) {
@@ -757,6 +764,7 @@ public class CommandTrigger extends CommandBase {
 	}
 	
 	public static void commandLoad(String args[], Boolean silent) {
+		global.canSave = true;
 		try {
 			global.trigger = file.loadTriggers("./mods/ChatTriggers/triggers.txt", false);
 			global.USR_string = file.loadStrings("./mods/ChatTriggers/strings.txt");
@@ -764,6 +772,5 @@ public class CommandTrigger extends CommandBase {
 			file.loadImports("./mods/ChatTriggers/Imports/");
 			chat.warn(global.settings.get(0) + "Files loaded");
 		} catch (IOException e) {chat.warn(chat.color("red", "Error loading triggers!"));}
-		global.canSave = true;
 	}
 }

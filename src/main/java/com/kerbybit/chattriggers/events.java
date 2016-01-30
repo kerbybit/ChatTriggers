@@ -580,7 +580,6 @@ public class events {
 		
 		
 		for (int i=0; i<tmp_event.size(); i++) {
-			
 		//SETUP
 			String TMP_e = tmp_event.get(i);
 			String TMP_c = "";
@@ -796,7 +795,7 @@ public class events {
 			
 			
 		//logic events
-			if (TMP_c.equalsIgnoreCase("ASYNC")) { //TODO
+			if (TMP_c.equalsIgnoreCase("ASYNC")) {
 				int tabbed_logic = 0;
 				List<String> eventsToAsync = new ArrayList<String>();
 				
@@ -828,6 +827,7 @@ public class events {
 					Thread t1 = new Thread(new Runnable() {
 					     public void run() {
 					          events.doEvents(global.asyncEvents, null);
+					          global.asyncEvents.clear();
 					     }
 					});
 					t1.start();
@@ -1126,6 +1126,7 @@ public class events {
 				TMP_trig = TMP_trig.replace("<contain>", ""); 
 				TMP_trig = TMP_trig.replace("<end>", "");
 				TMP_trig = TMP_trig.replace("<imported>", "");
+				TMP_trig = TMP_trig.replace("<formatted>", "");
 				if (TMP_trig.contains("<list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
 				if (TMP_trig.contains("<server=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_list+">","");}
 				
@@ -1379,6 +1380,8 @@ public class events {
 								} else {
 									global.TMP_string.get(tmpstringnum).set(1, set_string);
 									split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+									/*System.out.println(set_string);
+									System.out.println(global.TMP_string.get(tmpstringnum).get(0));*/
 								}
 							}
 						}

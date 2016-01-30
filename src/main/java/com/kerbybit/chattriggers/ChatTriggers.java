@@ -82,6 +82,7 @@ public class ChatTriggers {
 				String[] TMP_server = {};
 				String current_server = "";
 				Boolean correct_server = false;
+				Boolean TMP_formatted = false;
 				
 				//tags
 				if (TMP_trig.contains("<s>")) {TMP_w = "s"; TMP_trig = TMP_trig.replace("<s>", "");}
@@ -92,6 +93,7 @@ public class ChatTriggers {
 				if (TMP_trig.contains("<end>")) {TMP_w = "e"; TMP_trig = TMP_trig.replace("<end>", "");}
 				if (TMP_trig.contains("<list=") && TMP_trig.contains(">")) {TMP_trig = TMP_trig.replace(TMP_trig.substring(TMP_trig.indexOf("<list="), TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))+1), "");}
 				if (TMP_trig.contains("<imported>")) {TMP_trig = TMP_trig.replace("<imported>", "");}
+				if (TMP_trig.contains("<formatted>")) {TMP_trig = TMP_trig.replace("<formatted>", ""); TMP_formatted = true;}
 				
 				//check server stuff
 				if (TMP_trig.contains("<server=") && TMP_trig.contains(">")) {
@@ -106,7 +108,9 @@ public class ChatTriggers {
 				if (TMP_server.length == 0) {correct_server = true;}
 				
 				//check if formatted or nah
-				if (TMP_trig.contains("&")) {
+				if (TMP_trig.contains("&")) {TMP_formatted=true;}  
+				
+				if (TMP_formatted) {
 					msg = fmsg;
 					msg = chat.removeFormatting(msg);
 				} else {
@@ -305,6 +309,10 @@ public class ChatTriggers {
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent e) throws ClassNotFoundException {
+		if (global.waitEvents.size()==0 && global.asyncEvents.size()==0) {
+			global.TMP_string.clear();
+		}
+		
 		for (int i=0; i<global.notify.size(); i++) {
 			if (global.notifyAnimation.get(i).get(0)==0) {
 				ScaledResolution var5 = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
