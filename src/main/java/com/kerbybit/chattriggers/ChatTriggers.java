@@ -146,6 +146,9 @@ public class ChatTriggers {
 								global.temporary_replace.clear();
 								global.temporary_replacement.clear();
 							}
+						} else {
+							global.temporary_replace.clear();
+							global.temporary_replacement.clear();
 						}
 					} else if (TMP_w.equals("c")) { //contains
 						try {TMP_trig = events.setStrings(msg, TMP_trig);}
@@ -163,6 +166,9 @@ public class ChatTriggers {
 								global.temporary_replace.clear();
 								global.temporary_replacement.clear();
 							}
+						} else {
+							global.temporary_replace.clear();
+							global.temporary_replacement.clear();
 						}
 					} else if (TMP_w.equals("e")) { //endsWith
 						try {TMP_trig = events.setStrings(msg, TMP_trig);}
@@ -180,6 +186,9 @@ public class ChatTriggers {
 								global.temporary_replace.clear();
 								global.temporary_replacement.clear();
 							}
+						} else {
+							global.temporary_replace.clear();
+							global.temporary_replacement.clear();
 						}
 					} else { //equals
 						try {TMP_trig = events.setStrings(msg, TMP_trig);}
@@ -197,10 +206,17 @@ public class ChatTriggers {
 								global.temporary_replace.clear();
 								global.temporary_replacement.clear();
 							}
+						} else {
+							global.temporary_replace.clear();
+							global.temporary_replacement.clear();
 						}
 					}
 				}
 			}
+		}
+		
+		if (global.waitEvents.size()==0 && global.asyncEvents.size()==0 && global.TMP_string.size()>0) {
+			global.TMP_string.clear();
 		}
 	}
 	
@@ -309,10 +325,6 @@ public class ChatTriggers {
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent e) throws ClassNotFoundException {
-		if (global.waitEvents.size()==0 && global.asyncEvents.size()==0) {
-			global.TMP_string.clear();
-		}
-		
 		for (int i=0; i<global.notify.size(); i++) {
 			if (global.notifyAnimation.get(i).get(0)==0) {
 				ScaledResolution var5 = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);

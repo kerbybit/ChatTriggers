@@ -83,7 +83,8 @@ public class CommandTrigger extends CommandBase {
 				chat.warn(chat.color("red", "/trigger testImport [import name]"));
 			}
 		} else if (args[0].equalsIgnoreCase("TEST")) {
-			chat.warn(chat.color("&7", "This command does nothing :D"));
+			//chat.warn(chat.color("&7", "This command does nothing :D"));
+			System.out.println(global.TMP_string);
 		} else {
 			chat.warn(chat.color("red", "/trigger [create/add/list] <...>"));
 			chat.warn(chat.color("red", "/trigger [string/run] <...>"));

@@ -501,7 +501,7 @@ public class events {
 					String ereplacement = "stringOpenStringF6cyUQp9stringOpenString";
 					String esecond = TMP_e.substring(TMP_e.indexOf("{string[", TMP_e.indexOf("{string[")+8)+8);
 					
-					TMP_e = efirst + replacement + esecond;
+					TMP_e = efirst + ereplacement + esecond;
 					sn = first + replacement + second;
 				}
 				TMP_e = TMP_e.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
@@ -527,6 +527,7 @@ public class events {
 						}
 					}
 				}
+				
 				String fullreplace = "{string["+sn+"]}";
 				String firstpart = TMP_e.substring(0, TMP_e.indexOf(fullreplace));
 				String secondpart = TMP_e.substring(TMP_e.indexOf(fullreplace)+fullreplace.length());
@@ -1234,16 +1235,17 @@ public class events {
 									stringnum = j;
 								}
 							}
-							if (stringnum==-1) {
+							if (stringnum==-1) { //TODO
 								List<String> temporary = new ArrayList<String>();
-								temporary.add("TEMP-USER-STRING-"+(global.TMP_string.size())+"->"+stringName);
+								String tmpnum = global.TMP_string.size()+"";
+								temporary.add("TEMP-USER-STRING"+tmpnum+"->"+stringName);
 								temporary.add("");
 								global.TMP_string.add(temporary);
 								tmpstringnum = global.TMP_string.size()-1;
 								global.temporary_replace.add("{string["+stringName+"]");
-								global.temporary_replacement.add("{string[TEMP-USER-STRING-"+(global.TMP_string.size()-1)+"->"+stringName+"]"); 
+								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]"); 
 								global.temporary_replace.add("{string<"+stringName+">");
-								global.temporary_replacement.add("{string[TEMP-USER-STRING-"+(global.TMP_string.size()-1)+"->"+stringName+"]"); 
+								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]"); 
 							}
 							
 							
@@ -1314,16 +1316,17 @@ public class events {
 									stringnum = j;
 								}
 							}
-							if (stringnum==-1) {
+							if (stringnum==-1) { //TODO
 								List<String> temporary = new ArrayList<String>();
-								temporary.add("TEMP-USER-STRING-"+(global.TMP_string.size())+"->"+stringName);
+								String tmpnum = global.TMP_string.size()+"";
+								temporary.add("TEMP-USER-STRING"+tmpnum+"->"+stringName);
 								temporary.add("");
 								global.TMP_string.add(temporary);
 								tmpstringnum = global.TMP_string.size()-1;
 								global.temporary_replace.add("{string["+stringName+"]");
-								global.temporary_replacement.add("{string[TEMP-USER-STRING-"+(global.TMP_string.size()-1)+"->"+stringName+"]");
+								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]");
 								global.temporary_replace.add("{string<"+stringName+">");
-								global.temporary_replacement.add("{string[TEMP-USER-STRING-"+(global.TMP_string.size()-1)+"->"+stringName+"]");
+								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]");
 							}
 							
 							String set_string = msg.substring(msg.indexOf(split_trig[i-1])+split_trig[i-1].length(), msg.length());
@@ -1380,8 +1383,6 @@ public class events {
 								} else {
 									global.TMP_string.get(tmpstringnum).set(1, set_string);
 									split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
-									/*System.out.println(set_string);
-									System.out.println(global.TMP_string.get(tmpstringnum).get(0));*/
 								}
 							}
 						}
@@ -1395,16 +1396,17 @@ public class events {
 									stringnum = j;
 								}
 							}
-							if (stringnum==-1) {
+							if (stringnum==-1) { //TODO
 								List<String> temporary = new ArrayList<String>();
-								temporary.add("TEMP-USER-STRING-"+(global.TMP_string.size())+"->"+stringName);
+								String tmpnum = global.TMP_string.size()+"";
+								temporary.add("TEMP-USER-STRING"+tmpnum+"->"+stringName);
 								temporary.add("");
 								global.TMP_string.add(temporary);
 								tmpstringnum = global.TMP_string.size()-1;
 								global.temporary_replace.add("{string["+stringName+"]");
-								global.temporary_replacement.add("{string[TEMP-USER-STRING-"+(global.TMP_string.size()-1)+"->"+stringName+"]");
+								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]");
 								global.temporary_replace.add("{string<"+stringName+">");
-								global.temporary_replacement.add("{string[TEMP-USER-STRING-"+(global.TMP_string.size()-1)+"->"+stringName+"]");
+								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]");
 							}
 							
 							int checkbefore = msg.indexOf(split_trig[i-1])+split_trig[i-1].length();
