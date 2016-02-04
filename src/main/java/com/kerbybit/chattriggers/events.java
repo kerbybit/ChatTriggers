@@ -896,7 +896,6 @@ public class events {
 						}
 					}
 					
-					i += eventsToAsync.size();
 					eventsToAsync.remove(0);
 					eventsToAsync.remove(eventsToAsync.size()-1);
 					global.asyncEvents.clear();
@@ -910,6 +909,9 @@ public class events {
 					t1.start();
 					
 				}
+				
+				//move i
+				i += eventsToAsync.size();
 			}
 			
 			if (TMP_c.equalsIgnoreCase("WAIT")) {
@@ -947,8 +949,7 @@ public class events {
 						if (tabbed_logic==0) {j=tmp_event.size();}
 					}
 					
-					//move i to end of wait
-					i += eventsToWait.size();
+					
 					eventsToWait.remove(0);
 					eventsToWait.remove(eventsToWait.size()-1);
 					try {
@@ -959,6 +960,9 @@ public class events {
 						chat.warn(chat.color("red", "Malformed WAIT event - skipping"));
 					}
 				}
+				
+				//move i
+				i += eventsToWait.size();
 			}
 			
 			if (TMP_c.equalsIgnoreCase("FOR")) {
