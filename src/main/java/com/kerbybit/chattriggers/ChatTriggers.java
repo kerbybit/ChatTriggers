@@ -324,7 +324,7 @@ public class ChatTriggers {
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent e) throws ClassNotFoundException {
 		if (global.waitEvents.size()==0 && global.asyncEvents.size()==0 && global.TMP_string.size()>0) {
-			System.out.println("cleared tmp strings");
+			global.TMP_string.clear();
 		}
 		
 		for (int i=0; i<global.notify.size(); i++) {
