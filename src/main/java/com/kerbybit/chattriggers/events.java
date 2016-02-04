@@ -411,7 +411,83 @@ public class events {
 					} else {global.TMP_string.get(tmpstringnum).set(1, "false");}
 				}
 				returnstring = "{string["+sn+"]}";
-			} else {
+			} else if (func.equalsIgnoreCase("GREATERTHAN") || func.equalsIgnoreCase("GT") || func.equalsIgnoreCase(">")) {
+				try {
+					int strnmbr = -99999;
+					if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));} 
+					else {strnmbr = Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1));}
+					try {
+						int argnmbr = Integer.parseInt(args);
+						if (stringnum!=-1) {
+							if (strnmbr>argnmbr) {global.USR_string.get(stringnum).set(1, "true");} 
+							else {global.USR_string.get(stringnum).set(1, "false");}
+						} 
+						else {
+							if (strnmbr>argnmbr) {global.TMP_string.get(tmpstringnum).set(1, "true");} 
+							else {global.TMP_string.get(tmpstringnum).set(1, "false");}
+						}
+						returnstring = "{string["+sn+"]}";
+					} catch (NumberFormatException e) {returnstring=args+" is not a number!{string["+sn+"]}";}
+				} catch (NumberFormatException e) {returnstring=sn+" is not a number!{string["+sn+"]}";}
+			} else if (func.equalsIgnoreCase("LESSTHAN") || func.equalsIgnoreCase("LT") || func.equalsIgnoreCase("<")) {
+				try {
+					int strnmbr = -99999;
+					if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));} 
+					else {strnmbr = Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1));}
+					try {
+						int argnmbr = Integer.parseInt(args);
+						if (stringnum!=-1) {
+							if (strnmbr<argnmbr) {global.USR_string.get(stringnum).set(1, "true");} 
+							else {global.USR_string.get(stringnum).set(1, "false");}
+						} 
+						else {
+							if (strnmbr<argnmbr) {global.TMP_string.get(tmpstringnum).set(1, "true");} 
+							else {global.TMP_string.get(tmpstringnum).set(1, "false");}
+						}
+						returnstring = "{string["+sn+"]}";
+					} catch (NumberFormatException e) {returnstring=args+" is not a number!{string["+sn+"]}";}
+				} catch (NumberFormatException e) {returnstring=sn+" is not a number!{string["+sn+"]}";}
+			} else if (func.equalsIgnoreCase("GREATERTHANOREQUALTO") || func.equalsIgnoreCase("GTE") || func.equalsIgnoreCase(">=")) {
+				try {
+					int strnmbr = -99999;
+					if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));} 
+					else {strnmbr = Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1));}
+					try {
+						int argnmbr = Integer.parseInt(args);
+						if (stringnum!=-1) {
+							if (strnmbr>=argnmbr) {global.USR_string.get(stringnum).set(1, "true");} 
+							else {global.USR_string.get(stringnum).set(1, "false");}
+						} 
+						else {
+							if (strnmbr>=argnmbr) {global.TMP_string.get(tmpstringnum).set(1, "true");} 
+							else {global.TMP_string.get(tmpstringnum).set(1, "false");}
+						}
+						returnstring = "{string["+sn+"]}";
+					} catch (NumberFormatException e) {returnstring=args+" is not a number!{string["+sn+"]}";}
+				} catch (NumberFormatException e) {returnstring=sn+" is not a number!{string["+sn+"]}";}
+			} else if (func.equalsIgnoreCase("LESSTHANOREQUALTO") || func.equalsIgnoreCase("LTE") || func.equalsIgnoreCase("<=")) {
+				try {
+					int strnmbr = -99999;
+					if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));} 
+					else {strnmbr = Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1));}
+					try {
+						int argnmbr = Integer.parseInt(args);
+						if (stringnum!=-1) {
+							if (strnmbr<=argnmbr) {global.USR_string.get(stringnum).set(1, "true");} 
+							else {global.USR_string.get(stringnum).set(1, "false");}
+						} 
+						else {
+							if (strnmbr<=argnmbr) {global.TMP_string.get(tmpstringnum).set(1, "true");} 
+							else {global.TMP_string.get(tmpstringnum).set(1, "false");}
+						}
+						returnstring = "{string["+sn+"]}";
+					} catch (NumberFormatException e) {returnstring=args+" is not a number!{string["+sn+"]}";}
+				} catch (NumberFormatException e) {returnstring=sn+" is not a number!{string["+sn+"]}";}
+			}
+			
+			
+			
+			else {
 				returnstring = func + " is not a function!{string["+sn+"]}";
 			}
 		}
