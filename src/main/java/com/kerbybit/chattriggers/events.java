@@ -118,7 +118,7 @@ public class events {
 						}
 					}
 				} else {
-					returnString = "{array}.remove($value) - Value under bounds! (index "+toRemove+" - expecting 1)";
+					returnString = "Value under bounds! (index "+toRemove+" - expecting 1)";
 				}
 			} catch (NumberFormatException e) {
 				returnString = "Value must be an integer!";
@@ -134,6 +134,45 @@ public class events {
 			global.TMP_string.add(temporary);
 			backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.remove(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"REMOVE"+checkTo+"-"+global.TMP_string.size()+"]}");
+		}
+		
+		if (TMP_e.contains("{array[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) {
+			System.out.println("FUCK");
+		}
+		
+		while (TMP_e.contains("{array[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) { //TODO
+			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.get(", TMP_e.indexOf("{array[")));
+			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.get(")+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.get(")));
+			String got = "";
+			int toGet = -1;
+			String returnString = checkFrom + " is not an array!";
+			
+			try {
+				toGet = Integer.parseInt(checkTo);
+				if (toGet > 0) {
+					for (int j=0; j<global.USR_array.size(); j++) {
+						if (global.USR_array.get(j).get(0).equals(checkFrom)) {
+							if (toGet < global.USR_array.get(j).size()) {
+								got = global.USR_array.get(j).get(toGet);
+								returnString = got;
+							} else {
+								returnString = "Value over bounds! (index "+toGet+" - expecting "+global.USR_array.size()+")";
+							}
+						}
+					}
+				} else {
+					returnString = "Value under bounds! (index "+toGet+" - expecting 1)";
+				}
+			} catch (NumberFormatException e) {
+				returnString = "Value must be an integer!";
+			}
+			
+			List<String> temporary = new ArrayList<String>();
+			temporary.add("ArrayToString->"+checkFrom+"GET"+checkTo+"-"+(global.TMP_string.size()+1));
+			temporary.add(returnString);
+			global.TMP_string.add(temporary);
+			backupTMP_strings.add(temporary);
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.get(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"GET"+checkTo+"-"+global.TMP_string.size()+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.size()")) {
@@ -209,6 +248,9 @@ public class events {
 			}
 			if (tmpstringnum == -1) {
 				returnstring = "That is not a string!";
+				System.out.println("STRINGNAME:"+sn);
+				System.out.println("STRINGFUNCTION:"+func);
+				System.out.println("FUNCTIONARGS:"+args);
 			}
 		} 
 		
@@ -499,7 +541,7 @@ public class events {
 		
 		while (TMP_e.contains("{string[") && TMP_e.contains("]}")) {
 			String testfor = TMP_e.substring(TMP_e.indexOf("]}", TMP_e.indexOf("{string["))+2);
-			if (testfor.contains("]}.") && !testfor.contains("{string[")) {
+			if (testfor.contains("]}.") && !(testfor.contains("{string[") || testfor.contains("{array["))) {
 				if (testfor.indexOf("]}.") < testfor.indexOf("(")) {
 					testfor = "."+testfor.substring(testfor.indexOf("]}.")+3);
 				}
@@ -852,6 +894,7 @@ public class events {
 			TMP_e = TMP_e.replace(stringCommaReplace, ",");
 			if (TMP_c.equalsIgnoreCase("SAY")) {global.chatQueue.add(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("CHAT")) {chat.warn(TMP_e);}
+			if (TMP_c.equalsIgnoreCase("DO") && global.debug==true) {chat.warn(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("SOUND")) {sound.play(TMP_e, TMP_v, TMP_pi);}
 			if (TMP_c.equalsIgnoreCase("CANCEL") && chatEvent!=null) {chatEvent.setCanceled(true);}
 			if (TMP_c.equalsIgnoreCase("KILLFEED")) {global.killfeed.add(TMP_e); global.killfeedDelay.add(TMP_t);}
