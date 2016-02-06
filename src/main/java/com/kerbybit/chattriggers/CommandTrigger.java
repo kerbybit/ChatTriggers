@@ -104,7 +104,7 @@ public class CommandTrigger extends CommandBase {
 		}
 	}
 	
-	public static void commandExport(String args[], Boolean silent) { //TODO
+	/*public static void commandExport(String args[], Boolean silent) { //TODO
 		String TMP_list = args[1];
 		List<List<String>> TMP_triggers = new ArrayList<List<String>>();
 		for (int i=0; i<global.trigger.size(); i++) {
@@ -139,7 +139,7 @@ public class CommandTrigger extends CommandBase {
 			e.printStackTrace();
 		}
 		chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
-	}
+	}*/
 	
 	public static void commandRun(String args[], Boolean silent) {
 		if (args.length < 2) {

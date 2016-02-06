@@ -209,6 +209,18 @@ public class file {
 							}
 						}
 					}
+					for (int i=0; i<global.TMP_string.size(); i++) {
+						if (stringToSave.equals(global.TMP_string.get(i).get(0))) {
+							String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+							
+							String check = "\""+jsonGet+"\":\"";
+							if (jsonString.contains(check)) {
+								String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+								global.TMP_string.get(i).set(1, jsonGot);
+								returnString = jsonGot;
+							}
+						}
+					}
 				}
 			} else {
 				returnString = "No array! use 'array=>nodes'";
@@ -290,6 +302,18 @@ public class file {
 							}
 						}
 					}
+					for (int i=0; i<global.TMP_string.size(); i++) {
+						if (stringToSave.equals(global.TMP_string.get(i).get(0))) {
+							String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+							
+							String check = "\""+jsonGet+"\":\"";
+							if (jsonString.contains(check)) {
+								String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+								global.TMP_string.get(i).set(1, jsonGot);
+								returnString = jsonGot;
+							}
+						}
+					}
 				}
 			} else {
 				returnString = "No array! use 'array=>nodes'";
@@ -305,75 +329,6 @@ public class file {
 			e.printStackTrace();
 		}
 		return returnString;
-	}
-	
-	public static void saveExportOLD(List<List<String>> trigger, List<List<String>> USR_string, String fileName) throws IOException {
-		String username = Minecraft.getMinecraft().thePlayer.getDisplayNameString();
-		List<String> tmp_list = new ArrayList<String>();
-		PrintWriter writer = new PrintWriter(fileName,"UTF-8");
-		writer.println("");
-		writer.println("TRIGGERS");
-		for (int i=0; i<trigger.size(); i++) {
-			writer.println("trigger:"+trigger.get(i).get(1).replace("{string[", "{string[" + username + "-").replace("{string<", "{string<" + username + "-"));
-			writer.println("type:"+trigger.get(i).get(0));
-			String extraSpaces = "";
-			for (int j=2; j<trigger.get(i).size(); j++) {
-				if (trigger.get(i).get(j).toUpperCase().startsWith("END")) {
-					extraSpaces = "";
-				}
-				writer.println(extraSpaces + "  event:"+trigger.get(i).get(j).replace("{string[", "{string[" + username + "-").replace("{string<", "{string<" + username + "-"));
-				if (trigger.get(i).get(j).toUpperCase().startsWith("CHOOSE")) {
-					extraSpaces = "  ";
-				}
-				String trig_check = trigger.get(i).get(j);
-				trig_check = trig_check.replace("{string<", "{string[");
-				trig_check = trig_check.replace(">", "]");
-				while (trig_check.contains("{string[")) {
-					trig_check = trig_check.substring(trig_check.indexOf("{string["), trig_check.length());
-					String trig_string = trig_check.substring(trig_check.indexOf("{string[") + 8, trig_check.indexOf("]"));
-					trig_check = trig_check.replace("{string[" + trig_string + "]", "");
-					tmp_list.add(trig_string);
-				}
-			}
-			String trig_check = trigger.get(i).get(1);
-			trig_check = trig_check.replace("{string<", "{string[");
-			trig_check = trig_check.replace(">", "]");
-			while (trig_check.contains("{string[")) {
-				trig_check = trig_check.substring(trig_check.indexOf("{string["), trig_check.length());
-				String trig_string = trig_check.substring(trig_check.indexOf("{string[") + 8, trig_check.indexOf("]"));
-				trig_check = trig_check.replace("{string[" + trig_string + "]", "");
-				tmp_list.add(trig_string);
-			}
-		}
-		writer.println("");writer.println("");writer.println("");
-		writer.println("STRINGS");
-		Set<String> uniqueTMP_lists = new HashSet<String>(tmp_list);
-		for (String value : uniqueTMP_lists) {
-			for (int i=0; i<USR_string.size(); i++) {
-				if (value.equals(USR_string.get(i).get(0))) {
-					String string_check = USR_string.get(i).get(1);
-					string_check = string_check.replace("{string<", "{string[");
-					string_check = string_check.replace(">", "]");
-					while (string_check.contains("{string[")) {
-						string_check = string_check.substring(string_check.indexOf("{string["), string_check.length());
-						String string_string = string_check.substring(string_check.indexOf("{string[") + 8, string_check.indexOf("]"));
-						string_check = string_check.replace("{string[" + string_string + "]", "");
-						tmp_list.add(string_string);
-					}
-				}
-			}
-		}
-		Set<String> uniqueTMP_lists2 = new HashSet<String>(tmp_list);
-		for (String value : uniqueTMP_lists2) {
-			for (int i=0; i<USR_string.size(); i++) {
-				if (value.equals(USR_string.get(i).get(0))) {
-					writer.println("string:" + username + "-" + USR_string.get(i).get(0));
-					writer.println("  value:" + USR_string.get(i).get(1).replace("{string[", "{string[" + username + "-").replace("{string<", "{string<" + username + "-"));
-				}
-			}
-		}
-		
-		writer.close();
 	}
 	
 	public static void saveTriggers(List<List<String>> trigger, String fileName) throws IOException {
@@ -516,7 +471,7 @@ public class file {
 				j++;
 			}
 			if (lines.get(i).trim().startsWith("event:") && j>-1) {
-				tmp_triggers.get(j).add(lines.get(i).substring(lines.get(i).indexOf("  event:") + 8, lines.get(i).length()));
+				tmp_triggers.get(j).add(lines.get(i).substring(lines.get(i).indexOf("event:") + 6, lines.get(i).length()));
 			}
 			if (lines.get(i).trim().startsWith("!")) {
 				String importFunction = lines.get(i).trim().substring(lines.get(i).trim().indexOf("!")+1);
