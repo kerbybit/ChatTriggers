@@ -731,6 +731,22 @@ public class events {
 			}
 			
 		//built in strings
+			while (TMP_e.contains("{msg[") && TMP_e.contains("]}")) {
+				String strnum = TMP_e.substring(TMP_e.indexOf("{msg[")+5, TMP_e.indexOf("]}", TMP_e.indexOf("{msg[")));
+				List<String> temporary = new ArrayList<String>();
+				temporary.add("DefaultString->MSGHISTORY"+strnum+"-"+(global.TMP_string.size()+1));
+				try {
+					int num = Integer.parseInt(strnum);
+					if (num>=0) {
+						if (num<global.chatHistory.size()) {temporary.add(global.chatHistory.get(num));} 
+						else {temporary.add("Number must be less than the chat history size! ("+global.chatHistory.size()+")");}
+					} else {temporary.add("Number must be greater than or equal to 0!");}
+				} catch (NumberFormatException e) {temporary.add("Not a number!");}
+				global.TMP_string.add(temporary);
+				backupTMP_strings.add(temporary);
+				
+				TMP_e = TMP_e.replace("{msg["+strnum+"]}", "{string[DefaultString->MSGHISTORY"+strnum+"-"+global.TMP_string.size()+"]}");
+			}
 			if (chatEvent!=null) {
 				if (TMP_e.contains("{msg}")) {
 					List<String> temporary = new ArrayList<String>();

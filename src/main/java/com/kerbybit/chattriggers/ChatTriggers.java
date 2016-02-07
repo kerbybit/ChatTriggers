@@ -55,18 +55,15 @@ public class ChatTriggers {
 	
 	@SubscribeEvent
 	public void onChat(ClientChatReceivedEvent e) throws IOException, ClassNotFoundException {
+		
 		String msg = e.message.getUnformattedText();
 		String fmsg = e.message.getFormattedText();
+		global.chatHistory.add(chat.removeFormatting(fmsg));
 		
 		String msgNOEDIT = msg;
 		
 		//debug chat
-		if (global.debug==true) {
-			msg = fmsg;
-			msg = chat.removeFormatting(msg);
-			chat.warnUnformatted(msg);
-			msg = msgNOEDIT;
-		}
+		if (global.debug==true) {chat.warnUnformatted(chat.removeFormatting(fmsg));}
 		
 		////////////////////////////////////////////////////////////////
 		

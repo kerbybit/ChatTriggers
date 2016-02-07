@@ -19,7 +19,7 @@ public class global {
 	public static String importURL = "";
 	public static Boolean canImport = true;
 	
-	public static String lastmsg = "";
+	public static List<String> chatHistory = new ArrayList<String>();
 	public static int tick = 0;
 	public static List<String> chatQueue = new ArrayList<String>();
 	public static int chatDelay = 0;
