@@ -46,7 +46,7 @@ public class gui extends GuiScreen {
 	public void mouseClicked(int x, int y, int button) throws IOException {
 		this.mouseX = (float)x;
 		this.mouseY = (float)y;
-		ScaledResolution var5 = new ScaledResolution(MC);
+		ScaledResolution var5 = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
 		float sWidth = var5.getScaledWidth();
 		float sHeight = var5.getScaledHeight();
 		
@@ -112,7 +112,7 @@ public class gui extends GuiScreen {
 	public void drawScreen(int x, int y, float ticks) { 
 		this.mouseX = (float)x;
 		this.mouseY = (float)y;
-		ScaledResolution var5 = new ScaledResolution(MC);
+		ScaledResolution var5 = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
 		float sWidth = var5.getScaledWidth();
 		float sHeight = var5.getScaledHeight();
 		
