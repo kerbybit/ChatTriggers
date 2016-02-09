@@ -140,7 +140,7 @@ public class events {
 			System.out.println("FUCK");
 		}
 		
-		while (TMP_e.contains("{array[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) { //TODO
+		while (TMP_e.contains("{array[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.get(", TMP_e.indexOf("{array[")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.get(")+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.get(")));
 			String got = "";
@@ -738,7 +738,7 @@ public class events {
 				try {
 					int num = Integer.parseInt(strnum);
 					if (num>=0) {
-						if (num<global.chatHistory.size()) {temporary.add(global.chatHistory.get(num));} 
+						if (num<global.chatHistory.size()) {temporary.add(global.chatHistory.get(global.chatHistory.size()-(num+1)));} 
 						else {temporary.add("Number must be less than the chat history size! ("+global.chatHistory.size()+")");}
 					} else {temporary.add("Number must be greater than or equal to 0!");}
 				} catch (NumberFormatException e) {temporary.add("Not a number!");}

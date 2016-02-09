@@ -67,7 +67,7 @@ public class file {
 		 				file.saveAll();
 		 			}
 		 		} catch (MalformedURLException e) {
-		 			chat.warn(chat.color("red", "Can't grab update! Report this to kerbybit ASAP"));
+		 			chat.warn(chat.color("red", "Can't grab update! Update services must be down"));
 		 			e.printStackTrace();
 		 		} catch (IOException e) {
 		 			chat.warn(chat.color("red", "Can't grab update! Report this to kerbybit ASAP"));
