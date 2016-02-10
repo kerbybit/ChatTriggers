@@ -93,7 +93,7 @@ public class CommandTrigger extends CommandBase {
 		}
 	}
 	
-	public static void commandImport(String args[], Boolean silent) { //TODO
+	public static void commandImport(String args[], Boolean silent) {
 		if (args.length==2) {
 			String toImport = args[1];
 			file.getImport("http://bfgteam.com/ChatTriggers/exports/" + toImport + ".txt");
@@ -360,14 +360,30 @@ public class CommandTrigger extends CommandBase {
 					chat.warn(chat.color("red", "/trigger string create [string name]"));
 				} else {
 					String TMP_sn = args[2];
-					List<String> TMP_l = new ArrayList<String>();
-					TMP_l.add(TMP_sn);
-					TMP_l.add("");
-					global.USR_string.add(TMP_l);
-					if (silent==false) {
-						chat.warnUnformatted(chat.color("gray", "Added string") + chat.color(global.settings.get(0), TMP_sn));
+					Boolean isString = false;
+					for (List<String> value : global.USR_string) {
+						if (value.get(0).equals(TMP_sn)) {
+							isString = true;
+						}
 					}
-					try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+					if (isString) {
+						chat.warn(chat.color("red", TMP_sn + " already exists!"));
+					} else {
+						List<String> TMP_l = new ArrayList<String>();
+						TMP_l.add(TMP_sn);
+						TMP_l.add("");
+						global.USR_string.add(TMP_l);
+						if (silent==false) {
+							TMP_sn = TMP_sn.replace("'", "\\'");
+							List <String> TMP_out = new ArrayList<String>();
+							TMP_out.add("text:'Added string ',color:gray");
+							TMP_out.add("text:'"+TMP_sn+"',color:"+global.settings.get(1)+",clickEvent:{action:'suggest_command',value:'/trigger string set "+TMP_sn+" '},hoverEvent:{action:'show_text',value:'Set "+TMP_sn+"'}");
+							System.out.println(TMP_out);
+							chat.sendJson(TMP_out);
+							
+						}
+						try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+					}
 				}
 			} else if (args[1].equalsIgnoreCase("DELETE")) {
 				if (args.length < 3) {
