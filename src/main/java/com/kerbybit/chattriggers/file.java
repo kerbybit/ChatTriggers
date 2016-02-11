@@ -146,6 +146,39 @@ public class file {
 		
 	}
 	
+	public static String exportJsonFile(String fileName, String arrayName, String nodeName) throws IOException {
+		String returnString = "Something went wrong!";
+		int arrayNum = -1;
+		
+		for (int i=0; i<global.USR_array.size(); i++) {
+			if (arrayName.equals(global.USR_array.get(i).get(0))) {
+				arrayNum = i;
+			}
+		}
+		
+		if (arrayNum==-1) {
+			returnString = "Array "+arrayName+" empty. saved nothing.";
+		} else {
+			File dir = new File(fileName);
+ 			if (!dir.exists()) {dir.createNewFile();}
+			
+			PrintWriter writer = new PrintWriter(fileName,"UTF-8");
+			writer.println("{");
+			returnString = ("{");
+			for (int i=1; i<global.USR_array.get(arrayNum).size(); i++) {
+				String hasComma = "";
+				if (i!=global.USR_array.get(arrayNum).size()-1) {hasComma = ",";}
+				writer.println("     \""+nodeName+"\":\""+global.USR_array.get(arrayNum).get(i)+"\""+hasComma);
+				returnString += ("\""+nodeName+"\":\""+global.USR_array.get(arrayNum).get(i)+"\""+hasComma);
+			}
+			writer.println("}");
+			returnString += ("}");
+			writer.close();
+		}
+		
+		return returnString;
+	}
+	
 	public static String importJsonFile(String type, String fileName, String toImport) {
 		String returnString = "Something went wrong!";
 		try {

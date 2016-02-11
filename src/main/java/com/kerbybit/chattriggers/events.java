@@ -3,7 +3,9 @@ package com.kerbybit.chattriggers;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -136,10 +138,6 @@ public class events {
 			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.remove(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"REMOVE"+checkTo+"-"+global.TMP_string.size()+"]}");
 		}
 		
-		if (TMP_e.contains("{array[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) {
-			System.out.println("FUCK");
-		}
-		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.get(", TMP_e.indexOf("{array[")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.get(")+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.get(")));
@@ -221,6 +219,32 @@ public class events {
 			global.TMP_string.add(temporary);
 			backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonURL("+checkFile+","+checkTo+")", "{string[ArrayToString->"+checkFrom+"IMPORTJSONURL"+checkTo+"FROM"+checkFile+"-"+global.TMP_string.size()+"]}");
+		}
+		
+		while (TMP_e.contains("{array[") && TMP_e.contains("]}.exportJson(") && TMP_e.contains(")")) {
+			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.exportJson(", TMP_e.indexOf("{array[")));
+			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.exportJson(")+14, TMP_e.indexOf(")", TMP_e.indexOf("]}.exportJson(")));
+			String returnString = "Something went wrong!";
+			if (checkTo.contains(",")) {
+				try {
+					returnString = file.exportJsonFile(checkTo.substring(0, checkTo.indexOf(",")), checkFrom, checkTo.substring(checkTo.indexOf(",")+1));
+				} catch (FileNotFoundException e) {
+					returnString = "File not found and could not be created!";
+				} catch (UnsupportedEncodingException e) {
+					returnString = "File could not be saved!";
+				} catch (IOException e) {
+					returnString = "File could not be saved!";
+				}
+			} else {
+				returnString = "Invalid arguments! expected .exportJson(fileName,nodeName)";
+			}
+			
+			List<String> temporary = new ArrayList<String>();
+			temporary.add("ArrayToString->"+checkFrom+"EXPORTJSON"+checkTo+"-"+(global.TMP_string.size()+1));
+			temporary.add(returnString);
+			global.TMP_string.add(temporary);
+			backupTMP_strings.add(temporary);
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.exportJson("+checkTo+")", "{string[ArrayToString->"+checkFrom+"EXPORTJSON"+checkTo+"-"+global.TMP_string.size()+"]}");
 		}
 		
 		return TMP_e;
