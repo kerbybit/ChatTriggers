@@ -156,13 +156,16 @@ public class file {
 			}
 		}
 		
+		File dir = new File(fileName);
+		if (!dir.exists()) {dir.createNewFile();}
+		
+		PrintWriter writer = new PrintWriter(fileName,"UTF-8");
+		
 		if (arrayNum==-1) {
-			returnString = "Array "+arrayName+" empty. saved nothing.";
+			writer.println("{");
+			writer.println("}");
+			returnString = "{}";
 		} else {
-			File dir = new File(fileName);
- 			if (!dir.exists()) {dir.createNewFile();}
-			
-			PrintWriter writer = new PrintWriter(fileName,"UTF-8");
 			writer.println("{");
 			returnString = ("{");
 			for (int i=1; i<global.USR_array.get(arrayNum).size(); i++) {
@@ -173,8 +176,8 @@ public class file {
 			}
 			writer.println("}");
 			returnString += ("}");
-			writer.close();
 		}
+		writer.close();
 		
 		return returnString;
 	}

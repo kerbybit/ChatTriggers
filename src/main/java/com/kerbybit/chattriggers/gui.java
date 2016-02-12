@@ -265,7 +265,7 @@ public class gui extends GuiScreen {
 					.replace("msg[", "msg"+EnumChatFormatting.DARK_AQUA.toString()+"[")
 					.replace("string[", "string"+EnumChatFormatting.DARK_AQUA.toString()+"[").replace("string<", "string"+EnumChatFormatting.DARK_AQUA.toString()+"<")
 					.replace("array[", "array"+EnumChatFormatting.DARK_AQUA.toString()+"[").replace("array<", "array"+EnumChatFormatting.DARK_AQUA.toString()+"<")
-					.replace("}"+EnumChatFormatting.RESET.toString()+".", "}"+EnumChatFormatting.BLUE.toString()+".").replace("(", EnumChatFormatting.AQUA.toString()+"(").replace(")", ")"+EnumChatFormatting.RESET.toString()).replace(")"+EnumChatFormatting.RESET.toString()+".",")"+EnumChatFormatting.BLUE.toString()+".")
+					.replace("}"+EnumChatFormatting.RESET.toString()+".", "}"+EnumChatFormatting.BLUE.toString()+".").replace("(", EnumChatFormatting.AQUA.toString()+"(").replace(")", EnumChatFormatting.AQUA.toString()+")"+EnumChatFormatting.RESET.toString()).replace(")"+EnumChatFormatting.RESET.toString()+".",")"+EnumChatFormatting.BLUE.toString()+".")
 					, tempEventOffset.get(i).get(1), tempEventOffset.get(i).get(3), 0xffffff);
 		}
 		

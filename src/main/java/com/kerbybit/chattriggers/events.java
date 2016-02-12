@@ -123,7 +123,19 @@ public class events {
 					returnString = "Value under bounds! (index "+toRemove+" - expecting 1)";
 				}
 			} catch (NumberFormatException e) {
-				returnString = "Value must be an integer!";
+				for (int j=0; j<global.USR_array.size(); j++) {
+					if (global.USR_array.get(j).get(0).equals(checkFrom)) {
+						for (int k=1; k<global.USR_array.get(j).size(); k++) {
+							if (global.USR_array.get(j).get(k).equals(checkTo)) {
+								removed = global.USR_array.get(j).remove(k);
+								returnString = removed;
+								if (global.USR_array.get(j).size()==1) {
+									toRemoveArray = j;
+								}
+							}
+						}
+					}
+				}
 			}
 			
 			if (toRemoveArray != -1) {

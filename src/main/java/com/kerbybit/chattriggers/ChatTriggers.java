@@ -40,6 +40,8 @@ public class ChatTriggers {
         FMLCommonHandler.instance().bus().register(this);
 
         ClientCommandHandler.instance.registerCommand(new CommandTrigger());
+        ClientCommandHandler.instance.registerCommand(new CommandT());
+        ClientCommandHandler.instance.registerCommand(new CommandTR());
         
         altGuiKey = new KeyBinding("Trigger GUI", Keyboard.KEY_GRAVE, "ChatTriggers");
         ClientRegistry.registerKeyBinding(altGuiKey);

@@ -21,13 +21,13 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class CommandTrigger extends CommandBase {
 
-	public String getName() {return "trigger";}
+	public String getCommandName() {return "trigger";}
+
+	public void processCommand(ICommandSender sender, String[] args) throws CommandException {doCommand(args, false);}
 	
 	public int getRequiredPermissionLevel() {return 0;}
 
 	public String getCommandUsage(ICommandSender sender) {return "/trigger [create/add/list] <...>";}
-
-	public void execute(ICommandSender sender, String[] args) throws CommandException {doCommand(args, false);}
 	
 	public static void doCommand(String args[], Boolean silent) {
 		if (args.length == 0) {
@@ -789,13 +789,5 @@ public class CommandTrigger extends CommandBase {
 			file.loadImports("./mods/ChatTriggers/Imports/");
 			chat.warn(global.settings.get(0) + "Files loaded");
 		} catch (IOException e) {chat.warn(chat.color("red", "Error loading triggers!"));}
-	}
-
-	@Override
-	public String getCommandName() {return "trigger";}
-
-	@Override
-	public void processCommand(ICommandSender sender, String[] args) throws CommandException {
-		execute(sender,args);
 	}
 }
