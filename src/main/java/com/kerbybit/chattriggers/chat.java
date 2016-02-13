@@ -102,7 +102,7 @@ public class chat {
 			
 			
 			if (TMP_clk.contains("(")) {
-				TMP_clk = cht.substring(cht.indexOf("clickable(")+10, cht.indexOf(")", cht.indexOf(")")+1));
+				TMP_clk = cht.substring(cht.indexOf("clickable(")+10, cht.indexOf(")", cht.indexOf(")", cht.indexOf("clickable("))+1));
 				String TMP_subcheck = TMP_clk.substring(TMP_clk.indexOf("(")+1,TMP_clk.indexOf(")"));
 				String TMP_subcheckReplace = TMP_subcheck.replace(",", "CommaF6cyUQp9Comma");
 				TMP_clk = TMP_clk.replace(TMP_subcheck, TMP_subcheckReplace);
