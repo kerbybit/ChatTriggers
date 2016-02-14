@@ -3,7 +3,10 @@ package com.kerbybit.chattriggers;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -223,12 +226,17 @@ public class ChatTriggers {
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load e) {
 		global.worldLoaded=true;
+		global.worldIsLoaded=true;
 	}
 	
 	@SubscribeEvent
 	public void onWorldUnload(WorldEvent.Unload e) {
 		global.waitEvents.clear();
 		global.waitTime.clear();
+		global.asyncEvents.clear();
+		try {file.saveAll();} 
+		catch (IOException e1) {System.out.println("Failed to save file! IOException");}
+		global.worldIsLoaded=false;
 	}
 		
 		
@@ -325,6 +333,29 @@ public class ChatTriggers {
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent e) throws ClassNotFoundException {
+		if (global.worldIsLoaded==true) {
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+			Date date = new Date();
+			if (global.currentDate=="null") {global.currentDate = dateFormat.format(date);}
+			if (!dateFormat.format(date).equals(global.currentDate)) {
+				global.currentDate = dateFormat.format(date);
+				for (int i=0; i<global.trigger.size(); i++) {
+					String TMP_type = global.trigger.get(i).get(0);
+					String TMP_trig = global.trigger.get(i).get(1);
+					
+					if (TMP_type.equalsIgnoreCase("ONNEWDAY")) {
+						//add all events to temp list
+						List<String> TMP_events = new ArrayList<String>();
+						for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
+						
+						//do events
+						ClientChatReceivedEvent e1 = null;
+						events.doEvents(TMP_events, e1);
+					}
+				}
+			}
+		}
+		
 		if (global.waitEvents.size()==0 && global.asyncEvents.size()==0 && global.TMP_string.size()>0) {
 			global.TMP_string.clear();
 		}

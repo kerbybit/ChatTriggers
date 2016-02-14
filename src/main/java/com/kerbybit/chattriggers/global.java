@@ -13,8 +13,10 @@ public class global {
 	
 	public static Boolean worldLoaded = false;
 	public static Boolean worldFirstLoad = true;
+	public static Boolean worldIsLoaded = false;
 	public static String connectedToServer = "";
 	public static String versionURL = "";
+	public static String currentDate = "null";
 	
 	public static String importURL = "";
 	public static Boolean canImport = true;

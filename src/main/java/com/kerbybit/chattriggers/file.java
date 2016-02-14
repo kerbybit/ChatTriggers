@@ -15,7 +15,10 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -470,6 +473,9 @@ public class file {
 		writer.println("version:"+listName.get(2));
 		writer.println("killfeed pos:"+listName.get(3));
 		writer.println("isBeta:"+listName.get(4));
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		Date date = new Date();
+		writer.println("lastOpened:"+dateFormat.format(date));
 		writer.close();
 	}
 	
@@ -589,6 +595,7 @@ public class file {
 			if (lines.get(i).startsWith("version:")) {tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("version:") + 8));}
 			if (lines.get(i).startsWith("killfeed pos:")) {tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("killfeed pos:")+13));}
 			if (lines.get(i).startsWith("isBeta:")) {tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("isBeta:")+7));}
+			if (lines.get(i).startsWith("lastOpened:")) {global.currentDate = lines.get(i).substring(lines.get(i).indexOf("lastOpened:")+11);}
 		}
 		
 		return tmp_settings;
@@ -617,6 +624,7 @@ public class file {
 			if (global.settings.size() < 3) {global.settings.add("null");}
 			if (global.settings.size() < 4) {global.settings.add("top-left");}
 			if (global.settings.size() < 5) {global.settings.add("false");}
+			if (global.settings.size() < 6) {global.settings.add("null");}
 			chat.warn(chat.color(global.settings.get(0), "Chat triggers loaded"));
 		} catch (IOException e1) {
 			chat.warn(chat.color("red", "Error loading files!"));
@@ -632,6 +640,7 @@ public class file {
 			if (global.settings.size() < 3) {global.settings.add("null");}
 			if (global.settings.size() < 4) {global.settings.add("top-left");}
 			if (global.settings.size() < 5) {global.settings.add("false");}
+			if (global.settings.size() < 6) {global.settings.add("null");}
 			
 			try {file.saveAll(); chat.warn(chat.color("green", "New files created!"));} 
 			catch (IOException e111) {chat.warn(chat.color("red", "Error saving files! report this to kerbybit ASAP!")); e111.printStackTrace();}
@@ -640,6 +649,7 @@ public class file {
 		if (global.settings.size() < 3) {global.settings.add("null");}
 		if (global.settings.size() < 4) {global.settings.add("top-left");}
 		if (global.settings.size() < 5) {global.settings.add("false");}
+		if (global.settings.size() < 6) {global.settings.add("null");}
 		try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
 	}
 }

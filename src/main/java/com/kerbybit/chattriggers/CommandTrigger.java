@@ -105,40 +105,7 @@ public class CommandTrigger extends CommandBase {
 	}
 	
 	/*public static void commandExport(String args[], Boolean silent) { //TODO
-		String TMP_list = args[1];
-		List<List<String>> TMP_triggers = new ArrayList<List<String>>();
-		for (int i=0; i<global.trigger.size(); i++) {
-			String TMP_trig = global.trigger.get(i).get(1);
-			if (TMP_trig.contains("{list=" + TMP_list + "}")) {
-				List<String> TMP_tset = new ArrayList<String>();
-				TMP_tset.addAll(global.trigger.get(i));
-				String TMP_t = TMP_tset.get(1);
-				TMP_t = TMP_t.replace("{list=" + TMP_list + "}",  "{list=" + Minecraft.getMinecraft().thePlayer.getDisplayNameString() + "-" + TMP_list + "}");
-				TMP_tset.set(1, TMP_t);
-				TMP_triggers.add(TMP_tset);
-			}
-		}
-		chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------"));
-		chat.warn(chat.color("gray", "Saving list") + chat.color(global.settings.get(0),TMP_list) + chat.color("gray", "for export"));
-		try {
-			File checkFile = new File("./mods/ChatTriggersExport");
-			if (checkFile.exists()) {
-				file.saveExportOLD(TMP_triggers, global.USR_string, "./mods/ChatTriggersExport/" + Minecraft.getMinecraft().thePlayer.getDisplayNameString() + "-" + TMP_list + ".txt");
-			} else {
-				checkFile.mkdir();
-				file.saveExportOLD(TMP_triggers, global.USR_string, "./mods/ChatTriggersExport/" + Minecraft.getMinecraft().thePlayer.getDisplayNameString() + "-" + TMP_list + ".txt");
-			}
-			chat.warn(chat.color("gray", "Head over to"));
-			List<String> TMP_out = new ArrayList<String>();
-			TMP_out.add("text:' http://kerbybit.github.io/ChatTriggers/import/upload/',color:" + global.settings.get(1) + ",hoverEvent:{action:'show_text',value:'Click to open URL'},clickEvent:{action:'open_url',value:'http://kerbybit.github.io/ChatTriggers/import/upload/'}");
-			chat.sendJson(TMP_out);
-			chat.warn(chat.color("gray", "to upload"));
-			chat.warn(chat.color(global.settings.get(0), chat.color(global.settings.get(0), " ./minecraft/mods/ChatTriggersExport/" + Minecraft.getMinecraft().thePlayer.getDisplayNameString() + "-" + TMP_list + ".txt")));
-		} catch (IOException e) {
-			chat.warn(chat.color("red", "Error saving export"));
-			e.printStackTrace();
-		}
-		chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
+		
 	}*/
 	
 	public static void commandRun(String args[], Boolean silent) {
@@ -223,7 +190,8 @@ public class CommandTrigger extends CommandBase {
 			|| TMP_type.equalsIgnoreCase("OTHER")
 			|| TMP_type.equalsIgnoreCase("ONWORLDLOAD")
 			|| TMP_type.equalsIgnoreCase("ONWORLDFIRSTLOAD")
-			|| TMP_type.equalsIgnoreCase("ONSERVERCHANGE")) {
+			|| TMP_type.equalsIgnoreCase("ONSERVERCHANGE")
+			|| TMP_type.equalsIgnoreCase("ONNEWDAY")) {
 				global.trigger.add(TMP_l);
 				int TMP_num = global.trigger.size() - 1;
 				if (silent==false) {
@@ -669,12 +637,12 @@ public class CommandTrigger extends CommandBase {
 	
 	public static void commandSettings(String args[], Boolean silent) {
 		if (args.length < 2) {
-			chat.warn(chat.color("red", "/trigger settings [debug/color/killfeed/beta] <...>"));
+			chat.warn(chat.color("red", "/trigger settings [debug/test/color/killfeed/beta] <...>"));
 		} else {
 			if (args[1].equalsIgnoreCase("DEBUG")) {
 				if (global.debug==false) {chat.warn(chat.color("gray", "Toggled debug mode") + chat.color(global.settings.get(0), "on")); global.debug=true;}
 				else {chat.warn(chat.color("gray", "Toggled debug mode") + chat.color(global.settings.get(0), "off")); global.debug=false;}
-			} else if (args[1].equalsIgnoreCase("COLOR")) {
+			} else if (args[1].equalsIgnoreCase("COLOR") || args[1].equalsIgnoreCase("COLOUR")) {
 				if (args.length < 3) {
 					chat.warn(chat.color("red", "/trigger settings color [color]"));
 				} else {
@@ -762,8 +730,28 @@ public class CommandTrigger extends CommandBase {
 					}
 					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
 				}
+			} else if (args[1].equalsIgnoreCase("TEST")){
+				if (args.length<3) {
+					chat.warn(chat.color("red", "/trigger settings test [onWorldLoad/onWorldFirstLoad]"));
+					chat.warn(chat.color("red", "/trigger settings test [onServerChange/onNewDay]"));
+				} else {
+					if (args[2].equalsIgnoreCase("ONWORLDLOAD")) {
+						global.worldLoaded = true;
+					} else if (args[2].equalsIgnoreCase("ONWORLDFIRSTLOAD")) {
+						global.worldLoaded = true;
+						global.worldFirstLoad = true;
+					} else if (args[2].equalsIgnoreCase("ONSERVERCHANGE")) {
+						global.worldLoaded = true;
+						global.connectedToServer = "";
+					} else if (args[2].equalsIgnoreCase("ONNEWDAY")) {
+						global.currentDate = "";
+					} else {
+						chat.warn(chat.color("red", "/trigger settings test [onWorldLoad/onWorldFirstLoad]"));
+						chat.warn(chat.color("red", "/trigger settings test [onServerChange/onNewDay]"));
+					}
+				}
 			} else {
-				chat.warn(chat.color("red", "/trigger settings [debug/color/killfeed/beta] <...>"));
+				chat.warn(chat.color("red", "/trigger settings [debug/test/color/killfeed/beta] <...>"));
 			}
 		}
 	}

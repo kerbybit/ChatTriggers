@@ -717,7 +717,6 @@ public class events {
 		
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
 		String stringCommaReplace = "stringCommaReplacementF6cyUQp9stringCommaReplacement";
-		Boolean hasTempString = false;
 		
 		if (toreplace != null) {
 			for (int i=0; i<toreplace.length; i++) {
@@ -789,7 +788,6 @@ public class events {
 					global.TMP_string.add(temporary);
 					backupTMP_strings.add(temporary);
 					TMP_e = TMP_e.replace("{msg}", "{string[DefaultString->MSG-"+global.TMP_string.size()+"]}");
-					hasTempString = true;
 				}
 			}
 			if (TMP_e.contains("{trigsize}")) {
@@ -799,7 +797,6 @@ public class events {
 				global.TMP_string.add(temporary);
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{trigsize}", "{string[DefaultString->TRIGSIZE-"+global.TMP_string.size()+"]}");
-				hasTempString = true;
 			}
 			if (TMP_e.contains("{notifysize}")) {
 				List<String> temporary = new ArrayList<String>();
@@ -808,7 +805,6 @@ public class events {
 				global.TMP_string.add(temporary);
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{notifysize}", "{string[DefaultString->NOTIFYSIZE-"+global.TMP_string.size()+"]}");
-				hasTempString = true;
 			}
 			if (TMP_e.contains("{me}")) {
 				List<String> temporary = new ArrayList<String>();
@@ -817,7 +813,6 @@ public class events {
 				global.TMP_string.add(temporary);
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{me}", "{string[DefaultString->ME-"+global.TMP_string.size()+"]}");
-				hasTempString = true;
 			}
 			if (TMP_e.contains("{server}")) {
 				String current_server = "";
@@ -830,7 +825,6 @@ public class events {
 				global.TMP_string.add(temporary);
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{server}", "{string[DefaultString->SERVER-"+global.TMP_string.size()+"]}");
-				hasTempString = true;
 			}
 			if (TMP_e.contains("{serverMOTD}")) {
 				String returnString = "";
@@ -843,7 +837,6 @@ public class events {
 				global.TMP_string.add(temporary);
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{serverMOTD}", "{string[DefaultString->SERVERMOTD-"+global.TMP_string.size()+"]}");
-				hasTempString = true;
 			}
 			if (TMP_e.contains("{serverIP}")) {
 				String returnString = "";
@@ -856,7 +849,6 @@ public class events {
 				global.TMP_string.add(temporary);
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{serverIP}", "{string[DefaultString->SERVERIP-"+global.TMP_string.size()+"]}");
-				hasTempString = true;
 			}
 			if (TMP_e.contains("{ping}")) {
 				String returnString = "";
@@ -869,7 +861,6 @@ public class events {
 				global.TMP_string.add(temporary);
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{ping}", "{string[DefaultString->SERVERPING-"+global.TMP_string.size()+"]}");
-				hasTempString = true;
 			}
 			if (TMP_e.contains("{serverversion}")) {
 				String returnString = "";
@@ -882,7 +873,6 @@ public class events {
 				global.TMP_string.add(temporary);
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{serverversion}", "{string[DefaultString->SERVERVERSION-"+global.TMP_string.size()+"]}");
-				hasTempString = true;
 			}
 			if (TMP_e.contains("{debug}")) {
 				List<String> temporary = new ArrayList<String>();
@@ -891,13 +881,19 @@ public class events {
 				global.TMP_string.add(temporary);
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{debug}", "{string[DefaultString->DEBUG-"+global.TMP_string.size()+"]}");
-				hasTempString = true;
+			}
+			if (TMP_e.contains("{setcol}")) {
+				List<String> temporary = new ArrayList<String>();
+				temporary.add("DefaultString->SETCOL-"+(global.TMP_string.size()+1));
+				temporary.add(global.settings.get(0));
+				global.TMP_string.add(temporary);
+				backupTMP_strings.add(temporary);
+				TMP_e = TMP_e.replace("{setcol}", "{string[DefaultString->SETCOL-"+global.TMP_string.size()+"]}");
 			}
 			
 		//user strings and functions
 			TMP_e = TMP_e.replace("{string<", "{string[").replace("{array<", "{array[").replace(">}", "]}");
 			
-			if (TMP_e.contains("{array[")) {hasTempString=true;}
 			TMP_e = stringFunctions(TMP_e);
 			TMP_e = arrayFunctions(TMP_e);
 			TMP_e = stringFunctions(TMP_e);
