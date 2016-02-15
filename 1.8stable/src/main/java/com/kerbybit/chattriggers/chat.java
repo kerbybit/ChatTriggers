@@ -21,6 +21,55 @@ public class chat {
 		Minecraft.getMinecraft().thePlayer.addChatMessage(TMP_out);
 	}
 	
+	public static void warnUnformClick(String cht) {
+		cht = cht.replace("'('", "LeftParF6cyUQp9LeftPar");
+		cht = cht.replace("')'", "RightParF6cyUQp9RightPar");
+		cht = cht.replace("'", "\\'");
+		
+		while (cht.contains("clickable(") && cht.contains(")")) {
+			String TMP_1splt = "";
+			String TMP_2splt = "";
+			if (cht.indexOf("clickable(") != 0) {TMP_1splt = ",";}
+			if (cht.indexOf(")") != cht.length()) {TMP_2splt = ",";}
+			String TMP_clk = cht.substring(cht.indexOf("clickable(") + 10, cht.indexOf(")", cht.indexOf("clickable(")));
+			
+			
+			
+			if (TMP_clk.contains("(")) {
+				TMP_clk = cht.substring(cht.indexOf("clickable(")+10, cht.indexOf(")", cht.indexOf(")")+1));
+				String TMP_subcheck = TMP_clk.substring(TMP_clk.indexOf("(")+1,TMP_clk.indexOf(")"));
+				String TMP_subcheckReplace = TMP_subcheck.replace(",", "CommaF6cyUQp9Comma");
+				TMP_clk = TMP_clk.replace(TMP_subcheck, TMP_subcheckReplace);
+			}
+			
+			String[] TMP_args = TMP_clk.split(",");
+			if (TMP_args.length > 0) {
+				String TMP_txt = TMP_args[0].replace("CommaF6cyUQp9Comma", ",");
+				if (TMP_args.length > 1) {
+					String TMP_clkevnt = TMP_args[1].replace("CommaF6cyUQp9Comma", ",");
+					if (TMP_args.length > 2) {
+						String TMP_clkval = TMP_args[2].replace("CommaF6cyUQp9Comma", ",");
+						if (TMP_args.length > 3) {
+							String TMP_hovtxt = TMP_args[3].replace("CommaF6cyUQp9Comma", ",");
+							cht = cht.replace("clickable(" + TMP_clk.replace("CommaF6cyUQp9Comma", ",") + ")", "'},{text:'" + TMP_txt + "',clickEvent:{action:'" + TMP_clkevnt + "',value:'" + TMP_clkval + "'},hoverEvent:{action:'show_text',value:'" + TMP_hovtxt + "'}},{text:'");
+						} else {
+							cht = cht.replace("clickable(" + TMP_clk.replace("CommaF6cyUQp9Comma", ",") + ")", "'},{text:'" + TMP_txt + "',clickEvent:{action:'" + TMP_clkevnt + "',value:'" + TMP_clkval + "'},hoverEvent:{action:'show_text',value:'" + TMP_clkval + "'}},{text:'");
+						}
+					}
+				}
+			}
+		}
+		
+		cht = cht.replace("LeftParF6cyUQp9LeftPar", "(");
+		cht = cht.replace("RightParF6cyUQp9RightPar", ")");
+		
+		String TMP_o = "['',";
+		TMP_o += "{text:'" + cht +  "'}";
+		TMP_o += "]";
+		IChatComponent TMP_out = IChatComponent.Serializer.jsonToComponent(TMP_o);
+		Minecraft.getMinecraft().thePlayer.addChatMessage(TMP_out);
+	}
+	
 	public static void sendJson(List<String> out) {
 		String TMP_o = "['',";
 		for (int i=0; i<out.size(); i++) {
@@ -33,11 +82,7 @@ public class chat {
 	}
 	
 	public static void warn(String cht) {
-		
-		
-		
 		cht = cht.replace("{br}", "\n");
-		cht = cht.replace("{me}", Minecraft.getMinecraft().thePlayer.getName());
 		cht = cht.replace("'('", "LeftParF6cyUQp9LeftPar");
 		cht = cht.replace("')'", "RightParF6cyUQp9RightPar");
 		cht = cht.replace("'", "\\'");
@@ -57,7 +102,7 @@ public class chat {
 			
 			
 			if (TMP_clk.contains("(")) {
-				TMP_clk = cht.substring(cht.indexOf("clickable(")+10, cht.indexOf(")", cht.indexOf(")")+1));
+				TMP_clk = cht.substring(cht.indexOf("clickable(")+10, cht.indexOf(")", cht.indexOf(")", cht.indexOf("clickable("))+1));
 				String TMP_subcheck = TMP_clk.substring(TMP_clk.indexOf("(")+1,TMP_clk.indexOf(")"));
 				String TMP_subcheckReplace = TMP_subcheck.replace(",", "CommaF6cyUQp9Comma");
 				TMP_clk = TMP_clk.replace(TMP_subcheck, TMP_subcheckReplace);

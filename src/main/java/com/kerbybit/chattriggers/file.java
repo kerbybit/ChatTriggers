@@ -130,7 +130,9 @@ public class file {
 			 			for (String value : lines) {writer.println(value);}
 			 			writer.close();
 			 			if (global.debug==true) {chat.warn(chat.color("&7", "Loading imports into triggers"));}
-			 			loadImports("./mods/ChatTriggers/Imports/");
+			 			global.trigger = loadTriggers("./mods/ChatTriggers/triggers.txt", false);
+						global.USR_string = loadStrings("./mods/ChatTriggers/strings.txt");
+						loadImports("./mods/ChatTriggers/Imports/");
 			 			chat.warn(chat.color(global.settings.get(0), "Got "+file+" successfully!"));
 			 		} catch (MalformedURLException e) {
 			 			chat.warn(chat.color("red", "Not a valid import! bad URL"));
@@ -146,7 +148,6 @@ public class file {
 		} else {
 			chat.warn(chat.color("red", "You are trying to do this too quick! slow down!"));
 		}
-		
 	}
 	
 	public static String exportJsonFile(String fileName, String arrayName, String nodeName) throws IOException {

@@ -3,7 +3,9 @@ package com.kerbybit.chattriggers;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -121,7 +123,19 @@ public class events {
 					returnString = "Value under bounds! (index "+toRemove+" - expecting 1)";
 				}
 			} catch (NumberFormatException e) {
-				returnString = "Value must be an integer!";
+				for (int j=0; j<global.USR_array.size(); j++) {
+					if (global.USR_array.get(j).get(0).equals(checkFrom)) {
+						for (int k=1; k<global.USR_array.get(j).size(); k++) {
+							if (global.USR_array.get(j).get(k).equals(checkTo)) {
+								removed = global.USR_array.get(j).remove(k);
+								returnString = removed;
+								if (global.USR_array.get(j).size()==1) {
+									toRemoveArray = j;
+								}
+							}
+						}
+					}
+				}
 			}
 			
 			if (toRemoveArray != -1) {
@@ -136,11 +150,7 @@ public class events {
 			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.remove(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"REMOVE"+checkTo+"-"+global.TMP_string.size()+"]}");
 		}
 		
-		if (TMP_e.contains("{array[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) {
-			System.out.println("FUCK");
-		}
-		
-		while (TMP_e.contains("{array[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) { //TODO
+		while (TMP_e.contains("{array[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.get(", TMP_e.indexOf("{array[")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.get(")+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.get(")));
 			String got = "";
@@ -221,6 +231,32 @@ public class events {
 			global.TMP_string.add(temporary);
 			backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonURL("+checkFile+","+checkTo+")", "{string[ArrayToString->"+checkFrom+"IMPORTJSONURL"+checkTo+"FROM"+checkFile+"-"+global.TMP_string.size()+"]}");
+		}
+		
+		while (TMP_e.contains("{array[") && TMP_e.contains("]}.exportJson(") && TMP_e.contains(")")) {
+			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.exportJson(", TMP_e.indexOf("{array[")));
+			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.exportJson(")+14, TMP_e.indexOf(")", TMP_e.indexOf("]}.exportJson(")));
+			String returnString = "Something went wrong!";
+			if (checkTo.contains(",")) {
+				try {
+					returnString = file.exportJsonFile(checkTo.substring(0, checkTo.indexOf(",")), checkFrom, checkTo.substring(checkTo.indexOf(",")+1));
+				} catch (FileNotFoundException e) {
+					returnString = "File not found and could not be created!";
+				} catch (UnsupportedEncodingException e) {
+					returnString = "File could not be saved!";
+				} catch (IOException e) {
+					returnString = "File could not be saved!";
+				}
+			} else {
+				returnString = "Invalid arguments! expected .exportJson(fileName,nodeName)";
+			}
+			
+			List<String> temporary = new ArrayList<String>();
+			temporary.add("ArrayToString->"+checkFrom+"EXPORTJSON"+checkTo+"-"+(global.TMP_string.size()+1));
+			temporary.add(returnString);
+			global.TMP_string.add(temporary);
+			backupTMP_strings.add(temporary);
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.exportJson("+checkTo+")", "{string[ArrayToString->"+checkFrom+"EXPORTJSON"+checkTo+"-"+global.TMP_string.size()+"]}");
 		}
 		
 		return TMP_e;
@@ -681,19 +717,16 @@ public class events {
 		
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
 		String stringCommaReplace = "stringCommaReplacementF6cyUQp9stringCommaReplacement";
-		Boolean hasTempString = false;
 		
 		if (toreplace != null) {
 			for (int i=0; i<toreplace.length; i++) {
 				List<String> temporary = new ArrayList<String>();
-				temporary.add("TriggerArgument"+i);
+				temporary.add("TriggerArgument"+i+"-"+global.TMP_string.size());
 				temporary.add(replacement[i]);
-				global.TMP_string.add(temporary);
-			}
-			for (int i=0; i<tmp_event.size(); i++) {
-				for (int j=0; j<toreplace.length; j++) {
-					tmp_event.set(i, tmp_event.get(i).replace(toreplace[j], "{string[TriggerArgument"+j+"]}"));
+				for (int j=0; j<tmp_event.size(); j++) {
+					tmp_event.set(j, tmp_event.get(j).replace(toreplace[i],"{string[TriggerArgument"+i+"-"+global.TMP_string.size()+"]}"));
 				}
+				global.TMP_string.add(temporary);
 			}
 		}
 		
@@ -738,7 +771,7 @@ public class events {
 				try {
 					int num = Integer.parseInt(strnum);
 					if (num>=0) {
-						if (num<global.chatHistory.size()) {temporary.add(global.chatHistory.get(num));} 
+						if (num<global.chatHistory.size()) {temporary.add(global.chatHistory.get(global.chatHistory.size()-(num+1)));} 
 						else {temporary.add("Number must be less than the chat history size! ("+global.chatHistory.size()+")");}
 					} else {temporary.add("Number must be greater than or equal to 0!");}
 				} catch (NumberFormatException e) {temporary.add("Not a number!");}
@@ -755,7 +788,6 @@ public class events {
 					global.TMP_string.add(temporary);
 					backupTMP_strings.add(temporary);
 					TMP_e = TMP_e.replace("{msg}", "{string[DefaultString->MSG-"+global.TMP_string.size()+"]}");
-					hasTempString = true;
 				}
 			}
 			if (TMP_e.contains("{trigsize}")) {
@@ -765,7 +797,6 @@ public class events {
 				global.TMP_string.add(temporary);
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{trigsize}", "{string[DefaultString->TRIGSIZE-"+global.TMP_string.size()+"]}");
-				hasTempString = true;
 			}
 			if (TMP_e.contains("{notifysize}")) {
 				List<String> temporary = new ArrayList<String>();
@@ -774,7 +805,6 @@ public class events {
 				global.TMP_string.add(temporary);
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{notifysize}", "{string[DefaultString->NOTIFYSIZE-"+global.TMP_string.size()+"]}");
-				hasTempString = true;
 			}
 			if (TMP_e.contains("{me}")) {
 				List<String> temporary = new ArrayList<String>();
@@ -783,7 +813,6 @@ public class events {
 				global.TMP_string.add(temporary);
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{me}", "{string[DefaultString->ME-"+global.TMP_string.size()+"]}");
-				hasTempString = true;
 			}
 			if (TMP_e.contains("{server}")) {
 				String current_server = "";
@@ -796,7 +825,6 @@ public class events {
 				global.TMP_string.add(temporary);
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{server}", "{string[DefaultString->SERVER-"+global.TMP_string.size()+"]}");
-				hasTempString = true;
 			}
 			if (TMP_e.contains("{serverMOTD}")) {
 				String returnString = "";
@@ -809,7 +837,6 @@ public class events {
 				global.TMP_string.add(temporary);
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{serverMOTD}", "{string[DefaultString->SERVERMOTD-"+global.TMP_string.size()+"]}");
-				hasTempString = true;
 			}
 			if (TMP_e.contains("{serverIP}")) {
 				String returnString = "";
@@ -822,7 +849,6 @@ public class events {
 				global.TMP_string.add(temporary);
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{serverIP}", "{string[DefaultString->SERVERIP-"+global.TMP_string.size()+"]}");
-				hasTempString = true;
 			}
 			if (TMP_e.contains("{ping}")) {
 				String returnString = "";
@@ -835,7 +861,6 @@ public class events {
 				global.TMP_string.add(temporary);
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{ping}", "{string[DefaultString->SERVERPING-"+global.TMP_string.size()+"]}");
-				hasTempString = true;
 			}
 			if (TMP_e.contains("{serverversion}")) {
 				String returnString = "";
@@ -848,7 +873,6 @@ public class events {
 				global.TMP_string.add(temporary);
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{serverversion}", "{string[DefaultString->SERVERVERSION-"+global.TMP_string.size()+"]}");
-				hasTempString = true;
 			}
 			if (TMP_e.contains("{debug}")) {
 				List<String> temporary = new ArrayList<String>();
@@ -857,13 +881,19 @@ public class events {
 				global.TMP_string.add(temporary);
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{debug}", "{string[DefaultString->DEBUG-"+global.TMP_string.size()+"]}");
-				hasTempString = true;
+			}
+			if (TMP_e.contains("{setcol}")) {
+				List<String> temporary = new ArrayList<String>();
+				temporary.add("DefaultString->SETCOL-"+(global.TMP_string.size()+1));
+				temporary.add(global.settings.get(0));
+				global.TMP_string.add(temporary);
+				backupTMP_strings.add(temporary);
+				TMP_e = TMP_e.replace("{setcol}", "{string[DefaultString->SETCOL-"+global.TMP_string.size()+"]}");
 			}
 			
 		//user strings and functions
 			TMP_e = TMP_e.replace("{string<", "{string[").replace("{array<", "{array[").replace(">}", "]}");
 			
-			if (TMP_e.contains("{array[")) {hasTempString=true;}
 			TMP_e = stringFunctions(TMP_e);
 			TMP_e = arrayFunctions(TMP_e);
 			TMP_e = stringFunctions(TMP_e);

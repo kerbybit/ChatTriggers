@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.util.EnumChatFormatting;
 
 public class gui extends GuiScreen {
 	
@@ -16,7 +17,7 @@ public class gui extends GuiScreen {
 	private float mouseY;
 	private Minecraft MC = Minecraft.getMinecraft();
 	
-	private String backString = "< Back";
+	private String backString = EnumChatFormatting.GRAY.toString()+"< Back";
 	private List<Float> backOffset = new ArrayList<Float>();
 	
 	private String indevString = "GUI is still in development";
@@ -46,7 +47,7 @@ public class gui extends GuiScreen {
 	public void mouseClicked(int x, int y, int button) throws IOException {
 		this.mouseX = (float)x;
 		this.mouseY = (float)y;
-		ScaledResolution var5 = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
+		ScaledResolution var5 = new ScaledResolution(MC);
 		float sWidth = var5.getScaledWidth();
 		float sHeight = var5.getScaledHeight();
 		
@@ -68,7 +69,7 @@ public class gui extends GuiScreen {
 		if (inMenu==2) {
 			for (int i=0; i<tempTrig.size(); i++) {
 				if (mouseX>=5 && mouseX<fontRendererObj.getStringWidth(tempTrig.get(i))+10 && mouseY>=(i*10)+25 && mouseY<(i*10)+35) {
-					gotoTrig=tempTrig.get(i);
+					gotoTrig=tempTrig.get(i).substring(0, tempTrig.get(i).indexOf(" "+EnumChatFormatting.DARK_GRAY.toString()+"("));
 					for (int j=0; j<tempTrig.size(); j++) {
 						if (j<i) {tempTrigOffset.get(j).set(2, (float)-10);} 
 						else if (j>i) {tempTrigOffset.get(j).set(2, (float)sHeight);} 
@@ -112,7 +113,7 @@ public class gui extends GuiScreen {
 	public void drawScreen(int x, int y, float ticks) { 
 		this.mouseX = (float)x;
 		this.mouseY = (float)y;
-		ScaledResolution var5 = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
+		ScaledResolution var5 = new ScaledResolution(MC);
 		float sWidth = var5.getScaledWidth();
 		float sHeight = var5.getScaledHeight();
 		
@@ -162,7 +163,7 @@ public class gui extends GuiScreen {
 				}
 				
 				if (whatList.equals(gotoList)) {
-					tempTrig.add(value.get(1).replace("<list=" + whatList + ">", ""));
+					tempTrig.add(value.get(1).replace("<list=" + whatList + ">", "") + " "+EnumChatFormatting.DARK_GRAY.toString()+"("+value.get(0)+")");
 					List<Float> temporary = new ArrayList<Float>();
 					temporary.add((float) 5); temporary.add((float) -fontRendererObj.getStringWidth(value.get(1).replace("<list=" + whatList + ">", ""))); temporary.add((float) (i*10)+25); temporary.add((float) (i*10)+25);
 					tempTrigOffset.add(temporary);
@@ -223,7 +224,11 @@ public class gui extends GuiScreen {
 		fontRendererObj.drawString(indevString, (int) (sWidth/2 - fontRendererObj.getStringWidth(indevString)/2), 5, 0x000000);
 		
 		for (int i=0; i<tempList.size(); i++) {
-			fontRendererObj.drawStringWithShadow(tempList.get(i), tempListOffset.get(i).get(1), tempListOffset.get(i).get(3), 0xffffff);
+			String colorstr = EnumChatFormatting.WHITE.toString();
+			if (tempList.get(i).equals("no list")) {
+				colorstr = EnumChatFormatting.GRAY.toString();
+			}
+			fontRendererObj.drawStringWithShadow(colorstr+tempList.get(i), tempListOffset.get(i).get(1), tempListOffset.get(i).get(3), 0xffffff);
 			
 			if (inMenu==0) {
 				if (mouseX>=5 && mouseX<fontRendererObj.getStringWidth(tempList.get(i))+10 && mouseY>=(i*10)+5 && mouseY<(i*10)+15) {
@@ -235,7 +240,7 @@ public class gui extends GuiScreen {
 		}
 		
 		for (int i=0; i<tempTrig.size(); i++) {
-			fontRendererObj.drawStringWithShadow(tempTrig.get(i), tempTrigOffset.get(i).get(1), tempTrigOffset.get(i).get(3), 0xffffff);
+			fontRendererObj.drawStringWithShadow(EnumChatFormatting.GOLD.toString()+tempTrig.get(i), tempTrigOffset.get(i).get(1), tempTrigOffset.get(i).get(3), 0xffffff);
 			
 			if (inMenu==2) {
 				if (mouseX>=5 && mouseX<fontRendererObj.getStringWidth(tempTrig.get(i))+10 && mouseY>=(i*10)+25 && mouseY<(i*10)+35) {
@@ -247,7 +252,21 @@ public class gui extends GuiScreen {
 		}
 		
 		for (int i=0; i<tempEvent.size(); i++) {
-			fontRendererObj.drawStringWithShadow(tempEvent.get(i), tempEventOffset.get(i).get(1), tempEventOffset.get(i).get(3), 0xffffff);
+			String first = tempEvent.get(i);
+			String second = "";
+			if (first.contains(" ")) {
+				second = first.substring(first.indexOf(" ")+1);
+				first = first.substring(0, first.indexOf(" "));
+			}
+			
+			fontRendererObj.drawStringWithShadow( //TODO
+					EnumChatFormatting.DARK_GRAY.toString() + first + " " + EnumChatFormatting.WHITE.toString() + second
+					.replace("{", EnumChatFormatting.DARK_BLUE.toString()+"{").replace("}", EnumChatFormatting.DARK_BLUE.toString()+"}"+EnumChatFormatting.RESET.toString())
+					.replace("msg[", "msg"+EnumChatFormatting.DARK_AQUA.toString()+"[")
+					.replace("string[", "string"+EnumChatFormatting.DARK_AQUA.toString()+"[").replace("string<", "string"+EnumChatFormatting.DARK_AQUA.toString()+"<")
+					.replace("array[", "array"+EnumChatFormatting.DARK_AQUA.toString()+"[").replace("array<", "array"+EnumChatFormatting.DARK_AQUA.toString()+"<")
+					.replace("}"+EnumChatFormatting.RESET.toString()+".", "}"+EnumChatFormatting.BLUE.toString()+".").replace("(", EnumChatFormatting.AQUA.toString()+"(").replace(")", EnumChatFormatting.AQUA.toString()+")"+EnumChatFormatting.RESET.toString()).replace(")"+EnumChatFormatting.RESET.toString()+".",")"+EnumChatFormatting.BLUE.toString()+".")
+					, tempEventOffset.get(i).get(1), tempEventOffset.get(i).get(3), 0xffffff);
 		}
 		
 		for (List<Float> value : tempListOffset) {

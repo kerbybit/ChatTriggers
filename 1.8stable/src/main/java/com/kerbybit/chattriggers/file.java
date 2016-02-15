@@ -15,7 +15,10 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,7 +70,7 @@ public class file {
 		 				file.saveAll();
 		 			}
 		 		} catch (MalformedURLException e) {
-		 			chat.warn(chat.color("red", "Can't grab update! Report this to kerbybit ASAP"));
+		 			chat.warn(chat.color("red", "Can't grab update! Update services must be down"));
 		 			e.printStackTrace();
 		 		} catch (IOException e) {
 		 			chat.warn(chat.color("red", "Can't grab update! Report this to kerbybit ASAP"));
@@ -127,7 +130,9 @@ public class file {
 			 			for (String value : lines) {writer.println(value);}
 			 			writer.close();
 			 			if (global.debug==true) {chat.warn(chat.color("&7", "Loading imports into triggers"));}
-			 			loadImports("./mods/ChatTriggers/Imports/");
+			 			global.trigger = loadTriggers("./mods/ChatTriggers/triggers.txt", false);
+						global.USR_string = loadStrings("./mods/ChatTriggers/strings.txt");
+						loadImports("./mods/ChatTriggers/Imports/");
 			 			chat.warn(chat.color(global.settings.get(0), "Got "+file+" successfully!"));
 			 		} catch (MalformedURLException e) {
 			 			chat.warn(chat.color("red", "Not a valid import! bad URL"));
@@ -143,7 +148,42 @@ public class file {
 		} else {
 			chat.warn(chat.color("red", "You are trying to do this too quick! slow down!"));
 		}
+	}
+	
+	public static String exportJsonFile(String fileName, String arrayName, String nodeName) throws IOException {
+		String returnString = "Something went wrong!";
+		int arrayNum = -1;
 		
+		for (int i=0; i<global.USR_array.size(); i++) {
+			if (arrayName.equals(global.USR_array.get(i).get(0))) {
+				arrayNum = i;
+			}
+		}
+		
+		File dir = new File(fileName);
+		if (!dir.exists()) {dir.createNewFile();}
+		
+		PrintWriter writer = new PrintWriter(fileName,"UTF-8");
+		
+		if (arrayNum==-1) {
+			writer.println("{");
+			writer.println("}");
+			returnString = "{}";
+		} else {
+			writer.println("{");
+			returnString = ("{");
+			for (int i=1; i<global.USR_array.get(arrayNum).size(); i++) {
+				String hasComma = "";
+				if (i!=global.USR_array.get(arrayNum).size()-1) {hasComma = ",";}
+				writer.println("     \""+nodeName+"\":\""+global.USR_array.get(arrayNum).get(i)+"\""+hasComma);
+				returnString += ("\""+nodeName+"\":\""+global.USR_array.get(arrayNum).get(i)+"\""+hasComma);
+			}
+			writer.println("}");
+			returnString += ("}");
+		}
+		writer.close();
+		
+		return returnString;
 	}
 	
 	public static String importJsonFile(String type, String fileName, String toImport) {
@@ -434,6 +474,9 @@ public class file {
 		writer.println("version:"+listName.get(2));
 		writer.println("killfeed pos:"+listName.get(3));
 		writer.println("isBeta:"+listName.get(4));
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		Date date = new Date();
+		writer.println("lastOpened:"+dateFormat.format(date));
 		writer.close();
 	}
 	
@@ -553,6 +596,7 @@ public class file {
 			if (lines.get(i).startsWith("version:")) {tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("version:") + 8));}
 			if (lines.get(i).startsWith("killfeed pos:")) {tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("killfeed pos:")+13));}
 			if (lines.get(i).startsWith("isBeta:")) {tmp_settings.add(lines.get(i).substring(lines.get(i).indexOf("isBeta:")+7));}
+			if (lines.get(i).startsWith("lastOpened:")) {global.currentDate = lines.get(i).substring(lines.get(i).indexOf("lastOpened:")+11);}
 		}
 		
 		return tmp_settings;
@@ -581,6 +625,7 @@ public class file {
 			if (global.settings.size() < 3) {global.settings.add("null");}
 			if (global.settings.size() < 4) {global.settings.add("top-left");}
 			if (global.settings.size() < 5) {global.settings.add("false");}
+			if (global.settings.size() < 6) {global.settings.add("null");}
 			chat.warn(chat.color(global.settings.get(0), "Chat triggers loaded"));
 		} catch (IOException e1) {
 			chat.warn(chat.color("red", "Error loading files!"));
@@ -596,6 +641,7 @@ public class file {
 			if (global.settings.size() < 3) {global.settings.add("null");}
 			if (global.settings.size() < 4) {global.settings.add("top-left");}
 			if (global.settings.size() < 5) {global.settings.add("false");}
+			if (global.settings.size() < 6) {global.settings.add("null");}
 			
 			try {file.saveAll(); chat.warn(chat.color("green", "New files created!"));} 
 			catch (IOException e111) {chat.warn(chat.color("red", "Error saving files! report this to kerbybit ASAP!")); e111.printStackTrace();}
@@ -604,6 +650,7 @@ public class file {
 		if (global.settings.size() < 3) {global.settings.add("null");}
 		if (global.settings.size() < 4) {global.settings.add("top-left");}
 		if (global.settings.size() < 5) {global.settings.add("false");}
+		if (global.settings.size() < 6) {global.settings.add("null");}
 		try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
 	}
 }
