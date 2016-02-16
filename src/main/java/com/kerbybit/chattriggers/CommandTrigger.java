@@ -262,6 +262,7 @@ public class CommandTrigger extends CommandBase {
 					|| TMP_etype.equalsIgnoreCase("TRIGGER") 
 					|| TMP_etype.equalsIgnoreCase("SOUND")
 					|| TMP_etype.equalsIgnoreCase("COPY")
+					|| TMP_etype.equalsIgnoreCase("URL")
 					|| TMP_etype.equalsIgnoreCase("DO")
 					|| TMP_etype.equalsIgnoreCase("IF")
 					|| TMP_etype.equalsIgnoreCase("ELSE")

@@ -1,11 +1,14 @@
 package com.kerbybit.chattriggers;
 
+import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -957,6 +960,10 @@ public class events {
 			if (TMP_c.equalsIgnoreCase("COPY")) {
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clipboard.setContents(new StringSelection(TMP_e), null);
+			}
+			if (TMP_c.equalsIgnoreCase("URL")) {
+				try {Desktop.getDesktop().browse(URI.create(TMP_e));}
+				catch (IOException e) {chat.warn(chat.color("red", "Unable to open URL! IOExeption"));}
 			}
 			
 			
