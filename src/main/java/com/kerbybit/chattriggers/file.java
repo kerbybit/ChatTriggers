@@ -552,6 +552,18 @@ public class file {
 						}
 					}
 					try {saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+				} else if (importFunction.toUpperCase().startsWith("REQUIRES ")) {
+					String importValue = importFunction.substring(importFunction.indexOf("REQUIRES ")+9);
+					String[] importValues = importValue.trim().split(" ");
+					for (int k=0; k<importValues.length; k++) {
+						if (global.debug==true) {chat.warn(chat.color("gray", "Importing "+importValues[k]));}
+						File dir = new File("./mods/ChatTriggers/Imports/"+importValues[k]+".txt");
+						if (!dir.exists()) {
+							global.neededImports.add(importValues[k]);
+						} else {
+							if (global.debug==true) {chat.warn(chat.color("gray", "Import already exsists"));}
+						}
+					}
 				}
 			}
 		}

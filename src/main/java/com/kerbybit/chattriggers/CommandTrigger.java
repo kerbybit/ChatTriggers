@@ -94,13 +94,12 @@ public class CommandTrigger extends CommandBase {
 	}
 	
 	public static void commandImport(String args[], Boolean silent) {
-		if (args.length==2) {
-			String toImport = args[1];
-			file.getImport("http://bfgteam.com/ChatTriggers/exports/" + toImport + ".txt");
-		} else if (args.length<2) {
-			chat.warn(chat.color("red", "/trigger import [import name]"));
+		if (args.length>=2) {
+			for (int i=1; i<args.length; i++) {
+				global.neededImports.add(args[i]);
+			}
 		} else {
-			chat.warn(chat.color("red", "You can only import one thing at a time!"));
+			chat.warn(chat.color("red", "/trigger import [import name]"));
 		}
 	}
 	

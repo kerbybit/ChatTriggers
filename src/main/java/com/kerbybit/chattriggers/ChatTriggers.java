@@ -360,6 +360,10 @@ public class ChatTriggers {
 			global.TMP_string.clear();
 		}
 		
+		if (global.neededImports.size()>0 && global.canImport==true) {
+			file.getImport("http://bfgteam.com/ChatTriggers/exports/"+global.neededImports.remove(0)+".txt");
+		}
+		
 		for (int i=0; i<global.notify.size(); i++) {
 			if (global.notifyAnimation.get(i).get(0)==0) {
 				ScaledResolution var5 = new ScaledResolution(MC);

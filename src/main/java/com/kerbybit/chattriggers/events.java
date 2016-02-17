@@ -448,7 +448,7 @@ public class events {
 					else {global.TMP_string.get(tmpstringnum).set(1, sj);}
 				}
 				returnstring = "{string["+sn+"]}";
-			} else if (func.equalsIgnoreCase("EQUALS")) {
+			} else if (func.equalsIgnoreCase("EQUALS") || (func.equalsIgnoreCase("="))) {
 				if (stringnum!=-1) {
 					if (global.USR_string.get(stringnum).get(1).equals(args)) {
 						global.USR_string.get(stringnum).set(1, "true");
@@ -566,13 +566,10 @@ public class events {
 				} catch (NumberFormatException e) {returnstring=sn+" is not a number!{string["+sn+"]}";}
 			}
 			
-			
-			
 			else {
 				returnstring = func + " is not a function!{string["+sn+"]}";
 			}
 		}
-		
 		return returnstring;
 	}
  
