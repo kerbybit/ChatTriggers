@@ -521,12 +521,17 @@ public class file {
 				if (importFunction.toUpperCase().startsWith("CREATE STRING ")) {
 					String sn = importFunction.substring(importFunction.toUpperCase().indexOf("CREATE STRING ")+14);
 					String sv = "";
+					String svo = "";
+					if (sn.toUpperCase().contains("ONCE WITH ")) {
+						svo = sn.substring(sn.toUpperCase().indexOf("ONCE WITH "+10));
+					}
 					if (sn.toUpperCase().contains("WITH ")) {
 						sv = sn.substring(sn.toUpperCase().indexOf("WITH ")+5);
 					}
+					
 					if (sn.contains(" ")) {sn = sn.substring(0, sn.indexOf(" ")).trim();}
 					if (global.debug==true) {
-						if (sv!="") {chat.warn(chat.color("gray", "Importing string "+sn+" with value "+sv));}
+						if (!sv.equals("")) {chat.warn(chat.color("gray", "Importing string "+sn+" with value "+sv));}
 						else {chat.warn(chat.color("gray", "Importing string "+sn+" with no value"));}
 					}
 					
@@ -534,17 +539,24 @@ public class file {
 					for (int k=0; k<global.USR_string.size(); k++) {
 						if (global.USR_string.get(k).get(0).equals(sn)) {
 							canCreate=false;
-							if (sv!="") {
+							if (!sv.equals("")) {
 								global.USR_string.get(k).set(1, sv);
 								if (global.debug==true) {chat.warn(chat.color("gray", "Set value "+sv+" in string "+sn));}
-							} else {
-								if (global.debug==true) {chat.warn(chat.color("gray", "String already exsists"));}
+							} else {if (global.debug==true) {chat.warn(chat.color("gray", "String already exsists"));}}
+							if (!svo.equals("")) {
+								if (global.USR_string.get(k).equals("")) {
+									global.USR_string.get(k).set(1, svo);
+									if (global.debug==true) {chat.warn(chat.color("gray", "Set value "+sv+" in string "+sn));}
+								} else {if (global.debug==true) {chat.warn(chat.color("gray", "String already has value"));}}
 							}
 						}
 					}
 					if (canCreate==true) {
 						List<String> temporary = new ArrayList<String>();
-						temporary.add(sn); temporary.add(sv);
+						temporary.add(sn);
+						if (sv.equals("") && !svo.equals("")) {temporary.add(svo);} 
+						else {temporary.add(sv);}
+						
 						global.USR_string.add(temporary);
 						if (global.debug==true) {
 							if (sv!="") {chat.warn(chat.color("gray", "Created string "+sn+" with value "+sv));} 
