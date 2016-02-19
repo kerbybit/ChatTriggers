@@ -459,6 +459,17 @@ public class events {
 					} else {global.TMP_string.get(tmpstringnum).set(1, "false");}
 				}
 				returnstring = "{string["+sn+"]}";
+			} else if (func.equalsIgnoreCase("EQUALSIGNORECASE")) {
+				if (stringnum!=-1) {
+					if (global.USR_string.get(stringnum).get(1).equalsIgnoreCase(args)) {
+						global.USR_string.get(stringnum).set(1, "true");
+					} else {global.USR_string.get(stringnum).set(1, "false");}
+				} else {
+					if (global.TMP_string.get(tmpstringnum).get(1).equalsIgnoreCase(args)) {
+						global.TMP_string.get(tmpstringnum).set(1, "true");
+					} else {global.TMP_string.get(tmpstringnum).set(1, "false");}
+				}
+				returnstring = "{string["+sn+"]}";
 			} else if (func.equalsIgnoreCase("STARTSWITH")) {
 				if (stringnum!=-1) {
 					if (global.USR_string.get(stringnum).get(1).startsWith(args)) {
@@ -927,12 +938,8 @@ public class events {
 		//add formatting where needed
 			if (TMP_c.equalsIgnoreCase("SAY") || TMP_c.equalsIgnoreCase("CHAT") || TMP_c.equalsIgnoreCase("KILLFEED") || TMP_c.equalsIgnoreCase("NOTIFY")) {
 				if (TMP_c.equalsIgnoreCase("SAY")) {
-					if (Minecraft.getMinecraft().isSingleplayer()==false) {
-						TMP_e = chat.addFormatting(TMP_e);
-					}
-				} else {
-					TMP_e = chat.addFormatting(TMP_e);
-				}
+					if (Minecraft.getMinecraft().isSingleplayer()==false) {TMP_e = chat.addFormatting(TMP_e);}
+				} else {TMP_e = chat.addFormatting(TMP_e);}
 			}
 			
 		//non-logic events
@@ -1046,8 +1053,13 @@ public class events {
 					eventsToWait.remove(0);
 					eventsToWait.remove(eventsToWait.size()-1);
 					try {
-						global.waitEvents.add(eventsToWait);
-						global.waitTime.add(Integer.parseInt(TMP_e));
+						int TMP_time = Integer.parseInt(TMP_e);
+						if (TMP_time>0) {
+							global.waitEvents.add(eventsToWait);
+							global.waitTime.add(Integer.parseInt(TMP_e));
+						} else {
+							chat.warn(chat.color("red", "Malformed WAIT event - skipping"));
+						}
 					} catch (NumberFormatException e) {
 						e.printStackTrace();
 						chat.warn(chat.color("red", "Malformed WAIT event - skipping"));
