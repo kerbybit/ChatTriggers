@@ -518,12 +518,21 @@ public class file {
 			}
 			if (lines.get(i).trim().startsWith("!")) {
 				String importFunction = lines.get(i).trim().substring(lines.get(i).trim().indexOf("!")+1);
-				if (importFunction.toUpperCase().startsWith("CREATE STRING ")) {
-					String sn = importFunction.substring(importFunction.toUpperCase().indexOf("CREATE STRING ")+14);
+				if (importFunction.toUpperCase().startsWith("CREATE STRING ") || importFunction.toUpperCase().startsWith("CREATESTRING ")) {
+					String sn = "SOMETHING WENT SUPER WRONG!!";
+					if (importFunction.toUpperCase().startsWith("CREATE STRING ")) {
+						sn = importFunction.substring(importFunction.toUpperCase().indexOf("CREATE STRING ")+14);
+					} else {
+						sn = importFunction.substring(importFunction.toUpperCase().indexOf("CREATESTRING ")+13);
+					}
+					
 					String sv = "";
 					String svo = "";
 					if (sn.toUpperCase().contains("ONCE WITH ")) {
 						svo = sn.substring(sn.toUpperCase().indexOf("ONCE WITH "+10));
+					}
+					if (sn.toUpperCase().contains("ONCEWITH ")) {
+						svo = sn.substring(sn.toUpperCase().indexOf("ONCEWITH "+9));
 					}
 					if (sn.toUpperCase().contains("WITH ")) {
 						sv = sn.substring(sn.toUpperCase().indexOf("WITH ")+5);

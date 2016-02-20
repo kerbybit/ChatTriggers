@@ -231,11 +231,7 @@ public class ChatTriggers {
 	
 	@SubscribeEvent
 	public void onWorldUnload(WorldEvent.Unload e) {
-		global.waitEvents.clear();
-		global.waitTime.clear();
-		global.asyncEvents.clear();
-		try {file.saveAll();} 
-		catch (IOException e1) {System.out.println("Failed to save file! IOException");}
+		try {file.saveAll();} catch (IOException e1) {System.out.println("Failed to save file! IOException");}
 		global.worldIsLoaded=false;
 	}
 		
@@ -333,6 +329,18 @@ public class ChatTriggers {
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent e) throws ClassNotFoundException {
+		try {
+			Minecraft.getMinecraft().thePlayer.isServerWorld();
+		} catch (NullPointerException e1) {
+			if (global.waitEvents.size()>0) {
+				global.waitEvents.clear();
+				global.waitTime.clear();
+			}
+			if (global.asyncEvents.size()>0) {
+				global.asyncEvents.clear();
+			}
+		}
+		
 		if (global.worldIsLoaded==true) {
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 			Date date = new Date();

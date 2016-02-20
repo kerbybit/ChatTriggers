@@ -66,11 +66,8 @@ public class CommandTrigger extends CommandBase {
 				String dir = "./mods/ChatTriggers/Imports/"+args[1]+".txt";
 				File f = new File(dir);
 				if (f.exists() && f.isFile()) {
-					global.trigger.clear();
-					global.USR_string.clear();
-					global.TMP_string.clear();
-					global.waitEvents.clear();
-					global.asyncEvents.clear();
+					global.trigger.clear(); global.USR_string.clear(); global.TMP_string.clear();
+					global.waitEvents.clear(); global.asyncEvents.clear();
 					chat.warn(chat.color(global.settings.get(0), "You are now in testing mode for import '"+f.getName()+"'"));
 					chat.warn(chat.color(global.settings.get(0), "To reload all of your triggers and strings, do </trigger load>"));
 					try {global.trigger.addAll(file.loadTriggers(dir, true));}
