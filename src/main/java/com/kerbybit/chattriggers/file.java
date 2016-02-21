@@ -530,11 +530,9 @@ public class file {
 					String svo = "";
 					if (sn.toUpperCase().contains("ONCE WITH ")) {
 						svo = sn.substring(sn.toUpperCase().indexOf("ONCE WITH ")+10);
-					}
-					if (sn.toUpperCase().contains("ONCEWITH ")) {
+					} else if (sn.toUpperCase().contains("ONCEWITH ")) {
 						svo = sn.substring(sn.toUpperCase().indexOf("ONCEWITH ")+9);
-					}
-					if (sn.toUpperCase().contains("WITH ")) {
+					} else if (sn.toUpperCase().contains("WITH ")) {
 						sv = sn.substring(sn.toUpperCase().indexOf("WITH ")+5);
 					}
 					
