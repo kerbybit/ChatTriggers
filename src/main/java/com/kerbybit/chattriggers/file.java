@@ -641,8 +641,8 @@ public class file {
 			saveStrings(global.USR_string, "./mods/ChatTriggers/strings.txt");
 			saveSettings(global.settings, "./mods/ChatTriggers/settings.txt");
 		} else {
-			chat.warn(chat.color("red", "You cannot save to the files while you are testing an import!"));
-			chat.warn(chat.color("red", "These changes are not getting saved. do </trigger load> to leave testing"));
+			chat.warn(chat.color("red", "These changes are not getting saved!"));
+			chat.warn(chat.color("red", "do </trigger load> to leave testing"));
 		}
 	}
 	

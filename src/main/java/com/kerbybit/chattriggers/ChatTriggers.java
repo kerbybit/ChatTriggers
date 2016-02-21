@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
 import org.lwjgl.input.Keyboard;
 
@@ -231,7 +232,6 @@ public class ChatTriggers {
 	
 	@SubscribeEvent
 	public void onWorldUnload(WorldEvent.Unload e) {
-		try {file.saveAll();} catch (IOException e1) {System.out.println("Failed to save file! IOException");}
 		global.worldIsLoaded=false;
 	}
 		
@@ -244,9 +244,17 @@ public class ChatTriggers {
 				if (global.settings.get(3).equalsIgnoreCase("TOP-RIGHT") || global.settings.get(3).equalsIgnoreCase("TR")) {
 					ScaledResolution var5 = new ScaledResolution(MC);
 					float var6 = var5.getScaledWidth();
-					MC.fontRendererObj.drawStringWithShadow(global.killfeed.get(i), var6 - MC.fontRendererObj.getStringWidth(global.killfeed.get(i)) - 5, i*10 + 5, 0xffffff);
+					int col = 0xffffffff;
+					if (global.killfeedDelay.get(i)<50) {
+						col = col - (50-global.killfeedDelay.get(i))*0x05000000;
+					}
+					MC.fontRendererObj.drawStringWithShadow(global.killfeed.get(i), var6 - MC.fontRendererObj.getStringWidth(global.killfeed.get(i)) - 5, i*10 + 5, col);
 				} else {
-					MC.fontRendererObj.drawStringWithShadow(global.killfeed.get(i), 5, i*10 + 5, 0xffffff);
+					int col = 0xffffffff;
+					if (global.killfeedDelay.get(i)<50) {
+						col = col - (50-global.killfeedDelay.get(i))*0x05000000;
+					}
+					MC.fontRendererObj.drawStringWithShadow(global.killfeed.get(i), 5, i*10 + 5, col);
 				}
 			}
 			//draw notify
@@ -369,7 +377,13 @@ public class ChatTriggers {
 		}
 		
 		if (global.neededImports.size()>0 && global.canImport==true) {
-			file.getImport("http://bfgteam.com/ChatTriggers/exports/"+global.neededImports.remove(0)+".txt");
+			if (global.canSave) {
+				file.getImport("http://bfgteam.com/ChatTriggers/exports/"+global.neededImports.remove(0)+".txt");
+			} else {
+				global.neededImports.clear();
+				chat.warn(chat.color("red", "cannot !REQUIRES while in test mode"));
+				chat.warn(chat.color("red", "</trigger load> to leave testing mode"));
+			}
 		}
 		
 		for (int i=0; i<global.notify.size(); i++) {
