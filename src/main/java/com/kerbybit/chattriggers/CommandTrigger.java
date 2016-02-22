@@ -429,7 +429,9 @@ public class CommandTrigger extends CommandBase {
 				}
 			} else if (args[1].equalsIgnoreCase("LIST")) {
 				if (args.length==2) {
-					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------"));
+					String dashes = "";
+					for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
+					chat.warn(chat.color(global.settings.get(0), "&m-"+dashes));
 					if (global.USR_string.size() == 0) {
 						chat.warnUnformatted(chat.color("red", "No strings created"));
 						chat.warnUnformatted(chat.color("red", "Do </trigger string> to get started"));
@@ -445,7 +447,7 @@ public class CommandTrigger extends CommandBase {
 							chat.warnUnformatted(chat.color("gray", "  " + global.USR_string.get(i).get(1)));
 						}
 					}
-					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
+					chat.warn(chat.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
 				}
 			}
 		}
@@ -453,7 +455,9 @@ public class CommandTrigger extends CommandBase {
 	
 	public static void commandList(String args[], Boolean silent) {
 		if (args.length==1) {
-			chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------"));
+			String dashes = "";
+			for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
+			chat.warn(chat.color(global.settings.get(0), "&m-"+dashes));
 			if (global.trigger.size() == 0) {
 				chat.warn(chat.color("red", "No triggers created"));
 				chat.warn(chat.color("red", "Do </trigger> to get started"));
@@ -554,14 +558,16 @@ public class CommandTrigger extends CommandBase {
 					}
 				}
 			}
-			chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
+			chat.warn(chat.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
 		} else {
 			String TMP_check = "";
 			for (int i=1; i<args.length; i++) {
 				if (i==args.length-1) {TMP_check += args[i];}
 				else {TMP_check += args[i] + " ";}
 			}
-			chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------"));
+			String dashes = "";
+			for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
+			chat.warn(chat.color(global.settings.get(0), "&m-"+dashes));
 			if (global.trigger.size() == 0) {
 				chat.warn(chat.color("red", "No triggers created"));
 				chat.warn(chat.color("red", "Do </trigger> to get started"));
@@ -655,7 +661,7 @@ public class CommandTrigger extends CommandBase {
 					chat.warn(chat.color("red", "Create list " + TMP_check + " by using <list=" + TMP_check + "> when you create a trigger"));
 				}
 			}
-			chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
+			chat.warn(chat.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
 		}
 	}
 	

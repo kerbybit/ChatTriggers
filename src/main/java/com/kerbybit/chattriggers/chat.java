@@ -82,7 +82,6 @@ public class chat {
 	}
 	
 	public static void warn(String cht) {
-		cht = cht.replace("{br}", "\n");
 		cht = cht.replace("'('", "LeftParF6cyUQp9LeftPar");
 		cht = cht.replace("')'", "RightParF6cyUQp9RightPar");
 		cht = cht.replace("'", "\\'");
@@ -138,10 +137,6 @@ public class chat {
 		TMP_o += "]";
 		IChatComponent TMP_out = IChatComponent.Serializer.jsonToComponent(TMP_o);
 		Minecraft.getMinecraft().thePlayer.addChatMessage(TMP_out);
-		
-		//ChatComponentText toSend = new ChatComponentText(cht);
-		
-		//Minecraft.getMinecraft().thePlayer.addChatMessage(toSend);
 	}
 	
 	public static String color(String clr, String msg) {
@@ -166,15 +161,9 @@ public class chat {
 		else if (clr.trim().equalsIgnoreCase("&e") || clr.trim().equalsIgnoreCase("YELLOW"))      {chatColor = EnumChatFormatting.YELLOW.toString();}
 		else if (clr.trim().equalsIgnoreCase("&f") || clr.trim().equalsIgnoreCase("WHITE"))       {chatColor = EnumChatFormatting.WHITE.toString();}
 
+		for (int i = 0; i < tmp.length; i++) {formatted += chatColor + tmp[i] + " ";}
 		
-		for (int i = 0; i < tmp.length; i++) {
-			//if (i==tmp.length-1) {formatted += chatColor + tmp[i] + "";} 
-			//else {
-				formatted += chatColor + tmp[i] + " ";
-			//}
-		}
-		
-		return formatted;
+		return formatted.trim();
 	}
 	
 	public static void onClientTick() {

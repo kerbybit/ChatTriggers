@@ -83,9 +83,7 @@ public class events {
 			for (int j=0; j<global.USR_array.size(); j++) {
 				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
 					for (int k=1; k<global.USR_array.get(j).size(); k++) {
-						if (global.USR_array.get(j).get(k).equals(checkTo)) {
-							checkThis = "true";
-						}
+						if (global.USR_array.get(j).get(k).equals(checkTo)) {checkThis = "true";}
 					}
 				}
 			}
@@ -114,17 +112,11 @@ public class events {
 							if (toRemove < global.USR_array.get(j).size()) {
 								removed = global.USR_array.get(j).remove(toRemove);
 								returnString = removed;
-								if (global.USR_array.get(j).size()==1) {
-									toRemoveArray = j;
-								}
-							} else {
-								returnString = "Value over bounds! (index "+toRemove+" - expecting "+global.USR_array.size()+")";
-							}
+								if (global.USR_array.get(j).size()==1) {toRemoveArray = j;}
+							} else {returnString = "Value over bounds! (index "+toRemove+" - expecting "+global.USR_array.size()+")";}
 						}
 					}
-				} else {
-					returnString = "Value under bounds! (index "+toRemove+" - expecting 1)";
-				}
+				} else {returnString = "Value under bounds! (index "+toRemove+" - expecting 1)";}
 			} catch (NumberFormatException e) {
 				for (int j=0; j<global.USR_array.size(); j++) {
 					if (global.USR_array.get(j).get(0).equals(checkFrom)) {
@@ -132,18 +124,14 @@ public class events {
 							if (global.USR_array.get(j).get(k).equals(checkTo)) {
 								removed = global.USR_array.get(j).remove(k);
 								returnString = removed;
-								if (global.USR_array.get(j).size()==1) {
-									toRemoveArray = j;
-								}
+								if (global.USR_array.get(j).size()==1) {toRemoveArray = j;}
 							}
 						}
 					}
 				}
 			}
 			
-			if (toRemoveArray != -1) {
-				global.USR_array.remove(toRemoveArray);
-			}
+			if (toRemoveArray != -1) {global.USR_array.remove(toRemoveArray);}
 			
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("ArrayToString->"+checkFrom+"REMOVE"+checkTo+"-"+(global.TMP_string.size()+1));
@@ -168,17 +156,11 @@ public class events {
 							if (toGet < global.USR_array.get(j).size()) {
 								got = global.USR_array.get(j).get(toGet);
 								returnString = got;
-							} else {
-								returnString = "Value over bounds! (index "+toGet+" - expecting "+global.USR_array.size()+")";
-							}
+							} else {returnString = "Value over bounds! (index "+toGet+" - expecting "+global.USR_array.size()+")";}
 						}
 					}
-				} else {
-					returnString = "Value under bounds! (index "+toGet+" - expecting 1)";
-				}
-			} catch (NumberFormatException e) {
-				returnString = "Value must be an integer!";
-			}
+				} else {returnString = "Value under bounds! (index "+toGet+" - expecting 1)";}
+			} catch (NumberFormatException e) {returnString = "Value must be an integer!";}
 			
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("ArrayToString->"+checkFrom+"GET"+checkTo+"-"+(global.TMP_string.size()+1));
@@ -193,9 +175,7 @@ public class events {
 			int arraysize = 0;
 			
 			for (int j=0; j<global.USR_array.size(); j++) {
-				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
-					arraysize = global.USR_array.get(j).size()-1;
-				}
+				if (global.USR_array.get(j).get(0).equals(checkFrom)) {arraysize = global.USR_array.get(j).size()-1;}
 			}
 			
 			List<String> temporary = new ArrayList<String>();
@@ -241,18 +221,11 @@ public class events {
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.exportJson(")+14, TMP_e.indexOf(")", TMP_e.indexOf("]}.exportJson(")));
 			String returnString = "Something went wrong!";
 			if (checkTo.contains(",")) {
-				try {
-					returnString = file.exportJsonFile(checkTo.substring(0, checkTo.indexOf(",")), checkFrom, checkTo.substring(checkTo.indexOf(",")+1));
-				} catch (FileNotFoundException e) {
-					returnString = "File not found and could not be created!";
-				} catch (UnsupportedEncodingException e) {
-					returnString = "File could not be saved!";
-				} catch (IOException e) {
-					returnString = "File could not be saved!";
-				}
-			} else {
-				returnString = "Invalid arguments! expected .exportJson(fileName,nodeName)";
-			}
+				try {returnString = file.exportJsonFile(checkTo.substring(0, checkTo.indexOf(",")), checkFrom, checkTo.substring(checkTo.indexOf(",")+1));} 
+				catch (FileNotFoundException e) {returnString = "File not found and could not be created!";} 
+				catch (UnsupportedEncodingException e) {returnString = "File could not be saved!";} 
+				catch (IOException e) {returnString = "File could not be saved!";}
+			} else {returnString = "Invalid arguments! expected .exportJson(fileName,nodeName)";}
 			
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("ArrayToString->"+checkFrom+"EXPORTJSON"+checkTo+"-"+(global.TMP_string.size()+1));
@@ -274,16 +247,12 @@ public class events {
 		sn = stringFunctions(sn);
 		
 		for (int i=0; i<global.USR_string.size(); i++) {
-			if (global.USR_string.get(i).get(0).equals(sn)) {
-				stringnum=i;
-			}
+			if (global.USR_string.get(i).get(0).equals(sn)) {stringnum=i;}
 		}
 		
 		if (stringnum==-1) {
 			for (int i=0; i<global.TMP_string.size(); i++) {
-				if (global.TMP_string.get(i).get(0).equals(sn)) {
-					tmpstringnum = i;
-				}
+				if (global.TMP_string.get(i).get(0).equals(sn)) {tmpstringnum = i;}
 			}
 			if (tmpstringnum == -1) {
 				returnstring = "That is not a string!";
@@ -577,26 +546,19 @@ public class events {
 				} catch (NumberFormatException e) {returnstring=sn+" is not a number!{string["+sn+"]}";}
 			}
 			
-			else {
-				returnstring = func + " is not a function!{string["+sn+"]}";
-			}
+			else {returnstring = func + " is not a function!{string["+sn+"]}";}
 		}
 		return returnstring;
 	}
  
 	public static String stringFunctions(String TMP_e) {
-		
 		while (TMP_e.contains("{string[") && TMP_e.contains("]}")) {
 			String testfor = TMP_e.substring(TMP_e.indexOf("]}", TMP_e.indexOf("{string["))+2);
 			if (testfor.contains("]}.") && !(testfor.contains("{string[") || testfor.contains("{array["))) {
-				if (testfor.indexOf("]}.") < testfor.indexOf("(")) {
-					testfor = "."+testfor.substring(testfor.indexOf("]}.")+3);
-				}
+				if (testfor.indexOf("]}.") < testfor.indexOf("(")) {testfor = "."+testfor.substring(testfor.indexOf("]}.")+3);}
 			}
 			if (testfor.startsWith(".") && testfor.contains("(") && testfor.contains(")")) {
-				if (testfor.substring(testfor.indexOf("."), testfor.indexOf("(")).contains(" ")) {
-					testfor = testfor.substring(1);
-				}
+				if (testfor.substring(testfor.indexOf("."), testfor.indexOf("(")).contains(" ")) {testfor = testfor.substring(1);}
 			}
 			if (testfor.startsWith(".") && testfor.contains("(") && testfor.contains(")")) {
 				String sn = TMP_e.substring(TMP_e.indexOf("{string[")+8, TMP_e.indexOf("]}.", TMP_e.indexOf("{string[")));
@@ -604,15 +566,12 @@ public class events {
 				String args = TMP_e.substring(TMP_e.indexOf("(", TMP_e.indexOf("]}.", TMP_e.indexOf("{string[")))+1, TMP_e.indexOf(")",  TMP_e.indexOf("(", TMP_e.indexOf("]}.", TMP_e.indexOf("{string[")))));
 				while (sn.contains("{string[")) {
 					sn = TMP_e.substring(TMP_e.indexOf("{string[")+8, TMP_e.indexOf("]}", TMP_e.indexOf(sn)+sn.length()));
-					
 					String first = sn.substring(0, sn.indexOf("{string["));
 					String replacement = "stringOpenStringF6cyUQp9stringOpenString";
 					String second = sn.substring(sn.indexOf("{string[")+8);
-					
 					String efirst = TMP_e.substring(0, TMP_e.indexOf("{string[", TMP_e.indexOf("{string[")+8));
 					String ereplacement = "stringOpenStringF6cyUQp9stringOpenString";
 					String esecond = TMP_e.substring(TMP_e.indexOf("{string[", TMP_e.indexOf("{string[")+8)+8);
-					
 					TMP_e = efirst + replacement + esecond;
 					sn = first + replacement + second;
 				}
@@ -637,17 +596,14 @@ public class events {
 					argsbefore = args;
 					args = first + "stringOpenBracketF6cyUQp9stringOpenBracket" + second;
 					TMP_e = TMP_e.replace(argsbefore, args);
-					
 					first = args.substring(0,args.indexOf(")"));
 					second = args.substring(args.indexOf(")")+1);
 					argsbefore = args;
 					args = first + "stringCloseBracketF6cyUQp9stringCloseBracket" + second;
 					TMP_e = TMP_e.replace(argsbefore, args);
 				}
-				args = args.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(");
-				args = args.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
-				TMP_e = TMP_e.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(");
-				TMP_e = TMP_e.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
+				args = args.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "("); args = args.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
+				TMP_e = TMP_e.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "("); TMP_e = TMP_e.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
 				String fullreplace = "{string["+sn+"]}."+func+"("+args+")";
 				String firstpart = TMP_e.substring(0, TMP_e.indexOf(fullreplace));
 				String secondpart = TMP_e.substring(TMP_e.indexOf(fullreplace)+fullreplace.length());
@@ -661,7 +617,6 @@ public class events {
 					String first = sn.substring(0, sn.indexOf("{string["));
 					String replacement = "stringOpenStringF6cyUQp9stringOpenString";
 					String second = sn.substring(sn.indexOf("{string[")+8);
-					
 					String efirst = TMP_e.substring(0, TMP_e.indexOf("{string[", TMP_e.indexOf("{string[")+8));
 					String ereplacement = "stringOpenStringF6cyUQp9stringOpenString";
 					String esecond = TMP_e.substring(TMP_e.indexOf("{string[", TMP_e.indexOf("{string[")+8)+8);
@@ -681,15 +636,11 @@ public class events {
 				String returnString = "Not a string!";
 				
 				for (int i=0; i<global.USR_string.size(); i++) {
-					if (global.USR_string.get(i).get(0).equals(sn)) {
-						returnString = global.USR_string.get(i).get(1);
-					}
+					if (global.USR_string.get(i).get(0).equals(sn)) {returnString = global.USR_string.get(i).get(1);}
 				}
 				if (returnString == "Not a string!") {
 					for (int i=0; i<global.TMP_string.size(); i++) {
-						if (global.TMP_string.get(i).get(0).equals(sn)) {
-							returnString = global.TMP_string.get(i).get(1);
-						}
+						if (global.TMP_string.get(i).get(0).equals(sn)) {returnString = global.TMP_string.get(i).get(1);}
 					}
 				}
 				
@@ -719,13 +670,11 @@ public class events {
 				}
 			}
 		}
-		
 		return TMP_e;
 	}
 
 	
 	public static void doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, String[] toreplace, String[] replacement) {
-		
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
 		String stringCommaReplace = "stringCommaReplacementF6cyUQp9stringCommaReplacement";
 		
@@ -734,13 +683,10 @@ public class events {
 				List<String> temporary = new ArrayList<String>();
 				temporary.add("TriggerArgument"+i+"-"+global.TMP_string.size());
 				temporary.add(replacement[i]);
-				for (int j=0; j<tmp_event.size(); j++) {
-					tmp_event.set(j, tmp_event.get(j).replace(toreplace[i],"{string[TriggerArgument"+i+"-"+global.TMP_string.size()+"]}"));
-				}
+				for (int j=0; j<tmp_event.size(); j++) {tmp_event.set(j, tmp_event.get(j).replace(toreplace[i],"{string[TriggerArgument"+i+"-"+global.TMP_string.size()+"]}"));}
 				global.TMP_string.add(temporary);
 			}
 		}
-		
 		
 		for (int i=0; i<tmp_event.size(); i++) {
 		//SETUP
@@ -901,6 +847,24 @@ public class events {
 				backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{setcol}", "{string[DefaultString->SETCOL-"+global.TMP_string.size()+"]}");
 			}
+			if (TMP_e.contains("{br}")) {
+				String dashes = "";
+				for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*52); j++) {dashes += "-";}
+				List<String> temporary = new ArrayList<String>();
+				temporary.add("DefaultString->BR-"+(global.TMP_string.size()+1));
+				temporary.add(dashes);
+				global.TMP_string.add(temporary);
+				backupTMP_strings.add(temporary);
+				TMP_e = TMP_e.replace("{br}", "{string[DefaultString->BR-"+global.TMP_string.size()+"]}");
+			}
+			if (TMP_e.contains("{chatwidth}")) {
+				List<String> temporary = new ArrayList<String>();
+				temporary.add("DefaultString->CHATWIDTH-"+(global.TMP_string.size()+1));
+				temporary.add(""+(int)((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40));
+				global.TMP_string.add(temporary);
+				backupTMP_strings.add(temporary);
+				TMP_e = TMP_e.replace("{chatwidth}", "{string[DefaultString->CHATWIDTH-"+global.TMP_string.size()+"]}");
+			}
 			
 		//user strings and functions
 			TMP_e = TMP_e.replace("{string<", "{string[").replace("{array<", "{array[").replace(">}", "]}");
@@ -937,9 +901,8 @@ public class events {
 			
 		//add formatting where needed
 			if (TMP_c.equalsIgnoreCase("SAY") || TMP_c.equalsIgnoreCase("CHAT") || TMP_c.equalsIgnoreCase("KILLFEED") || TMP_c.equalsIgnoreCase("NOTIFY")) {
-				if (TMP_c.equalsIgnoreCase("SAY")) {
-					if (Minecraft.getMinecraft().isSingleplayer()==false) {TMP_e = chat.addFormatting(TMP_e);}
-				} else {TMP_e = chat.addFormatting(TMP_e);}
+				if (TMP_c.equalsIgnoreCase("SAY")) {if (Minecraft.getMinecraft().isSingleplayer()==false) {TMP_e = chat.addFormatting(TMP_e);}} 
+				else {TMP_e = chat.addFormatting(TMP_e);}
 			}
 			
 		//non-logic events
@@ -948,7 +911,7 @@ public class events {
 			if (TMP_c.equalsIgnoreCase("SAY")) {global.chatQueue.add(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("CHAT")) {chat.warn(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("DO") && global.debug==true) {chat.warn(TMP_e);}
-			if (TMP_c.equalsIgnoreCase("SOUND")) {sound.play(TMP_e, TMP_v, TMP_pi);}
+			if (TMP_c.equalsIgnoreCase("SOUND")) {Minecraft.getMinecraft().thePlayer.playSound(TMP_e, TMP_v, TMP_pi);}
 			if (TMP_c.equalsIgnoreCase("CANCEL") && chatEvent!=null) {chatEvent.setCanceled(true);}
 			if (TMP_c.equalsIgnoreCase("KILLFEED")) {global.killfeed.add(TMP_e); global.killfeedDelay.add(TMP_t);}
 			if (TMP_c.equalsIgnoreCase("NOTIFY")) {
@@ -1018,7 +981,6 @@ public class events {
 				int tabbed_logic = 0;
 				List<String> eventsToWait = new ArrayList<String>();
 				
-				
 				if (i+1 < tmp_event.size()-1) { //check for events after if event
 					for (int j=i; j<tmp_event.size(); j++) {
 						if (j != tmp_event.size()) {
@@ -1049,7 +1011,6 @@ public class events {
 						if (tabbed_logic==0) {j=tmp_event.size();}
 					}
 					
-					
 					eventsToWait.remove(0);
 					eventsToWait.remove(eventsToWait.size()-1);
 					try {
@@ -1071,7 +1032,6 @@ public class events {
 			}
 			
 			if (TMP_c.equalsIgnoreCase("FOR")) {
-				//setup
 				int tabbed_logic = 0;
 				List<String> eventsToFor = new ArrayList<String>();
 				String[] tmp_valuefor = TMP_e.split(":");
@@ -1081,9 +1041,7 @@ public class events {
 				if (tmp_valuefor.length==2) {
 					valin = tmp_valuefor[0].trim();
 					valfrom = tmp_valuefor[1].trim();
-				} else {
-					chat.warn(chat.color("red", "Malformed FOR loop!"));
-				}
+				} else {chat.warn(chat.color("red", "Malformed FOR loop!"));}
 				for (int j=0; j<global.USR_array.size(); j++) {
 					if (global.USR_array.get(j).get(0).equals(valfrom)) {
 						arrayto.addAll(global.USR_array.get(j));
@@ -1174,23 +1132,17 @@ public class events {
 						if (checkSplit[j].equals("&&")) {
 							if (checkSplit[j-1].equalsIgnoreCase("TRUE") && checkSplit[j+1].equalsIgnoreCase("TRUE")) {
 								checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "TRUE";
-							} else {
-								checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "FALSE";
-							}
+							} else {checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "FALSE";}
 						}
 						if (checkSplit[j].equals("||")) {
 							if (checkSplit[j-1].equalsIgnoreCase("TRUE") || checkSplit[j+1].equalsIgnoreCase("TRUE")) {
 								checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "TRUE";
-							} else {
-								checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "FALSE";
-							}
+							} else {checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "FALSE";}
 						}
 						if (checkSplit[j].equals("^")) {
 							if (checkSplit[j-1].equalsIgnoreCase("TRUE") ^ checkSplit[j+1].equalsIgnoreCase("TRUE")) {
 								checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "TRUE";
-							} else {
-								checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "FALSE";
-							}
+							} else {checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "FALSE";}
 						}
 					}
 					TMP_e = "";
@@ -1218,7 +1170,7 @@ public class events {
 				List<List<String>> eventsToChoose = new ArrayList<List<String>>();
 				List<String> eventsToChooseSub = new ArrayList<String>();
 				
-				if (i+1 < tmp_event.size()-1) { //check for events after choose event
+				if (i+1 < tmp_event.size()-1) {
 					for (int j=i; j<tmp_event.size(); j++) {
 
 						if (j != tmp_event.size()) {
@@ -1246,10 +1198,7 @@ public class events {
 							}
 							
 							//check if greater than first level event
-							if (tabbed_logic>1) {
-								eventsToChooseSub.add(tmp_event.get(j));
-							}
-							
+							if (tabbed_logic>1) {eventsToChooseSub.add(tmp_event.get(j));}
 							
 							//check for last event to group and close any leftover sub choose
 							if (j == tmp_event.size()-1 && eventsToChoose.size() > 0) {eventsToChoose.add(eventsToChooseSub);}
@@ -1334,9 +1283,7 @@ public class events {
 							String[] argsOut = TMP_argsOut.split(",");
 							if (argsIn.length == argsOut.length) {
 								List<String> TMP_events = new ArrayList<String>();
-								for (int j=2; j<global.trigger.get(k).size(); j++) {
-									TMP_events.add(global.trigger.get(k).get(j));
-								}
+								for (int j=2; j<global.trigger.get(k).size(); j++) {TMP_events.add(global.trigger.get(k).get(j));}
 								events.doEvents(TMP_events, chatEvent, argsOut, argsIn);
 							}
 						}
@@ -1358,7 +1305,6 @@ public class events {
 		
 		if (global.waitEvents.size()>0) {
 			if (global.waitEvents.size() == global.waitTime.size()) {
-				
 				for (int i=0; i<global.waitTime.size(); i++) {
 					if (global.waitTime.get(i)>0) {
 						global.waitTime.set(i, global.waitTime.get(i)-1);
@@ -1420,7 +1366,7 @@ public class events {
 									stringnum = j;
 								}
 							}
-							if (stringnum==-1) { //TODO
+							if (stringnum==-1) {
 								List<String> temporary = new ArrayList<String>();
 								String tmpnum = global.TMP_string.size()+"";
 								temporary.add("TEMP-USER-STRING"+tmpnum+"->"+stringName);
@@ -1501,7 +1447,7 @@ public class events {
 									stringnum = j;
 								}
 							}
-							if (stringnum==-1) { //TODO
+							if (stringnum==-1) {
 								List<String> temporary = new ArrayList<String>();
 								String tmpnum = global.TMP_string.size()+"";
 								temporary.add("TEMP-USER-STRING"+tmpnum+"->"+stringName);
@@ -1581,7 +1527,7 @@ public class events {
 									stringnum = j;
 								}
 							}
-							if (stringnum==-1) { //TODO
+							if (stringnum==-1) {
 								List<String> temporary = new ArrayList<String>();
 								String tmpnum = global.TMP_string.size()+"";
 								temporary.add("TEMP-USER-STRING"+tmpnum+"->"+stringName);
