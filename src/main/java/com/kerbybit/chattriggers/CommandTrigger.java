@@ -123,7 +123,58 @@ public class CommandTrigger extends CommandBase {
 	
 	public static void commandRun(String args[], Boolean silent) {
 		if (args.length < 2) {
-			chat.warn(chat.color("red", "/trigger run [trigger]"));
+			chat.warn(chat.color("red", "/tr [trigger]"));
+			ArrayList<List<String>> listCommands = new ArrayList<List<String>>();
+			ArrayList<List<String>> showCommands = new ArrayList<List<String>>();
+			for (int i=0; i<global.trigger.size(); i++) {
+				if (global.trigger.get(i).get(1).contains("<imported>") && global.trigger.get(i).get(1).contains("<list=")) {
+					if (global.trigger.get(i).get(0).trim().toUpperCase().startsWith("OTHER ")) {
+						String toShow = global.trigger.get(i).get(0).trim();
+						toShow = toShow.substring(toShow.toUpperCase().indexOf("OTHER ")+6);
+						String inList = global.trigger.get(i).get(1);
+						inList = inList.substring(inList.indexOf("<list=")+6, inList.indexOf(">", inList.indexOf("<list=")));
+						ArrayList<String> temporary = new ArrayList<String>();
+						temporary.add(inList);
+						temporary.add(toShow);
+						listCommands.add(temporary);
+					}
+				}
+			}
+			if (listCommands.size() != 0) {
+				chat.warn(chat.color("white", "Available imported commands"));
+				System.out.println(listCommands);
+				for (int i=0; i<listCommands.size(); i++) {
+					Boolean isNewList = false;
+					int isInList = -1;
+					if (showCommands.size()>0) {
+						for (int j=0; j<showCommands.size(); j++) {
+							if (showCommands.get(j).get(0).equals(listCommands.get(i).get(0))) {
+								isInList=j;
+							}
+						}
+						if (isInList == -1) {
+							isNewList = true;
+						}
+					} else {
+						isNewList = true;
+					}
+					if (isNewList) {
+						ArrayList<String> temporary = new ArrayList<String>();
+						temporary.add(listCommands.get(i).get(0));
+						temporary.add(listCommands.get(i).get(1));
+						showCommands.add(temporary);
+					} else {
+						showCommands.get(isInList).add(listCommands.get(i).get(1));
+					}
+				}
+				System.out.println(showCommands);
+				for (int i=0; i<showCommands.size(); i++) {
+					chat.warn(chat.color("white",showCommands.get(i).get(0)));
+					for (int j=1; j<showCommands.get(i).size(); j++) {
+						chat.warn(chat.color(global.settings.get(0), "  /tr "+showCommands.get(i).get(j)));
+					}
+				}
+			}
 		} else {
 			String TMP_e = "";
 			for (int i=1; i<args.length; i++) {
@@ -162,7 +213,7 @@ public class CommandTrigger extends CommandBase {
 						events.doEvents(TMP_events, e);
 					} else {
 						String TMP_trigtype = global.trigger.get(k).get(0);
-						if (TMP_trigtype.equalsIgnoreCase("OTHER")) {
+						if (TMP_trigtype.toUpperCase().startsWith("OTHER")) {
 							if (TMP_trig.contains("(") && TMP_trig.endsWith(")")) {
 								String TMP_trigtest = TMP_trig.substring(0,TMP_trig.indexOf("("));
 								if (TMP_e.startsWith(TMP_trigtest) && TMP_e.endsWith(")")) {

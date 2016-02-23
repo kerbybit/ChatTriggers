@@ -46,8 +46,8 @@ public class file {
 		 			if (!global.settings.get(2).equals("null")) {
 		 				if (!lines.get(0).equals(global.settings.get(2))) {
 		 					String dashes = "";
-		 					for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*52); j++) {dashes += "-";}
-		 					chat.warn(chat.color(global.settings.get(0), "&m"+dashes));
+		 					for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
+		 					chat.warn(chat.color(global.settings.get(0), "&m-"+dashes));
 		 					if (global.settings.get(4).equals("false")) {
 		 						chat.warn(chat.color("red", "You are running on an outdated version of ChatTriggers!"));
 		 						List<String> TMP_out = new ArrayList<String>();
