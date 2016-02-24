@@ -42,12 +42,11 @@ public class gui extends GuiScreen {
 	private List<String> tempEvent = new ArrayList<String>();
 	private List<List<Float>> tempEventOffset = new ArrayList<List<Float>>();
 	
-	
 	@Override
 	public void mouseClicked(int x, int y, int button) throws IOException {
 		this.mouseX = (float)x;
 		this.mouseY = (float)y;
-		ScaledResolution var5 = new ScaledResolution(MC);
+		ScaledResolution var5 = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
 		float sWidth = var5.getScaledWidth();
 		float sHeight = var5.getScaledHeight();
 		
@@ -65,7 +64,6 @@ public class gui extends GuiScreen {
 				}
 			}
 		}
-		
 		if (inMenu==2) {
 			for (int i=0; i<tempTrig.size(); i++) {
 				if (mouseX>=5 && mouseX<fontRendererObj.getStringWidth(tempTrig.get(i))+10 && mouseY>=(i*10)+25 && mouseY<(i*10)+35) {
@@ -83,24 +81,14 @@ public class gui extends GuiScreen {
 		if (mouseX>=sWidth-fontRendererObj.getStringWidth(backString)-5 && mouseX<sWidth-5 && mouseY>=sHeight-15 && mouseY<sHeight-5) {
 			if (inMenu == 4) {
 				inMenu = 2;
-				for (int i=0; i<tempTrig.size(); i++) {
-					tempTrigOffset.get(i).set(2, (float)(i*10)+25);
-				}
+				for (int i=0; i<tempTrig.size(); i++) {tempTrigOffset.get(i).set(2, (float)(i*10)+25);}
 				for (int i=0; i<tempList.size(); i++) {
-					if (gotoList==tempList.get(i)) {
-						tempListOffset.get(i).set(2, (float)5);
-					}
+					if (gotoList==tempList.get(i)) {tempListOffset.get(i).set(2, (float)5);}
 				}
-				for (int i=0; i<tempEvent.size(); i++) {
-					tempEventOffset.get(i).set(0, (float)-fontRendererObj.getStringWidth(tempEvent.get(i))-5);
-				}
+				for (int i=0; i<tempEvent.size(); i++) {tempEventOffset.get(i).set(0, (float)-fontRendererObj.getStringWidth(tempEvent.get(i))-5);}
 			} else if (inMenu == 2){
-				for (int i=0; i<tempList.size(); i++) {
-					tempListOffset.get(i).set(2, (float)(i*10)+5);
-				}
-				for (int i=0; i<tempTrig.size(); i++) {
-					tempTrigOffset.get(i).set(0, (float) -fontRendererObj.getStringWidth(tempTrig.get(i))-5);
-				}
+				for (int i=0; i<tempList.size(); i++) {tempListOffset.get(i).set(2, (float)(i*10)+5);}
+				for (int i=0; i<tempTrig.size(); i++) {tempTrigOffset.get(i).set(0, (float) -fontRendererObj.getStringWidth(tempTrig.get(i))-5);}
 				backOffset.set(0, sWidth);
 				inMenu = 0;
 			}
@@ -113,7 +101,7 @@ public class gui extends GuiScreen {
 	public void drawScreen(int x, int y, float ticks) { 
 		this.mouseX = (float)x;
 		this.mouseY = (float)y;
-		ScaledResolution var5 = new ScaledResolution(MC);
+		ScaledResolution var5 = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
 		float sWidth = var5.getScaledWidth();
 		float sHeight = var5.getScaledHeight();
 		
@@ -178,9 +166,7 @@ public class gui extends GuiScreen {
 			tempEventOffset.clear();
 			
 			for (int i=0; i<tempList.size(); i++) {
-				if (gotoList==tempList.get(i)) {
-					tempListOffset.get(i).set(2, (float)-10);
-				}
+				if (gotoList==tempList.get(i)) {tempListOffset.get(i).set(2, (float)-10);}
 			}
 			
 			int i=0;
@@ -225,17 +211,13 @@ public class gui extends GuiScreen {
 		
 		for (int i=0; i<tempList.size(); i++) {
 			String colorstr = EnumChatFormatting.WHITE.toString();
-			if (tempList.get(i).equals("no list")) {
-				colorstr = EnumChatFormatting.GRAY.toString();
-			}
+			if (tempList.get(i).equals("no list")) {colorstr = EnumChatFormatting.GRAY.toString();}
 			fontRendererObj.drawStringWithShadow(colorstr+tempList.get(i), tempListOffset.get(i).get(1), tempListOffset.get(i).get(3), 0xffffff);
 			
 			if (inMenu==0) {
 				if (mouseX>=5 && mouseX<fontRendererObj.getStringWidth(tempList.get(i))+10 && mouseY>=(i*10)+5 && mouseY<(i*10)+15) {
 					tempListOffset.get(i).set(0, (float) 10);
-				} else {
-					tempListOffset.get(i).set(0, (float) 5);
-				}
+				} else {tempListOffset.get(i).set(0, (float) 5);}
 			}
 		}
 		
@@ -245,9 +227,7 @@ public class gui extends GuiScreen {
 			if (inMenu==2) {
 				if (mouseX>=5 && mouseX<fontRendererObj.getStringWidth(tempTrig.get(i))+10 && mouseY>=(i*10)+25 && mouseY<(i*10)+35) {
 					tempTrigOffset.get(i).set(0, (float) 10);
-				} else {
-					tempTrigOffset.get(i).set(0, (float) 5);
-				}
+				} else {tempTrigOffset.get(i).set(0, (float) 5);}
 			}
 		}
 		

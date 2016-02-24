@@ -20,6 +20,7 @@ public class global {
 	
 	public static String importURL = "";
 	public static Boolean canImport = true;
+	public static List<String> neededImports = new ArrayList<String>();
 	
 	public static List<String> chatHistory = new ArrayList<String>();
 	public static int tick = 0;

@@ -246,20 +246,11 @@ public class events {
 		args = stringFunctions(args);
 		sn = stringFunctions(sn);
 		
-		for (int i=0; i<global.USR_string.size(); i++) {
-			if (global.USR_string.get(i).get(0).equals(sn)) {stringnum=i;}
-		}
+		for (int i=0; i<global.USR_string.size(); i++) {if (global.USR_string.get(i).get(0).equals(sn)) {stringnum=i;}}
 		
 		if (stringnum==-1) {
-			for (int i=0; i<global.TMP_string.size(); i++) {
-				if (global.TMP_string.get(i).get(0).equals(sn)) {tmpstringnum = i;}
-			}
-			if (tmpstringnum == -1) {
-				returnstring = "That is not a string!";
-				System.out.println("STRINGNAME:"+sn);
-				System.out.println("STRINGFUNCTION:"+func);
-				System.out.println("FUNCTIONARGS:"+args);
-			}
+			for (int i=0; i<global.TMP_string.size(); i++) {if (global.TMP_string.get(i).get(0).equals(sn)) {tmpstringnum = i;}}
+			if (tmpstringnum == -1) {returnstring = "That is not a string!";}
 		} 
 		
 		if (stringnum!=-1 || tmpstringnum!=-1){
@@ -325,7 +316,6 @@ public class events {
 					else {strnmbr = Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1));}
 					try {
 						int argnmbr = Integer.parseInt(args);
-						System.out.println(strnmbr + "/" + argnmbr);
 						Float returnNum = ((float) strnmbr)/((float) argnmbr);
 						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, returnNum+"");} 
 						else {global.TMP_string.get(tmpstringnum).set(1, returnNum+"");}

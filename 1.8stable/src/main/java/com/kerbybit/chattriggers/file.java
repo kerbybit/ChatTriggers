@@ -45,7 +45,9 @@ public class file {
 		 			
 		 			if (!global.settings.get(2).equals("null")) {
 		 				if (!lines.get(0).equals(global.settings.get(2))) {
-		 					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------"));
+		 					String dashes = "";
+		 					for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
+		 					chat.warn(chat.color(global.settings.get(0), "&m-"+dashes));
 		 					if (global.settings.get(4).equals("false")) {
 		 						chat.warn(chat.color("red", "You are running on an outdated version of ChatTriggers!"));
 		 						List<String> TMP_out = new ArrayList<String>();
@@ -61,7 +63,7 @@ public class file {
 		 					}
 		 					chat.warn(chat.color("red", "Your version: " + global.settings.get(2)));
 		 					chat.warn(chat.color("red", "You will only see this message once until the next update"));
-		 					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
+		 					chat.warn(chat.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
 		 					global.settings.set(2,lines.get(0));
 		 					file.saveAll();
 		 				}
@@ -98,7 +100,7 @@ public class file {
 		}
 	}
 	
-	public static void getImport(String filename) { //TODO
+	public static void getImport(String filename) {
 		global.importURL = filename;
 		if (global.canImport==true) {
 			global.canImport=false;
@@ -518,15 +520,27 @@ public class file {
 			}
 			if (lines.get(i).trim().startsWith("!")) {
 				String importFunction = lines.get(i).trim().substring(lines.get(i).trim().indexOf("!")+1);
-				if (importFunction.toUpperCase().startsWith("CREATE STRING ")) {
-					String sn = importFunction.substring(importFunction.toUpperCase().indexOf("CREATE STRING ")+14);
+				if (importFunction.toUpperCase().startsWith("CREATE STRING ") || importFunction.toUpperCase().startsWith("CREATESTRING ")) {
+					String sn = "SOMETHING WENT SUPER WRONG!!";
+					if (importFunction.toUpperCase().startsWith("CREATE STRING ")) {
+						sn = importFunction.substring(importFunction.toUpperCase().indexOf("CREATE STRING ")+14);
+					} else {
+						sn = importFunction.substring(importFunction.toUpperCase().indexOf("CREATESTRING ")+13);
+					}
+					
 					String sv = "";
-					if (sn.toUpperCase().contains("WITH ")) {
+					String svo = "";
+					if (sn.toUpperCase().contains("ONCE WITH ")) {
+						svo = sn.substring(sn.toUpperCase().indexOf("ONCE WITH ")+10);
+					} else if (sn.toUpperCase().contains("ONCEWITH ")) {
+						svo = sn.substring(sn.toUpperCase().indexOf("ONCEWITH ")+9);
+					} else if (sn.toUpperCase().contains("WITH ")) {
 						sv = sn.substring(sn.toUpperCase().indexOf("WITH ")+5);
 					}
+					
 					if (sn.contains(" ")) {sn = sn.substring(0, sn.indexOf(" ")).trim();}
 					if (global.debug==true) {
-						if (sv!="") {chat.warn(chat.color("gray", "Importing string "+sn+" with value "+sv));}
+						if (!sv.equals("")) {chat.warn(chat.color("gray", "Importing string "+sn+" with value "+sv));}
 						else {chat.warn(chat.color("gray", "Importing string "+sn+" with no value"));}
 					}
 					
@@ -534,17 +548,24 @@ public class file {
 					for (int k=0; k<global.USR_string.size(); k++) {
 						if (global.USR_string.get(k).get(0).equals(sn)) {
 							canCreate=false;
-							if (sv!="") {
+							if (!sv.equals("")) {
 								global.USR_string.get(k).set(1, sv);
 								if (global.debug==true) {chat.warn(chat.color("gray", "Set value "+sv+" in string "+sn));}
-							} else {
-								if (global.debug==true) {chat.warn(chat.color("gray", "String already exsists"));}
+							} else {if (global.debug==true) {chat.warn(chat.color("gray", "String already exsists"));}}
+							if (!svo.equals("")) {
+								if (global.USR_string.get(k).equals("")) {
+									global.USR_string.get(k).set(1, svo);
+									if (global.debug==true) {chat.warn(chat.color("gray", "Set value "+sv+" in string "+sn));}
+								} else {if (global.debug==true) {chat.warn(chat.color("gray", "String already has value"));}}
 							}
 						}
 					}
 					if (canCreate==true) {
 						List<String> temporary = new ArrayList<String>();
-						temporary.add(sn); temporary.add(sv);
+						temporary.add(sn);
+						if (sv.equals("") && !svo.equals("")) {temporary.add(svo);} 
+						else {temporary.add(sv);}
+						
 						global.USR_string.add(temporary);
 						if (global.debug==true) {
 							if (sv!="") {chat.warn(chat.color("gray", "Created string "+sn+" with value "+sv));} 
@@ -552,6 +573,18 @@ public class file {
 						}
 					}
 					try {saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+				} else if (importFunction.toUpperCase().startsWith("REQUIRES ")) {
+					String importValue = importFunction.substring(importFunction.indexOf("REQUIRES ")+9);
+					String[] importValues = importValue.trim().split(" ");
+					for (int k=0; k<importValues.length; k++) {
+						if (global.debug==true) {chat.warn(chat.color("gray", "Importing "+importValues[k]));}
+						File dir = new File("./mods/ChatTriggers/Imports/"+importValues[k]+".txt");
+						if (!dir.exists()) {
+							global.neededImports.add(importValues[k]);
+						} else {
+							if (global.debug==true) {chat.warn(chat.color("gray", "Import already exsists"));}
+						}
+					}
 				}
 			}
 		}
@@ -608,8 +641,8 @@ public class file {
 			saveStrings(global.USR_string, "./mods/ChatTriggers/strings.txt");
 			saveSettings(global.settings, "./mods/ChatTriggers/settings.txt");
 		} else {
-			chat.warn(chat.color("red", "You cannot save to the files while you are testing an import!"));
-			chat.warn(chat.color("red", "These changes are not getting saved. do </trigger load> to leave testing"));
+			chat.warn(chat.color("red", "These changes are not getting saved!"));
+			chat.warn(chat.color("red", "do </trigger load> to leave testing"));
 		}
 	}
 	

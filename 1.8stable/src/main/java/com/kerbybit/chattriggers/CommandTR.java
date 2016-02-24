@@ -21,4 +21,17 @@ public class CommandTR extends CommandBase {
 		CommandTrigger.commandRun(temporary.toArray(new String[temporary.size()]),false);
 	}
 
+	@Override
+	public String getName() {
+		return "tr";
+	}
+
+	@Override
+	public void execute(ICommandSender sender, String[] args) throws CommandException {
+		ArrayList<String> temporary = new ArrayList<String>();
+		temporary.add("run");
+		for (String value : args) {temporary.add(value);}
+		CommandTrigger.commandRun(temporary.toArray(new String[temporary.size()]),false);
+	}
+
 }

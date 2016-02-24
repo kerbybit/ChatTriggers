@@ -142,32 +142,22 @@ public class CommandTrigger extends CommandBase {
 			}
 			if (listCommands.size() != 0) {
 				chat.warn(chat.color("white", "Available imported commands"));
-				System.out.println(listCommands);
 				for (int i=0; i<listCommands.size(); i++) {
 					Boolean isNewList = false;
 					int isInList = -1;
 					if (showCommands.size()>0) {
 						for (int j=0; j<showCommands.size(); j++) {
-							if (showCommands.get(j).get(0).equals(listCommands.get(i).get(0))) {
-								isInList=j;
-							}
+							if (showCommands.get(j).get(0).equals(listCommands.get(i).get(0))) {isInList=j;}
 						}
-						if (isInList == -1) {
-							isNewList = true;
-						}
-					} else {
-						isNewList = true;
-					}
+						if (isInList == -1) {isNewList = true;}
+					} else {isNewList = true;}
 					if (isNewList) {
 						ArrayList<String> temporary = new ArrayList<String>();
 						temporary.add(listCommands.get(i).get(0));
 						temporary.add(listCommands.get(i).get(1));
 						showCommands.add(temporary);
-					} else {
-						showCommands.get(isInList).add(listCommands.get(i).get(1));
-					}
+					} else {showCommands.get(isInList).add(listCommands.get(i).get(1));}
 				}
-				System.out.println(showCommands);
 				for (int i=0; i<showCommands.size(); i++) {
 					chat.warn(chat.color("white",showCommands.get(i).get(0)));
 					for (int j=1; j<showCommands.get(i).size(); j++) {
@@ -412,7 +402,6 @@ public class CommandTrigger extends CommandBase {
 								List <String> TMP_out = new ArrayList<String>();
 								TMP_out.add("text:'Added string ',color:gray");
 								TMP_out.add("text:'"+TMP_sn+"',color:"+global.settings.get(1)+",clickEvent:{action:'suggest_command',value:'/trigger string set "+TMP_sn+" '},hoverEvent:{action:'show_text',value:'Set "+TMP_sn+"'}");
-								System.out.println(TMP_out);
 								chat.sendJson(TMP_out);
 								
 							}

@@ -15,4 +15,14 @@ public class CommandT extends CommandBase{
 	public void processCommand(ICommandSender sender, String[] args) throws CommandException {
 		CommandTrigger.doCommand(args, false);
 	}
+
+	@Override
+	public String getName() {
+		return "t";
+	}
+
+	@Override
+	public void execute(ICommandSender sender, String[] args) throws CommandException {
+		CommandTrigger.doCommand(args, false);
+	}
 }

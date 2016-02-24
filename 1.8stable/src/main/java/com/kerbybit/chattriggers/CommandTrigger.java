@@ -62,29 +62,43 @@ public class CommandTrigger extends CommandBase {
 		} else if (args[0].equalsIgnoreCase("TESTIMPORT")) {
 			if (args.length < 2) {
 				chat.warn(chat.color("red", "/trigger testImport [import name]"));
-			} else if (args.length == 2) {
-				String dir = "./mods/ChatTriggers/Imports/"+args[1]+".txt";
-				File f = new File(dir);
-				if (f.exists() && f.isFile()) {
-					global.trigger.clear();
-					global.USR_string.clear();
-					global.TMP_string.clear();
-					global.waitEvents.clear();
-					global.asyncEvents.clear();
-					chat.warn(chat.color(global.settings.get(0), "You are now in testing mode for import '"+f.getName()+"'"));
-					chat.warn(chat.color(global.settings.get(0), "To reload all of your triggers and strings, do </trigger load>"));
-					try {global.trigger.addAll(file.loadTriggers(dir, true));}
-					catch (IOException e) {chat.warn(chat.color("red", "Unable to load import!")); e.printStackTrace();}
-					global.canSave = false;
+			} else {
+				Boolean canTest = true;
+				for (int i=1; i<args.length; i++) {
+					String dir = "./mods/ChatTriggers/Imports/"+args[i]+".txt";
+					File f = new File(dir);
+					if (!f.exists() || !f.isFile()) {
+						canTest=false;
+						chat.warn(chat.color("red", args[i]+".txt is not an import! Could not start test mode"));
+					}
+				}
+				
+				if (canTest) {
+					if (global.canSave==true) {
+						global.trigger.clear(); global.USR_string.clear(); global.TMP_string.clear();
+						global.waitEvents.clear(); global.asyncEvents.clear();
+						for (int i=1; i<args.length; i++) {
+							chat.warn(chat.color(global.settings.get(0), "You are now in testing mode for import '"+args[i]+"'"));
+						}
+						chat.warn(chat.color(global.settings.get(0), "To reload all of your triggers and strings, do </trigger load>"));
+						try {
+							for (int i=1; i<args.length; i++) {
+								String dir = "./mods/ChatTriggers/Imports/"+args[i]+".txt";
+								File f = new File(dir);
+								global.trigger.addAll(file.loadTriggers(dir, true));
+							}
+						} catch (IOException e) {chat.warn(chat.color("red", "Unable to load import!")); e.printStackTrace();}
+						global.canSave = false;
+					} else {
+						chat.warn(chat.color("red", "You must leave test mode before testing another trigger!"));
+						chat.warn(chat.color("red", "</trigger load> to leave testing mode"));
+					}
 				} else {
 					chat.warn(chat.color("red", "Not an import!"));
 				}
-			} else {
-				chat.warn(chat.color("red", "/trigger testImport [import name]"));
 			}
 		} else if (args[0].equalsIgnoreCase("TEST")) {
-			//chat.warn(chat.color("&7", "This command does nothing :D"));
-			System.out.println(global.TMP_string);
+			chat.warn(chat.color("&7", "This command does nothing :D"));
 		} else {
 			chat.warn(chat.color("red", "/trigger [create/add/list] <...>"));
 			chat.warn(chat.color("red", "/trigger [string/run] <...>"));
@@ -94,13 +108,12 @@ public class CommandTrigger extends CommandBase {
 	}
 	
 	public static void commandImport(String args[], Boolean silent) {
-		if (args.length==2) {
-			String toImport = args[1];
-			file.getImport("http://bfgteam.com/ChatTriggers/exports/" + toImport + ".txt");
-		} else if (args.length<2) {
-			chat.warn(chat.color("red", "/trigger import [import name]"));
+		if (args.length>=2) {
+			for (int i=1; i<args.length; i++) {
+				global.neededImports.add(args[i]);
+			}
 		} else {
-			chat.warn(chat.color("red", "You can only import one thing at a time!"));
+			chat.warn(chat.color("red", "/trigger import [import name]"));
 		}
 	}
 	
@@ -110,7 +123,48 @@ public class CommandTrigger extends CommandBase {
 	
 	public static void commandRun(String args[], Boolean silent) {
 		if (args.length < 2) {
-			chat.warn(chat.color("red", "/trigger run [trigger]"));
+			chat.warn(chat.color("red", "/tr [trigger]"));
+			ArrayList<List<String>> listCommands = new ArrayList<List<String>>();
+			ArrayList<List<String>> showCommands = new ArrayList<List<String>>();
+			for (int i=0; i<global.trigger.size(); i++) {
+				if (global.trigger.get(i).get(1).contains("<imported>") && global.trigger.get(i).get(1).contains("<list=")) {
+					if (global.trigger.get(i).get(0).trim().toUpperCase().startsWith("OTHER ")) {
+						String toShow = global.trigger.get(i).get(0).trim();
+						toShow = toShow.substring(toShow.toUpperCase().indexOf("OTHER ")+6);
+						String inList = global.trigger.get(i).get(1);
+						inList = inList.substring(inList.indexOf("<list=")+6, inList.indexOf(">", inList.indexOf("<list=")));
+						ArrayList<String> temporary = new ArrayList<String>();
+						temporary.add(inList);
+						temporary.add(toShow);
+						listCommands.add(temporary);
+					}
+				}
+			}
+			if (listCommands.size() != 0) {
+				chat.warn(chat.color("white", "Available imported commands"));
+				for (int i=0; i<listCommands.size(); i++) {
+					Boolean isNewList = false;
+					int isInList = -1;
+					if (showCommands.size()>0) {
+						for (int j=0; j<showCommands.size(); j++) {
+							if (showCommands.get(j).get(0).equals(listCommands.get(i).get(0))) {isInList=j;}
+						}
+						if (isInList == -1) {isNewList = true;}
+					} else {isNewList = true;}
+					if (isNewList) {
+						ArrayList<String> temporary = new ArrayList<String>();
+						temporary.add(listCommands.get(i).get(0));
+						temporary.add(listCommands.get(i).get(1));
+						showCommands.add(temporary);
+					} else {showCommands.get(isInList).add(listCommands.get(i).get(1));}
+				}
+				for (int i=0; i<showCommands.size(); i++) {
+					chat.warn(chat.color("white",showCommands.get(i).get(0)));
+					for (int j=1; j<showCommands.get(i).size(); j++) {
+						chat.warn(chat.color(global.settings.get(0), "  /tr "+showCommands.get(i).get(j)));
+					}
+				}
+			}
 		} else {
 			String TMP_e = "";
 			for (int i=1; i<args.length; i++) {
@@ -149,7 +203,7 @@ public class CommandTrigger extends CommandBase {
 						events.doEvents(TMP_events, e);
 					} else {
 						String TMP_trigtype = global.trigger.get(k).get(0);
-						if (TMP_trigtype.equalsIgnoreCase("OTHER")) {
+						if (TMP_trigtype.toUpperCase().startsWith("OTHER")) {
 							if (TMP_trig.contains("(") && TMP_trig.endsWith(")")) {
 								String TMP_trigtest = TMP_trig.substring(0,TMP_trig.indexOf("("));
 								if (TMP_e.startsWith(TMP_trigtest) && TMP_e.endsWith(")")) {
@@ -262,6 +316,7 @@ public class CommandTrigger extends CommandBase {
 					|| TMP_etype.equalsIgnoreCase("TRIGGER") 
 					|| TMP_etype.equalsIgnoreCase("SOUND")
 					|| TMP_etype.equalsIgnoreCase("COPY")
+					|| TMP_etype.equalsIgnoreCase("URL")
 					|| TMP_etype.equalsIgnoreCase("DO")
 					|| TMP_etype.equalsIgnoreCase("IF")
 					|| TMP_etype.equalsIgnoreCase("ELSE")
@@ -327,51 +382,60 @@ public class CommandTrigger extends CommandBase {
 				if (args.length != 3) {
 					chat.warn(chat.color("red", "/trigger string create [string name]"));
 				} else {
-					String TMP_sn = args[2];
-					Boolean isString = false;
-					for (List<String> value : global.USR_string) {
-						if (value.get(0).equals(TMP_sn)) {
-							isString = true;
+					if (global.canSave) {
+						String TMP_sn = args[2];
+						Boolean isString = false;
+						for (List<String> value : global.USR_string) {
+							if (value.get(0).equals(TMP_sn)) {
+								isString = true;
+							}
 						}
-					}
-					if (isString) {
-						chat.warn(chat.color("red", TMP_sn + " already exists!"));
+						if (isString) {
+							chat.warn(chat.color("red", TMP_sn + " already exists!"));
+						} else {
+							List<String> TMP_l = new ArrayList<String>();
+							TMP_l.add(TMP_sn);
+							TMP_l.add("");
+							global.USR_string.add(TMP_l);
+							if (silent==false) {
+								TMP_sn = TMP_sn.replace("'", "\\'");
+								List <String> TMP_out = new ArrayList<String>();
+								TMP_out.add("text:'Added string ',color:gray");
+								TMP_out.add("text:'"+TMP_sn+"',color:"+global.settings.get(1)+",clickEvent:{action:'suggest_command',value:'/trigger string set "+TMP_sn+" '},hoverEvent:{action:'show_text',value:'Set "+TMP_sn+"'}");
+								chat.sendJson(TMP_out);
+								
+							}
+							try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+						}
 					} else {
-						List<String> TMP_l = new ArrayList<String>();
-						TMP_l.add(TMP_sn);
-						TMP_l.add("");
-						global.USR_string.add(TMP_l);
-						if (silent==false) {
-							TMP_sn = TMP_sn.replace("'", "\\'");
-							List <String> TMP_out = new ArrayList<String>();
-							TMP_out.add("text:'Added string ',color:gray");
-							TMP_out.add("text:'"+TMP_sn+"',color:"+global.settings.get(1)+",clickEvent:{action:'suggest_command',value:'/trigger string set "+TMP_sn+" '},hoverEvent:{action:'show_text',value:'Set "+TMP_sn+"'}");
-							System.out.println(TMP_out);
-							chat.sendJson(TMP_out);
-							
-						}
-						try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+						chat.warn(chat.color("red", "cannot create string while in test mode"));
+						chat.warn(chat.color("red", "</trigger load> to leave testing mode"));
 					}
 				}
 			} else if (args[1].equalsIgnoreCase("DELETE")) {
 				if (args.length < 3) {
 					chat.warn(chat.color("red", "/trigger string delete [string name]"));
 				} else {
-					int num = -1;
-					try {num = Integer.parseInt(args[2]);}
-					catch(NumberFormatException e) {
-						for (int i=0; i<global.USR_string.size(); i++) {
-							if (args[2].equals(global.USR_string.get(i).get(0))) {
-								num = i;
+					if (global.canSave) {
+						int num = -1;
+						try {num = Integer.parseInt(args[2]);}
+						catch(NumberFormatException e) {
+							for (int i=0; i<global.USR_string.size(); i++) {
+								if (args[2].equals(global.USR_string.get(i).get(0))) {
+									num = i;
+								}
 							}
 						}
-					}
-					if (num>-1 && num<global.USR_string.size()) {
-						String TMP_rem = global.USR_string.remove(num).get(0);
-						if (silent==false) {
-							chat.warnUnformatted(chat.color("gray", "Deleted string") + chat.color(global.settings.get(0), TMP_rem));
+						if (num>-1 && num<global.USR_string.size()) {
+							String TMP_rem = global.USR_string.remove(num).get(0);
+							if (silent==false) {
+								chat.warnUnformatted(chat.color("gray", "Deleted string") + chat.color(global.settings.get(0), TMP_rem));
+							}
+							try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
 						}
-						try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+					} else {
+						chat.warn(chat.color("red", "cannot delete string while in test mode"));
+						chat.warn(chat.color("red", "</trigger load> to leave testing mode"));
 					}
 				}
 			} else if (args[1].equalsIgnoreCase("SET")) {
@@ -405,7 +469,9 @@ public class CommandTrigger extends CommandBase {
 				}
 			} else if (args[1].equalsIgnoreCase("LIST")) {
 				if (args.length==2) {
-					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------"));
+					String dashes = "";
+					for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
+					chat.warn(chat.color(global.settings.get(0), "&m-"+dashes));
 					if (global.USR_string.size() == 0) {
 						chat.warnUnformatted(chat.color("red", "No strings created"));
 						chat.warnUnformatted(chat.color("red", "Do </trigger string> to get started"));
@@ -416,12 +482,12 @@ public class CommandTrigger extends CommandBase {
 							TMP_sn = TMP_sn.replace("'", "\\'");
 							TMP_out.add("text:'" + i + "> ',color:gray,hoverEvent:{action:'show_text',value:'Set string'},clickEvent:{action:'suggest_command',value:'/trigger string set " + i + " '}");
 							TMP_out.add("text:'" + TMP_sn + " ',color:"+global.settings.get(1));
-							TMP_out.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Delete string'},clickEvent:{action:'suggest_command',value:'/trigger string delete " + i + " [enter to confirm]'}");
+							if (global.canSave) {TMP_out.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Delete string'},clickEvent:{action:'suggest_command',value:'/trigger string delete " + i + " [enter to confirm]'}");}
 							chat.sendJson(TMP_out);
 							chat.warnUnformatted(chat.color("gray", "  " + global.USR_string.get(i).get(1)));
 						}
 					}
-					chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
+					chat.warn(chat.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
 				}
 			}
 		}
@@ -429,7 +495,9 @@ public class CommandTrigger extends CommandBase {
 	
 	public static void commandList(String args[], Boolean silent) {
 		if (args.length==1) {
-			chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------"));
+			String dashes = "";
+			for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
+			chat.warn(chat.color(global.settings.get(0), "&m-"+dashes));
 			if (global.trigger.size() == 0) {
 				chat.warn(chat.color("red", "No triggers created"));
 				chat.warn(chat.color("red", "Do </trigger> to get started"));
@@ -530,14 +598,16 @@ public class CommandTrigger extends CommandBase {
 					}
 				}
 			}
-			chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
+			chat.warn(chat.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
 		} else {
 			String TMP_check = "";
 			for (int i=1; i<args.length; i++) {
 				if (i==args.length-1) {TMP_check += args[i];}
 				else {TMP_check += args[i] + " ";}
 			}
-			chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------"));
+			String dashes = "";
+			for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
+			chat.warn(chat.color(global.settings.get(0), "&m-"+dashes));
 			if (global.trigger.size() == 0) {
 				chat.warn(chat.color("red", "No triggers created"));
 				chat.warn(chat.color("red", "Do </trigger> to get started"));
@@ -631,7 +701,7 @@ public class CommandTrigger extends CommandBase {
 					chat.warn(chat.color("red", "Create list " + TMP_check + " by using <list=" + TMP_check + "> when you create a trigger"));
 				}
 			}
-			chat.warn(chat.color(global.settings.get(0), "&m---------------------------------------------------&r" + global.settings.get(0) + "^"));
+			chat.warn(chat.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
 		}
 	}
 	
@@ -777,5 +847,15 @@ public class CommandTrigger extends CommandBase {
 			file.loadImports("./mods/ChatTriggers/Imports/");
 			chat.warn(global.settings.get(0) + "Files loaded");
 		} catch (IOException e) {chat.warn(chat.color("red", "Error loading triggers!"));}
+	}
+
+	@Override
+	public String getName() {
+		return "trigger";
+	}
+
+	@Override
+	public void execute(ICommandSender sender, String[] args) throws CommandException {
+		doCommand(args, false);
 	}
 }
