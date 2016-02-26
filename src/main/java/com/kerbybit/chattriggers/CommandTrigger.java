@@ -109,12 +109,8 @@ public class CommandTrigger extends CommandBase {
 	
 	public static void commandImport(String args[], Boolean silent) {
 		if (args.length>=2) {
-			for (int i=1; i<args.length; i++) {
-				global.neededImports.add(args[i]);
-			}
-		} else {
-			chat.warn(chat.color("red", "/trigger import [import name]"));
-		}
+			for (int i=1; i<args.length; i++) {global.neededImports.add(args[i]);}
+		} else {chat.warn(chat.color("red", "/trigger import [import name]"));}
 	}
 	
 	/*public static void commandExport(String args[], Boolean silent) { //TODO
@@ -327,7 +323,7 @@ public class CommandTrigger extends CommandBase {
 					|| TMP_etype.equalsIgnoreCase("ASYNC")) {
 						global.trigger.get(num).add(TMP_e);
 						if (silent==false) {
-							chat.warnUnformatted(chat.color("gray", "Added event") + chat.color(global.settings.get(0), TMP_e) + chat.color("gray", "to trigger") + chat.color(global.settings.get(0), global.trigger.get(num).get(1)));
+							chat.warnUnformatted(chat.color("gray", "Added event") + " " + chat.color(global.settings.get(0), TMP_e) + " " + chat.color("gray", "to trigger") + " " + chat.color(global.settings.get(0), global.trigger.get(num).get(1)));
 						}
 						try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
 					} else {
@@ -384,10 +380,20 @@ public class CommandTrigger extends CommandBase {
 				} else {
 					if (global.canSave) {
 						String TMP_sn = args[2];
+						String TMP_list="";
+						if (TMP_sn.contains("<list=") && TMP_sn.contains(">")) {
+							TMP_list = TMP_sn.substring(TMP_sn.indexOf("<list=")+6, TMP_sn.indexOf(">",TMP_sn.indexOf("<list=")));
+							TMP_sn = TMP_sn.replace("<list="+TMP_list+">", "");
+						}
+						
 						Boolean isString = false;
 						for (List<String> value : global.USR_string) {
 							if (value.get(0).equals(TMP_sn)) {
 								isString = true;
+								if (TMP_list!="") {
+									if (value.size()==2) {value.add(TMP_list);} 
+									else {value.set(3, TMP_list);}
+								}
 							}
 						}
 						if (isString) {
@@ -396,14 +402,14 @@ public class CommandTrigger extends CommandBase {
 							List<String> TMP_l = new ArrayList<String>();
 							TMP_l.add(TMP_sn);
 							TMP_l.add("");
+							if (TMP_list!="") {TMP_l.add(TMP_list);}
 							global.USR_string.add(TMP_l);
 							if (silent==false) {
 								TMP_sn = TMP_sn.replace("'", "\\'");
 								List <String> TMP_out = new ArrayList<String>();
-								TMP_out.add("text:'Added string ',color:gray");
+								TMP_out.add("text:'Created string ',color:gray");
 								TMP_out.add("text:'"+TMP_sn+"',color:"+global.settings.get(1)+",clickEvent:{action:'suggest_command',value:'/trigger string set "+TMP_sn+" '},hoverEvent:{action:'show_text',value:'Set "+TMP_sn+"'}");
 								chat.sendJson(TMP_out);
-								
 							}
 							try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
 						}
@@ -429,7 +435,7 @@ public class CommandTrigger extends CommandBase {
 						if (num>-1 && num<global.USR_string.size()) {
 							String TMP_rem = global.USR_string.remove(num).get(0);
 							if (silent==false) {
-								chat.warnUnformatted(chat.color("gray", "Deleted string") + chat.color(global.settings.get(0), TMP_rem));
+								chat.warnUnformatted(chat.color("gray", "Deleted string") + " " + chat.color(global.settings.get(0), TMP_rem));
 							}
 							try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
 						}
@@ -446,9 +452,7 @@ public class CommandTrigger extends CommandBase {
 					try {num = Integer.parseInt(args[2]);} 
 					catch(NumberFormatException e) {
 						for (int i=0; i<global.USR_string.size(); i++) {
-							if (args[2].equals(global.USR_string.get(i).get(0))) {
-								num = i;
-							}
+							if (args[2].equals(global.USR_string.get(i).get(0))) {num = i;}
 						}
 					}
 					String TMP_s = "";
@@ -457,15 +461,11 @@ public class CommandTrigger extends CommandBase {
 						else {TMP_s += args[i] + " ";}
 					}
 					if (num>-1 && num<global.USR_string.size()) {
-						if (silent==false) {
-							chat.warnUnformatted(chat.color("gray", "Set value") + chat.color(global.settings.get(0), TMP_s) + chat.color("gray", "in string") + chat.color(global.settings.get(0), global.USR_string.get(num).get(0)));
-						}
+						if (silent==false) {chat.warnUnformatted(chat.color("gray", "Set value") + " " + chat.color(global.settings.get(0), TMP_s) + " " + chat.color("gray", "in string") + " " + chat.color(global.settings.get(0), global.USR_string.get(num).get(0)));}
 						if (TMP_s.equals("{null}")) {TMP_s = "";}
 						global.USR_string.get(num).set(1,TMP_s);
 						try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
-					} else {
-						chat.warn(chat.color("red", "/trigger string set [string number] [string]"));
-					}
+					} else {chat.warn(chat.color("red", "/trigger string set [string number] [string]"));}
 				}
 			} else if (args[1].equalsIgnoreCase("LIST")) {
 				if (args.length==2) {
@@ -476,15 +476,58 @@ public class CommandTrigger extends CommandBase {
 						chat.warnUnformatted(chat.color("red", "No strings created"));
 						chat.warnUnformatted(chat.color("red", "Do </trigger string> to get started"));
 					} else {
+						List<String> STR_lists = new ArrayList<String>();
 						for (int i=0; i<global.USR_string.size(); i++) {
+							if (global.USR_string.get(i).size()!=3) {
+								List<String> TMP_out = new ArrayList<String>();
+								String TMP_sn = global.USR_string.get(i).get(0);
+								TMP_sn = TMP_sn.replace("'", "\\'");
+								TMP_out.add("text:'" + i + "> ',color:gray,hoverEvent:{action:'show_text',value:'Set string'},clickEvent:{action:'suggest_command',value:'/trigger string set " + i + " '}");
+								TMP_out.add("text:'" + TMP_sn + " ',color:"+global.settings.get(1));
+								if (global.canSave) {TMP_out.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Delete string'},clickEvent:{action:'suggest_command',value:'/trigger string delete " + i + " [enter to confirm]'}");}
+								chat.sendJson(TMP_out);
+								chat.warnUnformatted(chat.color("gray", "  " + global.USR_string.get(i).get(1)));
+							} else {
+								if (STR_lists.size()==0) {
+									STR_lists.add(global.USR_string.get(i).get(2));
+								} else {
+									Boolean isList = false;
+									for (int j=0; j<STR_lists.size(); j++) {
+										if (STR_lists.get(j).equals(global.USR_string.get(i).get(2))) {isList = true;}
+									}
+									if (!isList) {STR_lists.add(global.USR_string.get(i).get(2));}
+								}
+							}
+						}
+						for (int i=0; i<STR_lists.size(); i++) {
 							List<String> TMP_out = new ArrayList<String>();
-							String TMP_sn = global.USR_string.get(i).get(0);
-							TMP_sn = TMP_sn.replace("'", "\\'");
-							TMP_out.add("text:'" + i + "> ',color:gray,hoverEvent:{action:'show_text',value:'Set string'},clickEvent:{action:'suggest_command',value:'/trigger string set " + i + " '}");
-							TMP_out.add("text:'" + TMP_sn + " ',color:"+global.settings.get(1));
-							if (global.canSave) {TMP_out.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Delete string'},clickEvent:{action:'suggest_command',value:'/trigger string delete " + i + " [enter to confirm]'}");}
+							String TMP_list = STR_lists.get(i);
+							TMP_list = TMP_list.replace("'", "\\'");
+							TMP_out.add("text:'List> ',color:gray,hoverEvent:{action:'show_text',value:'Show "+TMP_list+" strings'},clickEvent:{action:'run_command',value:'/trigger string list "+TMP_list+"'}");
+							TMP_out.add("text:'"+TMP_list+"',color:"+global.settings.get(1));
 							chat.sendJson(TMP_out);
-							chat.warnUnformatted(chat.color("gray", "  " + global.USR_string.get(i).get(1)));
+						}
+					}
+					chat.warn(chat.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
+				} else {
+					String dashes = "";
+					for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
+					chat.warn(chat.color(global.settings.get(0), "&m-"+dashes));
+					String showList = "";
+					for (int i=2; i<args.length; i++) {showList += args[i]+" ";} 
+					showList=showList.trim();
+					for (int i=0; i<global.USR_string.size(); i++) {
+						if (global.USR_string.get(i).size()==3) {
+							if (global.USR_string.get(i).get(2).equals(showList)) {
+								List<String> TMP_out = new ArrayList<String>();
+								String TMP_sn = global.USR_string.get(i).get(0);
+								TMP_sn = TMP_sn.replace("'", "\\'");
+								TMP_out.add("text:'" + i + "> ',color:gray,hoverEvent:{action:'show_text',value:'Set string'},clickEvent:{action:'suggest_command',value:'/trigger string set " + i + " '}");
+								TMP_out.add("text:'" + TMP_sn + " ',color:"+global.settings.get(1));
+								if (global.canSave) {TMP_out.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Delete string'},clickEvent:{action:'suggest_command',value:'/trigger string delete " + i + " [enter to confirm]'}");}
+								chat.sendJson(TMP_out);
+								chat.warnUnformatted(chat.color("gray", "  " + global.USR_string.get(i).get(1)));
+							}
 						}
 					}
 					chat.warn(chat.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
