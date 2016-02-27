@@ -202,7 +202,8 @@ public class file {
 			
 			String jsonString = "";
 			for (String value : lines) {jsonString += value;}
-			jsonString = jsonString.replace("[", "openSquareF6cyUQp9openSquare").replace("]", "closeSquareF6cyUQp9closeSquare");
+			jsonString = jsonString.replace("[", "openSquareF6cyUQp9openSquare").replace("]", "closeSquareF6cyUQp9closeSquare")
+					.replace("+", "plusF6cyUQp9plus").replace("-", "minusF6cyUQp9minus");
 			
 			if (toImport.contains("=>")) {
 				if (type.equalsIgnoreCase("ARRAY")) {
@@ -229,7 +230,8 @@ public class file {
 						returnString = "[";
 						while (jsonString.contains(check)) {
 							String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
-							global.USR_array.get(whatArray).add(jsonGot.replace("openSquareF6cyUQp9openSquare","[").replace("closeSquareF6cyUQp9closeSquare","]"));
+							global.USR_array.get(whatArray).add(jsonGot.replace("openSquareF6cyUQp9openSquare","[").replace("closeSquareF6cyUQp9closeSquare","]")
+									.replace("plusF6cyUQp9plus", "+").replace("minusF6cyUQp9minus", "-"));
 							jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
 							returnString += jsonGot+",";
 						}
@@ -296,7 +298,8 @@ public class file {
 			
 			String jsonString = "";
 			for (String value : lines) {jsonString += value;}
-			jsonString = jsonString.replace("[", "openSquareF6cyUQp9openSquare").replace("]", "closeSquareF6cyUQp9closeSquare");
+			jsonString = jsonString.replace("[", "openSquareF6cyUQp9openSquare").replace("]", "closeSquareF6cyUQp9closeSquare")
+					.replace("+", "plusF6cyUQp9plus").replace("-", "minusF6cyUQp9minus");
 			
 			if (toImport.contains("=>")) {
 				if (type.equalsIgnoreCase("ARRAY")) {
@@ -323,7 +326,8 @@ public class file {
 						returnString = "[";
 						while (jsonString.contains(check)) {
 							String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
-							global.USR_array.get(whatArray).add(jsonGot.replace("openSquareF6cyUQp9openSquare","[").replace("closeSquareF6cyUQp9closeSquare","]"));
+							global.USR_array.get(whatArray).add(jsonGot.replace("openSquareF6cyUQp9openSquare","[").replace("closeSquareF6cyUQp9closeSquare","]")
+									.replace("plusF6cyUQp9plus", "+").replace("minusF6cyUQp9minus", "-"));
 							jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
 							returnString += jsonGot+",";
 						}
