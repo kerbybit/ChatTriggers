@@ -41,7 +41,8 @@ public class events {
 				for (int j=0; j<global.USR_array.size(); j++) {
 					if (global.USR_array.get(j).get(0).equals(checkFrom)) {
 						String[] moreargs = args[0].split(args[1]);
-						List<String> temporary = new ArrayList<String>(Arrays.asList(moreargs));
+						List<String> temporary = new ArrayList<String>();
+						for (String value : moreargs) {temporary.add(value);}
 						returnString = "[";
 						for (String value : temporary) {returnString+=value + " ";}
 						returnString = returnString.trim().replace(" ",",")+"]";
@@ -53,7 +54,8 @@ public class events {
 					String[] moreargs = args[0].split(args[1]);
 					List<String> temporary = new ArrayList<String>();
 					temporary.add(checkFrom);
-					List<String> temp = new ArrayList<String>(Arrays.asList(moreargs));
+					List<String> temp = new ArrayList<String>();
+					for (String value : moreargs) {temporary.add(value);}
 					returnString = "[";
 					for (String value : temp) {returnString+=value + " ";}
 					returnString = returnString.trim().replace(" ",",")+"]";

@@ -270,7 +270,6 @@ public class ChatTriggers {
 				
 				if (global.worldFirstLoad==true) {
 					if (TMP_type.equalsIgnoreCase("ONWORLDFIRSTLOAD")) {
-						global.worldFirstLoad = false;
 						//add all events to temp list
 						List<String> TMP_events = new ArrayList<String>();
 						for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
@@ -307,6 +306,7 @@ public class ChatTriggers {
 					}
 				}
 			}
+			global.worldFirstLoad = false;
 			if (Minecraft.getMinecraft().isSingleplayer()) {global.connectedToServer = "SinglePlayer";} 
 			else {global.connectedToServer = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
 		}
