@@ -202,6 +202,7 @@ public class file {
 			
 			String jsonString = "";
 			for (String value : lines) {jsonString += value;}
+			jsonString = jsonString.replace("[", "openSquareF6cyUQp9openSquare").replace("]", "closeSquareF6cyUQp9closeSquare");
 			
 			if (toImport.contains("=>")) {
 				if (type.equalsIgnoreCase("ARRAY")) {
@@ -228,7 +229,7 @@ public class file {
 						returnString = "[";
 						while (jsonString.contains(check)) {
 							String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
-							global.USR_array.get(whatArray).add(jsonGot);
+							global.USR_array.get(whatArray).add(jsonGot.replace("openSquareF6cyUQp9openSquare","[").replace("closeSquareF6cyUQp9closeSquare","]"));
 							jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
 							returnString += jsonGot+",";
 						}
@@ -607,6 +608,24 @@ public class file {
 						} else {
 							if (global.debug==true) {chat.warn(chat.color("gray", "Import already exsists"));}
 						}
+					}
+				} else if (importFunction.toUpperCase().startsWith("DELETE STRING ") || importFunction.toUpperCase().startsWith("DELETESTRING")) {
+					String sn = "SOMETHING WENT SUPER WRONG!!";
+					if (importFunction.toUpperCase().startsWith("DELETE STRING ")) {
+						sn = importFunction.substring(importFunction.toUpperCase().indexOf("DELETE STRING ")+14);
+					} else {
+						sn = importFunction.substring(importFunction.toUpperCase().indexOf("DELETESTRING ")+13);
+					}
+					sn = sn.trim();
+					int toRemove = -1;
+					for (int k=0; k<global.USR_string.size(); k++) {
+						if (sn.equals(global.USR_string.get(k).get(0))) {
+							toRemove = k;
+						}
+					}
+					if (toRemove!=-1) {
+						if (global.debug) {chat.warn(chat.color("gray", "Removing "+global.USR_string.get(toRemove)));}
+						global.USR_string.remove(toRemove);
 					}
 				}
 			}
