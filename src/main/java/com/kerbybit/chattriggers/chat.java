@@ -24,6 +24,7 @@ public class chat {
 	public static void warnUnformClick(String cht) {
 		cht = cht.replace("'('", "LeftParF6cyUQp9LeftPar");
 		cht = cht.replace("')'", "RightParF6cyUQp9RightPar");
+		cht = cht.replace("','", "commaF6cyUQp9comma");
 		cht = cht.replace("'", "\\'");
 		
 		while (cht.contains("clickable(") && cht.contains(")")) {
@@ -35,7 +36,7 @@ public class chat {
 			
 			
 			
-			if (TMP_clk.contains("(")) {
+			while (TMP_clk.contains("(")) {
 				TMP_clk = cht.substring(cht.indexOf("clickable(")+10, cht.indexOf(")", cht.indexOf(")")+1));
 				String TMP_subcheck = TMP_clk.substring(TMP_clk.indexOf("(")+1,TMP_clk.indexOf(")"));
 				String TMP_subcheckReplace = TMP_subcheck.replace(",", "CommaF6cyUQp9Comma");
@@ -62,6 +63,7 @@ public class chat {
 		
 		cht = cht.replace("LeftParF6cyUQp9LeftPar", "(");
 		cht = cht.replace("RightParF6cyUQp9RightPar", ")");
+		cht = cht.replace("commaF6cyUQp9comma", ",");
 		
 		String TMP_o = "['',";
 		TMP_o += "{text:'" + cht +  "'}";
@@ -100,7 +102,7 @@ public class chat {
 			
 			
 			
-			if (TMP_clk.contains("(")) {
+			while (TMP_clk.contains("(")) {
 				TMP_clk = cht.substring(cht.indexOf("clickable(")+10, cht.indexOf(")", cht.indexOf(")", cht.indexOf("clickable("))+1));
 				String TMP_subcheck = TMP_clk.substring(TMP_clk.indexOf("(")+1,TMP_clk.indexOf(")"));
 				String TMP_subcheckReplace = TMP_subcheck.replace(",", "CommaF6cyUQp9Comma");
