@@ -17,6 +17,7 @@ import java.util.Random;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import scala.actors.threadpool.Arrays;
 
 public class events {
 	static List<List<String>> backupUSR_strings = new ArrayList<List<String>>();
@@ -29,6 +30,48 @@ public class events {
 	}
 	
 	public static String arrayFunctions(String TMP_e) {
+		while (TMP_e.contains("{array[") && TMP_e.contains("]}.setSplit(") && TMP_e.contains(",") && TMP_e.contains(")")) {
+			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.setSplit(", TMP_e.indexOf("{array[")));
+			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.setSplit(")+12, TMP_e.indexOf(")", TMP_e.indexOf("]}.setSplit(")));
+			String returnString = "Something went wrong with parsing setSplit!";
+			Boolean isArray = false;
+			
+			String[] args = checkTo.split(",");
+			if (args.length==2) {
+				for (int j=0; j<global.USR_array.size(); j++) {
+					if (global.USR_array.get(j).get(0).equals(checkFrom)) {
+						String[] moreargs = args[0].split(args[1]);
+						List<String> temporary = new ArrayList<String>();
+						for (String value : moreargs) {temporary.add(value);}
+						returnString = "[";
+						for (String value : temporary) {returnString+=value + " ";}
+						returnString = returnString.trim().replace(" ",",")+"]";
+						global.USR_array.get(j).addAll(temporary);
+						isArray = true;
+					}
+				}
+				if (!isArray) {
+					String[] moreargs = args[0].split(args[1]);
+					List<String> temporary = new ArrayList<String>();
+					temporary.add(checkFrom);
+					List<String> temp = new ArrayList<String>();
+					for (String value : moreargs) {temporary.add(value);}
+					returnString = "[";
+					for (String value : temp) {returnString+=value + " ";}
+					returnString = returnString.trim().replace(" ",",")+"]";
+					temporary.addAll(temp);
+					global.USR_array.add(temporary);
+				}
+			} else {returnString = "setSplit formatted wrong! use .setSplit(value,split)";}
+			
+			List<String> temporary = new ArrayList<String>();
+			temporary.add("ArrayToString->"+checkFrom+"SETSPLIT"+checkTo+"-"+(global.TMP_string.size()+1));
+			temporary.add(checkTo);
+			global.TMP_string.add(temporary);
+			backupTMP_strings.add(temporary);
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.setSplit(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"SETSPLIT"+checkTo+"-"+global.TMP_string.size()+"]}");
+		}
+		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.add(") && TMP_e.contains(")")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.add(", TMP_e.indexOf("{array[")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.add(")+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.add(")));
@@ -96,6 +139,27 @@ public class events {
 			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.has("+checkTo+")", "{string[ArrayToString->"+checkFrom+"HAS"+checkTo+"-"+global.TMP_string.size()+"]}");
 		}
 		
+		while (TMP_e.contains("{array[") && TMP_e.contains("]}.hasIgnoreCase(") && TMP_e.contains(")")) {
+			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.hasIgnoreCase(", TMP_e.indexOf("{array[")));
+			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.hasIgnoreCase(")+17, TMP_e.indexOf(")", TMP_e.indexOf("]}.hasIgnoreCase(")));
+			String checkThis = "false";
+			
+			for (int j=0; j<global.USR_array.size(); j++) {
+				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
+					for (int k=1; k<global.USR_array.get(j).size(); k++) {
+						if (global.USR_array.get(j).get(k).equalsIgnoreCase(checkTo)) {checkThis = "true";}
+					}
+				}
+			}
+			
+			List<String> temporary = new ArrayList<String>();
+			temporary.add("ArrayToString->"+checkFrom+"HASIGNORECASE"+checkTo+"-"+(global.TMP_string.size()+1));
+			temporary.add(checkThis);
+			global.TMP_string.add(temporary);
+			backupTMP_strings.add(temporary);
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.hasIgnoreCase("+checkTo+")", "{string[ArrayToString->"+checkFrom+"HASIGNORECASE"+checkTo+"-"+global.TMP_string.size()+"]}");
+		}
+		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.remove(") && TMP_e.contains(")")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.remove(", TMP_e.indexOf("{array[")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.remove(")+10, TMP_e.indexOf(")", TMP_e.indexOf("]}.remove(")));
@@ -160,7 +224,18 @@ public class events {
 						}
 					}
 				} else {returnString = "Value under bounds! (index "+toGet+" - expecting 1)";}
-			} catch (NumberFormatException e) {returnString = "Value must be an integer!";}
+			} catch (NumberFormatException e) {
+				for (int j=0; j<global.USR_array.size(); j++) {
+					if (global.USR_array.get(j).get(0).equals(checkFrom)) {
+						returnString = "-1";
+						for (int k=1; k<global.USR_array.get(j).size(); k++) {
+							if (global.USR_array.get(j).get(k).equals(checkTo)) {
+								returnString = k +"";
+							}
+						}
+					}
+				}
+			}
 			
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("ArrayToString->"+checkFrom+"GET"+checkTo+"-"+(global.TMP_string.size()+1));
@@ -243,6 +318,7 @@ public class events {
 		int stringnum = -1;
 		int tmpstringnum = -1;
 		
+		args = arrayFunctions(args);
 		args = stringFunctions(args);
 		sn = stringFunctions(sn);
 		

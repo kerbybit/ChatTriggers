@@ -202,6 +202,8 @@ public class file {
 			
 			String jsonString = "";
 			for (String value : lines) {jsonString += value;}
+			jsonString = jsonString.replace("[", "openSquareF6cyUQp9openSquare").replace("]", "closeSquareF6cyUQp9closeSquare")
+					.replace("+", "plusF6cyUQp9plus").replace("-", "minusF6cyUQp9minus");
 			
 			if (toImport.contains("=>")) {
 				if (type.equalsIgnoreCase("ARRAY")) {
@@ -228,7 +230,8 @@ public class file {
 						returnString = "[";
 						while (jsonString.contains(check)) {
 							String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
-							global.USR_array.get(whatArray).add(jsonGot);
+							global.USR_array.get(whatArray).add(jsonGot.replace("openSquareF6cyUQp9openSquare","[").replace("closeSquareF6cyUQp9closeSquare","]")
+									.replace("plusF6cyUQp9plus", "+").replace("minusF6cyUQp9minus", "-"));
 							jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
 							returnString += jsonGot+",";
 						}
@@ -295,6 +298,8 @@ public class file {
 			
 			String jsonString = "";
 			for (String value : lines) {jsonString += value;}
+			jsonString = jsonString.replace("[", "openSquareF6cyUQp9openSquare").replace("]", "closeSquareF6cyUQp9closeSquare")
+					.replace("+", "plusF6cyUQp9plus").replace("-", "minusF6cyUQp9minus");
 			
 			if (toImport.contains("=>")) {
 				if (type.equalsIgnoreCase("ARRAY")) {
@@ -321,7 +326,8 @@ public class file {
 						returnString = "[";
 						while (jsonString.contains(check)) {
 							String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
-							global.USR_array.get(whatArray).add(jsonGot);
+							global.USR_array.get(whatArray).add(jsonGot.replace("openSquareF6cyUQp9openSquare","[").replace("closeSquareF6cyUQp9closeSquare","]")
+									.replace("plusF6cyUQp9plus", "+").replace("minusF6cyUQp9minus", "-"));
 							jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
 							returnString += jsonGot+",";
 						}
@@ -461,6 +467,9 @@ public class file {
 		for (int i=0; i<listName.size(); i++) {
 			writer.println("string:"+listName.get(i).get(0));
 			writer.println("  value:"+listName.get(i).get(1));
+			if (listName.get(i).size()==3) {
+				writer.println("  list:"+listName.get(i).get(2));
+			}
 		}
 		writer.close();
 	}
@@ -522,11 +531,13 @@ public class file {
 				String importFunction = lines.get(i).trim().substring(lines.get(i).trim().indexOf("!")+1);
 				if (importFunction.toUpperCase().startsWith("CREATE STRING ") || importFunction.toUpperCase().startsWith("CREATESTRING ")) {
 					String sn = "SOMETHING WENT SUPER WRONG!!";
+					String ln = "";
 					if (importFunction.toUpperCase().startsWith("CREATE STRING ")) {
 						sn = importFunction.substring(importFunction.toUpperCase().indexOf("CREATE STRING ")+14);
 					} else {
 						sn = importFunction.substring(importFunction.toUpperCase().indexOf("CREATESTRING ")+13);
 					}
+					
 					
 					String sv = "";
 					String svo = "";
@@ -544,17 +555,35 @@ public class file {
 						else {chat.warn(chat.color("gray", "Importing string "+sn+" with no value"));}
 					}
 					
+					if (sn.contains("<list=") && sn.contains(">")) {
+						ln = sn.substring(sn.indexOf("<list=")+6, sn.indexOf(">",sn.indexOf("<list=")));
+						sn = sn.replace("<list="+ln+">", "");
+					}
+					if (i<=lines.size()-2) { //TODO REMOVE FOR STABLE BUILD
+						if (lines.get(i+1).startsWith("!INLIST ")) {
+							ln = lines.get(i+1).substring(lines.get(i+1).indexOf("!INLIST ")+8);
+						}
+					}
+					
 					Boolean canCreate = true;
 					for (int k=0; k<global.USR_string.size(); k++) {
 						if (global.USR_string.get(k).get(0).equals(sn)) {
 							canCreate=false;
 							if (!sv.equals("")) {
 								global.USR_string.get(k).set(1, sv);
+								if (!ln.equals("")) {
+									if (global.USR_string.get(k).size()==3) {global.USR_string.get(k).set(2, ln);}
+									else {global.USR_string.get(k).add(ln);}
+								}
 								if (global.debug==true) {chat.warn(chat.color("gray", "Set value "+sv+" in string "+sn));}
 							} else {if (global.debug==true) {chat.warn(chat.color("gray", "String already exsists"));}}
 							if (!svo.equals("")) {
 								if (global.USR_string.get(k).equals("")) {
 									global.USR_string.get(k).set(1, svo);
+									if (!ln.equals("")) {
+										if (global.USR_string.get(k).size()==3) {global.USR_string.get(k).set(2, ln);}
+										else {global.USR_string.get(k).add(ln);}
+									}
 									if (global.debug==true) {chat.warn(chat.color("gray", "Set value "+sv+" in string "+sn));}
 								} else {if (global.debug==true) {chat.warn(chat.color("gray", "String already has value"));}}
 							}
@@ -565,7 +594,7 @@ public class file {
 						temporary.add(sn);
 						if (sv.equals("") && !svo.equals("")) {temporary.add(svo);} 
 						else {temporary.add(sv);}
-						
+						if (!ln.equals("")) {temporary.add(ln);}
 						global.USR_string.add(temporary);
 						if (global.debug==true) {
 							if (sv!="") {chat.warn(chat.color("gray", "Created string "+sn+" with value "+sv));} 
@@ -585,6 +614,24 @@ public class file {
 							if (global.debug==true) {chat.warn(chat.color("gray", "Import already exsists"));}
 						}
 					}
+				} else if (importFunction.toUpperCase().startsWith("DELETE STRING ") || importFunction.toUpperCase().startsWith("DELETESTRING")) {
+					String sn = "SOMETHING WENT SUPER WRONG!!";
+					if (importFunction.toUpperCase().startsWith("DELETE STRING ")) {
+						sn = importFunction.substring(importFunction.toUpperCase().indexOf("DELETE STRING ")+14);
+					} else {
+						sn = importFunction.substring(importFunction.toUpperCase().indexOf("DELETESTRING ")+13);
+					}
+					sn = sn.trim();
+					int toRemove = -1;
+					for (int k=0; k<global.USR_string.size(); k++) {
+						if (sn.equals(global.USR_string.get(k).get(0))) {
+							toRemove = k;
+						}
+					}
+					if (toRemove!=-1) {
+						if (global.debug) {chat.warn(chat.color("gray", "Removing "+global.USR_string.get(toRemove)));}
+						global.USR_string.remove(toRemove);
+					}
 				}
 			}
 		}
@@ -602,12 +649,29 @@ public class file {
 		bufferedReader.close();
 		
 		for (int i=0; i<lines.size(); i++) {
-			if (lines.get(i).contains("string:") && lines.get(i+1).startsWith("  value:")) {
-				List<String> tmp_list = new ArrayList<String>();
-				tmp_list.add(lines.get(i).substring(lines.get(i).indexOf("string:") + 7, lines.get(i).length()));
-				tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("  value:") + 8, lines.get(i+1).length()));
-				tmp_strings.add(tmp_list);
-			}
+			try {
+				if (i<=lines.size()-3) {
+					if (lines.get(i).contains("string:") && lines.get(i+1).startsWith("  value:") && lines.get(i+2).startsWith("  list:")) {
+						List<String> tmp_list = new ArrayList<String>();
+						tmp_list.add(lines.get(i).substring(lines.get(i).indexOf("string:") + 7));
+						tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("  value:") + 8));
+						tmp_list.add(lines.get(i+2).substring(lines.get(i+2).indexOf("  list:")+7));
+						tmp_strings.add(tmp_list);
+					} else if (lines.get(i).contains("string:") && lines.get(i+1).startsWith("  value:")) {
+						List<String> tmp_list = new ArrayList<String>();
+						tmp_list.add(lines.get(i).substring(lines.get(i).indexOf("string:") + 7));
+						tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("  value:") + 8));
+						tmp_strings.add(tmp_list);
+					}
+				} else {
+					if (lines.get(i).contains("string:") && lines.get(i+1).startsWith("  value:")) {
+						List<String> tmp_list = new ArrayList<String>();
+						tmp_list.add(lines.get(i).substring(lines.get(i).indexOf("string:") + 7));
+						tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("  value:") + 8));
+						tmp_strings.add(tmp_list);
+					}
+				}
+			} catch (Exception e) {e.printStackTrace(); chat.warn(chat.color("red", "something went wrong while loading strings!"));}
 		}
 		
 		return tmp_strings;

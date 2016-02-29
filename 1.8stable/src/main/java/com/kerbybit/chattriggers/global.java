@@ -57,6 +57,7 @@ public class global {
 	// layout
 	// get(0) = string name
 	// get(1) = saved string
+	// get(2) = list
 	/////////////////////////////////////////////////////
 	public static List<List<String>> USR_string = new ArrayList<List<String>>();
 	public static List<List<String>> TMP_string = new ArrayList<List<String>>();

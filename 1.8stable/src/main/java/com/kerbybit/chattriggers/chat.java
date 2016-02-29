@@ -24,6 +24,7 @@ public class chat {
 	public static void warnUnformClick(String cht) {
 		cht = cht.replace("'('", "LeftParF6cyUQp9LeftPar");
 		cht = cht.replace("')'", "RightParF6cyUQp9RightPar");
+		cht = cht.replace("','", "commaF6cyUQp9comma");
 		cht = cht.replace("'", "\\'");
 		
 		while (cht.contains("clickable(") && cht.contains(")")) {
@@ -62,6 +63,7 @@ public class chat {
 		
 		cht = cht.replace("LeftParF6cyUQp9LeftPar", "(");
 		cht = cht.replace("RightParF6cyUQp9RightPar", ")");
+		cht = cht.replace("commaF6cyUQp9comma", ",");
 		
 		String TMP_o = "['',";
 		TMP_o += "{text:'" + cht +  "'}";
@@ -118,9 +120,35 @@ public class chat {
 							String TMP_hovtxt = TMP_args[3].replace("CommaF6cyUQp9Comma", ",");
 							cht = cht.replace("clickable(" + TMP_clk.replace("CommaF6cyUQp9Comma", ",") + ")", "'},{text:'" + TMP_txt + "',clickEvent:{action:'" + TMP_clkevnt + "',value:'" + TMP_clkval + "'},hoverEvent:{action:'show_text',value:'" + TMP_hovtxt + "'}},{text:'");
 						} else {
-							cht = cht.replace("clickable(" + TMP_clk.replace("CommaF6cyUQp9Comma", ",") + ")", "'},{text:'" + TMP_txt + "',clickEvent:{action:'" + TMP_clkevnt + "',value:'" + TMP_clkval + "'},hoverEvent:{action:'show_text',value:'" + TMP_clkval + "'}},{text:'");
+							cht = cht.replace("clickable(" + TMP_clk.replace("CommaF6cyUQp9Comma", ",") + ")", "'},{text:'" + TMP_txt + "',clickEvent:{action:'" + TMP_clkevnt + "',value:'" + TMP_clkval + "'}},{text:'");
 						}
 					}
+				}
+			}
+		}
+		
+		while (cht.contains("hover(") && cht.contains(")")) {
+			String TMP_1splt = "";
+			String TMP_2splt = "";
+			if (cht.indexOf("hover(") != 0) {TMP_1splt = ",";}
+			if (cht.indexOf(")") != cht.length()) {TMP_2splt = ",";}
+			String TMP_clk = cht.substring(cht.indexOf("hover(") + 6, cht.indexOf(")", cht.indexOf("hover(")));
+			
+			
+			
+			if (TMP_clk.contains("(")) {
+				TMP_clk = cht.substring(cht.indexOf("hover(")+6, cht.indexOf(")", cht.indexOf(")", cht.indexOf("hover("))+1));
+				String TMP_subcheck = TMP_clk.substring(TMP_clk.indexOf("(")+1,TMP_clk.indexOf(")"));
+				String TMP_subcheckReplace = TMP_subcheck.replace(",", "CommaF6cyUQp9Comma");
+				TMP_clk = TMP_clk.replace(TMP_subcheck, TMP_subcheckReplace);
+			}
+			
+			String[] TMP_args = TMP_clk.split(",");
+			if (TMP_args.length > 0) {
+				String TMP_txt = TMP_args[0].replace("CommaF6cyUQp9Comma", ",");
+				if (TMP_args.length > 1) {
+					String TMP_val = TMP_args[1].replace("CommaF6cyUQp9Comma", ",");
+					cht = cht.replace("hover("+TMP_clk.replace("CommaF6cyUQp9Comma", ",")+")", "'},{text:'" + TMP_txt + "',hoverEvent:{action:'show_text',value:'" + TMP_val + "'}},{text:'");
 				}
 			}
 		}
