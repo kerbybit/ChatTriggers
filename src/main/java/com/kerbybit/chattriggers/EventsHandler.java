@@ -68,23 +68,31 @@ public class EventsHandler {
 			
 		//tags
 			try {
-				TMP_t = Integer.parseInt(TagHandler.eventTags(1, TMP_e));
-				TMP_e = TMP_e.replace("<time="+TMP_t+">", "");
+				if (TMP_e.contains("<time=") && TMP_e.contains(">")) {
+					TMP_t = Integer.parseInt(TagHandler.eventTags(1, TMP_e));
+					TMP_e = TMP_e.replace("<time="+TMP_t+">", "");
+				}
 			} catch (NumberFormatException e1) {ChatHandler.warn(ChatHandler.color("red", "<time=t> t must be an integer!"));}
 			
 			try {
-				TMP_p = Integer.parseInt(TagHandler.eventTags(2, TMP_e));
-				TMP_e = TMP_e.replace("<pos="+TMP_p+">", "");
+				if (TMP_e.contains("<pos=") && TMP_e.contains(">")) {
+					TMP_p = Integer.parseInt(TagHandler.eventTags(2, TMP_e));
+					TMP_e = TMP_e.replace("<pos="+TMP_p+">", "");
+				}
 			} catch (NumberFormatException e1) {ChatHandler.warn(ChatHandler.color("red", "<pos=p> p must be an integer!"));}
 			
 			try {
-				TMP_v = Integer.parseInt(TagHandler.eventTags(3, TMP_e));
-				TMP_e = TMP_e.replace("<vol="+TMP_v+">", "");
+				if (TMP_e.contains("<vol=") && TMP_e.contains(">")) {
+					TMP_v = Integer.parseInt(TagHandler.eventTags(3, TMP_e));
+					TMP_e = TMP_e.replace("<vol="+TMP_v+">", "");
+				}
 			} catch (NumberFormatException e1) {ChatHandler.warn(ChatHandler.color("red", "<vol=v> v must be an integer!"));}
 			
 			try {
-				TMP_pi = Integer.parseInt(TagHandler.eventTags(4, TMP_e));
-				TMP_e = TMP_e.replace("<pitch"+TMP_pi+">", "");
+				if (TMP_e.contains("<pitch") && TMP_e.contains(">")) {
+					TMP_pi = Integer.parseInt(TagHandler.eventTags(4, TMP_e));
+					TMP_e = TMP_e.replace("<pitch"+TMP_pi+">", "");
+				}
 			} catch (NumberFormatException e1) {ChatHandler.warn(ChatHandler.color("red", "<pitch=p> p must be an integer!"));}
 			
 			
@@ -441,18 +449,7 @@ public class EventsHandler {
 			for (int k=0; k<global.trigger.size(); k++) {
 				String TMP_trig = global.trigger.get(k).get(1);
 				
-				//remove tags
-				String TMP_list = "";
-				TMP_trig = TMP_trig.replace("<s>", ""); 
-				TMP_trig = TMP_trig.replace("<c>", ""); 
-				TMP_trig = TMP_trig.replace("<e>", "");
-				TMP_trig = TMP_trig.replace("<start>", ""); 
-				TMP_trig = TMP_trig.replace("<contain>", ""); 
-				TMP_trig = TMP_trig.replace("<end>", "");
-				TMP_trig = TMP_trig.replace("<imported>", "");
-				TMP_trig = TMP_trig.replace("<formatted>", "");
-				if (TMP_trig.contains("<list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
-				if (TMP_trig.contains("<server=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_list+">","");}
+				TMP_trig = TagHandler.removeTags(TMP_trig);
 				
 				//check match
 				if (TMP_trig.equals(triggerName)) {

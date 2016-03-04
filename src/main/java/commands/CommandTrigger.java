@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import com.kerbybit.chattriggers.ChatHandler;
 import com.kerbybit.chattriggers.EventsHandler;
 import com.kerbybit.chattriggers.FileHandler;
+import com.kerbybit.chattriggers.TagHandler;
 import com.kerbybit.chattriggers.global;
 
 import net.minecraft.client.Minecraft;
@@ -118,10 +119,6 @@ public class CommandTrigger extends CommandBase {
 		} else {ChatHandler.warn(ChatHandler.color("red", "/trigger import [import name]"));}
 	}
 	
-	/*public static void commandExport(String args[], Boolean silent) { //TODO
-		
-	}*/
-	
 	public static void commandRun(String args[], Boolean silent) {
 		if (args.length < 2) {
 			ChatHandler.warn(ChatHandler.color("red", "/tr [trigger]"));
@@ -184,18 +181,11 @@ public class CommandTrigger extends CommandBase {
 				}
 			} catch (NumberFormatException e1) {
 				for (int k=0; k<global.trigger.size(); k++) {
+					
 					String TMP_trig = global.trigger.get(k).get(1);
-					String TMP_list = "";
-					TMP_trig = TMP_trig.replace("<s>", ""); 
-					TMP_trig = TMP_trig.replace("<c>", ""); 
-					TMP_trig = TMP_trig.replace("<e>", "");
-					TMP_trig = TMP_trig.replace("<start>", ""); 
-					TMP_trig = TMP_trig.replace("<contain>", ""); 
-					TMP_trig = TMP_trig.replace("<end>", "");
-					TMP_trig = TMP_trig.replace("<imported>", "");
-					TMP_trig = TMP_trig.replace("<formatted>", "");
-					if (TMP_trig.contains("<list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
-					if (TMP_trig.contains("<server=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_list+">","");}
+					
+					TMP_trig = TagHandler.removeTags(TMP_trig);
+					
 					if (TMP_trig.equals(TMP_e)) {
 						List<String> TMP_events = new ArrayList<String>();
 						for (int i=2; i<global.trigger.get(k).size(); i++) {

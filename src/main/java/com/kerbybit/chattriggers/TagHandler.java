@@ -5,16 +5,16 @@ public class TagHandler {
 		String returnString = "";
 		switch (tag) {
 		case 1:
-			if (TMP_e.contains("<time=") && TMP_e.contains(">")) {returnString = TMP_e.substring(TMP_e.indexOf("<time=")+6, TMP_e.indexOf(">",TMP_e.indexOf("<time=")));}
+			returnString = TMP_e.substring(TMP_e.indexOf("<time=")+6, TMP_e.indexOf(">",TMP_e.indexOf("<time=")));
 			break;
 		case 2:
-			if (TMP_e.contains("<pos=") && TMP_e.contains(">")) {returnString = TMP_e.substring(TMP_e.indexOf("<pos=")+5, TMP_e.indexOf(">",TMP_e.indexOf("<pos=")));}
+			returnString = TMP_e.substring(TMP_e.indexOf("<pos=")+5, TMP_e.indexOf(">",TMP_e.indexOf("<pos=")));
 			break;
 		case 3:
-			if (TMP_e.contains("<vol=") && TMP_e.contains(">")) {returnString = TMP_e.substring(TMP_e.indexOf("<vol=")+5, TMP_e.indexOf(">",TMP_e.indexOf("<vol=")));}
+			returnString = TMP_e.substring(TMP_e.indexOf("<vol=")+5, TMP_e.indexOf(">",TMP_e.indexOf("<vol=")));
 			break;
 		case 4:
-			if (TMP_e.contains("<pitch=") && TMP_e.contains(">")) {returnString = TMP_e.substring(TMP_e.indexOf("<pitch=")+7, TMP_e.indexOf(">",TMP_e.indexOf("<pitch=")));}
+			returnString = TMP_e.substring(TMP_e.indexOf("<pitch=")+7, TMP_e.indexOf(">",TMP_e.indexOf("<pitch=")));
 			break;
 		default:
 			returnString = "";
@@ -22,5 +22,16 @@ public class TagHandler {
 		}
 		
 		return returnString;
+	}
+	
+	public static String removeTags(String TMP_trig) {
+		String TMP_list = "";
+		TMP_trig = TMP_trig.replace("<s>", "").replace("<c>", "").replace("<e>", "")
+				.replace("<start>", "").replace("<contain>", "").replace("<end>", "")
+				.replace("<imported>", "").replace("<formatted>", "");
+		if (TMP_trig.contains("<list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
+		if (TMP_trig.contains("<server=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_list+">","");}
+		
+		return TMP_trig;
 	}
 }
