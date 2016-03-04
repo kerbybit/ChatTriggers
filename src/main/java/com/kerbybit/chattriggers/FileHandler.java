@@ -27,7 +27,7 @@ import org.apache.commons.io.FileUtils;
 
 import net.minecraft.client.Minecraft;
 
-public class file {
+public class FileHandler {
 	public static void loadVersion(String url) {
 		global.versionURL = url;
 		Thread t1 = new Thread(new Runnable() {
@@ -47,35 +47,35 @@ public class file {
 		 				if (!lines.get(0).equals(global.settings.get(2))) {
 		 					String dashes = "";
 		 					for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
-		 					chat.warn(chat.color(global.settings.get(0), "&m-"+dashes));
+		 					ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m-"+dashes));
 		 					if (global.settings.get(4).equals("false")) {
-		 						chat.warn(chat.color("red", "You are running on an outdated version of ChatTriggers!"));
+		 						ChatHandler.warn(ChatHandler.color("red", "You are running on an outdated version of ChatTriggers!"));
 		 						List<String> TMP_out = new ArrayList<String>();
 		 						TMP_out.add("text:'http://kerbybit.github.io/ChatTriggers/download',color:red,hoverEvent:{action:'show_text',value:'Click to download update'},clickEvent:{action:'open_url',value:'http://kerbybit.github.io/ChatTriggers/download'}");
-		 						chat.sendJson(TMP_out);
-		 						chat.warn(chat.color("red", "Current stable version: " + lines.get(0)));
+		 						ChatHandler.sendJson(TMP_out);
+		 						ChatHandler.warn(ChatHandler.color("red", "Current stable version: " + lines.get(0)));
 		 					} else {
-		 						chat.warn(chat.color("red", "You are running on an outdated version of ChatTriggers!"));
+		 						ChatHandler.warn(ChatHandler.color("red", "You are running on an outdated version of ChatTriggers!"));
 		 						List<String> TMP_out = new ArrayList<String>();
 		 						TMP_out.add("text:'http://kerbybit.github.io/ChatTriggers/download',color:red,hoverEvent:{action:'show_text',value:'Click to download update'},clickEvent:{action:'open_url',value:'http://kerbybit.github.io/ChatTriggers/download'}");
-		 						chat.sendJson(TMP_out);
-		 						chat.warn(chat.color("red", "Current beta version: " + lines.get(0)));
+		 						ChatHandler.sendJson(TMP_out);
+		 						ChatHandler.warn(ChatHandler.color("red", "Current beta version: " + lines.get(0)));
 		 					}
-		 					chat.warn(chat.color("red", "Your version: " + global.settings.get(2)));
-		 					chat.warn(chat.color("red", "You will only see this message once until the next update"));
-		 					chat.warn(chat.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
+		 					ChatHandler.warn(ChatHandler.color("red", "Your version: " + global.settings.get(2)));
+		 					ChatHandler.warn(ChatHandler.color("red", "You will only see this message once until the next update"));
+		 					ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
 		 					global.settings.set(2,lines.get(0));
-		 					file.saveAll();
+		 					saveAll();
 		 				}
 		 			} else {
 		 				global.settings.set(2, lines.get(0));
-		 				file.saveAll();
+		 				saveAll();
 		 			}
 		 		} catch (MalformedURLException e) {
-		 			chat.warn(chat.color("red", "Can't grab update! Update services must be down"));
+		 			ChatHandler.warn(ChatHandler.color("red", "Can't grab update! Update services must be down"));
 		 			e.printStackTrace();
 		 		} catch (IOException e) {
-		 			chat.warn(chat.color("red", "Can't grab update! Report this to kerbybit ASAP"));
+		 			ChatHandler.warn(ChatHandler.color("red", "Can't grab update! Report this to kerbybit ASAP"));
 		 			e.printStackTrace();
 		 		}
 		     }
@@ -94,7 +94,7 @@ public class file {
 			if (file.isFile()) {
 				if (file.getName().endsWith(".txt")) {
 					try {global.trigger.addAll(loadTriggers(dest + file.getName(), true));}
-					catch (IOException e) {chat.warn(chat.color("red", "Unable to load import!")); e.printStackTrace();}
+					catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Unable to load import!")); e.printStackTrace();}
 				}
 			}
 		}
@@ -106,12 +106,12 @@ public class file {
 			global.canImport=false;
 			Thread t1 = new Thread(new Runnable() {
 			     public void run() {
-			    	chat.warn(chat.color("gray", "Getting import..."));
+			    	ChatHandler.warn(ChatHandler.color("gray", "Getting import..."));
 			 		try {
 			 			String url = global.importURL;
 			 			String file = new File(global.importURL).getName();
 			 			URL web = new URL(url);
-			 			if (global.debug==true) {chat.warn(chat.color("&7", "Getting import from "+global.importURL));}
+			 			if (global.debug==true) {ChatHandler.warn(ChatHandler.color("&7", "Getting import from "+global.importURL));}
 			 			InputStream fis = web.openStream();
 			 			List<String> lines = new ArrayList<String>();
 			 			String line = null;
@@ -121,26 +121,26 @@ public class file {
 			 			}
 			 			bufferedReader.close();
 			 			
-			 			if (global.debug==true) {chat.warn(chat.color("&7", "Setting up files to save"));}
+			 			if (global.debug==true) {ChatHandler.warn(ChatHandler.color("&7", "Setting up files to save"));}
 			 			File dir = new File("./mods/ChatTriggers/Imports/");
 			 			if (!dir.exists()) {dir.mkdir();}
 			 			File fin = new File("./mods/ChatTriggers/Imports/"+file);
 			 			if (!fin.exists()) {fin.createNewFile();}
 			 			
-			 			if (global.debug==true) {chat.warn(chat.color("&7", "Saving file to "+fin.getName()));}
+			 			if (global.debug==true) {ChatHandler.warn(ChatHandler.color("&7", "Saving file to "+fin.getName()));}
 			 			PrintWriter writer = new PrintWriter(fin,"UTF-8");
 			 			for (String value : lines) {writer.println(value);}
 			 			writer.close();
-			 			if (global.debug==true) {chat.warn(chat.color("&7", "Loading imports into triggers"));}
+			 			if (global.debug==true) {ChatHandler.warn(ChatHandler.color("&7", "Loading imports into triggers"));}
 			 			global.trigger = loadTriggers("./mods/ChatTriggers/triggers.txt", false);
 						global.USR_string = loadStrings("./mods/ChatTriggers/strings.txt");
 						loadImports("./mods/ChatTriggers/Imports/");
-			 			chat.warn(chat.color(global.settings.get(0), "Got "+file+" successfully!"));
+			 			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Got "+file+" successfully!"));
 			 		} catch (MalformedURLException e) {
-			 			chat.warn(chat.color("red", "Not a valid import! bad URL"));
+			 			ChatHandler.warn(ChatHandler.color("red", "Not a valid import! bad URL"));
 			 			e.printStackTrace();
 			 		} catch (IOException e) {
-			 			chat.warn(chat.color("red", "Not a valid import! IO exception"));
+			 			ChatHandler.warn(ChatHandler.color("red", "Not a valid import! IO exception"));
 			 			e.printStackTrace();
 			 		}
 			 		global.canImport=true;
@@ -148,7 +148,7 @@ public class file {
 			});
 			t1.start();
 		} else {
-			chat.warn(chat.color("red", "You are trying to do this too quick! slow down!"));
+			ChatHandler.warn(ChatHandler.color("red", "You are trying to do this too quick! slow down!"));
 		}
 	}
 	
@@ -509,13 +509,13 @@ public class file {
 					if (lines.get(i+1).startsWith("type:")) {
 						tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("type:") + 5, lines.get(i+1).length()));
 					} else {
-						chat.warn(chat.color("red","No trigger type specified for") + chat.color("gray",lines.get(i).substring(lines.get(i).indexOf("trigger:") + 8, lines.get(i).length())));
-						chat.warn(chat.color("red", "Set type to") + chat.color("gray", "other"));
+						ChatHandler.warn(ChatHandler.color("red","No trigger type specified for") + ChatHandler.color("gray",lines.get(i).substring(lines.get(i).indexOf("trigger:") + 8, lines.get(i).length())));
+						ChatHandler.warn(ChatHandler.color("red", "Set type to") + ChatHandler.color("gray", "other"));
 						tmp_list.add("other");
 					}
 				} else {
-					chat.warn(chat.color("red","No trigger type specified for") + chat.color("gray",lines.get(i).substring(lines.get(i).indexOf("trigger:") + 8, lines.get(i).length())));
-					chat.warn(chat.color("red", "Set type to") + chat.color("gray", "other"));
+					ChatHandler.warn(ChatHandler.color("red","No trigger type specified for") + ChatHandler.color("gray",lines.get(i).substring(lines.get(i).indexOf("trigger:") + 8, lines.get(i).length())));
+					ChatHandler.warn(ChatHandler.color("red", "Set type to") + ChatHandler.color("gray", "other"));
 					tmp_list.add("other");
 				}
 				String importTag = "";
@@ -551,18 +551,13 @@ public class file {
 					
 					if (sn.contains(" ")) {sn = sn.substring(0, sn.indexOf(" ")).trim();}
 					if (global.debug==true) {
-						if (!sv.equals("")) {chat.warn(chat.color("gray", "Importing string "+sn+" with value "+sv));}
-						else {chat.warn(chat.color("gray", "Importing string "+sn+" with no value"));}
+						if (!sv.equals("")) {ChatHandler.warn(ChatHandler.color("gray", "Importing string "+sn+" with value "+sv));}
+						else {ChatHandler.warn(ChatHandler.color("gray", "Importing string "+sn+" with no value"));}
 					}
 					
 					if (sn.contains("<list=") && sn.contains(">")) {
 						ln = sn.substring(sn.indexOf("<list=")+6, sn.indexOf(">",sn.indexOf("<list=")));
 						sn = sn.replace("<list="+ln+">", "");
-					}
-					if (i<=lines.size()-2) { //TODO REMOVE FOR STABLE BUILD
-						if (lines.get(i+1).startsWith("!INLIST ")) {
-							ln = lines.get(i+1).substring(lines.get(i+1).indexOf("!INLIST ")+8);
-						}
 					}
 					
 					Boolean canCreate = true;
@@ -575,8 +570,8 @@ public class file {
 									if (global.USR_string.get(k).size()==3) {global.USR_string.get(k).set(2, ln);}
 									else {global.USR_string.get(k).add(ln);}
 								}
-								if (global.debug==true) {chat.warn(chat.color("gray", "Set value "+sv+" in string "+sn));}
-							} else {if (global.debug==true) {chat.warn(chat.color("gray", "String already exsists"));}}
+								if (global.debug==true) {ChatHandler.warn(ChatHandler.color("gray", "Set value "+sv+" in string "+sn));}
+							} else {if (global.debug==true) {ChatHandler.warn(ChatHandler.color("gray", "String already exsists"));}}
 							if (!svo.equals("")) {
 								if (global.USR_string.get(k).equals("")) {
 									global.USR_string.get(k).set(1, svo);
@@ -584,8 +579,8 @@ public class file {
 										if (global.USR_string.get(k).size()==3) {global.USR_string.get(k).set(2, ln);}
 										else {global.USR_string.get(k).add(ln);}
 									}
-									if (global.debug==true) {chat.warn(chat.color("gray", "Set value "+sv+" in string "+sn));}
-								} else {if (global.debug==true) {chat.warn(chat.color("gray", "String already has value"));}}
+									if (global.debug==true) {ChatHandler.warn(ChatHandler.color("gray", "Set value "+sv+" in string "+sn));}
+								} else {if (global.debug==true) {ChatHandler.warn(ChatHandler.color("gray", "String already has value"));}}
 							}
 						}
 					}
@@ -597,21 +592,21 @@ public class file {
 						if (!ln.equals("")) {temporary.add(ln);}
 						global.USR_string.add(temporary);
 						if (global.debug==true) {
-							if (sv!="") {chat.warn(chat.color("gray", "Created string "+sn+" with value "+sv));} 
-							else {chat.warn(chat.color("gray", "Created string "+sn+" with no value"));}
+							if (sv!="") {ChatHandler.warn(ChatHandler.color("gray", "Created string "+sn+" with value "+sv));} 
+							else {ChatHandler.warn(ChatHandler.color("gray", "Created string "+sn+" with no value"));}
 						}
 					}
-					try {saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+					try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 				} else if (importFunction.toUpperCase().startsWith("REQUIRES ")) {
 					String importValue = importFunction.substring(importFunction.indexOf("REQUIRES ")+9);
 					String[] importValues = importValue.trim().split(" ");
 					for (int k=0; k<importValues.length; k++) {
-						if (global.debug==true) {chat.warn(chat.color("gray", "Importing "+importValues[k]));}
+						if (global.debug==true) {ChatHandler.warn(ChatHandler.color("gray", "Importing "+importValues[k]));}
 						File dir = new File("./mods/ChatTriggers/Imports/"+importValues[k]+".txt");
 						if (!dir.exists()) {
 							global.neededImports.add(importValues[k]);
 						} else {
-							if (global.debug==true) {chat.warn(chat.color("gray", "Import already exsists"));}
+							if (global.debug==true) {ChatHandler.warn(ChatHandler.color("gray", "Import already exsists"));}
 						}
 					}
 				} else if (importFunction.toUpperCase().startsWith("DELETE STRING ") || importFunction.toUpperCase().startsWith("DELETESTRING")) {
@@ -629,7 +624,7 @@ public class file {
 						}
 					}
 					if (toRemove!=-1) {
-						if (global.debug) {chat.warn(chat.color("gray", "Removing "+global.USR_string.get(toRemove)));}
+						if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Removing "+global.USR_string.get(toRemove)));}
 						global.USR_string.remove(toRemove);
 					}
 				}
@@ -671,7 +666,7 @@ public class file {
 						tmp_strings.add(tmp_list);
 					}
 				}
-			} catch (Exception e) {e.printStackTrace(); chat.warn(chat.color("red", "something went wrong while loading strings!"));}
+			} catch (Exception e) {e.printStackTrace(); ChatHandler.warn(ChatHandler.color("red", "something went wrong while loading strings!"));}
 		}
 		
 		return tmp_strings;
@@ -705,13 +700,13 @@ public class file {
 			saveStrings(global.USR_string, "./mods/ChatTriggers/strings.txt");
 			saveSettings(global.settings, "./mods/ChatTriggers/settings.txt");
 		} else {
-			chat.warn(chat.color("red", "These changes are not getting saved!"));
-			chat.warn(chat.color("red", "do </trigger load> to leave testing"));
+			ChatHandler.warn(ChatHandler.color("red", "These changes are not getting saved!"));
+			ChatHandler.warn(ChatHandler.color("red", "do </trigger load> to leave testing"));
 		}
 	}
 	
 	public static void startup() throws ClassNotFoundException {
-		chat.warn(chat.color("gray", "Loading chat triggers..."));
+		ChatHandler.warn(ChatHandler.color("gray", "Loading chat triggers..."));
 		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold");}
 		try {
 			global.trigger = loadTriggers("./mods/ChatTriggers/triggers.txt", false);
@@ -723,14 +718,14 @@ public class file {
 			if (global.settings.size() < 4) {global.settings.add("top-left");}
 			if (global.settings.size() < 5) {global.settings.add("false");}
 			if (global.settings.size() < 6) {global.settings.add("null");}
-			chat.warn(chat.color(global.settings.get(0), "Chat triggers loaded"));
+			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Chat triggers loaded"));
 		} catch (IOException e1) {
-			chat.warn(chat.color("red", "Error loading files!"));
-			chat.warn(chat.color("gold", "Setting up new files"));
+			ChatHandler.warn(ChatHandler.color("red", "Error loading files!"));
+			ChatHandler.warn(ChatHandler.color("gold", "Setting up new files"));
 			File checkFile = new File("./mods/ChatTriggers");
 			if (checkFile.exists()) {
 				try {FileUtils.deleteDirectory(checkFile);} 
-				catch (IOException e11) {chat.warn(chat.color("red","Error deleting old files!")); e11.printStackTrace();}
+				catch (IOException e11) {ChatHandler.warn(ChatHandler.color("red","Error deleting old files!")); e11.printStackTrace();}
 				checkFile.mkdir();
 			} else {checkFile.mkdir();}
 			
@@ -740,14 +735,35 @@ public class file {
 			if (global.settings.size() < 5) {global.settings.add("false");}
 			if (global.settings.size() < 6) {global.settings.add("null");}
 			
-			try {file.saveAll(); chat.warn(chat.color("green", "New files created!"));} 
-			catch (IOException e111) {chat.warn(chat.color("red", "Error saving files! report this to kerbybit ASAP!")); e111.printStackTrace();}
+			try {saveAll(); ChatHandler.warn(ChatHandler.color("green", "New files created!"));} 
+			catch (IOException e111) {ChatHandler.warn(ChatHandler.color("red", "Error saving files! report this to kerbybit ASAP!")); e111.printStackTrace();}
 		}
 		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
 		if (global.settings.size() < 3) {global.settings.add("null");}
 		if (global.settings.size() < 4) {global.settings.add("top-left");}
 		if (global.settings.size() < 5) {global.settings.add("false");}
 		if (global.settings.size() < 6) {global.settings.add("null");}
-		try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+		try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+	}
+	
+	public static void firstFileLoad() {
+		if (global.tick==0) {
+			try {FileHandler.startup();} catch (ClassNotFoundException e) {e.printStackTrace();}
+
+	    	if (global.settings.get(4).equals("false")) {FileHandler.loadVersion("http://kerbybit.github.io/ChatTriggers/download/version.txt");} 
+	    	else {FileHandler.loadVersion("http://kerbybit.github.io/ChatTriggers/download/betaversion.txt");}
+			global.tick++;
+		}
+	}
+	
+	public static void tickImports() {
+		if (global.neededImports.size()>0 && global.canImport==true) {
+			if (global.canSave) {FileHandler.getImport("http://bfgteam.com/ChatTriggers/exports/"+global.neededImports.remove(0)+".txt");} 
+			else {
+				global.neededImports.clear();
+				ChatHandler.warn(ChatHandler.color("red", "cannot !REQUIRES while in test mode"));
+				ChatHandler.warn(ChatHandler.color("red", "</trigger load> to leave testing mode"));
+			}
+		}
 	}
 }

@@ -1,4 +1,4 @@
-package com.kerbybit.chattriggers;
+package commands;
 
 import java.util.ArrayList;
 

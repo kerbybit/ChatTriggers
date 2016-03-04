@@ -1,17 +1,17 @@
 package com.kerbybit.chattriggers;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import commands.CommandTrigger;
 import net.minecraft.client.Minecraft;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
-public class chat {
+public class ChatHandler {
+	
+	
 	public static void warnUnformatted(String cht) {
 		cht = cht.replace("'", "\\'");
 		String TMP_o = "['',";

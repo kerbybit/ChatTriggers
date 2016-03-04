@@ -61,6 +61,8 @@ public class global {
 	/////////////////////////////////////////////////////
 	public static List<List<String>> USR_string = new ArrayList<List<String>>();
 	public static List<List<String>> TMP_string = new ArrayList<List<String>>();
+	public static List<List<String>> backupUSR_strings = new ArrayList<List<String>>();
+	public static List<List<String>> backupTMP_strings = new ArrayList<List<String>>();
 	public static List<String> temporary_replace = new ArrayList<String>();
 	public static List<String> temporary_replacement = new ArrayList<String>();
 	

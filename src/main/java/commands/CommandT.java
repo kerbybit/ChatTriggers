@@ -1,4 +1,4 @@
-package com.kerbybit.chattriggers;
+package commands;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;

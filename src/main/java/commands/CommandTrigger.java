@@ -1,4 +1,4 @@
-package com.kerbybit.chattriggers;
+package commands;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +8,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+
+import com.kerbybit.chattriggers.ChatHandler;
+import com.kerbybit.chattriggers.EventsHandler;
+import com.kerbybit.chattriggers.FileHandler;
+import com.kerbybit.chattriggers.global;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -31,14 +36,14 @@ public class CommandTrigger extends CommandBase {
 	
 	public static void doCommand(String args[], Boolean silent) {
 		if (args.length == 0) {
-			chat.warn(chat.color("red", "/trigger [create/add/list] <...>"));
-			chat.warn(chat.color("red", "/trigger [string/run] <...>"));
-			chat.warn(chat.color("red", "/trigger [save/load]"));
-			chat.warn(chat.color("red", "/trigger [import/export] <...>"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger [create/add/list] <...>"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger [string/run] <...>"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger [save/load]"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger [import/export] <...>"));
 		} else if (args[0].equalsIgnoreCase("IMPORT")) {
 			commandImport(args, silent);
 		} else if (args[0].equalsIgnoreCase("EXPORT")) {
-			chat.warn(chat.color("red", "Command currently getting changed! Check back in a newer version."));
+			ChatHandler.warn(ChatHandler.color("red", "Command currently getting changed! Check back in a newer version."));
 		} else if (args[0].equalsIgnoreCase("RUN")) {
 			commandRun(args, silent);
 		} else if (args[0].equalsIgnoreCase("CREATE")) {
@@ -61,7 +66,7 @@ public class CommandTrigger extends CommandBase {
 			commandLoad(args, silent);
 		} else if (args[0].equalsIgnoreCase("TESTIMPORT")) {
 			if (args.length < 2) {
-				chat.warn(chat.color("red", "/trigger testImport [import name]"));
+				ChatHandler.warn(ChatHandler.color("red", "/trigger testImport [import name]"));
 			} else {
 				Boolean canTest = true;
 				for (int i=1; i<args.length; i++) {
@@ -69,7 +74,7 @@ public class CommandTrigger extends CommandBase {
 					File f = new File(dir);
 					if (!f.exists() || !f.isFile()) {
 						canTest=false;
-						chat.warn(chat.color("red", args[i]+".txt is not an import! Could not start test mode"));
+						ChatHandler.warn(ChatHandler.color("red", args[i]+".txt is not an import! Could not start test mode"));
 					}
 				}
 				
@@ -78,39 +83,39 @@ public class CommandTrigger extends CommandBase {
 						global.trigger.clear(); global.USR_string.clear(); global.TMP_string.clear();
 						global.waitEvents.clear(); global.asyncEvents.clear();
 						for (int i=1; i<args.length; i++) {
-							chat.warn(chat.color(global.settings.get(0), "You are now in testing mode for import '"+args[i]+"'"));
+							ChatHandler.warn(ChatHandler.color(global.settings.get(0), "You are now in testing mode for import '"+args[i]+"'"));
 						}
-						chat.warn(chat.color(global.settings.get(0), "To reload all of your triggers and strings, do </trigger load>"));
+						ChatHandler.warn(ChatHandler.color(global.settings.get(0), "To reload all of your triggers and strings, do </trigger load>"));
 						try {
 							for (int i=1; i<args.length; i++) {
 								String dir = "./mods/ChatTriggers/Imports/"+args[i]+".txt";
 								File f = new File(dir);
-								global.trigger.addAll(file.loadTriggers(dir, true));
+								global.trigger.addAll(FileHandler.loadTriggers(dir, true));
 							}
-						} catch (IOException e) {chat.warn(chat.color("red", "Unable to load import!")); e.printStackTrace();}
+						} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Unable to load import!")); e.printStackTrace();}
 						global.canSave = false;
 					} else {
-						chat.warn(chat.color("red", "You must leave test mode before testing another trigger!"));
-						chat.warn(chat.color("red", "</trigger load> to leave testing mode"));
+						ChatHandler.warn(ChatHandler.color("red", "You must leave test mode before testing another trigger!"));
+						ChatHandler.warn(ChatHandler.color("red", "</trigger load> to leave testing mode"));
 					}
 				} else {
-					chat.warn(chat.color("red", "Not an import!"));
+					ChatHandler.warn(ChatHandler.color("red", "Not an import!"));
 				}
 			}
 		} else if (args[0].equalsIgnoreCase("TEST")) {
-			chat.warn(chat.color("&7", "This command does nothing :D"));
+			ChatHandler.warn(ChatHandler.color("&7", "This command does nothing :D"));
 		} else {
-			chat.warn(chat.color("red", "/trigger [create/add/list] <...>"));
-			chat.warn(chat.color("red", "/trigger [string/run] <...>"));
-			chat.warn(chat.color("red", "/trigger [save/load]"));
-			chat.warn(chat.color("red", "/trigger [import/export] <...>"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger [create/add/list] <...>"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger [string/run] <...>"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger [save/load]"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger [import/export] <...>"));
 		}
 	}
 	
 	public static void commandImport(String args[], Boolean silent) {
 		if (args.length>=2) {
 			for (int i=1; i<args.length; i++) {global.neededImports.add(args[i]);}
-		} else {chat.warn(chat.color("red", "/trigger import [import name]"));}
+		} else {ChatHandler.warn(ChatHandler.color("red", "/trigger import [import name]"));}
 	}
 	
 	/*public static void commandExport(String args[], Boolean silent) { //TODO
@@ -119,7 +124,7 @@ public class CommandTrigger extends CommandBase {
 	
 	public static void commandRun(String args[], Boolean silent) {
 		if (args.length < 2) {
-			chat.warn(chat.color("red", "/tr [trigger]"));
+			ChatHandler.warn(ChatHandler.color("red", "/tr [trigger]"));
 			ArrayList<List<String>> listCommands = new ArrayList<List<String>>();
 			ArrayList<List<String>> showCommands = new ArrayList<List<String>>();
 			for (int i=0; i<global.trigger.size(); i++) {
@@ -137,7 +142,7 @@ public class CommandTrigger extends CommandBase {
 				}
 			}
 			if (listCommands.size() != 0) {
-				chat.warn(chat.color("white", "Available imported commands"));
+				ChatHandler.warn(ChatHandler.color("white", "Available imported commands"));
 				for (int i=0; i<listCommands.size(); i++) {
 					Boolean isNewList = false;
 					int isInList = -1;
@@ -155,9 +160,9 @@ public class CommandTrigger extends CommandBase {
 					} else {showCommands.get(isInList).add(listCommands.get(i).get(1));}
 				}
 				for (int i=0; i<showCommands.size(); i++) {
-					chat.warn(chat.color("white",showCommands.get(i).get(0)));
+					ChatHandler.warn(ChatHandler.color("white",showCommands.get(i).get(0)));
 					for (int j=1; j<showCommands.get(i).size(); j++) {
-						chat.warn(chat.color(global.settings.get(0), "  /tr "+showCommands.get(i).get(j)));
+						ChatHandler.warn(ChatHandler.color(global.settings.get(0), "  /tr "+showCommands.get(i).get(j)));
 					}
 				}
 			}
@@ -175,7 +180,7 @@ public class CommandTrigger extends CommandBase {
 					for (int i=2; i<global.trigger.get(num).size(); i++) {
 						TMP_events.add(global.trigger.get(num).get(i));
 					}
-					events.doEvents(TMP_events, e);
+					EventsHandler.doEvents(TMP_events, e);
 				}
 			} catch (NumberFormatException e1) {
 				for (int k=0; k<global.trigger.size(); k++) {
@@ -196,7 +201,7 @@ public class CommandTrigger extends CommandBase {
 						for (int i=2; i<global.trigger.get(k).size(); i++) {
 							TMP_events.add(global.trigger.get(k).get(i));
 						}
-						events.doEvents(TMP_events, e);
+						EventsHandler.doEvents(TMP_events, e);
 					} else {
 						String TMP_trigtype = global.trigger.get(k).get(0);
 						if (TMP_trigtype.toUpperCase().startsWith("OTHER")) {
@@ -212,7 +217,7 @@ public class CommandTrigger extends CommandBase {
 										for (int j=2; j<global.trigger.get(k).size(); j++) {
 											TMP_events.add(global.trigger.get(k).get(j));
 										}
-										events.doEvents(TMP_events, e, argsOut, argsIn);
+										EventsHandler.doEvents(TMP_events, e, argsOut, argsIn);
 									}
 								}
 							}
@@ -225,7 +230,7 @@ public class CommandTrigger extends CommandBase {
 	
 	public static void commandCreate(String args[], Boolean silent) {
 		if (args.length < 3) {
-			chat.warn(chat.color("red", "/trigger create [type] [trigger]"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger create [type] [trigger]"));
 		} else {
 			String TMP_type = args[1];
 			String TMP_trig = "";
@@ -253,18 +258,18 @@ public class CommandTrigger extends CommandBase {
 					TMP_out.add("text:'with trigger type ',color:gray");
 					TMP_out.add("text:'" + TMP_type + " ',color:"+global.settings.get(1));
 					TMP_out.add("text:'(" + TMP_num + ")',color:gray,hoverEvent:{action:'show_text',value:'Add an event'},clickEvent:{action:'suggest_command',value:'/trigger add " + TMP_num + " '}");
-					chat.sendJson(TMP_out);
+					ChatHandler.sendJson(TMP_out);
 				}
-				try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+				try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 			} else {
-				chat.warn(chat.color("red", "Not a valid trigger type"));
+				ChatHandler.warn(ChatHandler.color("red", "Not a valid trigger type"));
 			}
 		}
 	}
 	
 	public static void commandDelete(String args[], Boolean silent) {
 		if (args.length < 2) {
-			chat.warn(chat.color("red", "/trigger delete [trigger number]"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger delete [trigger number]"));
 		} else {
 			int num = -1;
 			try {num = Integer.parseInt(args[1]);} 
@@ -273,23 +278,23 @@ public class CommandTrigger extends CommandBase {
 				String TMP_rem = global.trigger.get(num).get(1);
 				if (!TMP_rem.contains("<imported>")) {
 					if (silent==false) {
-						chat.warnUnformatted(chat.color("gray", "Deleted trigger") + chat.color(global.settings.get(0), TMP_rem) + chat.color("gray", "and all of its events"));
+						ChatHandler.warnUnformatted(ChatHandler.color("gray", "Deleted trigger") + ChatHandler.color(global.settings.get(0), TMP_rem) + ChatHandler.color("gray", "and all of its events"));
 					}
 					global.trigger.remove(num).get(1);
-					try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+					try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 				} else {
-					chat.warnUnformatted(chat.color("red", "You cannot edit imported triggers!"));
-					chat.warnUnformatted(chat.color("red", "You must edit them from the imported file!"));
+					ChatHandler.warnUnformatted(ChatHandler.color("red", "You cannot edit imported triggers!"));
+					ChatHandler.warnUnformatted(ChatHandler.color("red", "You must edit them from the imported file!"));
 				}
 			} else {
-				chat.warn(chat.color("red", "/trigger delete [trigger number]"));
+				ChatHandler.warn(ChatHandler.color("red", "/trigger delete [trigger number]"));
 			}
 		}
 	}
 	
 	public static void commandAdd(String args[], Boolean silent) {
 		if (args.length < 3) {
-			chat.warn(chat.color("red", "/trigger add [trigger number] [event] [event argument(s)]"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger add [trigger number] [event] [event argument(s)]"));
 		} else {
 			int num = -1;
 			try {num = Integer.parseInt(args[1]);} 
@@ -323,25 +328,25 @@ public class CommandTrigger extends CommandBase {
 					|| TMP_etype.equalsIgnoreCase("ASYNC")) {
 						global.trigger.get(num).add(TMP_e);
 						if (silent==false) {
-							chat.warnUnformatted(chat.color("gray", "Added event") + " " + chat.color(global.settings.get(0), TMP_e) + " " + chat.color("gray", "to trigger") + " " + chat.color(global.settings.get(0), global.trigger.get(num).get(1)));
+							ChatHandler.warnUnformatted(ChatHandler.color("gray", "Added event") + " " + ChatHandler.color(global.settings.get(0), TMP_e) + " " + ChatHandler.color("gray", "to trigger") + " " + ChatHandler.color(global.settings.get(0), global.trigger.get(num).get(1)));
 						}
-						try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+						try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 					} else {
-						chat.warn(chat.color("red", "Not a valid event type!"));
+						ChatHandler.warn(ChatHandler.color("red", "Not a valid event type!"));
 					}
 				} else {
-					chat.warnUnformatted(chat.color("red", "You cannot edit imported triggers!"));
-					chat.warnUnformatted(chat.color("red", "You must edit them from the imported file!"));
+					ChatHandler.warnUnformatted(ChatHandler.color("red", "You cannot edit imported triggers!"));
+					ChatHandler.warnUnformatted(ChatHandler.color("red", "You must edit them from the imported file!"));
 				}
 			} else {
-				chat.warn(chat.color("red", "/trigger add [trigger number] [event] [event argument(s)]"));
+				ChatHandler.warn(ChatHandler.color("red", "/trigger add [trigger number] [event] [event argument(s)]"));
 			}
 		}
 	}
 	
 	public static void commandRemove(String args[], Boolean silent) {
 		if (args.length < 3) {
-			chat.warn(chat.color("red", "/trigger remove [trigger number] [event number]"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger remove [trigger number] [event number]"));
 		} else {
 			int num = -1;
 			try {num = Integer.parseInt(args[1]);} 
@@ -354,29 +359,29 @@ public class CommandTrigger extends CommandBase {
 					if (num2>1 && num2<global.trigger.get(num).size()) {
 						String TMP_rem = global.trigger.get(num).remove(num2);
 						if (silent==false) {
-							chat.warnUnformatted(chat.color("gray", "Removed event") + chat.color(global.settings.get(0), TMP_rem) + chat.color("gray", "from trigger") + chat.color(global.settings.get(0), global.trigger.get(num).get(1)));
+							ChatHandler.warnUnformatted(ChatHandler.color("gray", "Removed event") + ChatHandler.color(global.settings.get(0), TMP_rem) + ChatHandler.color("gray", "from trigger") + ChatHandler.color(global.settings.get(0), global.trigger.get(num).get(1)));
 						}
-						try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+						try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 					} else {
-						chat.warn(chat.color("red", "/trigger remove [trigger number] [event number]"));
+						ChatHandler.warn(ChatHandler.color("red", "/trigger remove [trigger number] [event number]"));
 					}
 				} else {
-					chat.warnUnformatted(chat.color("red", "You cannot edit imported triggers!"));
-					chat.warnUnformatted(chat.color("red", "You must edit them from the imported file!"));
+					ChatHandler.warnUnformatted(ChatHandler.color("red", "You cannot edit imported triggers!"));
+					ChatHandler.warnUnformatted(ChatHandler.color("red", "You must edit them from the imported file!"));
 				}
 			} else {
-				chat.warn(chat.color("red", "/trigger remove [trigger number] [event number]"));
+				ChatHandler.warn(ChatHandler.color("red", "/trigger remove [trigger number] [event number]"));
 			}
 		}
 	}
 	
 	public static void commandString(String args[], Boolean silent) {
 		if (args.length < 2) {
-			chat.warn(chat.color("red", "/trigger string [create/set/list]"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger string [create/set/list]"));
 		} else {
 			if (args[1].equalsIgnoreCase("CREATE")) {
 				if (args.length != 3) {
-					chat.warn(chat.color("red", "/trigger string create [string name]"));
+					ChatHandler.warn(ChatHandler.color("red", "/trigger string create [string name]"));
 				} else {
 					if (global.canSave) {
 						String TMP_sn = args[2];
@@ -397,7 +402,7 @@ public class CommandTrigger extends CommandBase {
 							}
 						}
 						if (isString) {
-							chat.warn(chat.color("red", TMP_sn + " already exists!"));
+							ChatHandler.warn(ChatHandler.color("red", TMP_sn + " already exists!"));
 						} else {
 							List<String> TMP_l = new ArrayList<String>();
 							TMP_l.add(TMP_sn);
@@ -409,18 +414,18 @@ public class CommandTrigger extends CommandBase {
 								List <String> TMP_out = new ArrayList<String>();
 								TMP_out.add("text:'Created string ',color:gray");
 								TMP_out.add("text:'"+TMP_sn+"',color:"+global.settings.get(1)+",clickEvent:{action:'suggest_command',value:'/trigger string set "+TMP_sn+" '},hoverEvent:{action:'show_text',value:'Set "+TMP_sn+"'}");
-								chat.sendJson(TMP_out);
+								ChatHandler.sendJson(TMP_out);
 							}
-							try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+							try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 						}
 					} else {
-						chat.warn(chat.color("red", "cannot create string while in test mode"));
-						chat.warn(chat.color("red", "</trigger load> to leave testing mode"));
+						ChatHandler.warn(ChatHandler.color("red", "cannot create string while in test mode"));
+						ChatHandler.warn(ChatHandler.color("red", "</trigger load> to leave testing mode"));
 					}
 				}
 			} else if (args[1].equalsIgnoreCase("DELETE")) {
 				if (args.length < 3) {
-					chat.warn(chat.color("red", "/trigger string delete [string name]"));
+					ChatHandler.warn(ChatHandler.color("red", "/trigger string delete [string name]"));
 				} else {
 					if (global.canSave) {
 						int num = -1;
@@ -435,18 +440,18 @@ public class CommandTrigger extends CommandBase {
 						if (num>-1 && num<global.USR_string.size()) {
 							String TMP_rem = global.USR_string.remove(num).get(0);
 							if (silent==false) {
-								chat.warnUnformatted(chat.color("gray", "Deleted string") + " " + chat.color(global.settings.get(0), TMP_rem));
+								ChatHandler.warnUnformatted(ChatHandler.color("gray", "Deleted string") + " " + ChatHandler.color(global.settings.get(0), TMP_rem));
 							}
-							try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+							try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 						}
 					} else {
-						chat.warn(chat.color("red", "cannot delete string while in test mode"));
-						chat.warn(chat.color("red", "</trigger load> to leave testing mode"));
+						ChatHandler.warn(ChatHandler.color("red", "cannot delete string while in test mode"));
+						ChatHandler.warn(ChatHandler.color("red", "</trigger load> to leave testing mode"));
 					}
 				}
 			} else if (args[1].equalsIgnoreCase("SET")) {
 				if (args.length < 4) {
-					chat.warn(chat.color("red", "/trigger string set [string name] [string]"));
+					ChatHandler.warn(ChatHandler.color("red", "/trigger string set [string name] [string]"));
 				} else {
 					int num = -1;
 					try {num = Integer.parseInt(args[2]);} 
@@ -461,20 +466,20 @@ public class CommandTrigger extends CommandBase {
 						else {TMP_s += args[i] + " ";}
 					}
 					if (num>-1 && num<global.USR_string.size()) {
-						if (silent==false) {chat.warnUnformatted(chat.color("gray", "Set value") + " " + chat.color(global.settings.get(0), TMP_s) + " " + chat.color("gray", "in string") + " " + chat.color(global.settings.get(0), global.USR_string.get(num).get(0)));}
+						if (silent==false) {ChatHandler.warnUnformatted(ChatHandler.color("gray", "Set value") + " " + ChatHandler.color(global.settings.get(0), TMP_s) + " " + ChatHandler.color("gray", "in string") + " " + ChatHandler.color(global.settings.get(0), global.USR_string.get(num).get(0)));}
 						if (TMP_s.equals("{null}")) {TMP_s = "";}
 						global.USR_string.get(num).set(1,TMP_s);
-						try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
-					} else {chat.warn(chat.color("red", "/trigger string set [string number] [string]"));}
+						try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+					} else {ChatHandler.warn(ChatHandler.color("red", "/trigger string set [string number] [string]"));}
 				}
 			} else if (args[1].equalsIgnoreCase("LIST")) {
 				if (args.length==2) {
 					String dashes = "";
 					for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
-					chat.warn(chat.color(global.settings.get(0), "&m-"+dashes));
+					ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m-"+dashes));
 					if (global.USR_string.size() == 0) {
-						chat.warnUnformatted(chat.color("red", "No strings created"));
-						chat.warnUnformatted(chat.color("red", "Do </trigger string> to get started"));
+						ChatHandler.warnUnformatted(ChatHandler.color("red", "No strings created"));
+						ChatHandler.warnUnformatted(ChatHandler.color("red", "Do </trigger string> to get started"));
 					} else {
 						List<String> STR_lists = new ArrayList<String>();
 						for (int i=0; i<global.USR_string.size(); i++) {
@@ -485,8 +490,8 @@ public class CommandTrigger extends CommandBase {
 								TMP_out.add("text:'" + i + "> ',color:gray,hoverEvent:{action:'show_text',value:'Set string'},clickEvent:{action:'suggest_command',value:'/trigger string set " + i + " '}");
 								TMP_out.add("text:'" + TMP_sn + " ',color:"+global.settings.get(1));
 								if (global.canSave) {TMP_out.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Delete string'},clickEvent:{action:'suggest_command',value:'/trigger string delete " + i + " [enter to confirm]'}");}
-								chat.sendJson(TMP_out);
-								chat.warnUnformatted(chat.color("gray", "  " + global.USR_string.get(i).get(1)));
+								ChatHandler.sendJson(TMP_out);
+								ChatHandler.warnUnformatted(ChatHandler.color("gray", "  " + global.USR_string.get(i).get(1)));
 							} else {
 								if (STR_lists.size()==0) {
 									STR_lists.add(global.USR_string.get(i).get(2));
@@ -505,14 +510,14 @@ public class CommandTrigger extends CommandBase {
 							TMP_list = TMP_list.replace("'", "\\'");
 							TMP_out.add("text:'List> ',color:gray,hoverEvent:{action:'show_text',value:'Show "+TMP_list+" strings'},clickEvent:{action:'run_command',value:'/trigger string list "+TMP_list+"'}");
 							TMP_out.add("text:'"+TMP_list+"',color:"+global.settings.get(1));
-							chat.sendJson(TMP_out);
+							ChatHandler.sendJson(TMP_out);
 						}
 					}
-					chat.warn(chat.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
+					ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
 				} else {
 					String dashes = "";
 					for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
-					chat.warn(chat.color(global.settings.get(0), "&m-"+dashes));
+					ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m-"+dashes));
 					String showList = "";
 					for (int i=2; i<args.length; i++) {showList += args[i]+" ";} 
 					showList=showList.trim();
@@ -525,12 +530,12 @@ public class CommandTrigger extends CommandBase {
 								TMP_out.add("text:'" + i + "> ',color:gray,hoverEvent:{action:'show_text',value:'Set string'},clickEvent:{action:'suggest_command',value:'/trigger string set " + i + " '}");
 								TMP_out.add("text:'" + TMP_sn + " ',color:"+global.settings.get(1));
 								if (global.canSave) {TMP_out.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Delete string'},clickEvent:{action:'suggest_command',value:'/trigger string delete " + i + " [enter to confirm]'}");}
-								chat.sendJson(TMP_out);
-								chat.warnUnformatted(chat.color("gray", "  " + global.USR_string.get(i).get(1)));
+								ChatHandler.sendJson(TMP_out);
+								ChatHandler.warnUnformatted(ChatHandler.color("gray", "  " + global.USR_string.get(i).get(1)));
 							}
 						}
 					}
-					chat.warn(chat.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
+					ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
 				}
 			}
 		}
@@ -540,10 +545,10 @@ public class CommandTrigger extends CommandBase {
 		if (args.length==1) {
 			String dashes = "";
 			for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
-			chat.warn(chat.color(global.settings.get(0), "&m-"+dashes));
+			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m-"+dashes));
 			if (global.trigger.size() == 0) {
-				chat.warn(chat.color("red", "No triggers created"));
-				chat.warn(chat.color("red", "Do </trigger> to get started"));
+				ChatHandler.warn(ChatHandler.color("red", "No triggers created"));
+				ChatHandler.warn(ChatHandler.color("red", "Do </trigger> to get started"));
 			} else {
 				List<String> TMP_lists = new ArrayList<String>();
 				for (int i=0; i<global.trigger.size(); i++) {
@@ -586,7 +591,7 @@ public class CommandTrigger extends CommandBase {
 						TMP_out.add("text:'" + TMP_trig + " ',color:"+global.settings.get(1));
 						if (!TMP_tags.equals("")) {TMP_out.add("text:'tags ',color:dark_gray,hoverEvent:{action:'show_text',value:'" + TMP_tags + "'}");}
 						if (!TMP_imported) {TMP_out.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Remove trigger'},clickEvent:{action:'suggest_command',value:'/trigger delete " + i + " [enter to confirm]'}");}
-						chat.sendJson(TMP_out);
+						ChatHandler.sendJson(TMP_out);
 						
 						int tabbed_logic = 0;
 						
@@ -614,7 +619,7 @@ public class CommandTrigger extends CommandBase {
 								else {TMP_eventout.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Remove event'},clickEvent:{action:'suggest_command',value:'/trigger remove " + i + " " + j + " [enter to confirm]'}");}
 								TMP_eventout.add("text:' " + TMP_c + " ',color:dark_gray");
 								TMP_eventout.add("text:'" + TMP_e + "',color:gray");
-								chat.sendJson(TMP_eventout);
+								ChatHandler.sendJson(TMP_eventout);
 							
 							
 							if (TMP_c.toUpperCase().startsWith("IF") 
@@ -634,23 +639,24 @@ public class CommandTrigger extends CommandBase {
 						List<String> TMP_out = new ArrayList<String>();
 						TMP_out.add("text:'List> ',color:gray,hoverEvent:{action:'show_text',value:'Show " + value + " triggers'},clickEvent:{action:'run_command',value:'/trigger list " + value + " '}");
 						TMP_out.add("text:'" + value + " ',color:"+global.settings.get(1));
-						chat.sendJson(TMP_out);
+						ChatHandler.sendJson(TMP_out);
 					}
 				}
 			}
-			chat.warn(chat.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
+			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
 		} else {
 			String TMP_check = "";
 			for (int i=1; i<args.length; i++) {
 				if (i==args.length-1) {TMP_check += args[i];}
 				else {TMP_check += args[i] + " ";}
 			}
+			
 			String dashes = "";
 			for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
-			chat.warn(chat.color(global.settings.get(0), "&m-"+dashes));
+			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m-"+dashes));
 			if (global.trigger.size() == 0) {
-				chat.warn(chat.color("red", "No triggers created"));
-				chat.warn(chat.color("red", "Do </trigger> to get started"));
+				ChatHandler.warn(ChatHandler.color("red", "No triggers created"));
+				ChatHandler.warn(ChatHandler.color("red", "Do </trigger> to get started"));
 			} else {
 				int TMP_test = 0;
 				for (int i=0; i<global.trigger.size(); i++) {
@@ -695,7 +701,7 @@ public class CommandTrigger extends CommandBase {
 						TMP_out.add("text:'" + TMP_trig + " ',color:"+global.settings.get(1));
 						if (!TMP_tags.equals("")) {TMP_out.add("text:'tags ',color:dark_gray,hoverEvent:{action:'show_text',value:'" + TMP_tags + "'}");}
 						if (!TMP_imported) {TMP_out.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Remove trigger'},clickEvent:{action:'suggest_command',value:'/trigger delete " + i + " [enter to confirm]'}");}
-						chat.sendJson(TMP_out);
+						ChatHandler.sendJson(TMP_out);
 						
 						int tabbed_logic=0;
 						
@@ -722,7 +728,7 @@ public class CommandTrigger extends CommandBase {
 								else {TMP_eventout.add("text:'-',color:red,hoverEvent:{action:'show_text',value:'Remove event'},clickEvent:{action:'suggest_command',value:'/trigger remove " + i + " " + j + " [enter to confirm]'}");}
 								TMP_eventout.add("text:' " + TMP_c + " ',color:dark_gray");
 								TMP_eventout.add("text:'" + TMP_e + "',color:gray");
-								chat.sendJson(TMP_eventout);
+								ChatHandler.sendJson(TMP_eventout);
 								
 							if (TMP_c.toUpperCase().startsWith("IF") 
 							|| TMP_c.toUpperCase().startsWith("FOR")
@@ -737,46 +743,46 @@ public class CommandTrigger extends CommandBase {
 					}
 				}
 				if (TMP_test==0) {
-					chat.warn(chat.color("red", "There is no list with name " + TMP_check));
-					chat.warn(chat.color("red", "Create list " + TMP_check + " by using <list=" + TMP_check + "> when you create a trigger"));
+					ChatHandler.warn(ChatHandler.color("red", "There is no list with name " + TMP_check));
+					ChatHandler.warn(ChatHandler.color("red", "Create list " + TMP_check + " by using <list=" + TMP_check + "> when you create a trigger"));
 				}
 			}
-			chat.warn(chat.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
+			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
 		}
 	}
 	
 	public static void commandSettings(String args[], Boolean silent) {
 		if (args.length < 2) {
-			chat.warn(chat.color("red", "/trigger settings [debug/test/color/killfeed/beta] <...>"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger settings [debug/test/color/killfeed/beta] <...>"));
 		} else {
 			if (args[1].equalsIgnoreCase("DEBUG")) {
-				if (global.debug==false) {chat.warn(chat.color("gray", "Toggled debug mode") + " " + chat.color(global.settings.get(0), "on")); global.debug=true;}
-				else {chat.warn(chat.color("gray", "Toggled debug mode") + " " + chat.color(global.settings.get(0), "off")); global.debug=false;}
+				if (global.debug==false) {ChatHandler.warn(ChatHandler.color("gray", "Toggled debug mode") + " " + ChatHandler.color(global.settings.get(0), "on")); global.debug=true;}
+				else {ChatHandler.warn(ChatHandler.color("gray", "Toggled debug mode") + " " + ChatHandler.color(global.settings.get(0), "off")); global.debug=false;}
 			} else if (args[1].equalsIgnoreCase("COLOR") || args[1].equalsIgnoreCase("COLOUR")) {
 				if (args.length < 3) {
-					chat.warn(chat.color("red", "/trigger settings color [color]"));
+					ChatHandler.warn(ChatHandler.color("red", "/trigger settings color [color]"));
 				} else {
 					args[2] = args[2].replace("_", "");
 					args[2] = args[2].replace("&", "");
 					if (args.length==4) {args[2] = args[2]+args[3];}
-					if      (args[2].equalsIgnoreCase("0") || args[2].equalsIgnoreCase("BLACK"))       {global.settings.set(0, "&0"); global.settings.set(1, "black");        chat.warn(chat.color(global.settings.get(0), "Changed color"));}
-					else if (args[2].equalsIgnoreCase("1") || args[2].equalsIgnoreCase("DARKBLUE"))    {global.settings.set(0, "&1"); global.settings.set(1, "dark_blue");    chat.warn(chat.color(global.settings.get(0), "Changed color"));}
-					else if (args[2].equalsIgnoreCase("2") || args[2].equalsIgnoreCase("DARKGREEN"))   {global.settings.set(0, "&2"); global.settings.set(1, "dark_green");   chat.warn(chat.color(global.settings.get(0), "Changed color"));}
-					else if (args[2].equalsIgnoreCase("3") || args[2].equalsIgnoreCase("DARKAQUA"))    {global.settings.set(0, "&3"); global.settings.set(1, "dark_aqua");    chat.warn(chat.color(global.settings.get(0), "Changed color"));}
-					else if (args[2].equalsIgnoreCase("4") || args[2].equalsIgnoreCase("DARKRED"))     {global.settings.set(0, "&4"); global.settings.set(1, "dark_red");     chat.warn(chat.color(global.settings.get(0), "Changed color"));}
-					else if (args[2].equalsIgnoreCase("5") || args[2].equalsIgnoreCase("DARKPURPLE"))  {global.settings.set(0, "&5"); global.settings.set(1, "dark_purple");  chat.warn(chat.color(global.settings.get(0), "Changed color"));}
-					else if (args[2].equalsIgnoreCase("6") || args[2].equalsIgnoreCase("GOLD"))        {global.settings.set(0, "&6"); global.settings.set(1, "gold");         chat.warn(chat.color(global.settings.get(0), "Changed color"));}
-					else if (args[2].equalsIgnoreCase("7") || args[2].equalsIgnoreCase("GRAY"))        {global.settings.set(0, "&7"); global.settings.set(1, "gray");         chat.warn(chat.color(global.settings.get(0), "Changed color"));}
-					else if (args[2].equalsIgnoreCase("8") || args[2].equalsIgnoreCase("DARKGRAY"))    {global.settings.set(0, "&8"); global.settings.set(1, "dark_gray");    chat.warn(chat.color(global.settings.get(0), "Changed color"));}
-					else if (args[2].equalsIgnoreCase("9") || args[2].equalsIgnoreCase("BLUE"))        {global.settings.set(0, "&9"); global.settings.set(1, "blue");         chat.warn(chat.color(global.settings.get(0), "Changed color"));}
-					else if (args[2].equalsIgnoreCase("a") || args[2].equalsIgnoreCase("GREEN"))       {global.settings.set(0, "&a"); global.settings.set(1, "green");        chat.warn(chat.color(global.settings.get(0), "Changed color"));}
-					else if (args[2].equalsIgnoreCase("b") || args[2].equalsIgnoreCase("AQUA"))        {global.settings.set(0, "&b"); global.settings.set(1, "aqua");         chat.warn(chat.color(global.settings.get(0), "Changed color"));}
-					else if (args[2].equalsIgnoreCase("c") || args[2].equalsIgnoreCase("RED"))         {global.settings.set(0, "&c"); global.settings.set(1, "red");          chat.warn(chat.color(global.settings.get(0), "Changed color"));}
-					else if (args[2].equalsIgnoreCase("d") || args[2].equalsIgnoreCase("LIGHTPURPLE")) {global.settings.set(0, "&d"); global.settings.set(1, "light_purple"); chat.warn(chat.color(global.settings.get(0), "Changed color"));}
-					else if (args[2].equalsIgnoreCase("e") || args[2].equalsIgnoreCase("YELLOW"))      {global.settings.set(0, "&e"); global.settings.set(1, "yellow");       chat.warn(chat.color(global.settings.get(0), "Changed color"));}
-					else if (args[2].equalsIgnoreCase("f") || args[2].equalsIgnoreCase("WHITE"))       {global.settings.set(0, "&f"); global.settings.set(1, "white");        chat.warn(chat.color(global.settings.get(0), "Changed color"));}
-					else {chat.warn(chat.color("red", "Not a valid color"));}
-					try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+					if      (args[2].equalsIgnoreCase("0") || args[2].equalsIgnoreCase("BLACK"))       {global.settings.set(0, "&0"); global.settings.set(1, "black");        ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Changed color"));}
+					else if (args[2].equalsIgnoreCase("1") || args[2].equalsIgnoreCase("DARKBLUE"))    {global.settings.set(0, "&1"); global.settings.set(1, "dark_blue");    ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Changed color"));}
+					else if (args[2].equalsIgnoreCase("2") || args[2].equalsIgnoreCase("DARKGREEN"))   {global.settings.set(0, "&2"); global.settings.set(1, "dark_green");   ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Changed color"));}
+					else if (args[2].equalsIgnoreCase("3") || args[2].equalsIgnoreCase("DARKAQUA"))    {global.settings.set(0, "&3"); global.settings.set(1, "dark_aqua");    ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Changed color"));}
+					else if (args[2].equalsIgnoreCase("4") || args[2].equalsIgnoreCase("DARKRED"))     {global.settings.set(0, "&4"); global.settings.set(1, "dark_red");     ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Changed color"));}
+					else if (args[2].equalsIgnoreCase("5") || args[2].equalsIgnoreCase("DARKPURPLE"))  {global.settings.set(0, "&5"); global.settings.set(1, "dark_purple");  ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Changed color"));}
+					else if (args[2].equalsIgnoreCase("6") || args[2].equalsIgnoreCase("GOLD"))        {global.settings.set(0, "&6"); global.settings.set(1, "gold");         ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Changed color"));}
+					else if (args[2].equalsIgnoreCase("7") || args[2].equalsIgnoreCase("GRAY"))        {global.settings.set(0, "&7"); global.settings.set(1, "gray");         ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Changed color"));}
+					else if (args[2].equalsIgnoreCase("8") || args[2].equalsIgnoreCase("DARKGRAY"))    {global.settings.set(0, "&8"); global.settings.set(1, "dark_gray");    ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Changed color"));}
+					else if (args[2].equalsIgnoreCase("9") || args[2].equalsIgnoreCase("BLUE"))        {global.settings.set(0, "&9"); global.settings.set(1, "blue");         ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Changed color"));}
+					else if (args[2].equalsIgnoreCase("a") || args[2].equalsIgnoreCase("GREEN"))       {global.settings.set(0, "&a"); global.settings.set(1, "green");        ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Changed color"));}
+					else if (args[2].equalsIgnoreCase("b") || args[2].equalsIgnoreCase("AQUA"))        {global.settings.set(0, "&b"); global.settings.set(1, "aqua");         ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Changed color"));}
+					else if (args[2].equalsIgnoreCase("c") || args[2].equalsIgnoreCase("RED"))         {global.settings.set(0, "&c"); global.settings.set(1, "red");          ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Changed color"));}
+					else if (args[2].equalsIgnoreCase("d") || args[2].equalsIgnoreCase("LIGHTPURPLE")) {global.settings.set(0, "&d"); global.settings.set(1, "light_purple"); ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Changed color"));}
+					else if (args[2].equalsIgnoreCase("e") || args[2].equalsIgnoreCase("YELLOW"))      {global.settings.set(0, "&e"); global.settings.set(1, "yellow");       ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Changed color"));}
+					else if (args[2].equalsIgnoreCase("f") || args[2].equalsIgnoreCase("WHITE"))       {global.settings.set(0, "&f"); global.settings.set(1, "white");        ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Changed color"));}
+					else {ChatHandler.warn(ChatHandler.color("red", "Not a valid color"));}
+					try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 				}
 			} else if (args[1].equalsIgnoreCase("KILLFEED")) {
 				if (args.length>2) {
@@ -784,68 +790,68 @@ public class CommandTrigger extends CommandBase {
 						if (args.length>3) {
 							if (args[3].equalsIgnoreCase("TOP-LEFT") || args[3].equalsIgnoreCase("TL")) {
 								global.settings.set(3, "top-left");
-								chat.warn(chat.color("gray", "Changed killfeed position to") + " " + chat.color(global.settings.get(0), "top-left"));
-								try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+								ChatHandler.warn(ChatHandler.color("gray", "Changed killfeed position to") + " " + ChatHandler.color(global.settings.get(0), "top-left"));
+								try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 							} else if (args[3].equalsIgnoreCase("TOP-RIGHT") || args[3].equalsIgnoreCase("TR")) {
 								global.settings.set(3, "top-right");
-								chat.warn(chat.color("gray", "Changed killfeed position to ") + " " + chat.color(global.settings.get(0), "top-right"));
-								try {file.saveAll();} catch (IOException e) {chat.warn(chat.color("red", "Error saving triggers!"));}
+								ChatHandler.warn(ChatHandler.color("gray", "Changed killfeed position to ") + " " + ChatHandler.color(global.settings.get(0), "top-right"));
+								try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 							} else {
-								chat.warn(chat.color("red", "/trigger settings killfeed position [top-left/top-right]"));
+								ChatHandler.warn(ChatHandler.color("red", "/trigger settings killfeed position [top-left/top-right]"));
 							}
 						} else {
-							chat.warn(chat.color("red", "/trigger settings killfeed position [top-left/top-right]"));
+							ChatHandler.warn(ChatHandler.color("red", "/trigger settings killfeed position [top-left/top-right]"));
 						}
 					} else {
-						chat.warn(chat.color("red", "/trigger settings killfeed [position] <...>"));
+						ChatHandler.warn(ChatHandler.color("red", "/trigger settings killfeed [position] <...>"));
 					}
 				} else {
-					chat.warn(chat.color("red", "/trigger settings killfeed [position] <...>"));
+					ChatHandler.warn(ChatHandler.color("red", "/trigger settings killfeed [position] <...>"));
 				}
 			} else if (args[1].equalsIgnoreCase("BETA")) {
 				if (args.length>2) {
 					if (args[2].equalsIgnoreCase("TOGGLE")) {
 						if (global.settings.get(4).equals("false")) {
 							global.settings.set(4, "true");
-							chat.warn(chat.color("red", "You have turned nightly notifications")+" "+chat.color("green","on!"));
-							chat.warn(chat.color("red", "For more info, do </trigger settings beta>"));
-							file.loadVersion("http://kerbybit.github.io/ChatTriggers/download/betaversion.txt");
+							ChatHandler.warn(ChatHandler.color("red", "You have turned nightly notifications")+" "+ChatHandler.color("green","on!"));
+							ChatHandler.warn(ChatHandler.color("red", "For more info, do </trigger settings beta>"));
+							FileHandler.loadVersion("http://kerbybit.github.io/ChatTriggers/download/betaversion.txt");
 						} else {
 							global.settings.set(4, "false");
-							chat.warn(chat.color("red", "You have turned nightly notifications off!"));
-							chat.warn(chat.color("red", "For more info, do </trigger settings beta>"));
-							file.loadVersion("http://kerbybit.github.io/ChatTriggers/download/version.txt");
+							ChatHandler.warn(ChatHandler.color("red", "You have turned nightly notifications off!"));
+							ChatHandler.warn(ChatHandler.color("red", "For more info, do </trigger settings beta>"));
+							FileHandler.loadVersion("http://kerbybit.github.io/ChatTriggers/download/version.txt");
 						}
 					} else {
-						chat.warn(chat.color("red", "/trigger settings beta [toggle]"));
+						ChatHandler.warn(ChatHandler.color("red", "/trigger settings beta [toggle]"));
 					}
 				} else {
 					String dashes = "";
  					for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
- 					chat.warn(chat.color(global.settings.get(0), "&m-"+dashes));
+ 					ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m-"+dashes));
 					if (global.settings.get(4).equals("false")) {
-						chat.warn(chat.color("red", "You currently have the beta version disabled!"));
-						chat.warn(chat.color("red", "Although this doesnt prevent you from downloading"));
-						chat.warn(chat.color("red", "and using the beta version,"));
-						chat.warn(chat.color("red", "You will NOT get notified of nightly builds"));
-						chat.warn(chat.color("red", "To opt into the beta, do </trigger settings beta toggle>"));
-						chat.warn(chat.color("red", ""));
-						chat.warn(chat.color("red", "The beta versions may have unforseen bugs"));
-						chat.warn(chat.color("red", "but gets updated regularly with new features"));
+						ChatHandler.warn(ChatHandler.color("red", "You currently have the beta version disabled!"));
+						ChatHandler.warn(ChatHandler.color("red", "Although this doesnt prevent you from downloading"));
+						ChatHandler.warn(ChatHandler.color("red", "and using the beta version,"));
+						ChatHandler.warn(ChatHandler.color("red", "You will NOT get notified of nightly builds"));
+						ChatHandler.warn(ChatHandler.color("red", "To opt into the beta, do </trigger settings beta toggle>"));
+						ChatHandler.warn(ChatHandler.color("red", ""));
+						ChatHandler.warn(ChatHandler.color("red", "The beta versions may have unforseen bugs"));
+						ChatHandler.warn(ChatHandler.color("red", "but gets updated regularly with new features"));
 					} else {
-						chat.warn(chat.color("red", "You currently have the beta version")+" "+chat.color("green","enabled!"));
-						chat.warn(chat.color("red", "You will recieve notifications on nightly builds"));
-						chat.warn(chat.color("red", "To change this, do </trigger settings beta toggle>"));
-						chat.warn(chat.color("red", ""));
-						chat.warn(chat.color("red", "The beta versions may have unforseen bugs"));
-						chat.warn(chat.color("red", "but gets updated regularly with new features"));
+						ChatHandler.warn(ChatHandler.color("red", "You currently have the beta version")+" "+ChatHandler.color("green","enabled!"));
+						ChatHandler.warn(ChatHandler.color("red", "You will recieve notifications on nightly builds"));
+						ChatHandler.warn(ChatHandler.color("red", "To change this, do </trigger settings beta toggle>"));
+						ChatHandler.warn(ChatHandler.color("red", ""));
+						ChatHandler.warn(ChatHandler.color("red", "The beta versions may have unforseen bugs"));
+						ChatHandler.warn(ChatHandler.color("red", "but gets updated regularly with new features"));
 					}
-					chat.warn(chat.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
+					ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
 				}
 			} else if (args[1].equalsIgnoreCase("TEST")){
 				if (args.length<3) {
-					chat.warn(chat.color("red", "/trigger settings test [onWorldLoad/onWorldFirstLoad]"));
-					chat.warn(chat.color("red", "/trigger settings test [onServerChange/onNewDay]"));
+					ChatHandler.warn(ChatHandler.color("red", "/trigger settings test [onWorldLoad/onWorldFirstLoad]"));
+					ChatHandler.warn(ChatHandler.color("red", "/trigger settings test [onServerChange/onNewDay]"));
 				} else {
 					if (args[2].equalsIgnoreCase("ONWORLDLOAD")) {
 						global.worldLoaded = true;
@@ -858,36 +864,36 @@ public class CommandTrigger extends CommandBase {
 					} else if (args[2].equalsIgnoreCase("ONNEWDAY")) {
 						global.currentDate = "";
 					} else {
-						chat.warn(chat.color("red", "/trigger settings test [onWorldLoad/onWorldFirstLoad]"));
-						chat.warn(chat.color("red", "/trigger settings test [onServerChange/onNewDay]"));
+						ChatHandler.warn(ChatHandler.color("red", "/trigger settings test [onWorldLoad/onWorldFirstLoad]"));
+						ChatHandler.warn(ChatHandler.color("red", "/trigger settings test [onServerChange/onNewDay]"));
 					}
 				}
 			} else {
-				chat.warn(chat.color("red", "/trigger settings [debug/test/color/killfeed/beta] <...>"));
+				ChatHandler.warn(ChatHandler.color("red", "/trigger settings [debug/test/color/killfeed/beta] <...>"));
 			}
 		}
 	}
 	
 	public static void commandSave(String args[], Boolean silent) {
 		try {
-			file.saveAll();
-			global.trigger = file.loadTriggers("./mods/ChatTriggers/triggers.txt", false);
-			global.USR_string = file.loadStrings("./mods/ChatTriggers/strings.txt");
-			global.settings = file.loadSettings("./mods/ChatTriggers/settings.txt");
-			chat.warn(chat.color(global.settings.get(0), "Organized and saved files"));
+			FileHandler.saveAll();
+			global.trigger = FileHandler.loadTriggers("./mods/ChatTriggers/triggers.txt", false);
+			global.USR_string = FileHandler.loadStrings("./mods/ChatTriggers/strings.txt");
+			global.settings = FileHandler.loadSettings("./mods/ChatTriggers/settings.txt");
+			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Organized and saved files"));
 		} catch (IOException e) {
-			chat.warn(chat.color("red", "Error saving triggers!"));
+			ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));
 		}
 	}
 	
 	public static void commandLoad(String args[], Boolean silent) {
 		global.canSave = true;
 		try {
-			global.trigger = file.loadTriggers("./mods/ChatTriggers/triggers.txt", false);
-			global.USR_string = file.loadStrings("./mods/ChatTriggers/strings.txt");
-			global.settings = file.loadSettings("./mods/ChatTriggers/settings.txt");
-			file.loadImports("./mods/ChatTriggers/Imports/");
-			chat.warn(global.settings.get(0) + "Files loaded");
-		} catch (IOException e) {chat.warn(chat.color("red", "Error loading triggers!"));}
+			global.trigger = FileHandler.loadTriggers("./mods/ChatTriggers/triggers.txt", false);
+			global.USR_string = FileHandler.loadStrings("./mods/ChatTriggers/strings.txt");
+			global.settings = FileHandler.loadSettings("./mods/ChatTriggers/settings.txt");
+			FileHandler.loadImports("./mods/ChatTriggers/Imports/");
+			ChatHandler.warn(global.settings.get(0) + "Files loaded");
+		} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error loading triggers!"));}
 	}
 }

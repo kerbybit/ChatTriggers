@@ -11,11 +11,11 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.EnumChatFormatting;
 
-public class gui extends GuiScreen {
+public class GuiTriggerList extends GuiScreen {
 	
 	private float mouseX;
 	private float mouseY;
-	private Minecraft MC = Minecraft.getMinecraft();
+	private static Minecraft MC = Minecraft.getMinecraft();
 	
 	private String backString = EnumChatFormatting.GRAY.toString()+"< Back";
 	private List<Float> backOffset = new ArrayList<Float>();
@@ -41,6 +41,18 @@ public class gui extends GuiScreen {
 	
 	private List<String> tempEvent = new ArrayList<String>();
 	private List<List<Float>> tempEventOffset = new ArrayList<List<Float>>();
+	
+	public static void openGui() {
+		if (global.showGUI) {
+			global.showGUI = false;
+			MC.displayGuiScreen(new GuiTriggerList());
+		}
+		
+		if (global.showAltInputGui) {
+			global.showAltInputGui = false;
+			MC.displayGuiScreen(new GuiTriggerList());
+		}
+	}
 	
 	@Override
 	public void mouseClicked(int x, int y, int button) throws IOException {
