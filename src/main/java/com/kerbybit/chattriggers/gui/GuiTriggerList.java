@@ -1,10 +1,12 @@
-package com.kerbybit.chattriggers;
+package com.kerbybit.chattriggers.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
+
+import com.kerbybit.chattriggers.globalvars.global;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;

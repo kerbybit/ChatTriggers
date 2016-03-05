@@ -1,4 +1,4 @@
-package com.kerbybit.chattriggers;
+package com.kerbybit.chattriggers.references;
 
 public class Reference {
 	public static final String MOD_ID = "CT";

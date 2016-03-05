@@ -1,4 +1,4 @@
-package com.kerbybit.chattriggers;
+package com.kerbybit.chattriggers.triggers;
 
 import java.awt.Desktop;
 import java.awt.Toolkit;
@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
+import com.kerbybit.chattriggers.chat.ChatHandler;
+import com.kerbybit.chattriggers.globalvars.global;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumChatFormatting;

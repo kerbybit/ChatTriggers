@@ -1,4 +1,4 @@
-package com.kerbybit.chattriggers;
+package com.kerbybit.chattriggers.globalvars;
 
 import java.util.ArrayList;
 import java.util.HashMap;

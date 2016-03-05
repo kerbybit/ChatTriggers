@@ -1,4 +1,6 @@
-package com.kerbybit.chattriggers;
+package com.kerbybit.chattriggers.gui;
+
+import com.kerbybit.chattriggers.globalvars.global;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;

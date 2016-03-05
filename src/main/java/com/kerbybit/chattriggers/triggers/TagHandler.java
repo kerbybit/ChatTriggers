@@ -1,4 +1,4 @@
-package com.kerbybit.chattriggers;
+package com.kerbybit.chattriggers.triggers;
 
 public class TagHandler {
 	public static String eventTags(int tag, String TMP_e) {

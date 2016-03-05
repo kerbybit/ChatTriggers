@@ -1,9 +1,11 @@
-package com.kerbybit.chattriggers;
+package com.kerbybit.chattriggers.chat;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import commands.CommandTrigger;
+import com.kerbybit.chattriggers.commands.CommandTrigger;
+import com.kerbybit.chattriggers.globalvars.global;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;

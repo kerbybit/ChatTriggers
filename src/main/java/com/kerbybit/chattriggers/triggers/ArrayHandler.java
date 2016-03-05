@@ -1,10 +1,13 @@
-package com.kerbybit.chattriggers;
+package com.kerbybit.chattriggers.triggers;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.kerbybit.chattriggers.file.FileHandler;
+import com.kerbybit.chattriggers.globalvars.global;
 
 public class ArrayHandler {
 	public static String arrayFunctions(String TMP_e) {

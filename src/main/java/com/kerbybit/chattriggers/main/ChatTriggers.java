@@ -1,4 +1,4 @@
-package com.kerbybit.chattriggers;
+package com.kerbybit.chattriggers.main;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -13,9 +13,18 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
 import org.lwjgl.input.Keyboard;
 
-import commands.CommandT;
-import commands.CommandTR;
-import commands.CommandTrigger;
+import com.kerbybit.chattriggers.chat.ChatHandler;
+import com.kerbybit.chattriggers.commands.CommandT;
+import com.kerbybit.chattriggers.commands.CommandTR;
+import com.kerbybit.chattriggers.commands.CommandTrigger;
+import com.kerbybit.chattriggers.file.FileHandler;
+import com.kerbybit.chattriggers.globalvars.global;
+import com.kerbybit.chattriggers.gui.GuiTriggerList;
+import com.kerbybit.chattriggers.gui.OverlayHandler;
+import com.kerbybit.chattriggers.references.Reference;
+import com.kerbybit.chattriggers.triggers.EventsHandler;
+import com.kerbybit.chattriggers.triggers.TriggerHandler;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.settings.KeyBinding;

@@ -1,4 +1,4 @@
-package commands;
+package com.kerbybit.chattriggers.commands;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,11 +9,12 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 
-import com.kerbybit.chattriggers.ChatHandler;
-import com.kerbybit.chattriggers.EventsHandler;
-import com.kerbybit.chattriggers.FileHandler;
-import com.kerbybit.chattriggers.TagHandler;
-import com.kerbybit.chattriggers.global;
+import com.kerbybit.chattriggers.chat.ChatHandler;
+import com.kerbybit.chattriggers.file.FileHandler;
+import com.kerbybit.chattriggers.file.UpdateHandler;
+import com.kerbybit.chattriggers.globalvars.global;
+import com.kerbybit.chattriggers.triggers.EventsHandler;
+import com.kerbybit.chattriggers.triggers.TagHandler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -805,12 +806,12 @@ public class CommandTrigger extends CommandBase {
 							global.settings.set(4, "true");
 							ChatHandler.warn(ChatHandler.color("red", "You have turned nightly notifications")+" "+ChatHandler.color("green","on!"));
 							ChatHandler.warn(ChatHandler.color("red", "For more info, do </trigger settings beta>"));
-							FileHandler.loadVersion("http://kerbybit.github.io/ChatTriggers/download/betaversion.txt");
+							UpdateHandler.loadVersion("http://kerbybit.github.io/ChatTriggers/download/betaversion.txt");
 						} else {
 							global.settings.set(4, "false");
 							ChatHandler.warn(ChatHandler.color("red", "You have turned nightly notifications off!"));
 							ChatHandler.warn(ChatHandler.color("red", "For more info, do </trigger settings beta>"));
-							FileHandler.loadVersion("http://kerbybit.github.io/ChatTriggers/download/version.txt");
+							UpdateHandler.loadVersion("http://kerbybit.github.io/ChatTriggers/download/version.txt");
 						}
 					} else {
 						ChatHandler.warn(ChatHandler.color("red", "/trigger settings beta [toggle]"));

@@ -1,8 +1,12 @@
-package com.kerbybit.chattriggers;
+package com.kerbybit.chattriggers.triggers;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.kerbybit.chattriggers.chat.ChatHandler;
+import com.kerbybit.chattriggers.file.FileHandler;
+import com.kerbybit.chattriggers.globalvars.global;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
