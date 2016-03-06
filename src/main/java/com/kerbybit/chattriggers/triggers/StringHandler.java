@@ -2,6 +2,7 @@ package com.kerbybit.chattriggers.triggers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
@@ -9,6 +10,9 @@ import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.scoreboard.ScoreObjective;
+import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.Score;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class StringHandler {
@@ -156,6 +160,20 @@ public class StringHandler {
 			global.TMP_string.add(temporary);
 			global.backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{chatwidth}", "{string[DefaultString->CHATWIDTH-"+global.TMP_string.size()+"]}");
+		}
+		if (TMP_e.contains("{scoreboardtitle}")) {
+			List<String> temporary = new ArrayList<String>();
+			temporary.add("DefaultString->SCOREBOARDTITLE-"+(global.TMP_string.size()+1));
+			String boardTitle = "null";
+			if (Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(0) != null) {
+				boardTitle = Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(0).getDisplayName();
+	        } else if (Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(1) != null) {
+	        	boardTitle = Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(1).getDisplayName();
+	        }
+			temporary.add(ChatHandler.removeFormatting(boardTitle));
+			global.TMP_string.add(temporary);
+			global.backupTMP_strings.add(temporary);
+			TMP_e = TMP_e.replace("{scoreboardtitle}", "{string[DefaultString->SCOREBOARDTITLE-"+global.TMP_string.size()+"]}");
 		}
 		return TMP_e;
 	}
