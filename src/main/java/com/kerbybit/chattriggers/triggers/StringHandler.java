@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.globalvars.global;
@@ -160,6 +162,7 @@ public class StringHandler {
 			global.TMP_string.add(temporary);
 			global.backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{chatwidth}", "{string[DefaultString->CHATWIDTH-"+global.TMP_string.size()+"]}");
+			System.out.println(TMP_e);
 		}
 		if (TMP_e.contains("{scoreboardtitle}")) {
 			List<String> temporary = new ArrayList<String>();
@@ -175,13 +178,15 @@ public class StringHandler {
 			global.backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{scoreboardtitle}", "{string[DefaultString->SCOREBOARDTITLE-"+global.TMP_string.size()+"]}");
 		}
-		if (TMP_e.contains("{hp}")) {
+		if (TMP_e.contains("{hp}") || TMP_e.contains("{HP}")) {
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("DefaultString->HP-"+(global.TMP_string.size()+1));
 			temporary.add(global.playerHealth + "");
 			global.TMP_string.add(temporary);
 			global.backupTMP_strings.add(temporary);
-			TMP_e = TMP_e.replace("{hp}", "{string[DefaultString->HP-"+global.TMP_string.size()+"]}");
+			TMP_e = TMP_e.replace("{hp}", "{string[DefaultString->HP-"+global.TMP_string.size()+"]}")
+					.replace("{HP}", "{string[DefaultString->HP-"+global.TMP_string.size()+"]}");
+			System.out.println(TMP_e);
 		}
 		return TMP_e;
 	}
@@ -239,7 +244,7 @@ public class StringHandler {
 		
 		if (stringnum==-1) {
 			tmpstringnum = getTempStringNum(sn);
-			if (tmpstringnum == -1) {returnstring = "That is not a string!";}
+			if (tmpstringnum == -1) {return "That is not a string!";}
 		} 
 
 		if (stringnum!=-1 || tmpstringnum!=-1){
@@ -262,7 +267,7 @@ public class StringHandler {
 				}
 				try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 				return args;
-			} else if (func.equalsIgnoreCase("ADD") || func.equalsIgnoreCase("PLUS")) {
+			} else if (func.equalsIgnoreCase("ADD") || func.equalsIgnoreCase("PLUS") || func.equalsIgnoreCase("+")) {
 				try {
 					int strnmbr = -99999;
 					if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));} 
@@ -270,23 +275,23 @@ public class StringHandler {
 					try {
 						int argnmbr = Integer.parseInt(args);
 						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, strnmbr + argnmbr + "");} 
-						else {global.TMP_string.get(tmpstringnum).set(1, strnmbr + argnmbr + "");}
+						else if (tmpstringnum!=-1) {global.TMP_string.get(tmpstringnum).set(1, (strnmbr+argnmbr) + "");}
 						return "{string["+sn+"]}";
 					} catch (NumberFormatException e) {return args+" is not a number!{string["+sn+"]}";}
 				} catch (NumberFormatException e) {return sn+" is not a number!{string["+sn+"]}";}
-			} else if (func.equalsIgnoreCase("SUBTRACT") || func.equalsIgnoreCase("MINUS")) {
+			} else if (func.equalsIgnoreCase("SUBTRACT") || func.equalsIgnoreCase("MINUS") || func.equalsIgnoreCase("-")) {
 				try {
 					int strnmbr = -99999;
 					if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));} 
 					else if (tmpstringnum!=-1) {strnmbr = Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1));}
 					try {
 						int argnmbr = Integer.parseInt(args);
-						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, strnmbr - argnmbr + "");} 
-						else {global.TMP_string.get(tmpstringnum).set(1, strnmbr - argnmbr + "");}
+						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, (strnmbr-argnmbr) + "");} 
+						else if (tmpstringnum!=-1) {global.TMP_string.get(tmpstringnum).set(1, strnmbr - argnmbr + "");}
 						return "{string["+sn+"]}";
 					} catch (NumberFormatException e) {return args+" is not a number!{string["+sn+"]}";}
 				} catch (NumberFormatException e) {return sn+" is not a number!{string["+sn+"]}";}
-			} else if (func.equalsIgnoreCase("MULTIPLY") || func.equalsIgnoreCase("MULT") || func.equalsIgnoreCase("TIMES")) {
+			} else if (func.equalsIgnoreCase("MULTIPLY") || func.equalsIgnoreCase("MULT") || func.equalsIgnoreCase("TIMES") || func.equalsIgnoreCase("*")) {
 				try {
 					int strnmbr = -99999;
 					if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));} 
@@ -294,11 +299,11 @@ public class StringHandler {
 					try {
 						int argnmbr = Integer.parseInt(args);
 						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, strnmbr * argnmbr + "");} 
-						else {global.TMP_string.get(tmpstringnum).set(1, strnmbr * argnmbr + "");}
+						else if (tmpstringnum!=-1) {global.TMP_string.get(tmpstringnum).set(1, (strnmbr*argnmbr) + "");}
 						return "{string["+sn+"]}";
 					} catch (NumberFormatException e) {return args+" is not a number!{string["+sn+"]}";}
 				} catch (NumberFormatException e) {return sn+" is not a number!{string["+sn+"]}";}
-			} else if (func.equalsIgnoreCase("DIVIDE") || func.equalsIgnoreCase("DIV")) {
+			} else if (func.equalsIgnoreCase("DIVIDE") || func.equalsIgnoreCase("DIV") || func.equalsIgnoreCase("/")) {
 				try {
 					int strnmbr = -99999;
 					if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));} 
@@ -307,11 +312,11 @@ public class StringHandler {
 						int argnmbr = Integer.parseInt(args);
 						Float returnNum = ((float) strnmbr)/((float) argnmbr);
 						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, returnNum+"");} 
-						else {global.TMP_string.get(tmpstringnum).set(1, returnNum+"");}
+						else if (tmpstringnum!=-1) {global.TMP_string.get(tmpstringnum).set(1, returnNum+"");}
 						return "{string["+sn+"]}";
 					} catch (NumberFormatException e) {return args+" is not a number!{string["+sn+"]}";}
 				} catch (NumberFormatException e) {return sn+" is not a number!{string["+sn+"]}";}
-			} else if (func.equalsIgnoreCase("POW") || func.equalsIgnoreCase("POWER")) {
+			} else if (func.equalsIgnoreCase("POW") || func.equalsIgnoreCase("POWER") || func.equalsIgnoreCase("^")) {
 				try {
 					int strnmbr = -99999;
 					if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));} 
@@ -319,7 +324,19 @@ public class StringHandler {
 					try {
 						int argnmbr = Integer.parseInt(args);
 						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, Math.pow(strnmbr,argnmbr) + "");} 
-						else {global.TMP_string.get(tmpstringnum).set(1, Math.pow(strnmbr,argnmbr) + "");}
+						else if (tmpstringnum!=-1) {global.TMP_string.get(tmpstringnum).set(1, Math.pow(strnmbr,argnmbr) + "");}
+						return "{string["+sn+"]}";
+					} catch (NumberFormatException e) {return args+" is not a number!{string["+sn+"]}";}
+				} catch (NumberFormatException e) {return sn+" is not a number!{string["+sn+"]}";}
+			} else if (func.equalsIgnoreCase("MODULUS") || func.equalsIgnoreCase("MOD") || func.equalsIgnoreCase("%")) {
+				try {
+					int strnmbr = -99999;
+					if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));} 
+					else if (tmpstringnum!=-1) {strnmbr = Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1));}
+					try {
+						int argnmbr = Integer.parseInt(args);
+						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, Math.pow(strnmbr,argnmbr) + "");} 
+						else if (tmpstringnum!=-1) {global.TMP_string.get(tmpstringnum).set(1, (strnmbr%argnmbr) + "");}
 						return "{string["+sn+"]}";
 					} catch (NumberFormatException e) {return args+" is not a number!{string["+sn+"]}";}
 				} catch (NumberFormatException e) {return sn+" is not a number!{string["+sn+"]}";}
@@ -429,6 +446,17 @@ public class StringHandler {
 					} else {global.TMP_string.get(tmpstringnum).set(1, "false");}
 				}
 				return "{string["+sn+"]}";
+			} else if (func.equalsIgnoreCase("STARTSWITHIGNORECASE")) {
+				if (stringnum!=-1) {
+					if (global.USR_string.get(stringnum).get(1).toUpperCase().startsWith(args.toUpperCase())) {
+						global.USR_string.get(stringnum).set(1, "true");
+					} else {global.USR_string.get(stringnum).set(1, "false");}
+				} else if (tmpstringnum!=-1) {
+					if (global.TMP_string.get(tmpstringnum).get(1).toUpperCase().startsWith(args.toUpperCase())) {
+						global.TMP_string.get(tmpstringnum).set(1, "true");
+					} else {global.TMP_string.get(tmpstringnum).set(1, "false");}
+				}
+				return "{string["+sn+"]}";
 			} else if (func.equalsIgnoreCase("CONTAINS")) {
 				if (stringnum!=-1) {
 					if (global.USR_string.get(stringnum).get(1).contains(args)) {
@@ -440,6 +468,17 @@ public class StringHandler {
 					} else {global.TMP_string.get(tmpstringnum).set(1, "false");}
 				}
 				return "{string["+sn+"]}";
+			} else if (func.equalsIgnoreCase("CONTAINSIGNORECASE")) {
+				if (stringnum!=-1) {
+					if (global.USR_string.get(stringnum).get(1).toUpperCase().contains(args.toUpperCase())) {
+						global.USR_string.get(stringnum).set(1, "true");
+					} else {global.USR_string.get(stringnum).set(1, "false");}
+				} else if (tmpstringnum!=-1) {
+					if (global.TMP_string.get(tmpstringnum).get(1).toUpperCase().contains(args.toUpperCase())) {
+						global.TMP_string.get(tmpstringnum).set(1, "true");
+					} else {global.TMP_string.get(tmpstringnum).set(1, "false");}
+				}
+				return "{string["+sn+"]}";
 			} else if (func.equalsIgnoreCase("ENDSWITH")) {
 				if (stringnum!=-1) {
 					if (global.USR_string.get(stringnum).get(1).endsWith(args)) {
@@ -447,6 +486,17 @@ public class StringHandler {
 					} else {global.USR_string.get(stringnum).set(1, "false");}
 				} else if (tmpstringnum!=-1) {
 					if (global.TMP_string.get(tmpstringnum).get(1).endsWith(args)) {
+						global.TMP_string.get(tmpstringnum).set(1, "true");
+					} else {global.TMP_string.get(tmpstringnum).set(1, "false");}
+				}
+				return "{string["+sn+"]}";
+			} else if (func.equalsIgnoreCase("ENDSWITHIGNORECASE")) {
+				if (stringnum!=-1) {
+					if (global.USR_string.get(stringnum).get(1).toUpperCase().endsWith(args.toUpperCase())) {
+						global.USR_string.get(stringnum).set(1, "true");
+					} else {global.USR_string.get(stringnum).set(1, "false");}
+				} else if (tmpstringnum!=-1) {
+					if (global.TMP_string.get(tmpstringnum).get(1).toUpperCase().endsWith(args.toUpperCase())) {
 						global.TMP_string.get(tmpstringnum).set(1, "true");
 					} else {global.TMP_string.get(tmpstringnum).set(1, "false");}
 				}
@@ -519,6 +569,20 @@ public class StringHandler {
 						return "{string["+sn+"]}";
 					} catch (NumberFormatException e) {return args+" is not a number!{string["+sn+"]}";}
 				} catch (NumberFormatException e) {return sn+" is not a number!{string["+sn+"]}";}
+			} else if (func.equalsIgnoreCase("CAPITOLIZEFIRSTWORD") || func.equalsIgnoreCase("CAPFIRT")) {
+				if (stringnum!=-1) {
+					global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).substring(0, 1).toUpperCase() + global.USR_string.get(stringnum).get(1).substring(1));
+				} else if (tmpstringnum!=-1) {
+					global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).substring(0, 1).toUpperCase() + global.TMP_string.get(tmpstringnum).get(1).substring(1));
+				}
+				return "{string["+sn+"]}";
+			} else if (func.equalsIgnoreCase("CAPITOLIZEALLWORDS") || func.equalsIgnoreCase("CAPALL")) {
+				if (stringnum!=-1) {
+					global.USR_string.get(stringnum).set(1, WordUtils.capitalize(global.USR_string.get(stringnum).get(1)));
+				} else if (tmpstringnum!=-1) {
+					global.TMP_string.get(tmpstringnum).set(1, WordUtils.capitalize(global.TMP_string.get(tmpstringnum).get(1)));
+				}
+				return "{string["+sn+"]}";
 			}
 			
 			else {return func + " is not a function!{string["+sn+"]}";}

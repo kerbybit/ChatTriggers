@@ -14,6 +14,7 @@ import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.file.UpdateHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.triggers.EventsHandler;
+import com.kerbybit.chattriggers.triggers.StringHandler;
 import com.kerbybit.chattriggers.triggers.TagHandler;
 
 import net.minecraft.client.Minecraft;
@@ -117,12 +118,12 @@ public class CommandTrigger extends CommandBase {
 	public static void commandImport(String args[], Boolean silent) {
 		if (args.length>=2) {
 			for (int i=1; i<args.length; i++) {global.neededImports.add(args[i]);}
-		} else {ChatHandler.warn(ChatHandler.color("red", "/trigger import [import name]"));}
+		} else {ChatHandler.warn(ChatHandler.color("red", "/trigger import <import name>"));}
 	}
 	
 	public static void commandRun(String args[], Boolean silent) {
 		if (args.length < 2) {
-			ChatHandler.warn(ChatHandler.color("red", "/tr [trigger]"));
+			ChatHandler.warn(ChatHandler.color("red", "/tr <trigger>"));
 			ArrayList<List<String>> listCommands = new ArrayList<List<String>>();
 			ArrayList<List<String>> showCommands = new ArrayList<List<String>>();
 			for (int i=0; i<global.trigger.size(); i++) {
@@ -221,7 +222,7 @@ public class CommandTrigger extends CommandBase {
 	
 	public static void commandCreate(String args[], Boolean silent) {
 		if (args.length < 3) {
-			ChatHandler.warn(ChatHandler.color("red", "/trigger create [type] [trigger]"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger create <type> <trigger>"));
 		} else {
 			String TMP_type = args[1];
 			String TMP_trig = "";
@@ -262,7 +263,7 @@ public class CommandTrigger extends CommandBase {
 	
 	public static void commandDelete(String args[], Boolean silent) {
 		if (args.length < 2) {
-			ChatHandler.warn(ChatHandler.color("red", "/trigger delete [trigger number]"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger delete <trigger number>"));
 		} else {
 			int num = -1;
 			try {num = Integer.parseInt(args[1]);} 
@@ -280,14 +281,14 @@ public class CommandTrigger extends CommandBase {
 					ChatHandler.warnUnformatted(ChatHandler.color("red", "You must edit them from the imported file!"));
 				}
 			} else {
-				ChatHandler.warn(ChatHandler.color("red", "/trigger delete [trigger number]"));
+				ChatHandler.warn(ChatHandler.color("red", "/trigger delete <trigger number>"));
 			}
 		}
 	}
 	
 	public static void commandAdd(String args[], Boolean silent) {
 		if (args.length < 3) {
-			ChatHandler.warn(ChatHandler.color("red", "/trigger add [trigger number] [event] [event argument(s)]"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger add <trigger number> <event> <event argument(s)>"));
 		} else {
 			int num = -1;
 			try {num = Integer.parseInt(args[1]);} 
@@ -332,7 +333,7 @@ public class CommandTrigger extends CommandBase {
 					ChatHandler.warnUnformatted(ChatHandler.color("red", "You must edit them from the imported file!"));
 				}
 			} else {
-				ChatHandler.warn(ChatHandler.color("red", "/trigger add [trigger number] [event] [event argument(s)]"));
+				ChatHandler.warn(ChatHandler.color("red", "/trigger add <trigger number> <event> <event argument(s)>"));
 			}
 		}
 	}
@@ -370,11 +371,12 @@ public class CommandTrigger extends CommandBase {
 	
 	public static void commandString(String args[], Boolean silent) {
 		if (args.length < 2) {
-			ChatHandler.warn(ChatHandler.color("red", "/trigger string [create/set/list]"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger string [create/set/list] <...>"));
+			ChatHandler.warn(ChatHandler.color("red", "/trigger string <string name>"));
 		} else {
 			if (args[1].equalsIgnoreCase("CREATE")) {
 				if (args.length != 3) {
-					ChatHandler.warn(ChatHandler.color("red", "/trigger string create [string name]"));
+					ChatHandler.warn(ChatHandler.color("red", "/trigger string create <string name>"));
 				} else {
 					if (global.canSave) {
 						String TMP_sn = args[2];
@@ -418,7 +420,7 @@ public class CommandTrigger extends CommandBase {
 				}
 			} else if (args[1].equalsIgnoreCase("DELETE")) {
 				if (args.length < 3) {
-					ChatHandler.warn(ChatHandler.color("red", "/trigger string delete [string name]"));
+					ChatHandler.warn(ChatHandler.color("red", "/trigger string delete <string name>"));
 				} else {
 					if (global.canSave) {
 						int num = -1;
@@ -444,7 +446,7 @@ public class CommandTrigger extends CommandBase {
 				}
 			} else if (args[1].equalsIgnoreCase("SET")) {
 				if (args.length < 4) {
-					ChatHandler.warn(ChatHandler.color("red", "/trigger string set [string name] [string]"));
+					ChatHandler.warn(ChatHandler.color("red", "/trigger string set <string name> <string>"));
 				} else {
 					int num = -1;
 					try {num = Integer.parseInt(args[2]);} 
@@ -529,6 +531,17 @@ public class CommandTrigger extends CommandBase {
 						}
 					}
 					ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
+				}
+			} else {
+				if (args.length==2) {
+					if (StringHandler.getStringNum(args[1])==-1) {
+						ChatHandler.warn(ChatHandler.color("red", "Not a string!"));
+					} else {
+						ChatHandler.warnUnformatted(ChatHandler.color("gray","value:") + " " + ChatHandler.color(global.settings.get(0), global.USR_string.get(StringHandler.getStringNum(args[1])).get(1)));
+					}
+				} else {
+					ChatHandler.warn(ChatHandler.color("red", "/trigger string [create/set/list] <...>"));
+					ChatHandler.warn(ChatHandler.color("red", "/trigger string <string name>"));
 				}
 			}
 		}

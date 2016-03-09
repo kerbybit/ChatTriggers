@@ -193,11 +193,6 @@ public class EventsHandler {
 								tabbed_logic++;
 							}
 							
-							//do functions
-							tmp_event.set(j, StringHandler.stringFunctions(tmp_event.get(j)));
-							tmp_event.set(j, ArrayHandler.arrayFunctions(tmp_event.get(j)));
-							tmp_event.set(j, StringHandler.stringFunctions(tmp_event.get(j)));
-							
 							//add to list
 							eventsToWait.add(tmp_event.get(j));
 							
