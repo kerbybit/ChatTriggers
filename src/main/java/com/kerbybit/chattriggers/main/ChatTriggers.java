@@ -34,6 +34,8 @@ import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -84,6 +86,18 @@ public class ChatTriggers {
 	@SubscribeEvent
 	public void onWorldUnload(WorldEvent.Unload e) {
 		global.worldIsLoaded=false;
+	}
+	
+	@SubscribeEvent
+	public void livingHurtEvent(LivingHurtEvent e) {
+		if (e.source.getEntity()!=null) {
+			if (e.source.getEntity().equals(Minecraft.getMinecraft().thePlayer)) {
+				TriggerHandler.onDamageGiven();
+			}
+		}
+		if (e.entity.equals(Minecraft.getMinecraft().thePlayer)) {
+			TriggerHandler.onDamageTaken();
+		}
 	}
 		
 	@SubscribeEvent

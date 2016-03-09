@@ -23,8 +23,6 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import scala.actors.threadpool.Arrays;
 
 public class EventsHandler {
-
-	
 	public static void doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent) {
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
 		String[] snull = null;

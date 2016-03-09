@@ -9,6 +9,8 @@ import com.kerbybit.chattriggers.globalvars.global;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 public class TriggerHandler {
 	public static void onChat(ClientChatReceivedEvent e) {
@@ -160,6 +162,40 @@ public class TriggerHandler {
 						}
 					}
 				}
+			}
+		}
+	}
+	
+	public static void onDamageGiven() {
+		for (int i=0; i<global.trigger.size(); i++) {
+			String TMP_type = global.trigger.get(i).get(0);
+			String TMP_trig = global.trigger.get(i).get(1);
+			
+			if (TMP_type.equalsIgnoreCase("ONDAMAGEGIVEN")) {
+				//add all events to a temp list
+				List<String> TMP_events = new ArrayList<String>();
+				for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
+				
+				//do events
+				ClientChatReceivedEvent e1 = null;
+				EventsHandler.doEvents(TMP_events, e1);
+			}
+		}
+	}
+	
+	public static void onDamageTaken() {
+		for (int i=0; i<global.trigger.size(); i++) {
+			String TMP_type = global.trigger.get(i).get(0);
+			String TMP_trig = global.trigger.get(i).get(1);
+			
+			if (TMP_type.equalsIgnoreCase("ONDAMAGEGIVEN")) {
+				//add all events to a temp list
+				List<String> TMP_events = new ArrayList<String>();
+				for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
+				
+				//do events
+				ClientChatReceivedEvent e1 = null;
+				EventsHandler.doEvents(TMP_events, e1);
 			}
 		}
 	}

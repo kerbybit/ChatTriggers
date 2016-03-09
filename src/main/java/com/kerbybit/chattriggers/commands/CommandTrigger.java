@@ -237,7 +237,9 @@ public class CommandTrigger extends CommandBase {
 			|| TMP_type.equalsIgnoreCase("ONWORLDLOAD")
 			|| TMP_type.equalsIgnoreCase("ONWORLDFIRSTLOAD")
 			|| TMP_type.equalsIgnoreCase("ONSERVERCHANGE")
-			|| TMP_type.equalsIgnoreCase("ONNEWDAY")) {
+			|| TMP_type.equalsIgnoreCase("ONNEWDAY")
+			|| TMP_type.equalsIgnoreCase("ONDAMAGEGIVEN")
+			|| TMP_type.equalsIgnoreCase("ONDAMAGETAKEN")) {
 				global.trigger.add(TMP_l);
 				int TMP_num = global.trigger.size() - 1;
 				if (silent==false) {
