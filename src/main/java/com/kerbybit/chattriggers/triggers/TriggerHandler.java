@@ -188,7 +188,7 @@ public class TriggerHandler {
 			String TMP_type = global.trigger.get(i).get(0);
 			String TMP_trig = global.trigger.get(i).get(1);
 			
-			if (TMP_type.equalsIgnoreCase("ONDAMAGEGIVEN")) {
+			if (TMP_type.equalsIgnoreCase("ONDAMAGETAKEN")) {
 				//add all events to a temp list
 				List<String> TMP_events = new ArrayList<String>();
 				for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
