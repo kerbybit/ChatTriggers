@@ -178,7 +178,7 @@ public class StringHandler {
 		if (TMP_e.contains("{hp}")) {
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("DefaultString->HP-"+(global.TMP_string.size()+1));
-			temporary.add(Minecraft.getMinecraft().thePlayer.getHealth() + "");
+			temporary.add(global.playerHealth + "");
 			global.TMP_string.add(temporary);
 			global.backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{hp}", "{string[DefaultString->HP-"+global.TMP_string.size()+"]}");

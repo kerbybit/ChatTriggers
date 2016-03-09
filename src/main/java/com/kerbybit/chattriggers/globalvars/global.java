@@ -18,6 +18,8 @@ public class global {
 	public static String versionURL = "";
 	public static String currentDate = "null";
 	
+	public static int playerHealth = -1;
+	
 	public static String importURL = "";
 	public static Boolean canImport = true;
 	public static List<String> neededImports = new ArrayList<String>();

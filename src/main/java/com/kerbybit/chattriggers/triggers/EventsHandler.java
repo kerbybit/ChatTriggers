@@ -481,6 +481,10 @@ public class EventsHandler {
 	}
 	
 	public static void eventTick() {
+		try {
+			global.playerHealth = (int) Minecraft.getMinecraft().thePlayer.getHealth();
+		} catch (NullPointerException e1) {/*do nothing*/}
+		
 		try {Minecraft.getMinecraft().thePlayer.isServerWorld();} 
 		catch (NullPointerException e1) {
 			if (global.waitEvents.size()>0) {
@@ -506,7 +510,7 @@ public class EventsHandler {
 					}
 				}
 			} else {
-				ChatHandler.warn(ChatHandler.color("red","SOMETHING WENT WRONG!!!"));
+				ChatHandler.warn(ChatHandler.color("red","SOMETHING WENT WRONG!!! (wait event/time unsynced)"));
 				global.waitEvents.clear();
 				global.waitTime.clear();
 			}
