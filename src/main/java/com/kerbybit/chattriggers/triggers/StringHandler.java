@@ -569,14 +569,14 @@ public class StringHandler {
 						return "{string["+sn+"]}";
 					} catch (NumberFormatException e) {return args+" is not a number!{string["+sn+"]}";}
 				} catch (NumberFormatException e) {return sn+" is not a number!{string["+sn+"]}";}
-			} else if (func.equalsIgnoreCase("CAPITOLIZEFIRSTWORD") || func.equalsIgnoreCase("CAPFIRT")) {
+			} else if (func.equalsIgnoreCase("CAPITALIZEFIRSTWORD") || func.equalsIgnoreCase("CAPFIRT")) {
 				if (stringnum!=-1) {
 					global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).substring(0, 1).toUpperCase() + global.USR_string.get(stringnum).get(1).substring(1));
 				} else if (tmpstringnum!=-1) {
 					global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).substring(0, 1).toUpperCase() + global.TMP_string.get(tmpstringnum).get(1).substring(1));
 				}
 				return "{string["+sn+"]}";
-			} else if (func.equalsIgnoreCase("CAPITOLIZEALLWORDS") || func.equalsIgnoreCase("CAPALL")) {
+			} else if (func.equalsIgnoreCase("CAPITALIZEALLWORDS") || func.equalsIgnoreCase("CAPALL")) {
 				if (stringnum!=-1) {
 					global.USR_string.get(stringnum).set(1, WordUtils.capitalize(global.USR_string.get(stringnum).get(1)));
 				} else if (tmpstringnum!=-1) {
