@@ -272,7 +272,7 @@ public class CommandTrigger extends CommandBase {
 				String TMP_rem = global.trigger.get(num).get(1);
 				if (!TMP_rem.contains("<imported>")) {
 					if (silent==false) {
-						ChatHandler.warnUnformatted(ChatHandler.color("gray", "Deleted trigger") + ChatHandler.color(global.settings.get(0), TMP_rem) + ChatHandler.color("gray", "and all of its events"));
+						ChatHandler.warnUnformatted(ChatHandler.color("gray", "Deleted trigger") + " " + ChatHandler.color(global.settings.get(0), TMP_rem) + " " + ChatHandler.color("gray", "and all of its events"));
 					}
 					global.trigger.remove(num).get(1);
 					try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
@@ -353,7 +353,7 @@ public class CommandTrigger extends CommandBase {
 					if (num2>1 && num2<global.trigger.get(num).size()) {
 						String TMP_rem = global.trigger.get(num).remove(num2);
 						if (silent==false) {
-							ChatHandler.warnUnformatted(ChatHandler.color("gray", "Removed event") + ChatHandler.color(global.settings.get(0), TMP_rem) + ChatHandler.color("gray", "from trigger") + ChatHandler.color(global.settings.get(0), global.trigger.get(num).get(1)));
+							ChatHandler.warnUnformatted(ChatHandler.color("gray", "Removed event") + " " + ChatHandler.color(global.settings.get(0), TMP_rem) + ChatHandler.color("gray", "from trigger") + " " + ChatHandler.color(global.settings.get(0), global.trigger.get(num).get(1)));
 						}
 						try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 					} else {

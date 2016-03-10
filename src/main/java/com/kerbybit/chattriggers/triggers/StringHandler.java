@@ -316,6 +316,19 @@ public class StringHandler {
 						return "{string["+sn+"]}";
 					} catch (NumberFormatException e) {return args+" is not a number!{string["+sn+"]}";}
 				} catch (NumberFormatException e) {return sn+" is not a number!{string["+sn+"]}";}
+			} else if (func.equalsIgnoreCase("DIVIDEGETPERCENTAGE") || func.equalsIgnoreCase("DIVPERCENT") || func.equalsIgnoreCase("/%")) {
+				try {
+					int strnmbr = -99999;
+					if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));} 
+					else if (tmpstringnum!=-1) {strnmbr = Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1));}
+					try {
+						int argnmbr = Integer.parseInt(args);
+						Float returnNum = ((float) strnmbr)/((float) argnmbr) * 100;
+						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, Math.round(returnNum)+"");} 
+						else if (tmpstringnum!=-1) {global.TMP_string.get(tmpstringnum).set(1, returnNum+"");}
+						return "{string["+sn+"]}";
+					} catch (NumberFormatException e) {return args+" is not a number!{string["+sn+"]}";}
+				} catch (NumberFormatException e) {return sn+" is not a number!{string["+sn+"]}";}
 			} else if (func.equalsIgnoreCase("POW") || func.equalsIgnoreCase("POWER") || func.equalsIgnoreCase("^")) {
 				try {
 					int strnmbr = -99999;
