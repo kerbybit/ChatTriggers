@@ -1,10 +1,7 @@
 package com.kerbybit.chattriggers.globalvars;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import com.sun.glass.events.KeyEvent;
 
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 

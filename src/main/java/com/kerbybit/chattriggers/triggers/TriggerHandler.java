@@ -166,36 +166,20 @@ public class TriggerHandler {
 		}
 	}
 	
-	public static void onDamageGiven() {
-		for (int i=0; i<global.trigger.size(); i++) {
-			String TMP_type = global.trigger.get(i).get(0);
-			String TMP_trig = global.trigger.get(i).get(1);
-			
-			if (TMP_type.equalsIgnoreCase("ONDAMAGEGIVEN")) {
-				//add all events to a temp list
-				List<String> TMP_events = new ArrayList<String>();
-				for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
-				
-				//do events
-				ClientChatReceivedEvent e1 = null;
-				EventsHandler.doEvents(TMP_events, e1);
-			}
-		}
-	}
-	
-	public static void onDamageTaken() {
-		for (int i=0; i<global.trigger.size(); i++) {
-			String TMP_type = global.trigger.get(i).get(0);
-			String TMP_trig = global.trigger.get(i).get(1);
-			
-			if (TMP_type.equalsIgnoreCase("ONDAMAGETAKEN")) {
-				//add all events to a temp list
-				List<String> TMP_events = new ArrayList<String>();
-				for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
-				
-				//do events
-				ClientChatReceivedEvent e1 = null;
-				EventsHandler.doEvents(TMP_events, e1);
+	public static void onClientTickTriggers() {
+		if (global.worldIsLoaded==true) {
+			for (int i=0; i<global.trigger.size(); i++) {
+				String TMP_type = global.trigger.get(i).get(0);
+				String TMP_trig = global.trigger.get(i).get(1);
+				if (TMP_type.equalsIgnoreCase("ONCLIENTTICK")) {
+					//add all events to temp list
+					List<String> TMP_events = new ArrayList<String>();
+					for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
+					
+					//do events
+					ClientChatReceivedEvent e1 = null;
+					EventsHandler.doEvents(TMP_events, e1);
+				}
 			}
 		}
 	}

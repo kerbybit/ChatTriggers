@@ -9,7 +9,6 @@ import com.kerbybit.chattriggers.globalvars.global;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class ChatHandler {
 	

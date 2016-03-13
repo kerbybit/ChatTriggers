@@ -2,7 +2,6 @@ package com.kerbybit.chattriggers.triggers;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang3.text.WordUtils;
@@ -12,9 +11,6 @@ import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.scoreboard.ScoreObjective;
-import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.scoreboard.Score;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class StringHandler {

@@ -7,8 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
-
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.file.UpdateHandler;
@@ -21,10 +19,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.event.ClickEvent.Action;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class CommandTrigger extends CommandBase {
@@ -239,8 +233,7 @@ public class CommandTrigger extends CommandBase {
 			|| TMP_type.equalsIgnoreCase("ONWORLDFIRSTLOAD")
 			|| TMP_type.equalsIgnoreCase("ONSERVERCHANGE")
 			|| TMP_type.equalsIgnoreCase("ONNEWDAY")
-			|| TMP_type.equalsIgnoreCase("ONDAMAGEGIVEN")
-			|| TMP_type.equalsIgnoreCase("ONDAMAGETAKEN")) {
+			|| TMP_type.equalsIgnoreCase("ONCLIENTTICK")) {
 				global.trigger.add(TMP_l);
 				int TMP_num = global.trigger.size() - 1;
 				if (silent==false) {

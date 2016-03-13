@@ -1,13 +1,6 @@
 package com.kerbybit.chattriggers.main;
 
-import java.awt.event.KeyEvent;
-import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
@@ -28,14 +21,10 @@ import com.kerbybit.chattriggers.triggers.TriggerHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -87,18 +76,6 @@ public class ChatTriggers {
 	public void onWorldUnload(WorldEvent.Unload e) {
 		global.worldIsLoaded=false;
 	}
-	
-	@SubscribeEvent
-	public void livingHurtEvent(LivingHurtEvent e) {
-		if (e.source.getEntity()!=null) {
-			if (e.source.getEntity().equals(Minecraft.getMinecraft().thePlayer)) {
-				TriggerHandler.onDamageGiven();
-			}
-		}
-		if (e.entity.equals(Minecraft.getMinecraft().thePlayer)) {
-			TriggerHandler.onDamageTaken();
-		}
-	}
 		
 	@SubscribeEvent
 	public void RenderGameOverlayEvent(RenderGameOverlayEvent event) {
@@ -120,6 +97,7 @@ public class ChatTriggers {
 		
 		FileHandler.tickImports();
 		
+		TriggerHandler.onClientTickTriggers();
 		TriggerHandler.newDayTriggers();
 		ChatHandler.onClientTick();
 		EventsHandler.eventTick();
