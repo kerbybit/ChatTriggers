@@ -88,6 +88,8 @@ public class ChatTriggers {
 		FileHandler.firstFileLoad();
 		
 		TriggerHandler.worldLoadTriggers();
+		TriggerHandler.newDayTriggers();
+		global.worldLoaded=false;
 	}
 
 	
@@ -99,7 +101,7 @@ public class ChatTriggers {
 		FileHandler.tickImports();
 		
 		TriggerHandler.onClientTickTriggers();
-		TriggerHandler.newDayTriggers();
+		
 		ChatHandler.onClientTick();
 		EventsHandler.eventTick();
 	}

@@ -1,6 +1,9 @@
 package com.kerbybit.chattriggers.triggers;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
@@ -186,12 +189,12 @@ public class TriggerHandler {
 	
 	public static void worldLoadTriggers() {
 		if (global.worldLoaded==true) {
-			global.worldLoaded = false;
 			for (int i=0; i<global.trigger.size(); i++) {
 				String TMP_type = global.trigger.get(i).get(0);
 				String TMP_trig = global.trigger.get(i).get(1);
 				
 				if (global.worldFirstLoad==true) {
+					System.out.println(global.worldFirstLoad);
 					if (TMP_type.equalsIgnoreCase("ONWORLDFIRSTLOAD")) {
 						//add all events to temp list
 						List<String> TMP_events = new ArrayList<String>();
@@ -237,39 +240,17 @@ public class TriggerHandler {
 	
 	public static void newDayTriggers() {
 		if (global.worldLoaded==true) {
-			global.worldLoaded = false;
-			for (int i=0; i<global.trigger.size(); i++) {
-				String TMP_type = global.trigger.get(i).get(0);
-				String TMP_trig = global.trigger.get(i).get(1);
-				
-				if (global.worldFirstLoad==true) {
-					if (TMP_type.equalsIgnoreCase("ONWORLDFIRSTLOAD")) {
-						//add all events to temp list
-						List<String> TMP_events = new ArrayList<String>();
-						for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
-						
-						//do events
-						ClientChatReceivedEvent e1 = null;
-						EventsHandler.doEvents(TMP_events, e1);
-					}
-				}
-				
-				if (TMP_type.equalsIgnoreCase("ONWORLDLOAD")) {
-					//add all events to temp list
-					List<String> TMP_events = new ArrayList<String>();
-					for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
+			DateFormat dateFormat = new SimpleDateFormat("yyy/MM/dd");
+			Date date = new Date();
+			if (global.currentDate=="null") {global.currentDate = dateFormat.format(date);}
+			
+			if (!dateFormat.format(date).equals(global.currentDate)) {
+				global.currentDate = dateFormat.format(date);
+				for (int i=0; i<global.trigger.size(); i++) {
+					String TMP_type = global.trigger.get(i).get(0);
+					String TMP_trig = global.trigger.get(i).get(1);
 					
-					//do events
-					ClientChatReceivedEvent e1 = null;
-					EventsHandler.doEvents(TMP_events, e1);
-				}
-				
-				if (TMP_type.equalsIgnoreCase("ONSERVERCHANGE")) {
-					String currentServer = "";
-					if (Minecraft.getMinecraft().isSingleplayer()) {currentServer = "SinglePlayer";} 
-					else {currentServer = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
-					
-					if (!currentServer.equals(global.connectedToServer)) {
+					if (TMP_type.equalsIgnoreCase("ONNEWDAY")) {
 						//add all events to temp list
 						List<String> TMP_events = new ArrayList<String>();
 						for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
@@ -280,9 +261,6 @@ public class TriggerHandler {
 					}
 				}
 			}
-			global.worldFirstLoad = false;
-			if (Minecraft.getMinecraft().isSingleplayer()) {global.connectedToServer = "SinglePlayer";} 
-			else {global.connectedToServer = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
 		}
 	}
 }
