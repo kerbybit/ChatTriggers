@@ -182,7 +182,14 @@ public class StringHandler {
 			global.backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{hp}", "{string[DefaultString->HP-"+global.TMP_string.size()+"]}")
 					.replace("{HP}", "{string[DefaultString->HP-"+global.TMP_string.size()+"]}");
-			System.out.println(TMP_e);
+		}
+		if (TMP_e.contains("{sneak}")) {
+			List<String> temporary = new ArrayList<String>();
+			temporary.add("DefaultString->SNEAK-"+(global.TMP_string.size()+1));
+			temporary.add(Minecraft.getMinecraft().thePlayer.isSneaking()+"");
+			global.TMP_string.add(temporary);
+			global.backupTMP_strings.add(temporary);
+			TMP_e = TMP_e.replace("{sneak}", "{string[DefaultString->SNEAK-"+global.TMP_string.size()+"]}");
 		}
 		return TMP_e;
 	}

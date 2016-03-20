@@ -14,6 +14,7 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.EntityInteractEvent;
 
 public class TriggerHandler {
 	public static void onChat(ClientChatReceivedEvent e) {
@@ -183,6 +184,22 @@ public class TriggerHandler {
 					ClientChatReceivedEvent e1 = null;
 					EventsHandler.doEvents(TMP_events, e1);
 				}
+			}
+		}
+	}
+	
+	public static void onRightClickPlayer(EntityInteractEvent e) {
+		for (int i=0; i<global.trigger.size(); i++) {
+			String TMP_type = global.trigger.get(i).get(0);
+			String TMP_trig = global.trigger.get(i).get(1);
+			if (TMP_type.equalsIgnoreCase("ONRIGHTCLICKPLAYER")) {
+				//add all events to temp list
+				List<String> TMP_events = new ArrayList<String>();
+				for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j).replace("{player}", e.target.getName()));}
+				
+				//do events
+				ClientChatReceivedEvent e1 = null;
+				EventsHandler.doEvents(TMP_events, e1);
 			}
 		}
 	}

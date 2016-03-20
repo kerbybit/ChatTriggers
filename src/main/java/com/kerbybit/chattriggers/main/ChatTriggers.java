@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
 import org.lwjgl.input.Keyboard;
+import org.w3c.dom.events.Event;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.commands.CommandT;
@@ -21,11 +22,13 @@ import com.kerbybit.chattriggers.triggers.TriggerHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -59,6 +62,15 @@ public class ChatTriggers {
 		if (altGuiKey.isPressed()) {
 			GuiTriggerList.inMenu = -1;
 			global.showAltInputGui = true;
+		}
+	}
+	
+	@SubscribeEvent
+	public void onRightClickPlayer(EntityInteractEvent e) {
+		if (e.entity.equals(Minecraft.getMinecraft().thePlayer)) {
+			if (e.target instanceof EntityPlayer) {
+				TriggerHandler.onRightClickPlayer(e);
+			}
 		}
 	}
 	
