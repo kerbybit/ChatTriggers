@@ -854,9 +854,6 @@ public class CommandTrigger extends CommandBase {
 	public static void commandSave(String args[], Boolean silent) {
 		try {
 			FileHandler.saveAll();
-			global.trigger = FileHandler.loadTriggers("./mods/ChatTriggers/triggers.txt", false);
-			global.USR_string = FileHandler.loadStrings("./mods/ChatTriggers/strings.txt");
-			global.settings = FileHandler.loadSettings("./mods/ChatTriggers/settings.txt");
 			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Organized and saved files"));
 		} catch (IOException e) {
 			ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));

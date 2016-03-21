@@ -1,5 +1,10 @@
 package com.kerbybit.chattriggers.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.kerbybit.chattriggers.globalvars.global;
+
 public class CommandReference {
 	public static boolean isTriggerType(String TMP_type) {
 		if (TMP_type.equalsIgnoreCase("CHAT") 
@@ -13,6 +18,34 @@ public class CommandReference {
 			return true;
 		} else {
 			return false;
+		}
+	}
+	
+	public static void clearTriggerList() {
+		global.chatTrigger.clear();
+		global.tickTrigger.clear();
+		global.onWorldLoadTrigger.clear();
+		global.onWorldFirstLoadTrigger.clear();
+		global.onServerChangeTrigger.clear();
+		global.onNewDayTrigger.clear();
+		global.onRightClickPlayerTrigger.clear();
+	}
+	
+	public static void addToTriggerList(List<String> tmp_list) {
+		if (tmp_list.get(0).equalsIgnoreCase("CHAT")) {
+			global.chatTrigger.add(tmp_list);
+		} else if (tmp_list.get(0).equalsIgnoreCase("ONCLIENTTICK")) {
+			global.tickTrigger.add(tmp_list);
+		} else if (tmp_list.get(0).equalsIgnoreCase("ONWORLDLOAD")) {
+			global.onWorldLoadTrigger.add(tmp_list);
+		} else if (tmp_list.get(0).equalsIgnoreCase("ONWORLDFIRSTLOAD")) {
+			global.onWorldFirstLoadTrigger.add(tmp_list);
+		} else if (tmp_list.get(0).equalsIgnoreCase("ONSERVERCHANGE")) {
+			global.onServerChangeTrigger.add(tmp_list);
+		} else if (tmp_list.get(0).equalsIgnoreCase("ONNEWDAY")) {
+			global.onNewDayTrigger.add(tmp_list);
+		} else if (tmp_list.get(0).equalsIgnoreCase("ONRIGHTCLICKPLAYER")) {
+			global.onRightClickPlayerTrigger.add(tmp_list);
 		}
 	}
 	

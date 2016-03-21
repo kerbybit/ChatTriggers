@@ -26,6 +26,7 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
+import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.globalvars.global;
 
 import net.minecraft.client.Minecraft;
@@ -456,24 +457,28 @@ public class FileHandler {
 					if (lines.get(i+1).startsWith("type:")) {
 						tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("type:") + 5, lines.get(i+1).length()));
 					} else {
-						ChatHandler.warn(ChatHandler.color("red","No trigger type specified for") + ChatHandler.color("gray",lines.get(i).substring(lines.get(i).indexOf("trigger:") + 8, lines.get(i).length())));
-						ChatHandler.warn(ChatHandler.color("red", "Set type to") + ChatHandler.color("gray", "other"));
+						ChatHandler.warn(ChatHandler.color("red","No trigger type specified for") + " " + ChatHandler.color("gray",lines.get(i).substring(lines.get(i).indexOf("trigger:") + 8, lines.get(i).length())));
+						ChatHandler.warn(ChatHandler.color("red", "Set type to") + " " + ChatHandler.color("gray", "other"));
 						tmp_list.add("other");
 					}
 				} else {
-					ChatHandler.warn(ChatHandler.color("red","No trigger type specified for") + ChatHandler.color("gray",lines.get(i).substring(lines.get(i).indexOf("trigger:") + 8, lines.get(i).length())));
-					ChatHandler.warn(ChatHandler.color("red", "Set type to") + ChatHandler.color("gray", "other"));
+					ChatHandler.warn(ChatHandler.color("red","No trigger type specified for") + " " + ChatHandler.color("gray",lines.get(i).substring(lines.get(i).indexOf("trigger:") + 8, lines.get(i).length())));
+					ChatHandler.warn(ChatHandler.color("red", "Set type to") + " " + ChatHandler.color("gray", "other"));
 					tmp_list.add("other");
 				}
 				String importTag = "";
 				if (isImport) {importTag="<imported>";}
 				tmp_list.add(importTag+lines.get(i).substring(lines.get(i).indexOf("trigger:") + 8, lines.get(i).length()));
+				
 				tmp_triggers.add(tmp_list);
 				j++;
 			}
+			
 			if (lines.get(i).trim().startsWith("event:") && j>-1) {
-				tmp_triggers.get(j).add(lines.get(i).substring(lines.get(i).indexOf("event:") + 6, lines.get(i).length()));
+				String tmp_event = lines.get(i).substring(lines.get(i).indexOf("event:") + 6);
+				tmp_triggers.get(j).add(tmp_event);
 			}
+			
 			if (lines.get(i).trim().startsWith("!")) {
 				String importFunction = lines.get(i).trim().substring(lines.get(i).trim().indexOf("!")+1);
 				if (importFunction.toUpperCase().startsWith("CREATE STRING ") || importFunction.toUpperCase().startsWith("CREATESTRING ")) {
@@ -543,7 +548,7 @@ public class FileHandler {
 							else {ChatHandler.warn(ChatHandler.color("gray", "Created string "+sn+" with no value"));}
 						}
 					}
-					try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+					//try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 				} else if (importFunction.toUpperCase().startsWith("REQUIRES ")) {
 					String importValue = importFunction.substring(importFunction.indexOf("REQUIRES ")+9);
 					String[] importValues = importValue.trim().split(" ");
@@ -577,6 +582,12 @@ public class FileHandler {
 				}
 			}
 		}
+		
+		for (int i=0; i<tmp_triggers.size(); i++) {
+			CommandReference.addToTriggerList(tmp_triggers.get(i));
+		}
+		
+		
 		return tmp_triggers;
 	}
 	
@@ -646,6 +657,13 @@ public class FileHandler {
 			saveTriggers(global.trigger, "./mods/ChatTriggers/triggers.txt");
 			saveStrings(global.USR_string, "./mods/ChatTriggers/strings.txt");
 			saveSettings(global.settings, "./mods/ChatTriggers/settings.txt");
+			
+			CommandReference.clearTriggerList();
+			
+			global.trigger = FileHandler.loadTriggers("./mods/ChatTriggers/triggers.txt", false);
+			global.USR_string = FileHandler.loadStrings("./mods/ChatTriggers/strings.txt");
+			global.settings = FileHandler.loadSettings("./mods/ChatTriggers/settings.txt");
+			loadImports("./mods/ChatTriggers/Imports/");
 		} else {
 			ChatHandler.warn(ChatHandler.color("red", "These changes are not getting saved!"));
 			ChatHandler.warn(ChatHandler.color("red", "do </trigger load> to leave testing"));
@@ -656,6 +674,7 @@ public class FileHandler {
 		ChatHandler.warn(ChatHandler.color("gray", "Loading chat triggers..."));
 		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold");}
 		try {
+			CommandReference.clearTriggerList();
 			global.trigger = loadTriggers("./mods/ChatTriggers/triggers.txt", false);
 			global.USR_string = loadStrings("./mods/ChatTriggers/strings.txt");
 			global.settings = loadSettings("./mods/ChatTriggers/settings.txt");
@@ -695,11 +714,11 @@ public class FileHandler {
 	
 	public static void firstFileLoad() {
 		if (global.tick==0) {
-			try {FileHandler.startup();} catch (ClassNotFoundException e) {e.printStackTrace();}
+			global.tick=1;
+			try {startup();} catch (ClassNotFoundException e) {e.printStackTrace();}
 
 	    	if (global.settings.get(4).equals("false")) {UpdateHandler.loadVersion("http://kerbybit.github.io/ChatTriggers/download/version.txt");} 
 	    	else {UpdateHandler.loadVersion("http://kerbybit.github.io/ChatTriggers/download/betaversion.txt");}
-			global.tick++;
 		}
 	}
 	

@@ -50,6 +50,13 @@ public class global {
 	// get(2+)= events  (eg: "say Hi" or "sound QuakePro.DoubleKill")
 	////////////////////////////////////////////////////
 	public static List<List<String>> trigger = new ArrayList<List<String>>();
+	public static List<List<String>> chatTrigger = new ArrayList<List<String>>();
+	public static List<List<String>> tickTrigger = new ArrayList<List<String>>();
+	public static List<List<String>> onWorldLoadTrigger = new ArrayList<List<String>>();
+	public static List<List<String>> onWorldFirstLoadTrigger = new ArrayList<List<String>>();
+	public static List<List<String>> onServerChangeTrigger = new ArrayList<List<String>>();
+	public static List<List<String>> onNewDayTrigger = new ArrayList<List<String>>();
+	public static List<List<String>> onRightClickPlayerTrigger = new ArrayList<List<String>>();
 	
 	
 	///////////////////String matrix/////////////////////
