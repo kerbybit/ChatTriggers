@@ -32,9 +32,7 @@ public class UpdateHandler {
 		 			
 		 			if (!global.settings.get(2).equals("null")) {
 		 				if (!lines.get(0).equals(global.settings.get(2))) {
-		 					String dashes = "";
-		 					for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
-		 					ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m-"+dashes));
+		 					ChatHandler.warnBreak(0);
 		 					if (global.settings.get(4).equals("false")) {
 		 						ChatHandler.warn(ChatHandler.color("red", "You are running on an outdated version of ChatTriggers!"));
 		 						List<String> TMP_out = new ArrayList<String>();
@@ -50,7 +48,7 @@ public class UpdateHandler {
 		 					}
 		 					ChatHandler.warn(ChatHandler.color("red", "Your version: " + global.settings.get(2)));
 		 					ChatHandler.warn(ChatHandler.color("red", "You will only see this message once until the next update"));
-		 					ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
+		 					ChatHandler.warnBreak(1);
 		 					global.settings.set(2,lines.get(0));
 		 					FileHandler.saveAll();
 		 				}

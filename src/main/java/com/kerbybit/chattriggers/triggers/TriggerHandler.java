@@ -107,7 +107,7 @@ public class TriggerHandler {
 					if (msg.contains(TMP_trig)) { //check
 						//add all events to temp list
 						List<String> TMP_events = new ArrayList<String>();
-						for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
+						for (int j=2; j<global.chatTrigger.get(i).size(); j++) {TMP_events.add(global.chatTrigger.get(i).get(j));}
 						
 						//do events
 						if (global.temporary_replace.size()==0) {
@@ -127,7 +127,7 @@ public class TriggerHandler {
 					if (msg.endsWith(TMP_trig)) {
 						//add all events to temp list
 						List<String> TMP_events = new ArrayList<String>();
-						for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
+						for (int j=2; j<global.chatTrigger.get(i).size(); j++) {TMP_events.add(global.chatTrigger.get(i).get(j));}
 						
 						//do events
 						if (global.temporary_replace.size()==0) {
@@ -147,7 +147,7 @@ public class TriggerHandler {
 					if (msg.equals(TMP_trig)) { 
 						//add all events to temp list
 						List<String> TMP_events = new ArrayList<String>();
-						for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
+						for (int j=2; j<global.chatTrigger.get(i).size(); j++) {TMP_events.add(global.chatTrigger.get(i).get(j));}
 						
 						//do events
 						if (global.temporary_replace.size()==0) {

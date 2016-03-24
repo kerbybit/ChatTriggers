@@ -12,6 +12,19 @@ import net.minecraft.util.IChatComponent;
 
 public class ChatHandler {
 	
+	public static void warnBreak(int type) {
+		String dashes = "";
+		float chatWidth = Minecraft.getMinecraft().gameSettings.chatWidth;
+		float chatScale = Minecraft.getMinecraft().gameSettings.chatScale;
+		int numdash = (int) Math.floor(((((280*(chatWidth))+40)/320) * (1/chatScale))*52);
+		for (int j=0; j<numdash; j++) {dashes += "-";}
+		if (type==0) {
+			warn(color(global.settings.get(0), "&m-"+dashes));
+		} else if (type==1) {
+			warn(color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
+		}
+		
+	}
 	
 	public static void warnUnformatted(String cht) {
 		cht = cht.replace("'", "\\'");

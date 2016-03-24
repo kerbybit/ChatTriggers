@@ -440,9 +440,7 @@ public class CommandTrigger extends CommandBase {
 				}
 			} else if (args[1].equalsIgnoreCase("LIST")) {
 				if (args.length==2) {
-					String dashes = "";
-					for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
-					ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m-"+dashes));
+					ChatHandler.warnBreak(0);
 					if (global.USR_string.size() == 0) {
 						ChatHandler.warnUnformatted(ChatHandler.color("red", "No strings created"));
 						ChatHandler.warnUnformatted(ChatHandler.color("red", "Do </trigger string> to get started"));
@@ -479,11 +477,9 @@ public class CommandTrigger extends CommandBase {
 							ChatHandler.sendJson(TMP_out);
 						}
 					}
-					ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
+					ChatHandler.warnBreak(1);
 				} else {
-					String dashes = "";
-					for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
-					ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m-"+dashes));
+					ChatHandler.warnBreak(0);
 					String showList = "";
 					for (int i=2; i<args.length; i++) {showList += args[i]+" ";} 
 					showList=showList.trim();
@@ -501,7 +497,7 @@ public class CommandTrigger extends CommandBase {
 							}
 						}
 					}
-					ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
+					ChatHandler.warnBreak(1);
 				}
 			} else {
 				if (args.length==2) {
@@ -520,9 +516,7 @@ public class CommandTrigger extends CommandBase {
 	
 	public static void commandList(String args[], Boolean silent) {
 		if (args.length==1) {
-			String dashes = "";
-			for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
-			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m-"+dashes));
+			ChatHandler.warnBreak(0);
 			if (global.trigger.size() == 0) {
 				ChatHandler.warn(ChatHandler.color("red", "No triggers created"));
 				ChatHandler.warn(ChatHandler.color("red", "Do </trigger> to get started"));
@@ -620,7 +614,7 @@ public class CommandTrigger extends CommandBase {
 					}
 				}
 			}
-			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
+			ChatHandler.warnBreak(1);
 		} else {
 			String TMP_check = "";
 			for (int i=1; i<args.length; i++) {
@@ -628,9 +622,7 @@ public class CommandTrigger extends CommandBase {
 				else {TMP_check += args[i] + " ";}
 			}
 			
-			String dashes = "";
-			for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
-			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m-"+dashes));
+			ChatHandler.warnBreak(0);
 			if (global.trigger.size() == 0) {
 				ChatHandler.warn(ChatHandler.color("red", "No triggers created"));
 				ChatHandler.warn(ChatHandler.color("red", "Do </trigger> to get started"));
@@ -724,7 +716,7 @@ public class CommandTrigger extends CommandBase {
 					ChatHandler.warn(ChatHandler.color("red", "Create list " + TMP_check + " by using <list=" + TMP_check + "> when you create a trigger"));
 				}
 			}
-			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
+			ChatHandler.warnBreak(1);
 		}
 	}
 	
@@ -803,9 +795,7 @@ public class CommandTrigger extends CommandBase {
 						ChatHandler.warn(ChatHandler.color("red", "/trigger settings beta [toggle]"));
 					}
 				} else {
-					String dashes = "";
- 					for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*51); j++) {dashes += "-";}
- 					ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m-"+dashes));
+					ChatHandler.warnBreak(0);
 					if (global.settings.get(4).equals("false")) {
 						ChatHandler.warn(ChatHandler.color("red", "You currently have the beta version disabled!"));
 						ChatHandler.warn(ChatHandler.color("red", "Although this doesnt prevent you from downloading"));
@@ -823,7 +813,7 @@ public class CommandTrigger extends CommandBase {
 						ChatHandler.warn(ChatHandler.color("red", "The beta versions may have unforseen bugs"));
 						ChatHandler.warn(ChatHandler.color("red", "but gets updated regularly with new features"));
 					}
-					ChatHandler.warn(ChatHandler.color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
+					ChatHandler.warnBreak(1);
 				}
 			} else if (args[1].equalsIgnoreCase("TEST")){
 				if (args.length<3) {
@@ -863,6 +853,8 @@ public class CommandTrigger extends CommandBase {
 	public static void commandLoad(String args[], Boolean silent) {
 		global.canSave = true;
 		try {
+			CommandReference.clearTriggerList();
+			
 			global.trigger = FileHandler.loadTriggers("./mods/ChatTriggers/triggers.txt", false);
 			global.USR_string = FileHandler.loadStrings("./mods/ChatTriggers/strings.txt");
 			global.settings = FileHandler.loadSettings("./mods/ChatTriggers/settings.txt");

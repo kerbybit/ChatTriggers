@@ -143,7 +143,10 @@ public class StringHandler {
 		}
 		if (TMP_e.contains("{br}")) {
 			String dashes = "";
-			for (int j=0; j<Math.floor((((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40)/320)*52); j++) {dashes += "-";}
+			float chatWidth = Minecraft.getMinecraft().gameSettings.chatWidth;
+			float chatScale = Minecraft.getMinecraft().gameSettings.chatScale;
+			int numdash = (int) Math.floor(((((280*(chatWidth))+40)/320) * (1/chatScale))*53);
+			for (int j=0; j<numdash; j++) {dashes += "-";}
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("DefaultString->BR-"+(global.TMP_string.size()+1));
 			temporary.add(dashes);
