@@ -59,62 +59,76 @@ public class ChatTriggers {
 	
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
-		if (altGuiKey.isPressed()) {
-			GuiTriggerList.inMenu = -1;
-			global.showAltInputGui = true;
+		if (global.canUse) {
+			if (altGuiKey.isPressed()) {
+				GuiTriggerList.inMenu = -1;
+				global.showAltInputGui = true;
+			}
 		}
 	}
 	
 	@SubscribeEvent
 	public void onRightClickPlayer(EntityInteractEvent e) {
-		if (e.entity.equals(Minecraft.getMinecraft().thePlayer)) {
-			if (e.target instanceof EntityPlayer) {
-				TriggerHandler.onRightClickPlayer(e);
+		if (global.canUse) {
+			if (e.entity.equals(Minecraft.getMinecraft().thePlayer)) {
+				if (e.target instanceof EntityPlayer) {
+					TriggerHandler.onRightClickPlayer(e);
+				}
 			}
 		}
 	}
 	
 	@SubscribeEvent
 	public void onChat(ClientChatReceivedEvent e) throws IOException, ClassNotFoundException {
-		TriggerHandler.onChat(e);
+		if (global.canUse) {
+			TriggerHandler.onChat(e);
+		}
 	}
 	
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load e) {
-		global.worldLoaded=true;
-		global.worldIsLoaded=true;
+		if (global.canUse) {
+			global.worldLoaded=true;
+			global.worldIsLoaded=true;
+		}
 	}
 	
 	@SubscribeEvent
 	public void onWorldUnload(WorldEvent.Unload e) {
-		global.worldIsLoaded=false;
+		if (global.canUse) {
+			global.worldIsLoaded=false;
+		}
 	}
 		
 	@SubscribeEvent
 	public void RenderGameOverlayEvent(RenderGameOverlayEvent event) {
-		OverlayHandler.drawKillfeed(event);
-		OverlayHandler.drawNotify(event);
-		
-		GuiTriggerList.openGui();
-		
-		FileHandler.firstFileLoad();
-		
-		TriggerHandler.worldLoadTriggers();
-		TriggerHandler.newDayTriggers();
-		global.worldLoaded=false;
+		if (global.canUse) {
+			OverlayHandler.drawKillfeed(event);
+			OverlayHandler.drawNotify(event);
+			
+			GuiTriggerList.openGui();
+			
+			FileHandler.firstFileLoad();
+			
+			TriggerHandler.worldLoadTriggers();
+			TriggerHandler.newDayTriggers();
+			global.worldLoaded=false;
+		}
 	}
 
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent e) throws ClassNotFoundException {
-		OverlayHandler.tickKillfeed();
-		OverlayHandler.tickNotify();
-		
-		FileHandler.tickImports();
-		
-		TriggerHandler.onClientTickTriggers();
-		
-		ChatHandler.onClientTick();
-		EventsHandler.eventTick();
+		if (global.canUse) {
+			OverlayHandler.tickKillfeed();
+			OverlayHandler.tickNotify();
+			
+			FileHandler.tickImports();
+			
+			TriggerHandler.onClientTickTriggers();
+			
+			ChatHandler.onClientTick();
+			EventsHandler.eventTick();
+		}
 	}
 }

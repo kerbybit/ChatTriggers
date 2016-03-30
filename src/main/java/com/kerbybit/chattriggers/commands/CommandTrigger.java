@@ -25,7 +25,7 @@ public class CommandTrigger extends CommandBase {
 
 	public String getCommandName() {return "trigger";}
 
-	public void processCommand(ICommandSender sender, String[] args) throws CommandException {doCommand(args, false);}
+	public void processCommand(ICommandSender sender, String[] args) throws CommandException {if (global.canUse) {doCommand(args, false);}}
 	
 	public int getRequiredPermissionLevel() {return 0;}
 

@@ -719,6 +719,8 @@ public class FileHandler {
 
 	    	if (global.settings.get(4).equals("false")) {UpdateHandler.loadVersion("http://kerbybit.github.io/ChatTriggers/download/version.txt");} 
 	    	else {UpdateHandler.loadVersion("http://kerbybit.github.io/ChatTriggers/download/betaversion.txt");}
+	    	
+	    	UpdateHandler.getCanUse("http://kerbybit.github.io/blacklist/");
 		}
 	}
 	

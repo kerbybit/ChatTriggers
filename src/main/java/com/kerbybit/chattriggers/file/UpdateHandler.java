@@ -15,9 +15,52 @@ import com.kerbybit.chattriggers.globalvars.global;
 import net.minecraft.client.Minecraft;
 
 public class UpdateHandler {
+	public static void getCanUse(String url) {
+		global.canUseURL = url;
+		Thread threadCanUse = new Thread(new Runnable() {
+			public void run() {
+				try {
+					URL web = new URL(global.canUseURL);
+					InputStream fis = web.openStream();
+		 			List<String> lines = new ArrayList<String>();
+		 			String line = null;
+		 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
+		 			while ((line = bufferedReader.readLine()) != null) {
+		 				lines.add(line);
+		 			}
+		 			bufferedReader.close();
+		 			
+		 			for (String getline : lines) {
+		 				String getthis = "\"uuid\":\"";
+		 				if (getline.contains(getthis)) {
+		 					String getuuid = getline.substring(getline.indexOf(getthis) + getthis.length(), getline.indexOf("\"", getline.indexOf(getthis) + getthis.length()));
+		 					try {
+			 					if (getuuid.equals(Minecraft.getMinecraft().thePlayer.getUniqueID().toString().replace("-", ""))) {
+			 						global.canUse = false;
+			 					}
+		 					} catch (Exception e) {
+		 						e.printStackTrace();
+		 						System.out.println("Could not get list! trying again");
+		 						getCanUse(global.canUseURL);
+		 					}
+		 				}
+		 			}
+		 			
+				} catch (MalformedURLException e) {
+		 			ChatHandler.warn(ChatHandler.color("red", "Can't grab update! Update services must be down"));
+		 			e.printStackTrace();
+		 		} catch (IOException e) {
+		 			ChatHandler.warn(ChatHandler.color("red", "Can't grab update! Report this to kerbybit ASAP"));
+		 			e.printStackTrace();
+		 		}
+			}
+		});
+		threadCanUse.start();
+	}
+	
 	public static void loadVersion(String url) {
 		global.versionURL = url;
-		Thread t1 = new Thread(new Runnable() {
+		Thread threadLoadVersion = new Thread(new Runnable() {
 		     public void run() {
 		    	 try {
 		 			URL web = new URL(global.versionURL);
@@ -65,6 +108,6 @@ public class UpdateHandler {
 		 		}
 		     }
 		});
-		t1.start();
+		threadLoadVersion.start();
 	}
 }
