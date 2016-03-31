@@ -80,8 +80,9 @@ public class FileHandler {
 			 			for (String value : lines) {writer.println(value);}
 			 			writer.close();
 			 			if (global.debug==true) {ChatHandler.warn(ChatHandler.color("&7", "Loading imports into triggers"));}
-			 			global.trigger = loadTriggers("./mods/ChatTriggers/triggers.txt", false);
-						global.USR_string = loadStrings("./mods/ChatTriggers/strings.txt");
+			 			
+			 			try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while loading the files after an import!"));}
+			 			
 						loadImports("./mods/ChatTriggers/Imports/");
 			 			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Got "+file+" successfully!"));
 			 		} catch (MalformedURLException e) {

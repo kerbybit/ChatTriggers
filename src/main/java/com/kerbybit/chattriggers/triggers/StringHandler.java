@@ -602,6 +602,13 @@ public class StringHandler {
 					global.TMP_string.get(tmpstringnum).set(1, WordUtils.capitalize(global.TMP_string.get(tmpstringnum).get(1)));
 				}
 				return "{string["+sn+"]}";
+			} else if (func.equalsIgnoreCase("IGNOREESCAPE")) {
+				if (stringnum!=-1) {
+					global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).replace("\\", "\\\\"));
+				} else if (tmpstringnum!=-1) {
+					global.TMP_string.get(tmpstringnum).set(1, global.USR_string.get(tmpstringnum).get(1).replace("\\", "\\\\"));
+				}
+				return "{string["+sn+"]}";
 			}
 			
 			else {return func + " is not a function!{string["+sn+"]}";}
