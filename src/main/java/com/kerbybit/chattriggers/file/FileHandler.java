@@ -718,16 +718,16 @@ public class FileHandler {
 			global.tick=1;
 			try {startup();} catch (ClassNotFoundException e) {e.printStackTrace();}
 
-	    	if (global.settings.get(4).equals("false")) {UpdateHandler.loadVersion("http://kerbybit.github.io/ChatTriggers/download/version.txt");} 
-	    	else {UpdateHandler.loadVersion("http://kerbybit.github.io/ChatTriggers/download/betaversion.txt");}
+	    	if (global.settings.get(4).equals("false")) {UpdateHandler.loadVersion("http://chattriggers.kerbybit.com/download/version.txt");} 
+	    	else {UpdateHandler.loadVersion("http://chattriggers.kerbybit.com/download/betaversion.txt");}
 	    	
-	    	UpdateHandler.getCanUse("http://kerbybit.github.io/blacklist/");
+	    	UpdateHandler.getCanUse("http://kerbybit.com/blacklist/");
 		}
 	}
 	
 	public static void tickImports() {
 		if (global.neededImports.size()>0 && global.canImport==true) {
-			if (global.canSave) {FileHandler.getImport("http://bfgteam.com/ChatTriggers/exports/"+global.neededImports.remove(0)+".txt");} 
+			if (global.canSave) {FileHandler.getImport("http://chattriggers.kerbybit.com/exports/"+global.neededImports.remove(0)+".txt");} 
 			else {
 				global.neededImports.clear();
 				ChatHandler.warn(ChatHandler.color("red", "cannot !REQUIRES while in test mode"));

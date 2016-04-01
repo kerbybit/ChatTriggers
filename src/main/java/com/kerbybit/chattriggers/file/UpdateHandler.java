@@ -79,13 +79,13 @@ public class UpdateHandler {
 		 					if (global.settings.get(4).equals("false")) {
 		 						ChatHandler.warn(ChatHandler.color("red", "You are running on an outdated version of ChatTriggers!"));
 		 						List<String> TMP_out = new ArrayList<String>();
-		 						TMP_out.add("text:'http://kerbybit.github.io/ChatTriggers/download',color:red,hoverEvent:{action:'show_text',value:'Click to download update'},clickEvent:{action:'open_url',value:'http://kerbybit.github.io/ChatTriggers/download'}");
+		 						TMP_out.add("text:'http://ChatTriggers.kerbybit.com/download',color:red,hoverEvent:{action:'show_text',value:'Click to download update'},clickEvent:{action:'open_url',value:'http://chattrigger.kerbybit.com/download'}");
 		 						ChatHandler.sendJson(TMP_out);
 		 						ChatHandler.warn(ChatHandler.color("red", "Current stable version: " + lines.get(0)));
 		 					} else {
 		 						ChatHandler.warn(ChatHandler.color("red", "You are running on an outdated version of ChatTriggers!"));
 		 						List<String> TMP_out = new ArrayList<String>();
-		 						TMP_out.add("text:'http://kerbybit.github.io/ChatTriggers/download',color:red,hoverEvent:{action:'show_text',value:'Click to download update'},clickEvent:{action:'open_url',value:'http://kerbybit.github.io/ChatTriggers/download'}");
+		 						TMP_out.add("text:'http://ChatTriggers.kerbybit.com/download',color:red,hoverEvent:{action:'show_text',value:'Click to download update'},clickEvent:{action:'open_url',value:'http://chattriggers.kerbybit.com/download'}");
 		 						ChatHandler.sendJson(TMP_out);
 		 						ChatHandler.warn(ChatHandler.color("red", "Current beta version: " + lines.get(0)));
 		 					}
