@@ -509,8 +509,13 @@ public class EventsHandler {
 						}
 					} else {
 						if (eventsToElse.size()>0) {
-							eventsToElse.remove(0);
-							doEvents(eventsToElse, chatEvent);
+							if (eventsToElse.get(0).toUpperCase().startsWith("ELSEIF")) {
+								eventsToElse.set(0, eventsToElse.get(0).substring(4));
+								doEvents(eventsToElse, chatEvent);
+							} else {
+								eventsToElse.remove(0);
+								doEvents(eventsToElse, chatEvent);
+							}
 						}
 					}
 				}
