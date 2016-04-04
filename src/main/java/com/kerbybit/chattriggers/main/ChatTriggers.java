@@ -129,6 +129,7 @@ public class ChatTriggers {
 			
 			ChatHandler.onClientTick();
 			EventsHandler.eventTick();
+			global.ticksElapsed += 1;
 		}
 	}
 }

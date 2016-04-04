@@ -178,7 +178,7 @@ public class ChatHandler {
 		TMP_o += "{text:'" + cht +  "'}";
 		TMP_o += "]";
 		IChatComponent TMP_out = IChatComponent.Serializer.jsonToComponent(TMP_o);
-		Minecraft.getMinecraft().thePlayer.addChatMessage(TMP_out);
+		Minecraft.getMinecraft().thePlayer.addChatMessage(TMP_out); 
 	}
 	
 	public static String color(String clr, String msg) {

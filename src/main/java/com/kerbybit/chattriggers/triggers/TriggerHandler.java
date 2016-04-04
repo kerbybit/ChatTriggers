@@ -169,14 +169,15 @@ public class TriggerHandler {
 	public static void onClientTickTriggers() {
 		if (global.worldIsLoaded==true) {
 			for (int i=0; i<global.tickTrigger.size(); i++) {
-				System.out.println(global.tickTrigger.get(i));
-				//add all events to temp list
-				List<String> TMP_events = new ArrayList<String>();
-				for (int j=2; j<global.tickTrigger.get(i).size(); j++) {TMP_events.add(global.tickTrigger.get(i).get(j));}
-				
-				//do events
-				ClientChatReceivedEvent e1 = null;
-				EventsHandler.doEvents(TMP_events, e1);
+				if (global.ticksElapsed % global.tickTriggerTime.get(i) == 0) {
+					//add all events to temp list
+					List<String> TMP_events = new ArrayList<String>();
+					for (int j=2; j<global.tickTrigger.get(i).size(); j++) {TMP_events.add(global.tickTrigger.get(i).get(j));}
+					
+					//do events
+					ClientChatReceivedEvent e1 = null;
+					EventsHandler.doEvents(TMP_events, e1);
+				}
 			}
 		}
 	}

@@ -34,8 +34,18 @@ public class CommandReference {
 	public static void addToTriggerList(List<String> tmp_list) {
 		if (tmp_list.get(0).equalsIgnoreCase("CHAT")) {
 			global.chatTrigger.add(tmp_list);
-		} else if (tmp_list.get(0).equalsIgnoreCase("ONCLIENTTICK")) {
+		} else if (tmp_list.get(0).toUpperCase().startsWith("ONCLIENTTICK")) {
 			global.tickTrigger.add(tmp_list);
+			if (tmp_list.get(0).equalsIgnoreCase("ONCLIENTTICK")) {
+				global.tickTriggerTime.add(1);
+			} else {
+				try {
+					int num = Integer.parseInt(tmp_list.get(0).substring(12).trim());
+					global.tickTriggerTime.add(num);
+				} catch (NumberFormatException e) {
+					global.tickTriggerTime.add(1);
+				}
+			}
 		} else if (tmp_list.get(0).equalsIgnoreCase("ONWORLDLOAD")) {
 			global.onWorldLoadTrigger.add(tmp_list);
 		} else if (tmp_list.get(0).equalsIgnoreCase("ONWORLDFIRSTLOAD")) {
