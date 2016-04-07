@@ -242,8 +242,15 @@ public class StringHandler {
 		int stringnum = -1;
 		int tmpstringnum = -1;
 		
-		args = ArrayHandler.arrayFunctions(args);
 		args = stringFunctions(args);
+		while (args.contains("{array[") && args.contains("]}")) {
+			args = ArrayHandler.arrayFunctions(args);
+			args = stringFunctions(args);
+		}
+		while (args.contains("{string[") && args.contains("]}")) {
+			args = stringFunctions(args);
+		}
+		
 		sn = stringFunctions(sn);
 		
 		stringnum = getStringNum(sn);
