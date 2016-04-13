@@ -236,8 +236,9 @@ public class ChatHandler {
 		
 		if (global.commandQueue.size() > 0) {
 			String cht = global.commandQueue.remove(0);
-			if (cht.startsWith("trigger ")) {
-				cht = cht.substring(8, cht.length());
+			if (cht.startsWith("trigger ") || (cht.startsWith("t "))) {
+				if (cht.startsWith("trigger ")) {cht = cht.substring(8);}
+				else {cht = cht.substring(2);}
 				String[] args = cht.split(" ");
 				if (global.debug==true) {CommandTrigger.doCommand(args, false);}
 				else {CommandTrigger.doCommand(args, true);}

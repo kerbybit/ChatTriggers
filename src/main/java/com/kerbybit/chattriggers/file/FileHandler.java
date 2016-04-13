@@ -83,7 +83,6 @@ public class FileHandler {
 			 			
 			 			try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while loading the files after an import!"));}
 			 			
-						loadImports("./mods/ChatTriggers/Imports/");
 			 			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Got "+file+" successfully!"));
 			 		} catch (MalformedURLException e) {
 			 			ChatHandler.warn(ChatHandler.color("red", "Not a valid import! bad URL"));
@@ -727,10 +726,12 @@ public class FileHandler {
 	
 	public static void tickImports() {
 		if (global.neededImports.size()>0 && global.canImport==true) {
-			if (global.canSave) {FileHandler.getImport("http://chattriggers.kerbybit.com/exports/"+global.neededImports.remove(0)+".txt");} 
-			else {
+			if (global.canSave) {
+				FileHandler.getImport("http://chattriggers.kerbybit.com/exports/"+global.neededImports.remove(0)+".txt");
+				
+			} else {
 				global.neededImports.clear();
-				ChatHandler.warn(ChatHandler.color("red", "cannot !REQUIRES while in test mode"));
+				ChatHandler.warn(ChatHandler.color("red", "cannot get imports while in test mode"));
 				ChatHandler.warn(ChatHandler.color("red", "</trigger load> to leave testing mode"));
 			}
 		}
