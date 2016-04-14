@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.lang3.text.WordUtils;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
+import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
@@ -198,25 +199,32 @@ public class StringHandler {
 	}
 	
 	public static void resetBackupStrings() {
-		global.backupUSR_strings.clear();
-		for (int j=0; j<global.USR_string.size(); j++) {
-			String first = global.USR_string.get(j).get(0);
-			String second = global.USR_string.get(j).get(1);
-			List<String> temporary = new ArrayList<String>();
-			temporary.add(first);
-			temporary.add(second);
-			global.backupUSR_strings.add(temporary);
+		try {
+			global.backupUSR_strings.clear();
+			for (int j=0; j<global.USR_string.size(); j++) {
+				String first = global.USR_string.get(j).get(0);
+				String second = global.USR_string.get(j).get(1);
+				List<String> temporary = new ArrayList<String>();
+				temporary.add(first);
+				temporary.add(second);
+				global.backupUSR_strings.add(temporary);
+			}
+			
+			global.backupTMP_strings.clear();
+			for (int j=0; j<global.TMP_string.size(); j++) {
+				String first = global.TMP_string.get(j).get(0);
+				String second = global.TMP_string.get(j).get(1);
+				List<String> temporary = new ArrayList<String>();
+				temporary.add(first);
+				temporary.add(second);
+				global.backupTMP_strings.add(temporary);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			ChatHandler.warn(ChatHandler.color("red", "Something went really really wrong! Check logs for details."));
+			CommandReference.resetAll();
 		}
 		
-		global.backupTMP_strings.clear();
-		for (int j=0; j<global.TMP_string.size(); j++) {
-			String first = global.TMP_string.get(j).get(0);
-			String second = global.TMP_string.get(j).get(1);
-			List<String> temporary = new ArrayList<String>();
-			temporary.add(first);
-			temporary.add(second);
-			global.backupTMP_strings.add(temporary);
-		}
 	}
 	
 	public static int getStringNum(String sn) {
@@ -385,7 +393,7 @@ public class StringHandler {
 				else if (tmpstringnum!=-1) {global.TMP_string.get(tmpstringnum).set(1, args + global.TMP_string.get(tmpstringnum).get(1));}
 				return "{string["+sn+"]}";
 			} else if (func.equalsIgnoreCase("SUFFIX")) {
-				if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, args + global.USR_string.get(stringnum).get(1));} 
+				if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1) + args);} 
 				else if (tmpstringnum!=-1) {global.TMP_string.get(tmpstringnum).set(1, args + global.TMP_string.get(tmpstringnum).get(1));}
 				return "{string["+sn+"]}";
 			} else if (func.equalsIgnoreCase("TOUPPER") || func.equalsIgnoreCase("TOUPPERCASE")) {

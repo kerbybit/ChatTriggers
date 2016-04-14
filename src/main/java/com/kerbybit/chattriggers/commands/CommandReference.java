@@ -1,11 +1,27 @@
 package com.kerbybit.chattriggers.commands;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.kerbybit.chattriggers.chat.ChatHandler;
+import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
 public class CommandReference {
+	public static void resetAll() {
+		ChatHandler.warn(ChatHandler.color("red", "Resetting everything in attempt to fix things"));
+		global.waitEvents.clear();
+		global.asyncEvents.clear();
+		global.backupTMP_strings.clear();
+		global.backupUSR_strings.clear();
+		global.killfeed.clear();
+		global.notify.clear();
+		try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+		ChatHandler.warn(ChatHandler.color("green", "Reset completed"));
+	}
+	
+	
 	public static boolean isTriggerType(String TMP_type) {
 		if (TMP_type.equalsIgnoreCase("CHAT") 
 		|| TMP_type.equalsIgnoreCase("OTHER")
