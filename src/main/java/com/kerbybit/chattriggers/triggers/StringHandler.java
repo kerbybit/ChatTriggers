@@ -23,7 +23,7 @@ public class StringHandler {
 			try {
 				int num = Integer.parseInt(strnum);
 				if (num>=0) {
-					if (num<global.chatHistory.size()) {temporary.add(global.chatHistory.get(global.chatHistory.size()-(num+1)));} 
+					if (num<global.chatHistory.size()) {temporary.add(ChatHandler.removeFormatting(global.chatHistory.get(global.chatHistory.size()-(num+1))));} 
 					else {temporary.add("Number must be less than the chat history size! ("+global.chatHistory.size()+")");}
 				} else {temporary.add("Number must be greater than or equal to 0!");}
 			} catch (NumberFormatException e) {temporary.add("Not a number!");}
@@ -36,7 +36,7 @@ public class StringHandler {
 			if (TMP_e.contains("{msg}")) {
 				List<String> temporary = new ArrayList<String>();
 				temporary.add("DefaultString->MSG-"+(global.TMP_string.size()+1));
-				temporary.add(chatEvent.message.getFormattedText());
+				temporary.add(ChatHandler.removeFormatting(chatEvent.message.getFormattedText()));
 				global.TMP_string.add(temporary);
 				global.backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{msg}", "{string[DefaultString->MSG-"+global.TMP_string.size()+"]}");
@@ -194,6 +194,30 @@ public class StringHandler {
 			global.TMP_string.add(temporary);
 			global.backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{sneak}", "{string[DefaultString->SNEAK-"+global.TMP_string.size()+"]}");
+		}
+		if (TMP_e.contains("{coordx}")) {
+			List<String> temporary = new ArrayList<String>();
+			temporary.add("DefaultString->COORDX-"+(global.TMP_string.size()+1));
+			temporary.add(Math.round(Minecraft.getMinecraft().thePlayer.posX)+"");
+			global.TMP_string.add(temporary);
+			global.backupTMP_strings.add(temporary);
+			TMP_e = TMP_e.replace("{coordx}", "{string[DefaultString->COORDX-"+global.TMP_string.size()+"]}");
+		}
+		if (TMP_e.contains("{coordy}")) {
+			List<String> temporary = new ArrayList<String>();
+			temporary.add("DefaultString->COORDY-"+(global.TMP_string.size()+1));
+			temporary.add(Math.round(Minecraft.getMinecraft().thePlayer.posY)+"");
+			global.TMP_string.add(temporary);
+			global.backupTMP_strings.add(temporary);
+			TMP_e = TMP_e.replace("{coordy}", "{string[DefaultString->COORDY-"+global.TMP_string.size()+"]}");
+		}
+		if (TMP_e.contains("{coordz}")) {
+			List<String> temporary = new ArrayList<String>();
+			temporary.add("DefaultString->COORDZ-"+(global.TMP_string.size()+1));
+			temporary.add(Math.round(Minecraft.getMinecraft().thePlayer.posZ)+"");
+			global.TMP_string.add(temporary);
+			global.backupTMP_strings.add(temporary);
+			TMP_e = TMP_e.replace("{coordz}", "{string[DefaultString->COORDZ-"+global.TMP_string.size()+"]}");
 		}
 		return TMP_e;
 	}
@@ -373,6 +397,11 @@ public class StringHandler {
 						else if (tmpstringnum!=-1) {global.TMP_string.get(tmpstringnum).set(1, (strnmbr%argnmbr) + "");}
 						return "{string["+sn+"]}";
 					} catch (NumberFormatException e) {return args+" is not a number!{string["+sn+"]}";}
+				} catch (NumberFormatException e) {return sn+" is not a number!{string["+sn+"]}";}
+			} else if (func.equalsIgnoreCase("ABSOLUTE") || func.equalsIgnoreCase("ABS")) {
+				try {
+					if (stringnum!=-1) {return Math.abs(Integer.parseInt(global.USR_string.get(stringnum).get(1))) + "";}
+					else if (tmpstringnum!=-1) {return Math.abs(Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1))) + "";}
 				} catch (NumberFormatException e) {return sn+" is not a number!{string["+sn+"]}";}
 			} else if (func.equalsIgnoreCase("REPLACE")) {
 				if (args.contains(",")) {

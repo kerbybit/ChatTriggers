@@ -249,54 +249,54 @@ public class ChatHandler {
 	}
 	
 	public static String removeFormatting(String msg) {
-		msg = msg.replace(EnumChatFormatting.BLACK.toString(), "&0");
-		msg = msg.replace(EnumChatFormatting.DARK_BLUE.toString(), "&1");
-		msg = msg.replace(EnumChatFormatting.DARK_GREEN.toString(), "&2");
-		msg = msg.replace(EnumChatFormatting.DARK_AQUA.toString(), "&3");
-		msg = msg.replace(EnumChatFormatting.DARK_RED.toString(), "&4");
-		msg = msg.replace(EnumChatFormatting.DARK_PURPLE.toString(), "&5");
-		msg = msg.replace(EnumChatFormatting.GOLD.toString(), "&6");
-		msg = msg.replace(EnumChatFormatting.GRAY.toString(), "&7");
-		msg = msg.replace(EnumChatFormatting.DARK_GRAY.toString(), "&8");
-		msg = msg.replace(EnumChatFormatting.BLUE.toString(), "&9");
-		msg = msg.replace(EnumChatFormatting.GREEN.toString(), "&a");
-		msg = msg.replace(EnumChatFormatting.AQUA.toString(), "&b");
-		msg = msg.replace(EnumChatFormatting.RED.toString(), "&c");
-		msg = msg.replace(EnumChatFormatting.LIGHT_PURPLE.toString(), "&d");
-		msg = msg.replace(EnumChatFormatting.YELLOW.toString(), "&e");
-		msg = msg.replace(EnumChatFormatting.WHITE.toString(), "&f");
-		msg = msg.replace(EnumChatFormatting.OBFUSCATED.toString(), "&k");
-		msg = msg.replace(EnumChatFormatting.BOLD.toString(), "&l");
-		msg = msg.replace(EnumChatFormatting.STRIKETHROUGH.toString(), "&m");
-		msg = msg.replace(EnumChatFormatting.UNDERLINE.toString(), "&n");
-		msg = msg.replace(EnumChatFormatting.ITALIC.toString(), "&o");
-		msg = msg.replace(EnumChatFormatting.RESET.toString(), "&r");
+		msg = msg.replace(EnumChatFormatting.BLACK.toString(), "&0")
+			.replace(EnumChatFormatting.DARK_BLUE.toString(), "&1")
+			.replace(EnumChatFormatting.DARK_GREEN.toString(), "&2")
+			.replace(EnumChatFormatting.DARK_AQUA.toString(), "&3")
+			.replace(EnumChatFormatting.DARK_RED.toString(), "&4")
+			.replace(EnumChatFormatting.DARK_PURPLE.toString(), "&5")
+			.replace(EnumChatFormatting.GOLD.toString(), "&6")
+			.replace(EnumChatFormatting.GRAY.toString(), "&7")
+			.replace(EnumChatFormatting.DARK_GRAY.toString(), "&8")
+			.replace(EnumChatFormatting.BLUE.toString(), "&9")
+			.replace(EnumChatFormatting.GREEN.toString(), "&a")
+			.replace(EnumChatFormatting.AQUA.toString(), "&b")
+			.replace(EnumChatFormatting.RED.toString(), "&c")
+			.replace(EnumChatFormatting.LIGHT_PURPLE.toString(), "&d")
+			.replace(EnumChatFormatting.YELLOW.toString(), "&e")
+			.replace(EnumChatFormatting.WHITE.toString(), "&f")
+			.replace(EnumChatFormatting.OBFUSCATED.toString(), "&k")
+			.replace(EnumChatFormatting.BOLD.toString(), "&l")
+			.replace(EnumChatFormatting.STRIKETHROUGH.toString(), "&m")
+			.replace(EnumChatFormatting.UNDERLINE.toString(), "&n")
+			.replace(EnumChatFormatting.ITALIC.toString(), "&o")
+			.replace(EnumChatFormatting.RESET.toString(), "&r");
 		return msg;
 	}
 	
 	public static String addFormatting(String msg) {
-		msg = msg.replace("&0", EnumChatFormatting.BLACK.toString());
-		msg = msg.replace("&1", EnumChatFormatting.DARK_BLUE.toString());
-		msg = msg.replace("&2", EnumChatFormatting.DARK_GREEN.toString());
-		msg = msg.replace("&3", EnumChatFormatting.DARK_AQUA.toString());
-		msg = msg.replace("&4", EnumChatFormatting.DARK_RED.toString());
-		msg = msg.replace("&5", EnumChatFormatting.DARK_PURPLE.toString());
-		msg = msg.replace("&6", EnumChatFormatting.GOLD.toString());
-		msg = msg.replace("&7", EnumChatFormatting.GRAY.toString());
-		msg = msg.replace("&8", EnumChatFormatting.DARK_GRAY.toString());
-		msg = msg.replace("&9", EnumChatFormatting.BLUE.toString());
-		msg = msg.replace("&a", EnumChatFormatting.GREEN.toString());
-		msg = msg.replace("&b", EnumChatFormatting.AQUA.toString());
-		msg = msg.replace("&c", EnumChatFormatting.RED.toString());
-		msg = msg.replace("&d", EnumChatFormatting.LIGHT_PURPLE.toString());
-		msg = msg.replace("&e", EnumChatFormatting.YELLOW.toString());
-		msg = msg.replace("&f", EnumChatFormatting.WHITE.toString());
-		msg = msg.replace("&k", EnumChatFormatting.OBFUSCATED.toString());
-		msg = msg.replace("&l", EnumChatFormatting.BOLD.toString());
-		msg = msg.replace("&m", EnumChatFormatting.STRIKETHROUGH.toString());
-		msg = msg.replace("&n", EnumChatFormatting.UNDERLINE.toString());
-		msg = msg.replace("&o", EnumChatFormatting.ITALIC.toString());
-		msg = msg.replace("&r", EnumChatFormatting.RESET.toString());
+		msg = msg.replace("&0", EnumChatFormatting.BLACK.toString())
+			.replace("&1", EnumChatFormatting.DARK_BLUE.toString())
+			.replace("&2", EnumChatFormatting.DARK_GREEN.toString())
+			.replace("&3", EnumChatFormatting.DARK_AQUA.toString())
+			.replace("&4", EnumChatFormatting.DARK_RED.toString())
+			.replace("&5", EnumChatFormatting.DARK_PURPLE.toString())
+			.replace("&6", EnumChatFormatting.GOLD.toString())
+			.replace("&7", EnumChatFormatting.GRAY.toString())
+			.replace("&8", EnumChatFormatting.DARK_GRAY.toString())
+			.replace("&9", EnumChatFormatting.BLUE.toString())
+			.replace("&a", EnumChatFormatting.GREEN.toString())
+			.replace("&b", EnumChatFormatting.AQUA.toString())
+			.replace("&c", EnumChatFormatting.RED.toString())
+			.replace("&d", EnumChatFormatting.LIGHT_PURPLE.toString())
+			.replace("&e", EnumChatFormatting.YELLOW.toString())
+			.replace("&f", EnumChatFormatting.WHITE.toString())
+			.replace("&k", EnumChatFormatting.OBFUSCATED.toString())
+			.replace("&l", EnumChatFormatting.BOLD.toString())
+			.replace("&m", EnumChatFormatting.STRIKETHROUGH.toString())
+			.replace("&n", EnumChatFormatting.UNDERLINE.toString())
+			.replace("&o", EnumChatFormatting.ITALIC.toString())
+			.replace("&r", EnumChatFormatting.RESET.toString());
 		return msg;
 	}
 }
