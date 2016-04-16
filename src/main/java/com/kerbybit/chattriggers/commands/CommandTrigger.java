@@ -1,5 +1,8 @@
 package com.kerbybit.chattriggers.commands;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,6 +40,61 @@ public class CommandTrigger extends CommandBase {
 			ChatHandler.warn(ChatHandler.color("red", "/trigger [string/run] <...>"));
 			ChatHandler.warn(ChatHandler.color("red", "/trigger [save/load]"));
 			ChatHandler.warn(ChatHandler.color("red", "/trigger [import/export] <...>"));
+		} else if (args[0].equalsIgnoreCase("COPY")) {
+			if (args.length != 1) {
+				if (args.length == 3) {
+					if (args[1].equals("CopyFromDebugChat")) {
+						try {
+							int num = Integer.parseInt(args[2]);
+							Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+							clipboard.setContents(new StringSelection(global.copyText.get(num)), null);
+							doCommand(new String[] {"notify", ChatHandler.color("green", "Copied debug chat to clipboard")}, silent);
+						} catch (Exception e) {
+							e.printStackTrace();
+							ChatHandler.warn(ChatHandler.color("red", "Something went wrong when copying text!"));
+						}
+					} else {
+						String TMP_e = "";
+						for (int i=1; i<args.length; i++) {TMP_e += args[i] + " ";};
+						Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+						clipboard.setContents(new StringSelection(TMP_e.trim()), null);
+						doCommand(new String[] {"notify", ChatHandler.color("green", "Copied chat to clipboard")}, silent);
+					}
+				} else {
+					String TMP_e = "";
+					for (int i=1; i<args.length; i++) {TMP_e += args[i] + " ";};
+					Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+					clipboard.setContents(new StringSelection(TMP_e.trim()), null);
+					doCommand(new String[] {"notify", ChatHandler.color("green", "Copied chat to clipboard")}, silent);
+				}
+			} else {
+				ChatHandler.warn(ChatHandler.color("red", "/trigger copy <text>"));
+			}
+		} else if (args[0].equalsIgnoreCase("NOTIFY")) {
+			if (args.length != 1) {
+				String TMP_e = "";
+				for (int i=1; i<args.length; i++) {TMP_e += args[i] + " ";};
+				global.notify.add(TMP_e.trim());
+				List<Float> temp_list = new ArrayList<Float>();
+				temp_list.add((float) 0);temp_list.add((float) -1000);
+				temp_list.add((float) global.notifySize);temp_list.add((float) 50);
+				temp_list.add((float) 0);temp_list.add((float) -1000);
+				global.notifyAnimation.add(temp_list);
+				global.notifySize++;
+			} else {
+				ChatHandler.warn(ChatHandler.color("red", "/trigger notify <text>"));
+			}
+		} else if (args[0].equalsIgnoreCase("KILLFEED")) {
+			if (args.length != 1) {
+				String TMP_e = "";
+				for (int i=1; i<args.length; i++) {TMP_e += args[i] + " ";};
+				global.killfeed.add(TMP_e);
+				global.killfeedDelay.add(100);
+			} else {
+				ChatHandler.warn(ChatHandler.color("red", "/trigger killfeed <text>"));
+			}
+		} else if (args[0].equalsIgnoreCase("RESET")) {
+			CommandReference.resetAll();
 		} else if (args[0].equalsIgnoreCase("IMPORT")) {
 			commandImport(args, silent);
 		} else if (args[0].equalsIgnoreCase("DISABLEIMPORT")) {
@@ -764,8 +822,16 @@ public class CommandTrigger extends CommandBase {
 			ChatHandler.warn(ChatHandler.color("red", "/trigger settings [debug/test/color/killfeed/beta] <...>"));
 		} else {
 			if (args[1].equalsIgnoreCase("DEBUG")) {
-				if (global.debug==false) {ChatHandler.warn(ChatHandler.color("gray", "Toggled debug mode") + " " + ChatHandler.color(global.settings.get(0), "on")); global.debug=true;}
-				else {ChatHandler.warn(ChatHandler.color("gray", "Toggled debug mode") + " " + ChatHandler.color(global.settings.get(0), "off")); global.debug=false;}
+				if (args.length == 2) {
+					if (global.debug==false) {ChatHandler.warn(ChatHandler.color("gray", "Toggled debug mode") + " " + ChatHandler.color(global.settings.get(0), "on")); global.debug=true;}
+					else {ChatHandler.warn(ChatHandler.color("gray", "Toggled debug mode") + " " + ChatHandler.color(global.settings.get(0), "off")); global.debug=false;}
+				} else {
+					if (args[2].equalsIgnoreCase("CHAT")) {
+						if (global.debugChat==false) {ChatHandler.warn(ChatHandler.color("gray", "Toggled debug chat mode") + " " + ChatHandler.color(global.settings.get(0), "on")); global.debugChat=true;}
+						else {ChatHandler.warn(ChatHandler.color("gray", "Toggled debug chat mode") + " " + ChatHandler.color(global.settings.get(0), "off")); global.debugChat=false;}
+					}
+				}
+				
 			} else if (args[1].equalsIgnoreCase("COLOR") || args[1].equalsIgnoreCase("COLOUR")) {
 				if (args.length < 3) {
 					ChatHandler.warn(ChatHandler.color("red", "/trigger settings color [color]"));

@@ -41,6 +41,8 @@ public class global {
 	public static int notifySize = 0;
 	
 	public static boolean debug = false;
+	public static boolean debugChat = false;
+	public static List<String> copyText = new ArrayList<String>();
 	public static boolean canSave = true;
 	
 	public static boolean showGUI = false;

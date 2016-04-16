@@ -17,6 +17,10 @@ public class ArrayHandler {
 			String returnString = "Something went wrong with parsing setSplit!";
 			Boolean isArray = false;
 			
+			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
+				checkFrom = StringHandler.stringFunctions(checkFrom);
+			}
+			
 			String[] args = checkTo.split(",");
 			if (args.length==2) {
 				for (int j=0; j<global.USR_array.size(); j++) {
@@ -58,6 +62,10 @@ public class ArrayHandler {
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.add(")+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.add(")));
 			Boolean isArray = false;
 			
+			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
+				checkFrom = StringHandler.stringFunctions(checkFrom);
+			}
+			
 			for (int j=0; j<global.USR_array.size(); j++) {
 				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
 					global.USR_array.get(j).add(checkTo);
@@ -84,6 +92,10 @@ public class ArrayHandler {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.clear()", TMP_e.indexOf("{array[")));
 			String returnString = checkFrom + " is not an array!";
 			
+			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
+				checkFrom = StringHandler.stringFunctions(checkFrom);
+			}
+			
 			for (int j=0; j<global.USR_array.size(); j++) {
 				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
 					global.USR_array.remove(j);
@@ -103,6 +115,10 @@ public class ArrayHandler {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.has(", TMP_e.indexOf("{array[")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.has(")+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.has(")));
 			String checkThis = "false";
+			
+			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
+				checkFrom = StringHandler.stringFunctions(checkFrom);
+			}
 			
 			for (int j=0; j<global.USR_array.size(); j++) {
 				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
@@ -124,6 +140,10 @@ public class ArrayHandler {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.hasIgnoreCase(", TMP_e.indexOf("{array[")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.hasIgnoreCase(")+17, TMP_e.indexOf(")", TMP_e.indexOf("]}.hasIgnoreCase(")));
 			String checkThis = "false";
+			
+			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
+				checkFrom = StringHandler.stringFunctions(checkFrom);
+			}
 			
 			for (int j=0; j<global.USR_array.size(); j++) {
 				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
@@ -148,6 +168,10 @@ public class ArrayHandler {
 			int toRemove = -1;
 			int toRemoveArray = -1;
 			String returnString = checkFrom + " is not an array!";
+			
+			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
+				checkFrom = StringHandler.stringFunctions(checkFrom);
+			}
 			
 			try {
 				toRemove = Integer.parseInt(checkTo);
@@ -193,6 +217,10 @@ public class ArrayHandler {
 			int toGet = -1;
 			String returnString = checkFrom + " is not an array!";
 			
+			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
+				checkFrom = StringHandler.stringFunctions(checkFrom);
+			}
+			
 			try {
 				toGet = Integer.parseInt(checkTo);
 				if (toGet > 0) {
@@ -230,6 +258,10 @@ public class ArrayHandler {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.size()", TMP_e.indexOf("{array[")));
 			int arraysize = 0;
 			
+			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
+				checkFrom = StringHandler.stringFunctions(checkFrom);
+			}
+			
 			for (int j=0; j<global.USR_array.size(); j++) {
 				if (global.USR_array.get(j).get(0).equals(checkFrom)) {arraysize = global.USR_array.get(j).size()-1;}
 			}
@@ -247,6 +279,10 @@ public class ArrayHandler {
 			String checkFile = TMP_e.substring(TMP_e.indexOf("]}.importJsonFile(")+18, TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile(")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile("))+1, TMP_e.indexOf(")", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile("+checkFile+",")));
 			
+			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
+				checkFrom = StringHandler.stringFunctions(checkFrom);
+			}
+			
 			String checkJson = FileHandler.importJsonFile("array",checkFile, checkFrom+"=>"+checkTo);
 			
 			List<String> temporary = new ArrayList<String>();
@@ -262,6 +298,10 @@ public class ArrayHandler {
 			String checkFile = TMP_e.substring(TMP_e.indexOf("]}.importJsonURL(")+17, TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL(")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL("))+1, TMP_e.indexOf(")", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL("+checkFile+",")));
 			
+			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
+				checkFrom = StringHandler.stringFunctions(checkFrom);
+			}
+			
 			String checkJson = FileHandler.importJsonURL("array",checkFile, checkFrom + "=>" + checkTo);
 			
 			List<String> temporary = new ArrayList<String>();
@@ -276,6 +316,11 @@ public class ArrayHandler {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.exportJson(", TMP_e.indexOf("{array[")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.exportJson(")+14, TMP_e.indexOf(")", TMP_e.indexOf("]}.exportJson(")));
 			String returnString = "Something went wrong!";
+			
+			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
+				checkFrom = StringHandler.stringFunctions(checkFrom);
+			}
+			
 			if (checkTo.contains(",")) {
 				try {returnString = FileHandler.exportJsonFile(checkTo.substring(0, checkTo.indexOf(",")), checkFrom, checkTo.substring(checkTo.indexOf(",")+1));} 
 				catch (FileNotFoundException e) {returnString = "File not found and could not be created!";} 

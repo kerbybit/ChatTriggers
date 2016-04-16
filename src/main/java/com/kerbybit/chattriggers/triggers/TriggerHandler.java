@@ -26,7 +26,14 @@ public class TriggerHandler {
 		String msgNOEDIT = msg;
 		
 		//debug chat
-		if (global.debug==true) {ChatHandler.warnUnformatted(ChatHandler.removeFormatting(fmsg));}
+		if (global.debugChat==true) {
+			String tmp_out = ChatHandler.removeFormatting(fmsg);
+			global.copyText.add(tmp_out);
+			tmp_out = tmp_out.replace("'", "\\'");
+			List<String> TMP_eventout = new ArrayList<String>();
+			TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size()-1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
+			ChatHandler.sendJson(TMP_eventout);
+		}
 		
 		for (int i=0; i<global.chatTrigger.size(); i++) {
 			//setup
