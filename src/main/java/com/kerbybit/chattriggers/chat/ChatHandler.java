@@ -175,7 +175,11 @@ public class ChatHandler {
 		
 		
 		String TMP_o = "['',";
-		TMP_o += "{text:'" + cht +  "'}";
+		TMP_o += "{text:'" + 
+				cht.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")
+				+  "'}";
 		TMP_o += "]";
 		IChatComponent TMP_out = IChatComponent.Serializer.jsonToComponent(TMP_o);
 		Minecraft.getMinecraft().thePlayer.addChatMessage(TMP_out); 
@@ -211,21 +215,9 @@ public class ChatHandler {
 	public static void onClientTick() {
 		if (global.chatDelay <= 0) {
 			if (global.chatQueue.size() > 0) {
-				String cht = global.chatQueue.remove(0);
-				
-				cht = cht.replace("{me}", Minecraft.getMinecraft().thePlayer.getName());
-				
-				while (cht.contains("{string[")) {
-					String TMP_test = cht.substring(0, cht.indexOf("]"));
-					String TMP_s = TMP_test.substring(cht.indexOf("{string[") + 8, cht.indexOf("]"));
-					String TMP_sn = "";
-					for (int i=0; i<global.USR_string.size(); i++) {
-						if (TMP_s.equals(global.USR_string.get(i).get(0))) {
-							TMP_sn = global.USR_string.get(i).get(1);
-						}
-					}
-					cht = cht.replace("{string[" + TMP_s + "]}", TMP_sn);
-				}
+				String cht = global.chatQueue.remove(0).replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+						.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+						.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
 				
 				Minecraft.getMinecraft().thePlayer.sendChatMessage(cht);
 				global.chatDelay = 20;
@@ -243,7 +235,10 @@ public class ChatHandler {
 				if (global.debug==true) {CommandTrigger.doCommand(args, false);}
 				else {CommandTrigger.doCommand(args, true);}
 			} else {
-				Minecraft.getMinecraft().thePlayer.sendChatMessage("/" + cht);
+				Minecraft.getMinecraft().thePlayer.sendChatMessage("/" + 
+						cht.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+							.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+							.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"));
 			}
 		}
 	}

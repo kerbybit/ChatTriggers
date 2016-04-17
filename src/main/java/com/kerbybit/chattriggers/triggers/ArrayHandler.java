@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.kerbybit.chattriggers.file.FileHandler;
+import com.kerbybit.chattriggers.file.JsonHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
 public class ArrayHandler {
@@ -283,7 +284,7 @@ public class ArrayHandler {
 				checkFrom = StringHandler.stringFunctions(checkFrom);
 			}
 			
-			String checkJson = FileHandler.importJsonFile("array",checkFile, checkFrom+"=>"+checkTo);
+			String checkJson = JsonHandler.importJsonFile("array",checkFile, checkFrom+"=>"+checkTo);
 			
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("ArrayToString->"+checkFrom+"IMPORTJSONFILE"+checkTo+"FROM"+checkFile+"-"+(global.TMP_string.size()+1));
@@ -302,7 +303,7 @@ public class ArrayHandler {
 				checkFrom = StringHandler.stringFunctions(checkFrom);
 			}
 			
-			String checkJson = FileHandler.importJsonURL("array",checkFile, checkFrom + "=>" + checkTo);
+			String checkJson = JsonHandler.importJsonURL("array",checkFile, checkFrom + "=>" + checkTo);
 			
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("ArrayToString->"+checkFrom+"IMPORTJSONURL"+checkTo+"FROM"+checkFile+"-"+(global.TMP_string.size()+1));
@@ -322,7 +323,7 @@ public class ArrayHandler {
 			}
 			
 			if (checkTo.contains(",")) {
-				try {returnString = FileHandler.exportJsonFile(checkTo.substring(0, checkTo.indexOf(",")), checkFrom, checkTo.substring(checkTo.indexOf(",")+1));} 
+				try {returnString = JsonHandler.exportJsonFile(checkTo.substring(0, checkTo.indexOf(",")), checkFrom, checkTo.substring(checkTo.indexOf(",")+1));} 
 				catch (FileNotFoundException e) {returnString = "File not found and could not be created!";} 
 				catch (UnsupportedEncodingException e) {returnString = "File could not be saved!";} 
 				catch (IOException e) {returnString = "File could not be saved!";}

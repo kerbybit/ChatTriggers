@@ -104,11 +104,20 @@ public class EventsHandler {
 			if (TMP_c.equalsIgnoreCase("SAY")) {global.chatQueue.add(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("CHAT")) {ChatHandler.warn(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("DO") && global.debug==true) {ChatHandler.warn(TMP_e);}
-			if (TMP_c.equalsIgnoreCase("SOUND")) {Minecraft.getMinecraft().thePlayer.playSound(TMP_e, TMP_v, TMP_pi);}
+			if (TMP_c.equalsIgnoreCase("SOUND")) {Minecraft.getMinecraft().thePlayer.playSound(TMP_e
+					.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"), TMP_v, TMP_pi);}
 			if (TMP_c.equalsIgnoreCase("CANCEL") && chatEvent!=null) {chatEvent.setCanceled(true);}
-			if (TMP_c.equalsIgnoreCase("KILLFEED")) {global.killfeed.add(TMP_e); global.killfeedDelay.add(TMP_t);}
+			if (TMP_c.equalsIgnoreCase("KILLFEED")) {global.killfeed.add(TMP_e
+					.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")); global.killfeedDelay.add(TMP_t);}
 			if (TMP_c.equalsIgnoreCase("NOTIFY")) {
-				global.notify.add(TMP_e);
+				global.notify.add(TMP_e
+					.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"));
 				List<Float> temp_list = new ArrayList<Float>();
 				temp_list.add((float) 0);temp_list.add((float) -1000);
 				temp_list.add((float) TMP_p);temp_list.add((float) TMP_t);
@@ -119,175 +128,17 @@ public class EventsHandler {
 			if (TMP_c.equalsIgnoreCase("COMMAND")) {global.commandQueue.add(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("COPY")) {
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-				clipboard.setContents(new StringSelection(TMP_e), null);
+				clipboard.setContents(new StringSelection(TMP_e
+					.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")), null);
 			}
 			if (TMP_c.equalsIgnoreCase("URL")) {
-				try {Desktop.getDesktop().browse(URI.create(TMP_e));}
+				try {Desktop.getDesktop().browse(URI.create(TMP_e
+						.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+						.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+						.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")));}
 				catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Unable to open URL! IOExeption"));}
-			}
-			if (TMP_c.equalsIgnoreCase("SKIN")) {
-				String[] args = TMP_e.split(" ");
-				if (args[0].equalsIgnoreCase("CAPE")) {
-					if (args.length>=2) {
-						if (args[1].equalsIgnoreCase("ON") || args[1].equalsIgnoreCase("TRUE")) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.CAPE, true);
-						} else if (args[1].equalsIgnoreCase("OFF") || args[1].equalsIgnoreCase("FALSE")) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.CAPE, false);
-						} else {
-							if (Minecraft.getMinecraft().gameSettings.getModelParts().contains(EnumPlayerModelParts.CAPE)) {
-								Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.CAPE, false);
-							} else {
-								Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.CAPE, true);
-							}
-						}
-					} else {
-						if (Minecraft.getMinecraft().gameSettings.getModelParts().contains(EnumPlayerModelParts.CAPE)) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.CAPE, false);
-						} else {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.CAPE, true);
-						}
-					}
-				} else if (args[0].equalsIgnoreCase("JACKET")) {
-					if (args.length>=2) {
-						if (args[1].equalsIgnoreCase("ON") || args[1].equalsIgnoreCase("TRUE")) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.JACKET, true);
-						} else if (args[1].equalsIgnoreCase("OFF") || args[1].equalsIgnoreCase("FALSE")) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.JACKET, false);
-						} else {
-							if (Minecraft.getMinecraft().gameSettings.getModelParts().contains(EnumPlayerModelParts.JACKET)) {
-								Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.JACKET, false);
-							} else {
-								Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.JACKET, true);
-							}
-						}
-					} else {
-						if (Minecraft.getMinecraft().gameSettings.getModelParts().contains(EnumPlayerModelParts.JACKET)) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.JACKET, false);
-						} else {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.JACKET, true);
-						}
-					}
-				} else if (args[0].equalsIgnoreCase("LEFT_SLEEVE")) {
-					if (args.length>=2) {
-						if (args[1].equalsIgnoreCase("ON") || args[1].equalsIgnoreCase("TRUE")) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.LEFT_SLEEVE, true);
-						} else if (args[1].equalsIgnoreCase("OFF") || args[1].equalsIgnoreCase("FALSE")) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.LEFT_SLEEVE, false);
-						} else {
-							if (Minecraft.getMinecraft().gameSettings.getModelParts().contains(EnumPlayerModelParts.LEFT_SLEEVE)) {
-								Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.LEFT_SLEEVE, false);
-							} else {
-								Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.LEFT_SLEEVE, true);
-							}
-						}
-					} else {
-						if (Minecraft.getMinecraft().gameSettings.getModelParts().contains(EnumPlayerModelParts.LEFT_SLEEVE)) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.LEFT_SLEEVE, false);
-						} else {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.LEFT_SLEEVE, true);
-						}
-					}
-				} else if (args[0].equalsIgnoreCase("RIGHT_SLEEVE")) {
-					if (args.length>=2) {
-						if (args[1].equalsIgnoreCase("ON") || args[1].equalsIgnoreCase("TRUE")) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.RIGHT_SLEEVE, true);
-						} else if (args[1].equalsIgnoreCase("OFF") || args[1].equalsIgnoreCase("FALSE")) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.RIGHT_SLEEVE, false);
-						} else {
-							if (Minecraft.getMinecraft().gameSettings.getModelParts().contains(EnumPlayerModelParts.RIGHT_SLEEVE)) {
-								Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.RIGHT_SLEEVE, false);
-							} else {
-								Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.RIGHT_SLEEVE, true);
-							}
-						}
-					} else {
-						if (Minecraft.getMinecraft().gameSettings.getModelParts().contains(EnumPlayerModelParts.RIGHT_SLEEVE)) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.RIGHT_SLEEVE, false);
-						} else {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.RIGHT_SLEEVE, true);
-						}
-					}
-				} else if (args[0].equalsIgnoreCase("LEFT_PANTS_LEG")) {
-					if (args.length>=2) {
-						if (args[1].equalsIgnoreCase("ON") || args[1].equalsIgnoreCase("TRUE")) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.LEFT_PANTS_LEG, true);
-						} else if (args[1].equalsIgnoreCase("OFF") || args[1].equalsIgnoreCase("FALSE")) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.LEFT_PANTS_LEG, false);
-						} else {
-							if (Minecraft.getMinecraft().gameSettings.getModelParts().contains(EnumPlayerModelParts.LEFT_PANTS_LEG)) {
-								Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.LEFT_PANTS_LEG, false);
-							} else {
-								Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.LEFT_PANTS_LEG, true);
-							}
-						}
-					} else {
-						if (Minecraft.getMinecraft().gameSettings.getModelParts().contains(EnumPlayerModelParts.LEFT_PANTS_LEG)) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.LEFT_PANTS_LEG, false);
-						} else {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.LEFT_PANTS_LEG, true);
-						}
-					}
-				} else if (args[0].equalsIgnoreCase("RIGHT_PANTS_LEG")) {
-					if (args.length>=2) {
-						if (args[1].equalsIgnoreCase("ON") || args[1].equalsIgnoreCase("TRUE")) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.RIGHT_PANTS_LEG, true);
-						} else if (args[1].equalsIgnoreCase("OFF") || args[1].equalsIgnoreCase("FALSE")) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.RIGHT_PANTS_LEG, false);
-						} else {
-							if (Minecraft.getMinecraft().gameSettings.getModelParts().contains(EnumPlayerModelParts.RIGHT_PANTS_LEG)) {
-								Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.RIGHT_PANTS_LEG, false);
-							} else {
-								Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.RIGHT_PANTS_LEG, true);
-							}
-						}
-					} else {
-						if (Minecraft.getMinecraft().gameSettings.getModelParts().contains(EnumPlayerModelParts.RIGHT_PANTS_LEG)) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.RIGHT_PANTS_LEG, false);
-						} else {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.RIGHT_PANTS_LEG, true);
-						}
-					}
-				} else if (args[0].equalsIgnoreCase("HAT")) {
-					if (args.length>=2) {
-						if (args[1].equalsIgnoreCase("ON") || args[1].equalsIgnoreCase("TRUE")) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.HAT, true);
-						} else if (args[1].equalsIgnoreCase("OFF") || args[1].equalsIgnoreCase("FALSE")) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.HAT, false);
-						} else {
-							if (Minecraft.getMinecraft().gameSettings.getModelParts().contains(EnumPlayerModelParts.HAT)) {
-								Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.HAT, false);
-							} else {
-								Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.HAT, true);
-							}
-						}
-					} else {
-						if (Minecraft.getMinecraft().gameSettings.getModelParts().contains(EnumPlayerModelParts.HAT)) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.HAT, false);
-						} else {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.HAT, true);
-						}
-					}
-				} else if (args[0].equalsIgnoreCase("ALL")) {
-					if (args.length>=2) {
-						if (args[1].equalsIgnoreCase("ON") || args[1].equalsIgnoreCase("TRUE")) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.CAPE, true);
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.JACKET, true);
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.LEFT_SLEEVE, true);
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.RIGHT_SLEEVE, true);
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.LEFT_PANTS_LEG, true);
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.RIGHT_PANTS_LEG, true);
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.HAT, true);
-						} else if (args[1].equalsIgnoreCase("OFF") || args[1].equalsIgnoreCase("FALSE")) {
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.CAPE, false);
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.JACKET, false);
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.LEFT_SLEEVE, false);
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.RIGHT_SLEEVE, false);
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.LEFT_PANTS_LEG, false);
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.RIGHT_PANTS_LEG, false);
-							Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.HAT, false);
-						} else {ChatHandler.warn(ChatHandler.color("red", "Please specify 'on' or 'off' in event:skin all"));}
-					} else {ChatHandler.warn(ChatHandler.color("red", "Please specify 'on' or 'off' in event:skin all"));}
-				}
 			}
 			
 			

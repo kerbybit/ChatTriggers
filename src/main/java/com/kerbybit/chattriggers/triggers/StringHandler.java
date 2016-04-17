@@ -9,6 +9,7 @@ import org.apache.commons.lang3.text.WordUtils;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.file.FileHandler;
+import com.kerbybit.chattriggers.file.JsonHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
 import net.minecraft.client.Minecraft;
@@ -447,7 +448,7 @@ public class StringHandler {
 			} else if (func.equalsIgnoreCase("IMPORTJSONFILE")){
 				String sj = "Improper format! use importJsonFile(file,node)";
 				if (args.contains(",")) {
-					sj = FileHandler.importJsonFile("string", args.substring(0, args.indexOf(",")), sn + "=>" + args.substring(args.indexOf(",")+1));
+					sj = JsonHandler.importJsonFile("string", args.substring(0, args.indexOf(",")), sn + "=>" + args.substring(args.indexOf(",")+1));
 					if (stringnum!=-1) {
 						global.USR_string.get(stringnum).set(1, sj);
 						global.backupUSR_strings.get(stringnum).set(1, sj);
@@ -463,7 +464,7 @@ public class StringHandler {
 			} else if (func.equalsIgnoreCase("IMPORTJSONURL")) {
 				String sj = "Improper format! use importJsonFile(file,node)";
 				if (args.contains(",")) {
-					sj = FileHandler.importJsonURL("string", args.substring(0, args.indexOf(",")), sn + "=>" + args.substring(args.indexOf(",")+1));
+					sj = JsonHandler.importJsonURL("string", args.substring(0, args.indexOf(",")), sn + "=>" + args.substring(args.indexOf(",")+1));
 					if (stringnum!=-1) {
 						global.USR_string.get(stringnum).set(1, sj);
 						global.backupUSR_strings.get(stringnum).set(1, sj);
@@ -711,8 +712,8 @@ public class StringHandler {
 					args = first + "stringCloseBracketF6cyUQp9stringCloseBracket" + second;
 					TMP_e = TMP_e.replace(argsbefore, args);
 				}
-				args = args.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "("); args = args.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
-				TMP_e = TMP_e.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "("); TMP_e = TMP_e.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
+				args = args.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(").replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
+				TMP_e = TMP_e.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(").replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
 				String fullreplace = "{string["+sn+"]}."+func+"("+args+")";
 				String firstpart = TMP_e.substring(0, TMP_e.indexOf(fullreplace));
 				String secondpart = TMP_e.substring(TMP_e.indexOf(fullreplace)+fullreplace.length());
@@ -757,7 +758,11 @@ public class StringHandler {
 				String firstpart = TMP_e.substring(0, TMP_e.indexOf(fullreplace));
 				String secondpart = TMP_e.substring(TMP_e.indexOf(fullreplace)+fullreplace.length());
 				
-				TMP_e = firstpart + returnString.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement") + secondpart;
+				TMP_e = firstpart + 
+						returnString.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
+						.replace("(", "stringOpenBracketF6cyUQp9stringOpenBracket")
+						.replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket")
+						+ secondpart;
 				
 				global.USR_string.clear();
 				for (int i=0; i<global.backupUSR_strings.size(); i++) {
