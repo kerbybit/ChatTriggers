@@ -296,7 +296,7 @@ public class FileHandler {
 									else {global.USR_string.get(k).add(ln);}
 								}
 								if (global.debug==true) {ChatHandler.warn(ChatHandler.color("gray", "Set value "+sv+" in string "+sn));}
-							} else {if (global.debug==true) {ChatHandler.warn(ChatHandler.color("gray", "String already exsists"));}}
+							} else {if (global.debug==true) {ChatHandler.warn(ChatHandler.color("gray", "String already exists"));}}
 							if (!svo.equals("")) {
 								if (global.USR_string.get(k).equals("")) {
 									global.USR_string.get(k).set(1, svo);
