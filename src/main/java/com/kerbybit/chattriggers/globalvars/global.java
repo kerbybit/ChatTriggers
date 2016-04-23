@@ -13,8 +13,9 @@ public class global {
 	public static Boolean worldIsLoaded = false;
 	public static String connectedToServer = "";
 	public static String versionURL = "";
-	public static String canUseURL = "";
 	public static String currentDate = "null";
+	public static String canUseURL1 = "";
+	public static String canUseURL2 = "";
 	public static Boolean canUse = true;
 	
 	public static int playerHealth = -1;

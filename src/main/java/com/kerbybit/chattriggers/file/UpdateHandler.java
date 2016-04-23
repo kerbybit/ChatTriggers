@@ -15,12 +15,13 @@ import com.kerbybit.chattriggers.globalvars.global;
 import net.minecraft.client.Minecraft;
 
 public class UpdateHandler {
-	public static void getCanUse(String url) {
-		global.canUseURL = url;
-		Thread threadCanUse = new Thread(new Runnable() {
+	public static void getCanUse(String url1, String url2) {
+		global.canUseURL1 = url1;
+		global.canUseURL2 = url2;
+		Thread threadCanUse1 = new Thread(new Runnable() {
 			public void run() {
 				try {
-					URL web = new URL(global.canUseURL);
+					URL web = new URL(global.canUseURL1);
 					InputStream fis = web.openStream();
 		 			List<String> lines = new ArrayList<String>();
 		 			String line = null;
@@ -37,11 +38,41 @@ public class UpdateHandler {
 		 					try {
 			 					if (getuuid.equals(Minecraft.getMinecraft().thePlayer.getUniqueID().toString().replace("-", ""))) {
 			 						global.canUse = false;
+			 						ChatHandler.warn(ChatHandler.color("red", "ChatTriggers is currently disabled!"));
+			 						ChatHandler.warn(ChatHandler.color("red", "  Why am I seeing this? clickable(&7[click],open_url,http://www.kerbybit.com/enabledmods/info/,&7Open &7kerbybit.com/EnabledMods/info/)"));
 			 					}
 		 					} catch (Exception e) {
 		 						e.printStackTrace();
-		 						System.out.println("Could not get list! trying again");
-		 						getCanUse(global.canUseURL);
+		 						System.out.println("Could not get list! ChatTriggers may not work properly!");
+		 					}
+		 				}
+		 			}
+		 			
+		 			
+		 			
+		 			web = new URL(global.canUseURL2);
+					fis = web.openStream();
+		 			lines = new ArrayList<String>();
+		 			line = null;
+		 			bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
+		 			while ((line = bufferedReader.readLine()) != null) {
+		 				lines.add(line);
+		 			}
+		 			bufferedReader.close();
+		 			
+		 			for (String getline : lines) {
+		 				String getthis = "\"ChatTriggers\":\"";
+		 				if (getline.contains(getthis)) {
+		 					String getenabled = getline.substring(getline.indexOf(getthis) + getthis.length(), getline.indexOf("\"", getline.indexOf(getthis) + getthis.length()));
+		 					try {
+			 					if (getenabled.equals("false")) {
+			 						global.canUse = false;
+			 						ChatHandler.warn(ChatHandler.color("red", "ChatTriggers is currently disabled!"));
+			 						ChatHandler.warn(ChatHandler.color("red", "  Why am I seeing this? clickable(&7[click],open_url,http://www.kerbybit.com/enabledmods/info/,&7Open &7kerbybit.com/EnabledMods/info/)"));
+			 					}
+		 					} catch (Exception e) {
+		 						e.printStackTrace();
+		 						System.out.println("Could not get list! ChatTriggers may not work properly!");
 		 					}
 		 				}
 		 			}
@@ -55,7 +86,7 @@ public class UpdateHandler {
 		 		}
 			}
 		});
-		threadCanUse.start();
+		threadCanUse1.start();
 	}
 	
 	public static void loadVersion(String url) {
