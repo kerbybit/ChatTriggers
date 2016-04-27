@@ -3,8 +3,6 @@ package com.kerbybit.chattriggers.globalvars;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
-
 public class global {
 	public static List<String> asyncEvents = new ArrayList<String>();
 	
@@ -92,7 +90,7 @@ public class global {
 	//////////////////Settings matrix///////////////////
 	// layout
 	// get(0) = color
-	// get(1) = colorname
+	// get(1) = color name
 	////////////////////////////////////////////////////
 	public static List<String> settings = new ArrayList<String>();
 }

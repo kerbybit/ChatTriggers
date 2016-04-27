@@ -7,9 +7,9 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public class OverlayHandler {
-	static Minecraft MC = Minecraft.getMinecraft();
 	
 	public static void drawKillfeed(RenderGameOverlayEvent event) {
+		Minecraft MC = Minecraft.getMinecraft();
 		if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
 			for (int i=0; i<global.killfeed.size(); i++) {
 				if (global.settings.get(3).equalsIgnoreCase("TOP-RIGHT") || global.settings.get(3).equalsIgnoreCase("TR")) {
@@ -29,16 +29,17 @@ public class OverlayHandler {
 	
 	public static void tickKillfeed() {
 		for (int i=0; i<global.killfeedDelay.size(); i++) {
-			if (global.killfeedDelay.get(i).intValue() == 0) {
+			if (global.killfeedDelay.get(i) == 0) {
 				global.killfeed.remove(i);
 				global.killfeedDelay.remove(i);
 			} else {
-				global.killfeedDelay.set(i, global.killfeedDelay.get(i).intValue() - 1);
+				global.killfeedDelay.set(i, global.killfeedDelay.get(i) - 1);
 			}
 		}
 	}
 	
 	public static void drawNotify(RenderGameOverlayEvent event) {
+		Minecraft MC = Minecraft.getMinecraft();
 		if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
 			for (int i=0; i<global.notify.size(); i++) {
 				MC.fontRendererObj.drawStringWithShadow(global.notify.get(i), global.notifyAnimation.get(i).get(1), global.notifyAnimation.get(i).get(2), 0xffffff);
@@ -47,6 +48,7 @@ public class OverlayHandler {
 	}
 	
 	public static void tickNotify() {
+		Minecraft MC = Minecraft.getMinecraft();
 		for (int i=0; i<global.notify.size(); i++) {
 			if (global.notifyAnimation.get(i).get(0)==0) {
 				ScaledResolution var5 = new ScaledResolution(MC);

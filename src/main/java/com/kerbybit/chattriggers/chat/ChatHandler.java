@@ -1,6 +1,5 @@
 package com.kerbybit.chattriggers.chat;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.kerbybit.chattriggers.commands.CommandTrigger;
@@ -35,6 +34,7 @@ public class ChatHandler {
 		Minecraft.getMinecraft().thePlayer.addChatMessage(TMP_out);
 	}
 	
+	/* DEPRECATED
 	public static void warnUnformClick(String cht) {
 		cht = cht.replace("'('", "LeftParF6cyUQp9LeftPar");
 		cht = cht.replace("')'", "RightParF6cyUQp9RightPar");
@@ -42,14 +42,9 @@ public class ChatHandler {
 		cht = cht.replace("'", "\\'");
 		
 		while (cht.contains("clickable(") && cht.contains(")")) {
-			String TMP_1splt = "";
-			String TMP_2splt = "";
-			if (cht.indexOf("clickable(") != 0) {TMP_1splt = ",";}
-			if (cht.indexOf(")") != cht.length()) {TMP_2splt = ",";}
+
 			String TMP_clk = cht.substring(cht.indexOf("clickable(") + 10, cht.indexOf(")", cht.indexOf("clickable(")));
-			
-			
-			
+
 			if (TMP_clk.contains("(")) {
 				TMP_clk = cht.substring(cht.indexOf("clickable(")+10, cht.indexOf(")", cht.indexOf(")")+1));
 				String TMP_subcheck = TMP_clk.substring(TMP_clk.indexOf("(")+1,TMP_clk.indexOf(")"));
@@ -84,7 +79,7 @@ public class ChatHandler {
 		TMP_o += "]";
 		IChatComponent TMP_out = IChatComponent.Serializer.jsonToComponent(TMP_o);
 		Minecraft.getMinecraft().thePlayer.addChatMessage(TMP_out);
-	}
+	}*/
 	
 	public static void sendJson(List<String> out) {
 		String TMP_o = "['',";
@@ -108,14 +103,8 @@ public class ChatHandler {
 		
 		
 		while (cht.contains("clickable(") && cht.contains(")")) {
-			String TMP_1splt = "";
-			String TMP_2splt = "";
-			if (cht.indexOf("clickable(") != 0) {TMP_1splt = ",";}
-			if (cht.indexOf(")") != cht.length()) {TMP_2splt = ",";}
 			String TMP_clk = cht.substring(cht.indexOf("clickable(") + 10, cht.indexOf(")", cht.indexOf("clickable(")));
-			
-			
-			
+
 			if (TMP_clk.contains("(")) {
 				TMP_clk = cht.substring(cht.indexOf("clickable(")+10, cht.indexOf(")", cht.indexOf(")", cht.indexOf("clickable("))+1));
 				String TMP_subcheck = TMP_clk.substring(TMP_clk.indexOf("(")+1,TMP_clk.indexOf(")"));
@@ -142,14 +131,8 @@ public class ChatHandler {
 		}
 		
 		while (cht.contains("hover(") && cht.contains(")")) {
-			String TMP_1splt = "";
-			String TMP_2splt = "";
-			if (cht.indexOf("hover(") != 0) {TMP_1splt = ",";}
-			if (cht.indexOf(")") != cht.length()) {TMP_2splt = ",";}
 			String TMP_clk = cht.substring(cht.indexOf("hover(") + 6, cht.indexOf(")", cht.indexOf("hover(")));
-			
-			
-			
+
 			if (TMP_clk.contains("(")) {
 				TMP_clk = cht.substring(cht.indexOf("hover(")+6, cht.indexOf(")", cht.indexOf(")", cht.indexOf("hover("))+1));
 				String TMP_subcheck = TMP_clk.substring(TMP_clk.indexOf("(")+1,TMP_clk.indexOf(")"));
@@ -207,7 +190,7 @@ public class ChatHandler {
 		else if (clr.trim().equalsIgnoreCase("&e") || clr.trim().equalsIgnoreCase("YELLOW"))      {chatColor = EnumChatFormatting.YELLOW.toString();}
 		else if (clr.trim().equalsIgnoreCase("&f") || clr.trim().equalsIgnoreCase("WHITE"))       {chatColor = EnumChatFormatting.WHITE.toString();}
 
-		for (int i = 0; i < tmp.length; i++) {formatted += chatColor + tmp[i] + " ";}
+		for (String value : tmp) {formatted += chatColor + value + " ";}
 		
 		return formatted.trim();
 	}
@@ -232,7 +215,7 @@ public class ChatHandler {
 				if (cht.startsWith("trigger ")) {cht = cht.substring(8);}
 				else {cht = cht.substring(2);}
 				String[] args = cht.split(" ");
-				if (global.debug==true) {CommandTrigger.doCommand(args, false);}
+				if (global.debug) {CommandTrigger.doCommand(args, false);}
 				else {CommandTrigger.doCommand(args, true);}
 			} else {
 				Minecraft.getMinecraft().thePlayer.sendChatMessage("/" + 

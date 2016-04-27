@@ -4,14 +4,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.file.JsonHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
-public class ArrayHandler {
-	public static String arrayFunctions(String TMP_e) {
+class ArrayHandler {
+	static String arrayFunctions(String TMP_e) {
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.setSplit(") && TMP_e.contains(",") && TMP_e.contains(")")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.setSplit(", TMP_e.indexOf("{array[")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.setSplit(")+12, TMP_e.indexOf(")", TMP_e.indexOf("]}.setSplit(")));
@@ -28,7 +28,7 @@ public class ArrayHandler {
 					if (global.USR_array.get(j).get(0).equals(checkFrom)) {
 						String[] moreargs = args[0].split(args[1]);
 						List<String> temporary = new ArrayList<String>();
-						for (String value : moreargs) {temporary.add(value);}
+						temporary.addAll(Arrays.asList(moreargs));
 						returnString = "[";
 						for (String value : temporary) {returnString+=value + " ";}
 						returnString = returnString.trim().replace(" ",",")+"]";
@@ -41,7 +41,7 @@ public class ArrayHandler {
 					List<String> temporary = new ArrayList<String>();
 					temporary.add(checkFrom);
 					List<String> temp = new ArrayList<String>();
-					for (String value : moreargs) {temporary.add(value);}
+					temporary.addAll(Arrays.asList(moreargs));
 					returnString = "[";
 					for (String value : temp) {returnString+=value + " ";}
 					returnString = returnString.trim().replace(" ",",")+"]";
@@ -52,7 +52,7 @@ public class ArrayHandler {
 			
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("ArrayToString->"+checkFrom+"SETSPLIT"+checkTo+"-"+(global.TMP_string.size()+1));
-			temporary.add(checkTo);
+			temporary.add(returnString);
 			global.TMP_string.add(temporary);
 			global.backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.setSplit(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"SETSPLIT"+checkTo+"-"+global.TMP_string.size()+"]}");
@@ -74,7 +74,7 @@ public class ArrayHandler {
 				}
 			}
 			
-			if (isArray == false) {
+			if (!isArray) {
 				List<String> prearray = new ArrayList<String>();
 				prearray.add(checkFrom);
 				prearray.add(checkTo);
@@ -165,8 +165,8 @@ public class ArrayHandler {
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.remove(") && TMP_e.contains(")")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.remove(", TMP_e.indexOf("{array[")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.remove(")+10, TMP_e.indexOf(")", TMP_e.indexOf("]}.remove(")));
-			String removed = "";
-			int toRemove = -1;
+			String removed;
+			int toRemove;
 			int toRemoveArray = -1;
 			String returnString = checkFrom + " is not an array!";
 			
@@ -214,8 +214,8 @@ public class ArrayHandler {
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.get(", TMP_e.indexOf("{array[")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.get(")+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.get(")));
-			String got = "";
-			int toGet = -1;
+			String got;
+			int toGet;
 			String returnString = checkFrom + " is not an array!";
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
@@ -316,7 +316,7 @@ public class ArrayHandler {
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.exportJson(") && TMP_e.contains(")")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.exportJson(", TMP_e.indexOf("{array[")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.exportJson(")+14, TMP_e.indexOf(")", TMP_e.indexOf("]}.exportJson(")));
-			String returnString = "Something went wrong!";
+			String returnString;
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
 				checkFrom = StringHandler.stringFunctions(checkFrom);

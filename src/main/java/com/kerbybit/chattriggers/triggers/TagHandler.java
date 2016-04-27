@@ -1,8 +1,8 @@
 package com.kerbybit.chattriggers.triggers;
 
 public class TagHandler {
-	public static String eventTags(int tag, String TMP_e) {
-		String returnString = "";
+	static String eventTags(int tag, String TMP_e) {
+		String returnString;
 		switch (tag) {
 		case 1:
 			returnString = TMP_e.substring(TMP_e.indexOf("<time=")+6, TMP_e.indexOf(">",TMP_e.indexOf("<time=")));
@@ -25,7 +25,7 @@ public class TagHandler {
 	}
 	
 	public static String removeTags(String TMP_trig) {
-		String TMP_list = "";
+		String TMP_list;
 		TMP_trig = TMP_trig.replace("<s>", "").replace("<c>", "").replace("<e>", "")
 				.replace("<start>", "").replace("<contain>", "").replace("<end>", "")
 				.replace("<imported>", "").replace("<formatted>", "");

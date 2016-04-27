@@ -22,8 +22,6 @@ public class GuiTriggerList extends GuiScreen {
 	private String backString = EnumChatFormatting.GRAY.toString()+"< Back";
 	private List<Float> backOffset = new ArrayList<Float>();
 	
-	private String indevString = "GUI is still in development";
-	
 	//-1 = setup menu
 	//0  = lists
 	//1  = setup triggers
@@ -70,7 +68,7 @@ public class GuiTriggerList extends GuiScreen {
 					gotoList=tempList.get(i);
 					for (int j=0; j<tempList.size(); j++) {
 						if (j<i) {tempListOffset.get(j).set(2, (float)-10);} 
-						else if (j>i) {tempListOffset.get(j).set(2, (float)sHeight);} 
+						else if (j>i) {tempListOffset.get(j).set(2, sHeight);}
 						else {tempListOffset.get(j).set(2, (float) 5);}
 					}
 					inMenu=1;
@@ -84,7 +82,7 @@ public class GuiTriggerList extends GuiScreen {
 					gotoTrig=tempTrig.get(i).substring(0, tempTrig.get(i).indexOf(" "+EnumChatFormatting.DARK_GRAY.toString()+"("));
 					for (int j=0; j<tempTrig.size(); j++) {
 						if (j<i) {tempTrigOffset.get(j).set(2, (float)-10);} 
-						else if (j>i) {tempTrigOffset.get(j).set(2, (float)sHeight);} 
+						else if (j>i) {tempTrigOffset.get(j).set(2, sHeight);}
 						else {tempTrigOffset.get(j).set(2, (float)5);}
 					}
 					inMenu=3;
@@ -97,7 +95,7 @@ public class GuiTriggerList extends GuiScreen {
 				inMenu = 2;
 				for (int i=0; i<tempTrig.size(); i++) {tempTrigOffset.get(i).set(2, (float)(i*10)+25);}
 				for (int i=0; i<tempList.size(); i++) {
-					if (gotoList==tempList.get(i)) {tempListOffset.get(i).set(2, (float)5);}
+					if (gotoList.equals(tempList.get(i))) {tempListOffset.get(i).set(2, (float)5);}
 				}
 				for (int i=0; i<tempEvent.size(); i++) {tempEventOffset.get(i).set(0, (float)-fontRendererObj.getStringWidth(tempEvent.get(i))-5);}
 			} else if (inMenu == 2){
@@ -159,7 +157,6 @@ public class GuiTriggerList extends GuiScreen {
 			int i=0;
 			for (List<String> value : global.trigger) {
 				String whatList = "no list";
-				Boolean isInList = false;
 				if (value.get(1).contains("<list=") && value.get(1).contains(">")) {
 					whatList = value.get(1).substring(value.get(1).indexOf("<list=")+6, value.get(1).indexOf(">",value.get(1).indexOf("<list=")));
 				}
@@ -180,7 +177,7 @@ public class GuiTriggerList extends GuiScreen {
 			tempEventOffset.clear();
 			
 			for (int i=0; i<tempList.size(); i++) {
-				if (gotoList==tempList.get(i)) {tempListOffset.get(i).set(2, (float)-10);}
+				if (gotoList.equals(tempList.get(i))) {tempListOffset.get(i).set(2, (float)-10);}
 			}
 			
 			int i=0;
@@ -219,9 +216,10 @@ public class GuiTriggerList extends GuiScreen {
 				}
 			}
 		}
-		
+
+		String dvstr = "GUI is still in development";
 		fontRendererObj.drawStringWithShadow(backString, backOffset.get(1), sHeight-15, 0xffffff);
-		fontRendererObj.drawString(indevString, (int) (sWidth/2 - fontRendererObj.getStringWidth(indevString)/2), 5, 0x000000);
+		fontRendererObj.drawString(dvstr, (int) (sWidth/2 - fontRendererObj.getStringWidth(dvstr)/2), 5, 0x000000);
 		
 		for (int i=0; i<tempList.size(); i++) {
 			String colorstr = EnumChatFormatting.WHITE.toString();
@@ -253,7 +251,7 @@ public class GuiTriggerList extends GuiScreen {
 				first = first.substring(0, first.indexOf(" "));
 			}
 			
-			fontRendererObj.drawStringWithShadow( //TODO
+			fontRendererObj.drawStringWithShadow(
 					EnumChatFormatting.DARK_GRAY.toString() + first + " " + EnumChatFormatting.WHITE.toString() + second
 					.replace("{", EnumChatFormatting.DARK_BLUE.toString()+"{").replace("}", EnumChatFormatting.DARK_BLUE.toString()+"}"+EnumChatFormatting.RESET.toString())
 					.replace("msg[", "msg"+EnumChatFormatting.DARK_AQUA.toString()+"[")

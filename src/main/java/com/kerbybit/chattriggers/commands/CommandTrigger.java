@@ -5,10 +5,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.file.FileHandler;
@@ -18,11 +15,9 @@ import com.kerbybit.chattriggers.triggers.EventsHandler;
 import com.kerbybit.chattriggers.triggers.StringHandler;
 import com.kerbybit.chattriggers.triggers.TagHandler;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class CommandTrigger extends CommandBase {
 
@@ -55,14 +50,14 @@ public class CommandTrigger extends CommandBase {
 						}
 					} else {
 						String TMP_e = "";
-						for (int i=1; i<args.length; i++) {TMP_e += args[i] + " ";};
+						for (int i=1; i<args.length; i++) {TMP_e += args[i] + " ";}
 						Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 						clipboard.setContents(new StringSelection(TMP_e.trim()), null);
 						doCommand(new String[] {"notify", ChatHandler.color("green", "Copied chat to clipboard")}, silent);
 					}
 				} else {
 					String TMP_e = "";
-					for (int i=1; i<args.length; i++) {TMP_e += args[i] + " ";};
+					for (int i=1; i<args.length; i++) {TMP_e += args[i] + " ";}
 					Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 					clipboard.setContents(new StringSelection(TMP_e.trim()), null);
 					doCommand(new String[] {"notify", ChatHandler.color("green", "Copied chat to clipboard")}, silent);
@@ -73,7 +68,7 @@ public class CommandTrigger extends CommandBase {
 		} else if (args[0].equalsIgnoreCase("NOTIFY")) {
 			if (args.length != 1) {
 				String TMP_e = "";
-				for (int i=1; i<args.length; i++) {TMP_e += args[i] + " ";};
+				for (int i=1; i<args.length; i++) {TMP_e += args[i] + " ";}
 				global.notify.add(TMP_e.trim());
 				List<Float> temp_list = new ArrayList<Float>();
 				temp_list.add((float) 0);temp_list.add((float) -1000);
@@ -87,7 +82,7 @@ public class CommandTrigger extends CommandBase {
 		} else if (args[0].equalsIgnoreCase("KILLFEED")) {
 			if (args.length != 1) {
 				String TMP_e = "";
-				for (int i=1; i<args.length; i++) {TMP_e += args[i] + " ";};
+				for (int i=1; i<args.length; i++) {TMP_e += args[i] + " ";}
 				global.killfeed.add(TMP_e);
 				global.killfeedDelay.add(100);
 			} else {
@@ -96,13 +91,13 @@ public class CommandTrigger extends CommandBase {
 		} else if (args[0].equalsIgnoreCase("RESET")) {
 			CommandReference.resetAll();
 		} else if (args[0].equalsIgnoreCase("IMPORT")) {
-			commandImport(args, silent);
+			commandImport(args);
 		} else if (args[0].equalsIgnoreCase("DISABLEIMPORT")) {
-			commandDisableImport(args, silent);
+			commandDisableImport(args);
 		} else if (args[0].equalsIgnoreCase("ENABLEIMPORT")) {
-			commandEnableImport(args, silent);
+			commandEnableImport(args);
 		} else if (args[0].equalsIgnoreCase("RUN")) {
-			commandRun(args, silent);
+			commandRun(args);
 		} else if (args[0].equalsIgnoreCase("CREATE")) {
 			commandCreate(args, silent);
 		} else if (args[0].equalsIgnoreCase("DELETE")) {
@@ -114,13 +109,13 @@ public class CommandTrigger extends CommandBase {
 		} else if (args[0].equalsIgnoreCase("STRING")) {
 			commandString(args, silent);
 		} else if (args[0].equalsIgnoreCase("LIST")) {
-			commandList(args, silent);
+			commandList(args);
 		} else if (args[0].equalsIgnoreCase("SETTINGS")) {
-			commandSettings(args, silent);
+			commandSettings(args);
 		} else if (args[0].equalsIgnoreCase("SAVE")) {
-			commandSave(args, silent);
+			commandSave();
 		} else if (args[0].equalsIgnoreCase("LOAD")) {
-			commandLoad(args, silent);
+			commandLoad();
 		} else if (args[0].equalsIgnoreCase("TESTIMPORT")) {
 			if (args.length < 2) {
 				ChatHandler.warn(ChatHandler.color("red", "/trigger testImport [import name]"));
@@ -136,7 +131,7 @@ public class CommandTrigger extends CommandBase {
 				}
 				
 				if (canTest) {
-					if (global.canSave==true) {
+					if (global.canSave) {
 						global.trigger.clear(); global.USR_string.clear(); global.TMP_string.clear();
 						CommandReference.clearTriggerList();
 						global.waitEvents.clear(); global.asyncEvents.clear();
@@ -147,7 +142,6 @@ public class CommandTrigger extends CommandBase {
 						try {
 							for (int i=1; i<args.length; i++) {
 								String dir = "./mods/ChatTriggers/Imports/"+args[i]+".txt";
-								File f = new File(dir);
 								global.trigger.addAll(FileHandler.loadTriggers(dir, true));
 							}
 						} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Unable to load import!")); e.printStackTrace();}
@@ -170,21 +164,21 @@ public class CommandTrigger extends CommandBase {
 		}
 	}
 	
-	public static void commandImport(String args[], Boolean silent) {
+	private static void commandImport(String args[]) {
 		if (args.length>=2) {
-			for (int i=1; i<args.length; i++) {global.neededImports.add(args[i]);}
+			global.neededImports.addAll(Arrays.asList(args));
 		} else {ChatHandler.warn(ChatHandler.color("red", "/trigger import <import name>"));}
 	}
 	
-	public static void commandDisableImport(String args[], Boolean silent) {
+	private static void commandDisableImport(String args[]) {
 		if (args.length>=2) {
 			for (int i=1; i<args.length; i++) {
 				try {
 					File dir = new File("./mods/ChatTriggers/Imports/DisabledImports/");
-		 			if (!dir.exists()) {dir.mkdir();}
+		 			if (!dir.exists()) {if (!dir.mkdir()) {ChatHandler.warn(ChatHandler.color("red","Something went wrong while creating the file!"));}}
 		 			File file = new File("./mods/ChatTriggers/Imports/" + args[i]+".txt");
 		 			if (!file.exists()) {throw new IOException();}
-		 			file.renameTo(new File("./mods/ChatTriggers/Imports/DisabledImports/" + args[i] + ".txt"));
+		 			if (!file.renameTo(new File("./mods/ChatTriggers/Imports/DisabledImports/" + args[i] + ".txt"))) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while moving the file!"));}
 		 			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Disabled " + args[i] + ".txt"));
 		 			try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 		 		} catch (IOException e) {
@@ -194,15 +188,15 @@ public class CommandTrigger extends CommandBase {
 		} else {ChatHandler.warn(ChatHandler.color("red", "/trigger disableImport <import name>"));}
 	}
 	
-	public static void commandEnableImport(String args[], Boolean silent) {
+	private static void commandEnableImport(String args[]) {
 		if (args.length>=2) {
 			for (int i=1; i<args.length; i++) {
 				try {
 					File dir = new File("./mods/ChatTriggers/Imports/DisabledImports/");
-		 			if (!dir.exists()) {dir.mkdir();}
+		 			if (!dir.exists()) {if (!dir.mkdir()) {ChatHandler.warn(ChatHandler.color("red","Something went wrong while creating the file!"));}}
 		 			File file = new File("./mods/ChatTriggers/Imports/DisabledImports/" + args[i]+".txt");
 		 			if (!file.exists()) {throw new IOException();}
-		 			file.renameTo(new File("./mods/ChatTriggers/Imports/" + args[i] + ".txt"));
+		 			if (!file.renameTo(new File("./mods/ChatTriggers/Imports/" + args[i] + ".txt"))) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 		 			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Enabled " + args[i] + ".txt"));
 		 			try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 		 		} catch (IOException e) {
@@ -212,7 +206,7 @@ public class CommandTrigger extends CommandBase {
 		} else {ChatHandler.warn(ChatHandler.color("red", "/trigger disableImport <import name>"));}
 	}
 	
-	public static void commandRun(String args[], Boolean silent) {
+	private static void commandRun(String args[]) {
 		if (args.length < 2) {
 			ChatHandler.warn(ChatHandler.color("red", "/tr <trigger>"));
 			ArrayList<List<String>> listCommands = new ArrayList<List<String>>();
@@ -262,7 +256,6 @@ public class CommandTrigger extends CommandBase {
 				if (i==args.length-1) {TMP_e += args[i];} 
 				else {TMP_e += args[i] + " ";}
 			}
-			ClientChatReceivedEvent e = null;
 			try {
 				int num = Integer.parseInt(args[1]);
 				if (num >= 0 && num < global.trigger.size()) {
@@ -270,7 +263,7 @@ public class CommandTrigger extends CommandBase {
 					for (int i=2; i<global.trigger.get(num).size(); i++) {
 						TMP_events.add(global.trigger.get(num).get(i));
 					}
-					EventsHandler.doEvents(TMP_events, e);
+					EventsHandler.doEvents(TMP_events, null);
 				}
 			} catch (NumberFormatException e1) {
 				for (int k=0; k<global.trigger.size(); k++) {
@@ -284,7 +277,7 @@ public class CommandTrigger extends CommandBase {
 						for (int i=2; i<global.trigger.get(k).size(); i++) {
 							TMP_events.add(global.trigger.get(k).get(i));
 						}
-						EventsHandler.doEvents(TMP_events, e);
+						EventsHandler.doEvents(TMP_events, null);
 					} else {
 						String TMP_trigtype = global.trigger.get(k).get(0);
 						if (TMP_trigtype.toUpperCase().startsWith("OTHER")) {
@@ -300,7 +293,7 @@ public class CommandTrigger extends CommandBase {
 										for (int j=2; j<global.trigger.get(k).size(); j++) {
 											TMP_events.add(global.trigger.get(k).get(j));
 										}
-										EventsHandler.doEvents(TMP_events, e, argsOut, argsIn);
+										EventsHandler.doEvents(TMP_events, null, argsOut, argsIn);
 									}
 								}
 							}
@@ -311,7 +304,7 @@ public class CommandTrigger extends CommandBase {
 		}
 	}
 	
-	public static void commandCreate(String args[], Boolean silent) {
+	private static void commandCreate(String args[], Boolean silent) {
 		if (args.length < 3) {
 			ChatHandler.warn(ChatHandler.color("red", "/trigger create <type> <trigger>"));
 		} else {
@@ -327,7 +320,7 @@ public class CommandTrigger extends CommandBase {
 			if (CommandReference.isTriggerType(TMP_type)) {
 				global.trigger.add(TMP_l);
 				int TMP_num = global.trigger.size() - 1;
-				if (silent==false) {
+				if (!silent) {
 					List<String> TMP_out = new ArrayList<String>();
 					TMP_trig = TMP_trig.replace("'", "\\'");
 					TMP_type = TMP_type.replace("'", "\\'");
@@ -345,17 +338,17 @@ public class CommandTrigger extends CommandBase {
 		}
 	}
 	
-	public static void commandDelete(String args[], Boolean silent) {
+	private static void commandDelete(String args[], Boolean silent) {
 		if (args.length < 2) {
 			ChatHandler.warn(ChatHandler.color("red", "/trigger delete <trigger number>"));
 		} else {
-			int num = -1;
+			int num;
 			try {num = Integer.parseInt(args[1]);} 
 			catch(NumberFormatException e) {num = -1;}
 			if (num>-1 && num<global.trigger.size()) {
 				String TMP_rem = global.trigger.get(num).get(1);
 				if (!TMP_rem.contains("<imported>")) {
-					if (silent==false) {
+					if (!silent) {
 						ChatHandler.warnUnformatted(ChatHandler.color("gray", "Deleted trigger") + " " + ChatHandler.color(global.settings.get(0), TMP_rem) + " " + ChatHandler.color("gray", "and all of its events"));
 					}
 					global.trigger.remove(num).get(1);
@@ -370,11 +363,11 @@ public class CommandTrigger extends CommandBase {
 		}
 	}
 	
-	public static void commandAdd(String args[], Boolean silent) {
+	private static void commandAdd(String args[], Boolean silent) {
 		if (args.length < 3) {
 			ChatHandler.warn(ChatHandler.color("red", "/trigger add <trigger number> <event> <event argument(s)>"));
 		} else {
-			int num = -1;
+			int num;
 			try {num = Integer.parseInt(args[1]);} 
 			catch(NumberFormatException e) {num = -1;}
 			String TMP_e = "";
@@ -389,7 +382,7 @@ public class CommandTrigger extends CommandBase {
 					
 					if (CommandReference.isEventType(TMP_etype)) {
 						global.trigger.get(num).add(TMP_e);
-						if (silent==false) {
+						if (!silent) {
 							ChatHandler.warnUnformatted(ChatHandler.color("gray", "Added event") + " " + ChatHandler.color(global.settings.get(0), TMP_e) + " " + ChatHandler.color("gray", "to trigger") + " " + ChatHandler.color(global.settings.get(0), global.trigger.get(num).get(1)));
 						}
 						try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
@@ -406,21 +399,21 @@ public class CommandTrigger extends CommandBase {
 		}
 	}
 	
-	public static void commandRemove(String args[], Boolean silent) {
+	private static void commandRemove(String args[], Boolean silent) {
 		if (args.length < 3) {
 			ChatHandler.warn(ChatHandler.color("red", "/trigger remove [trigger number] [event number]"));
 		} else {
-			int num = -1;
+			int num;
 			try {num = Integer.parseInt(args[1]);} 
 			catch(NumberFormatException e) {num = -1;}
 			if (num>-1 && num<global.trigger.size()) {
 				if (!global.trigger.get(num).get(1).contains("<imported>")) {
-					int num2 = 1;
+					int num2;
 					try {num2 = Integer.parseInt(args[2]);}
 					catch(NumberFormatException e) {num2 = 1;}
 					if (num2>1 && num2<global.trigger.get(num).size()) {
 						String TMP_rem = global.trigger.get(num).remove(num2);
-						if (silent==false) {
+						if (!silent) {
 							ChatHandler.warnUnformatted(ChatHandler.color("gray", "Removed event") + " " + ChatHandler.color(global.settings.get(0), TMP_rem) + " " + ChatHandler.color("gray", "from trigger") + " " + ChatHandler.color(global.settings.get(0), global.trigger.get(num).get(1)));
 						}
 						try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
@@ -437,7 +430,7 @@ public class CommandTrigger extends CommandBase {
 		}
 	}
 	
-	public static void commandString(String args[], Boolean silent) {
+	private static void commandString(String args[], Boolean silent) {
 		if (args.length < 2) {
 			ChatHandler.warn(ChatHandler.color("red", "/trigger string [create/set/list] <...>"));
 			ChatHandler.warn(ChatHandler.color("red", "/trigger string <string name>"));
@@ -458,7 +451,7 @@ public class CommandTrigger extends CommandBase {
 						for (List<String> value : global.USR_string) {
 							if (value.get(0).equals(TMP_sn)) {
 								isString = true;
-								if (TMP_list!="") {
+								if (!TMP_list.equals("")) {
 									if (value.size()==2) {value.add(TMP_list);} 
 									else {value.set(3, TMP_list);}
 								}
@@ -470,9 +463,9 @@ public class CommandTrigger extends CommandBase {
 							List<String> TMP_l = new ArrayList<String>();
 							TMP_l.add(TMP_sn);
 							TMP_l.add("");
-							if (TMP_list!="") {TMP_l.add(TMP_list);}
+							if (!TMP_list.equals("")) {TMP_l.add(TMP_list);}
 							global.USR_string.add(TMP_l);
-							if (silent==false) {
+							if (!silent) {
 								TMP_sn = TMP_sn.replace("'", "\\'");
 								List <String> TMP_out = new ArrayList<String>();
 								TMP_out.add("text:'Created string ',color:gray");
@@ -502,7 +495,7 @@ public class CommandTrigger extends CommandBase {
 						}
 						if (num>-1 && num<global.USR_string.size()) {
 							String TMP_rem = global.USR_string.remove(num).get(0);
-							if (silent==false) {
+							if (!silent) {
 								ChatHandler.warnUnformatted(ChatHandler.color("gray", "Deleted string") + " " + ChatHandler.color(global.settings.get(0), TMP_rem));
 							}
 							try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
@@ -529,7 +522,7 @@ public class CommandTrigger extends CommandBase {
 						else {TMP_s += args[i] + " ";}
 					}
 					if (num>-1 && num<global.USR_string.size()) {
-						if (silent==false) {ChatHandler.warnUnformatted(ChatHandler.color("gray", "Set value") + " " + ChatHandler.color(global.settings.get(0), TMP_s) + " " + ChatHandler.color("gray", "in string") + " " + ChatHandler.color(global.settings.get(0), global.USR_string.get(num).get(0)));}
+						if (!silent) {ChatHandler.warnUnformatted(ChatHandler.color("gray", "Set value") + " " + ChatHandler.color(global.settings.get(0), TMP_s) + " " + ChatHandler.color("gray", "in string") + " " + ChatHandler.color(global.settings.get(0), global.USR_string.get(num).get(0)));}
 						if (TMP_s.equals("{null}")) {TMP_s = "";}
 						global.USR_string.get(num).set(1,TMP_s);
 						try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
@@ -611,7 +604,7 @@ public class CommandTrigger extends CommandBase {
 		}
 	}
 	
-	public static void commandList(String args[], Boolean silent) {
+	private static void commandList(String args[]) {
 		if (args.length==1) {
 			ChatHandler.warnBreak(0);
 			if (global.trigger.size() == 0) {
@@ -652,7 +645,6 @@ public class CommandTrigger extends CommandBase {
 						List<String> TMP_out = new ArrayList<String>();
 						TMP_type = TMP_type.replace("'", "\\'");
 						TMP_trig = TMP_trig.replace("'", "\\'");
-						TMP_list = TMP_list.replace("'", "\\'");
 						if (TMP_imported) {TMP_out.add("text:'" + i + "> ',color:gray,hoverEvent:{action:'show_text',value:'You cannot edit\nimported triggers'}");} 
 						else {TMP_out.add("text:'" + i + "> ',color:gray,hoverEvent:{action:'show_text',value:'Add an event'},clickEvent:{action:'suggest_command',value:'/trigger add " + i + " '}");}
 						TMP_out.add("text:'" + TMP_type + " ',color:dark_gray");
@@ -668,7 +660,7 @@ public class CommandTrigger extends CommandBase {
 							String TMP_extraspaces = "";
 							
 							String TMP_e = global.trigger.get(i).get(j);
-							String TMP_c = "";
+							String TMP_c;
 							if (!TMP_e.contains(" ")) {TMP_c = TMP_e; TMP_e = "";}
 							else {TMP_c = TMP_e.substring(0, TMP_e.indexOf(" ")); TMP_e = TMP_e.substring(TMP_e.indexOf(" ") + 1, TMP_e.length());}
 							
@@ -747,7 +739,7 @@ public class CommandTrigger extends CommandBase {
 					if (TMP_trig.contains("<formatted>")) {TMP_formatted = true; TMP_trig = TMP_trig.replace("<formatted>", "");}
 					
 					String TMP_tags = "";
-					if (TMP_imported==true) {TMP_tags+="Imported";}
+					if (TMP_imported) {TMP_tags+="Imported";}
 					if (!TMP_w.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Modifier: " + TMP_w;}
 					if (!TMP_list.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "List: " + TMP_list;}
 					if (!TMP_server.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Server: " + TMP_server;}
@@ -760,7 +752,6 @@ public class CommandTrigger extends CommandBase {
 						List<String> TMP_out = new ArrayList<String>();
 						TMP_type = TMP_type.replace("'", "\\'");
 						TMP_trig = TMP_trig.replace("'", "\\'");
-						TMP_list = TMP_list.replace("'", "\\'");
 						if (TMP_imported) {TMP_out.add("text:'" + i + "> ',color:gray,hoverEvent:{action:'show_text',value:'You cannot edit\nimported triggers'}");} 
 						else {TMP_out.add("text:'" + i + "> ',color:gray,hoverEvent:{action:'show_text',value:'Add an event'},clickEvent:{action:'suggest_command',value:'/trigger add " + i + " '}");}
 						TMP_out.add("text:'" + TMP_type + " ',color:dark_gray");
@@ -776,7 +767,7 @@ public class CommandTrigger extends CommandBase {
 							String TMP_extraspaces = "";
 							
 							String TMP_e = global.trigger.get(i).get(j);
-							String TMP_c = "";
+							String TMP_c;
 							if (!TMP_e.contains(" ")) {TMP_c = TMP_e; TMP_e = "";}
 							else {TMP_c = TMP_e.substring(0, TMP_e.indexOf(" ")); TMP_e = TMP_e.substring(TMP_e.indexOf(" ") + 1, TMP_e.length());}
 							
@@ -817,17 +808,17 @@ public class CommandTrigger extends CommandBase {
 		}
 	}
 	
-	public static void commandSettings(String args[], Boolean silent) {
+	private static void commandSettings(String args[]) {
 		if (args.length < 2) {
 			ChatHandler.warn(ChatHandler.color("red", "/trigger settings [debug/test/color/killfeed/beta] <...>"));
 		} else {
 			if (args[1].equalsIgnoreCase("DEBUG")) {
 				if (args.length == 2) {
-					if (global.debug==false) {ChatHandler.warn(ChatHandler.color("gray", "Toggled debug mode") + " " + ChatHandler.color(global.settings.get(0), "on")); global.debug=true;}
+					if (!global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Toggled debug mode") + " " + ChatHandler.color(global.settings.get(0), "on")); global.debug=true;}
 					else {ChatHandler.warn(ChatHandler.color("gray", "Toggled debug mode") + " " + ChatHandler.color(global.settings.get(0), "off")); global.debug=false;}
 				} else {
 					if (args[2].equalsIgnoreCase("CHAT")) {
-						if (global.debugChat==false) {ChatHandler.warn(ChatHandler.color("gray", "Toggled debug chat mode") + " " + ChatHandler.color(global.settings.get(0), "on")); global.debugChat=true;}
+						if (!global.debugChat) {ChatHandler.warn(ChatHandler.color("gray", "Toggled debug chat mode") + " " + ChatHandler.color(global.settings.get(0), "on")); global.debugChat=true;}
 						else {ChatHandler.warn(ChatHandler.color("gray", "Toggled debug chat mode") + " " + ChatHandler.color(global.settings.get(0), "off")); global.debugChat=false;}
 					}
 				}
@@ -946,7 +937,7 @@ public class CommandTrigger extends CommandBase {
 		}
 	}
 	
-	public static void commandSave(String args[], Boolean silent) {
+	private static void commandSave() {
 		try {
 			FileHandler.saveAll();
 			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Organized and saved files"));
@@ -955,7 +946,7 @@ public class CommandTrigger extends CommandBase {
 		}
 	}
 	
-	public static void commandLoad(String args[], Boolean silent) {
+	private static void commandLoad() {
 		global.canSave = true;
 		try {
 			CommandReference.clearTriggerList();

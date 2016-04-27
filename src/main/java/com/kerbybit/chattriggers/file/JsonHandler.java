@@ -13,11 +13,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
 public class JsonHandler {
 	public static String exportJsonFile(String fileName, String arrayName, String nodeName) throws IOException {
-		String returnString = "Something went wrong!";
+		String returnString;
 		int arrayNum = -1;
 		
 		for (int i=0; i<global.USR_array.size(); i++) {
@@ -27,7 +28,7 @@ public class JsonHandler {
 		}
 		
 		File dir = new File(fileName);
-		if (!dir.exists()) {dir.createNewFile();}
+		if (!dir.exists()) {if (!dir.createNewFile()) {ChatHandler.warn(ChatHandler.color("red","Unable to create file!"));}}
 		
 		PrintWriter writer = new PrintWriter(fileName,"UTF-8");
 		
@@ -62,7 +63,7 @@ public class JsonHandler {
 		String returnString = "Something went wrong!";
 		try {
 			List<String> lines = new ArrayList<String>();
-			String line = null;
+			String line;
 			BufferedReader bufferedReader;
 			bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName),"UTF-8"));
 			while ((line = bufferedReader.readLine()) != null) {
@@ -81,7 +82,7 @@ public class JsonHandler {
 					
 					int whatArray = -1;
 					for (int i=0; i<global.USR_array.size(); i++) {
-						if (arrayToSave.equals(global.USR_array.get(i))) {
+						if (arrayToSave.equals(global.USR_array.get(i).get(0))) {
 							whatArray = i;
 						}
 					}
@@ -159,7 +160,7 @@ public class JsonHandler {
 			URL web = new URL(url);
 			InputStream fis = web.openStream();
 			List<String> lines = new ArrayList<String>();
-			String line = null;
+			String line;
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
 			while ((line = bufferedReader.readLine()) != null) {
 				lines.add(line);
@@ -177,7 +178,7 @@ public class JsonHandler {
 					
 					int whatArray = -1;
 					for (int i=0; i<global.USR_array.size(); i++) {
-						if (arrayToSave.equals(global.USR_array.get(i))) {
+						if (arrayToSave.equals(global.USR_array.get(i).get(0))) {
 							whatArray = i;
 						}
 					}

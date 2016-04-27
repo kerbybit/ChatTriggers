@@ -1,7 +1,6 @@
 package com.kerbybit.chattriggers.commands;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
@@ -24,19 +23,15 @@ public class CommandReference {
 	}
 	
 	
-	public static boolean isTriggerType(String TMP_type) {
-		if (TMP_type.equalsIgnoreCase("CHAT") 
+	static boolean isTriggerType(String TMP_type) {
+		return (TMP_type.equalsIgnoreCase("CHAT")
 		|| TMP_type.equalsIgnoreCase("OTHER")
 		|| TMP_type.equalsIgnoreCase("ONWORLDLOAD")
 		|| TMP_type.equalsIgnoreCase("ONWORLDFIRSTLOAD")
 		|| TMP_type.equalsIgnoreCase("ONSERVERCHANGE")
 		|| TMP_type.equalsIgnoreCase("ONNEWDAY")
 		|| TMP_type.equalsIgnoreCase("ONCLIENTTICK")
-		|| TMP_type.equalsIgnoreCase("ONRIGHTCLICKPLAYER")) {
-			return true;
-		} else {
-			return false;
-		}
+		|| TMP_type.equalsIgnoreCase("ONRIGHTCLICKPLAYER"));
 	}
 	
 	public static void clearTriggerList() {
@@ -77,8 +72,8 @@ public class CommandReference {
 		}
 	}
 	
-	public static Boolean isEventType(String TMP_etype) {
-		if (TMP_etype.equalsIgnoreCase("CHAT")
+	static Boolean isEventType(String TMP_etype) {
+		return (TMP_etype.equalsIgnoreCase("CHAT")
 		|| TMP_etype.equalsIgnoreCase("CANCEL") 
 		|| TMP_etype.equalsIgnoreCase("CHOOSE") 
 		|| TMP_etype.equalsIgnoreCase("KILLFEED")
@@ -94,10 +89,6 @@ public class CommandReference {
 		|| TMP_etype.equalsIgnoreCase("FOR")
 		|| TMP_etype.equalsIgnoreCase("WAIT")
 		|| TMP_etype.equalsIgnoreCase("END")
-		|| TMP_etype.equalsIgnoreCase("ASYNC")) {
-			return true;
-		} else {
-			return false;
-		}
+		|| TMP_etype.equalsIgnoreCase("ASYNC"));
 	}
 }

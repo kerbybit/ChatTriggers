@@ -24,7 +24,7 @@ public class UpdateHandler {
 					URL web = new URL(global.canUseURL1);
 					InputStream fis = web.openStream();
 		 			List<String> lines = new ArrayList<String>();
-		 			String line = null;
+		 			String line;
 		 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
 		 			while ((line = bufferedReader.readLine()) != null) {
 		 				lines.add(line);
@@ -53,7 +53,6 @@ public class UpdateHandler {
 		 			web = new URL(global.canUseURL2);
 					fis = web.openStream();
 		 			lines = new ArrayList<String>();
-		 			line = null;
 		 			bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
 		 			while ((line = bufferedReader.readLine()) != null) {
 		 				lines.add(line);
@@ -97,7 +96,7 @@ public class UpdateHandler {
 		 			URL web = new URL(global.versionURL);
 		 			InputStream fis = web.openStream();
 		 			List<String> lines = new ArrayList<String>();
-		 			String line = null;
+		 			String line;
 		 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
 		 			while ((line = bufferedReader.readLine()) != null) {
 		 				lines.add(line);

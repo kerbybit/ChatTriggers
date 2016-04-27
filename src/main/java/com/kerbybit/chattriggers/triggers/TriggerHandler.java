@@ -11,9 +11,6 @@ import com.kerbybit.chattriggers.globalvars.global;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 
 public class TriggerHandler {
@@ -26,7 +23,7 @@ public class TriggerHandler {
 		String msgNOEDIT = msg;
 		
 		//debug chat
-		if (global.debugChat==true) {
+		if (global.debugChat) {
 			String tmp_out = ChatHandler.removeFormatting(fmsg);
 			global.copyText.add(tmp_out);
 			tmp_out = tmp_out.replace("'", "\\'");
@@ -40,7 +37,7 @@ public class TriggerHandler {
 			String TMP_trig = global.chatTrigger.get(i).get(1);
 			String TMP_w = "";
 			String[] TMP_server = {};
-			String current_server = "";
+			String current_server;
 			Boolean correct_server = false;
 			Boolean TMP_formatted = false;
 			
@@ -174,7 +171,7 @@ public class TriggerHandler {
 	}
 	
 	public static void onClientTickTriggers() {
-		if (global.worldIsLoaded==true) {
+		if (global.worldIsLoaded) {
 			for (int i=0; i<global.tickTrigger.size(); i++) {
 				if (global.ticksElapsed % global.tickTriggerTime.get(i) == 0) {
 					//add all events to temp list
@@ -182,8 +179,7 @@ public class TriggerHandler {
 					for (int j=2; j<global.tickTrigger.get(i).size(); j++) {TMP_events.add(global.tickTrigger.get(i).get(j));}
 					
 					//do events
-					ClientChatReceivedEvent e1 = null;
-					EventsHandler.doEvents(TMP_events, e1);
+					EventsHandler.doEvents(TMP_events, null);
 				}
 			}
 		}
@@ -196,22 +192,20 @@ public class TriggerHandler {
 			for (int j=2; j<global.onRightClickPlayerTrigger.get(i).size(); j++) {TMP_events.add(global.onRightClickPlayerTrigger.get(i).get(j).replace("{player}", e.target.getName()));}
 			
 			//do events
-			ClientChatReceivedEvent e1 = null;
-			EventsHandler.doEvents(TMP_events, e1);
+			EventsHandler.doEvents(TMP_events, null);
 		}
 	}
 	
 	public static void worldLoadTriggers() {
-		if (global.worldLoaded==true) {
+		if (global.worldLoaded) {
 			for (int i=0; i<global.onWorldFirstLoadTrigger.size(); i++) {
-				if (global.worldFirstLoad==true) {
+				if (global.worldFirstLoad) {
 					//add all events to temp list
 					List<String> TMP_events = new ArrayList<String>();
 					for (int j=2; j<global.onWorldFirstLoadTrigger.get(i).size(); j++) {TMP_events.add(global.onWorldFirstLoadTrigger.get(i).get(j));}
 					
 					//do events
-					ClientChatReceivedEvent e1 = null;
-					EventsHandler.doEvents(TMP_events, e1);
+					EventsHandler.doEvents(TMP_events, null);
 				}
 			}
 				
@@ -221,12 +215,11 @@ public class TriggerHandler {
 				for (int j=2; j<global.onWorldLoadTrigger.get(i).size(); j++) {TMP_events.add(global.onWorldLoadTrigger.get(i).get(j));}
 				
 				//do events
-				ClientChatReceivedEvent e1 = null;
-				EventsHandler.doEvents(TMP_events, e1);
+				EventsHandler.doEvents(TMP_events, null);
 			}
 			
 			for (int i=0; i<global.onServerChangeTrigger.size(); i++) {
-				String currentServer = "";
+				String currentServer;
 				if (Minecraft.getMinecraft().isSingleplayer()) {currentServer = "SinglePlayer";} 
 				else {currentServer = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
 				
@@ -236,8 +229,7 @@ public class TriggerHandler {
 					for (int j=2; j<global.onServerChangeTrigger.get(i).size(); j++) {TMP_events.add(global.onServerChangeTrigger.get(i).get(j));}
 					
 					//do events
-					ClientChatReceivedEvent e1 = null;
-					EventsHandler.doEvents(TMP_events, e1);
+					EventsHandler.doEvents(TMP_events, null);
 				}
 			}
 			global.worldFirstLoad = false;
@@ -247,10 +239,10 @@ public class TriggerHandler {
 	}
 	
 	public static void newDayTriggers() {
-		if (global.worldLoaded==true) {
+		if (global.worldLoaded) {
 			DateFormat dateFormat = new SimpleDateFormat("yyy/MM/dd");
 			Date date = new Date();
-			if (global.currentDate=="null") {global.currentDate = dateFormat.format(date);}
+			if (global.currentDate.equals("null")) {global.currentDate = dateFormat.format(date);}
 			
 			if (!dateFormat.format(date).equals(global.currentDate)) {
 				global.currentDate = dateFormat.format(date);
@@ -260,8 +252,7 @@ public class TriggerHandler {
 					for (int j=2; j<global.onNewDayTrigger.get(i).size(); j++) {TMP_events.add(global.onNewDayTrigger.get(i).get(j));}
 					
 					//do events
-					ClientChatReceivedEvent e1 = null;
-					EventsHandler.doEvents(TMP_events, e1);
+					EventsHandler.doEvents(TMP_events, null);
 				}
 			}
 		}

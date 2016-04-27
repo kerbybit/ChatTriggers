@@ -14,14 +14,12 @@ import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class EventsHandler {
 	public static void doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent) {
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
-		String[] snull = null;
-		doEvents(tmp_event, chatEvent, snull, snull);
+		doEvents(tmp_event, chatEvent, null, null);
 	}
 	
 	public static void doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, String[] toreplace, String[] replacement) {
@@ -41,7 +39,7 @@ public class EventsHandler {
 		for (int i=0; i<tmp_event.size(); i++) {
 		//SETUP
 			String TMP_e = tmp_event.get(i);
-			String TMP_c = "";
+			String TMP_c;
 			if (!TMP_e.contains(" ")) {TMP_c = TMP_e; TMP_e="";}
 			else {TMP_c = TMP_e.substring(0, TMP_e.indexOf(" ")); TMP_e = TMP_e.substring(TMP_e.indexOf(" ")+1, TMP_e.length());}
 			int TMP_t = 50;
@@ -49,7 +47,7 @@ public class EventsHandler {
 			int TMP_v = 10000;
 			int TMP_pi = 1;
 			
-		//setup backup for functions so strings dont get overwritten
+		//setup backup for functions so strings don't get overwritten
 			StringHandler.resetBackupStrings();
 			
 		//built in strings
@@ -94,7 +92,7 @@ public class EventsHandler {
 			
 		//add formatting where needed
 			if (TMP_c.equalsIgnoreCase("SAY") || TMP_c.equalsIgnoreCase("CHAT") || TMP_c.equalsIgnoreCase("KILLFEED") || TMP_c.equalsIgnoreCase("NOTIFY")) {
-				if (TMP_c.equalsIgnoreCase("SAY")) {if (Minecraft.getMinecraft().isSingleplayer()==false) {TMP_e = ChatHandler.addFormatting(TMP_e);}} 
+				if (TMP_c.equalsIgnoreCase("SAY")) {if (!Minecraft.getMinecraft().isSingleplayer()) {TMP_e = ChatHandler.addFormatting(TMP_e);}}
 				else {TMP_e = ChatHandler.addFormatting(TMP_e);}
 			}
 			
@@ -103,7 +101,7 @@ public class EventsHandler {
 			TMP_e = TMP_e.replace(stringCommaReplace, ",");
 			if (TMP_c.equalsIgnoreCase("SAY")) {global.chatQueue.add(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("CHAT")) {ChatHandler.warn(TMP_e);}
-			if (TMP_c.equalsIgnoreCase("DO") && global.debug==true) {ChatHandler.warn(TMP_e);}
+			if (TMP_c.equalsIgnoreCase("DO") && global.debug) {ChatHandler.warn(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("SOUND")) {Minecraft.getMinecraft().thePlayer.playSound(TMP_e
 					.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
 					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
@@ -165,6 +163,9 @@ public class EventsHandler {
 							//decrease tab
 							if (tmp_event.get(j).toUpperCase().startsWith("END")) {tabbed_logic--;}
 						}
+
+                        //check if exit
+                        if (tabbed_logic==0) {j=tmp_event.size();}
 					}
 					
 					eventsToAsync.remove(0);
@@ -315,7 +316,7 @@ public class EventsHandler {
 							if (tmp_event.get(j).toUpperCase().startsWith("ELSE") && tabbed_logic==1) {gotoElse=true;}
 							
 							//add to list
-							if (gotoElse==false) {eventsToIf.add(tmp_event.get(j));} 
+							if (!gotoElse) {eventsToIf.add(tmp_event.get(j));}
 							else {eventsToElse.add(tmp_event.get(j));}
 							
 							//decrease tab
@@ -436,14 +437,14 @@ public class EventsHandler {
 					
 					//move i to closing end
 					int moveEvents = 0;
-					for (int j=0; j<eventsToChoose.size(); j++) {moveEvents += eventsToChoose.get(j).size();}
+					for (List<String> events : eventsToChoose) {moveEvents += events.size();}
 					i += moveEvents-1;
 				}
 			}
 		}
 	}
 	
-	public static void doTrigger(String triggerName, ClientChatReceivedEvent chatEvent) {
+	private static void doTrigger(String triggerName, ClientChatReceivedEvent chatEvent) {
 		try {
 			//run trigger by number
 			int num = Integer.parseInt(triggerName);
@@ -527,10 +528,9 @@ public class EventsHandler {
 		}
 	}
 	
-	public static int randInt(int min, int max) {
+	private static int randInt(int min, int max) {
 	    Random rand = new Random();
-	    int randomNum = rand.nextInt((max - min) + 1) + min;
-	    return randomNum;
+	    return rand.nextInt((max - min) + 1) + min;
 	}
 	
 	
