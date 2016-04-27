@@ -1,7 +1,5 @@
 package com.kerbybit.chattriggers;
 
-import java.awt.event.KeyEvent;
-import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -9,14 +7,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.io.FileUtils;
 import org.lwjgl.input.Keyboard;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -59,15 +54,15 @@ public class ChatTriggers {
 	
 	@SubscribeEvent
 	public void onChat(ClientChatReceivedEvent e) throws IOException, ClassNotFoundException {
-		String msg = e.message.getUnformattedText();
-		String fmsg = e.message.getFormattedText();
+		String msg = e.getMessage().getUnformattedText();
+		String fmsg = e.getMessage().getFormattedText();
 		global.chatHistory.add(chat.removeFormatting(fmsg));
 		if (global.chatHistory.size()>100) {global.chatHistory.remove(0);}
 		
 		String msgNOEDIT = msg;
 		
 		//debug chat
-		if (global.debug==true) {chat.warnUnformatted(chat.removeFormatting(fmsg));}
+		if (global.debug) {chat.warnUnformatted(chat.removeFormatting(fmsg));}
 		
 		for (int i=0; i<global.trigger.size(); i++) {
 			String TMP_type = global.trigger.get(i).get(0);
@@ -222,7 +217,7 @@ public class ChatTriggers {
 		
 	@SubscribeEvent
 	public void RenderGameOverlayEvent(RenderGameOverlayEvent event) {
-		if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
+		if (event.getType() == RenderGameOverlayEvent.ElementType.TEXT) {
 			//draw killfeed
 			for (int i=0; i<global.killfeed.size(); i++) {
 				if (global.settings.get(3).equalsIgnoreCase("TOP-RIGHT") || global.settings.get(3).equalsIgnoreCase("TR")) {
@@ -261,13 +256,13 @@ public class ChatTriggers {
 		}
 		
 		//onWorldLoad trigger type
-		if (global.worldLoaded==true) {
+		if (global.worldLoaded) {
 			global.worldLoaded = false;
 			for (int i=0; i<global.trigger.size(); i++) {
 				String TMP_type = global.trigger.get(i).get(0);
 				String TMP_trig = global.trigger.get(i).get(1);
 				
-				if (global.worldFirstLoad==true) {
+				if (global.worldFirstLoad) {
 					if (TMP_type.equalsIgnoreCase("ONWORLDFIRSTLOAD")) {
 						//add all events to temp list
 						List<String> TMP_events = new ArrayList<String>();
@@ -300,8 +295,7 @@ public class ChatTriggers {
 						for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
 						
 						//do events
-						ClientChatReceivedEvent e1 = null;
-						events.doEvents(TMP_events, e1);
+						events.doEvents(TMP_events, null);
 					}
 				}
 			}
@@ -325,10 +319,10 @@ public class ChatTriggers {
 			}
 		}
 		
-		if (global.worldIsLoaded==true) {
+		if (global.worldIsLoaded) {
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 			Date date = new Date();
-			if (global.currentDate=="null") {global.currentDate = dateFormat.format(date);}
+			if (global.currentDate.equals("null")) {global.currentDate = dateFormat.format(date);}
 			if (!dateFormat.format(date).equals(global.currentDate)) {
 				global.currentDate = dateFormat.format(date);
 				for (int i=0; i<global.trigger.size(); i++) {
@@ -341,8 +335,7 @@ public class ChatTriggers {
 						for (int j=2; j<global.trigger.get(i).size(); j++) {TMP_events.add(global.trigger.get(i).get(j));}
 						
 						//do events
-						ClientChatReceivedEvent e1 = null;
-						events.doEvents(TMP_events, e1);
+						events.doEvents(TMP_events, null);
 					}
 				}
 			}
@@ -350,7 +343,7 @@ public class ChatTriggers {
 		
 		if (global.waitEvents.size()==0 && global.asyncEvents.size()==0 && global.TMP_string.size()>0) {global.TMP_string.clear();}
 		
-		if (global.neededImports.size()>0 && global.canImport==true) {
+		if (global.neededImports.size()>0 && global.canImport) {
 			if (global.canSave) {file.getImport("http://bfgteam.com/ChatTriggers/exports/"+global.neededImports.remove(0)+".txt");} 
 			else {
 				global.neededImports.clear();

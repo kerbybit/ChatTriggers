@@ -806,7 +806,7 @@ public class events {
 				if (TMP_e.contains("{msg}")) {
 					List<String> temporary = new ArrayList<String>();
 					temporary.add("DefaultString->MSG-"+(global.TMP_string.size()+1));
-					temporary.add(chatEvent.message.getFormattedText());
+					temporary.add(chatEvent.getMessage().getFormattedText());
 					global.TMP_string.add(temporary);
 					backupTMP_strings.add(temporary);
 					TMP_e = TMP_e.replace("{msg}", "{string[DefaultString->MSG-"+global.TMP_string.size()+"]}");
@@ -1049,7 +1049,7 @@ public class events {
 				if (i+1 < tmp_event.size()-1) { //check for events after if event
 					for (int j=i; j<tmp_event.size(); j++) {
 						if (j != tmp_event.size()) {
-							if (chatEvent!=null) {tmp_event.set(j, tmp_event.get(j).replace("{msg}", chatEvent.message.getFormattedText()));}
+							if (chatEvent!=null) {tmp_event.set(j, tmp_event.get(j).replace("{msg}", chatEvent.getMessage().getFormattedText()));}
 							
 							//increase tab
 							if (tmp_event.get(j).toUpperCase().startsWith("IF")
