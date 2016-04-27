@@ -405,17 +405,18 @@ public class StringHandler {
 					else if (tmpstringnum!=-1) {return Math.abs(Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1))) + "";}
 				} catch (NumberFormatException e) {return sn+" is not a number!{string["+sn+"]}";}
 			} else if (func.equalsIgnoreCase("REPLACE")) {
+				args = args.replace("','", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
 				if (args.contains(",")) {
 					String replaced = args.substring(0, args.indexOf(","));
 					String replacer = args.substring(args.indexOf(",")+1);
 					if (replaced!=null) {
-						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).replace(replaced, replacer));} 
-						else if (tmpstringnum!=-1) {global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).replace(replaced, replacer));}
+						if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).replace("','", "stringCommaReplacementF6cyUQp9stringCommaReplacement").replace(replaced, replacer));} 
+						else if (tmpstringnum!=-1) {global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).replace("','", "stringCommaReplacementF6cyUQp9stringCommaReplacement").replace(replaced, replacer));}
 						return "{string["+sn+"]}";
 					} else {return "Improper format! use replace(toreplace,replacement){string["+sn+"]}";}
 				} else {
-					if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).replace(args, ""));} 
-					else {global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).replace(args, ""));}
+					if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement").replace(args, ""));} 
+					else {global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement").replace(args, ""));}
 					return "{string["+sn+"]}";
 				}
 			} else if (func.equalsIgnoreCase("PREFIX")) {
