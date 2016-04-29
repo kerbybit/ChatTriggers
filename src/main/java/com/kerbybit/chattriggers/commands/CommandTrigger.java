@@ -88,6 +88,8 @@ public class CommandTrigger extends CommandBase {
 			} else {
 				ChatHandler.warn(ChatHandler.color("red", "/trigger killfeed <text>"));
 			}
+		} else if (args[0].equalsIgnoreCase("IMPORTS")) {
+            commandImports();
 		} else if (args[0].equalsIgnoreCase("RESET")) {
 			CommandReference.resetAll();
 		} else if (args[0].equalsIgnoreCase("IMPORT")) {
@@ -169,40 +171,94 @@ public class CommandTrigger extends CommandBase {
 			global.neededImports.addAll(Arrays.asList(args));
 		} else {ChatHandler.warn(ChatHandler.color("red", "/trigger import <import name>"));}
 	}
+
+    private static void commandImports() {
+        ChatHandler.warnBreak(0);
+
+
+        File dir = new File("./mods/ChatTriggers/Imports/");
+        if (!dir.exists()) {
+            if (!dir.mkdir()) {ChatHandler.warn(ChatHandler.color("red", "Unable to create file!"));}
+        }
+        File[] activeFiles = dir.listFiles();
+        if (activeFiles != null) {
+            ChatHandler.warn("Active Imports");
+            for (File file : activeFiles) {
+                if (file.isFile()) {
+                    if (file.getName().endsWith(".txt")) {
+                        ChatHandler.warn("clickable( &l\u02C5,run_command,/t disableimport -showlist " + file.getName().replace(".txt","") + ",&7Disable import " + file.getName().replace(".txt","") + ") " + ChatHandler.color(global.settings.get(0), file.getName().replace(".txt","")));
+                    }
+                }
+            }
+        }
+
+        dir = new File("./mods/ChatTriggers/Imports/DisabledImports/");
+        if (!dir.exists()) {
+            if (!dir.mkdir()) {ChatHandler.warn(ChatHandler.color("red", "Unable to create file!"));}
+        }
+        File[] disabledFiles = dir.listFiles();
+        if (disabledFiles !=null) {
+            ChatHandler.warn("Disabled Imports");
+            for (File file : disabledFiles) {
+                if (file.getName().endsWith(".txt")) {
+                    ChatHandler.warn("clickable( &l\u02C4,run_command,/t enableimport -showlist " + file.getName().replace(".txt","") + ",&7Enable import " + file.getName().replace(".txt","") + ") " + ChatHandler.color(global.settings.get(0), file.getName().replace(".txt","")));
+                }
+            }
+        }
+
+        ChatHandler.warnBreak(1);
+    }
 	
 	private static void commandDisableImport(String args[]) {
 		if (args.length>=2) {
+            Boolean showlist = false;
 			for (int i=1; i<args.length; i++) {
 				try {
-					File dir = new File("./mods/ChatTriggers/Imports/DisabledImports/");
-		 			if (!dir.exists()) {if (!dir.mkdir()) {ChatHandler.warn(ChatHandler.color("red","Something went wrong while creating the file!"));}}
-		 			File file = new File("./mods/ChatTriggers/Imports/" + args[i]+".txt");
-		 			if (!file.exists()) {throw new IOException();}
-		 			if (!file.renameTo(new File("./mods/ChatTriggers/Imports/DisabledImports/" + args[i] + ".txt"))) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while moving the file!"));}
-		 			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Disabled " + args[i] + ".txt"));
-		 			try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                    if (args[i].equalsIgnoreCase("-showlist")) {
+                        showlist = true;
+                    } else {
+                        File dir = new File("./mods/ChatTriggers/Imports/DisabledImports/");
+                        if (!dir.exists()) {if (!dir.mkdir()) {ChatHandler.warn(ChatHandler.color("red","Something went wrong while creating the file!"));}}
+                        File file = new File("./mods/ChatTriggers/Imports/" + args[i]+".txt");
+                        if (!file.exists()) {throw new IOException();}
+                        if (!file.renameTo(new File("./mods/ChatTriggers/Imports/DisabledImports/" + args[i] + ".txt"))) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while moving the file!"));}
+                        ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Disabled " + args[i] + ".txt"));
+                        try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                    }
 		 		} catch (IOException e) {
 		 			ChatHandler.warn(ChatHandler.color("red", args[i] + " is not an active import!"));
 		 		}
 			}
+            if (showlist) {
+                commandImports();
+            }
 		} else {ChatHandler.warn(ChatHandler.color("red", "/trigger disableImport <import name>"));}
 	}
 	
 	private static void commandEnableImport(String args[]) {
 		if (args.length>=2) {
+            Boolean showlist = false;
 			for (int i=1; i<args.length; i++) {
 				try {
-					File dir = new File("./mods/ChatTriggers/Imports/DisabledImports/");
-		 			if (!dir.exists()) {if (!dir.mkdir()) {ChatHandler.warn(ChatHandler.color("red","Something went wrong while creating the file!"));}}
-		 			File file = new File("./mods/ChatTriggers/Imports/DisabledImports/" + args[i]+".txt");
-		 			if (!file.exists()) {throw new IOException();}
-		 			if (!file.renameTo(new File("./mods/ChatTriggers/Imports/" + args[i] + ".txt"))) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
-		 			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Enabled " + args[i] + ".txt"));
-		 			try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                    if (args[i].equalsIgnoreCase("-showlist")) {
+                        showlist = true;
+                    } else {
+                        File dir = new File("./mods/ChatTriggers/Imports/DisabledImports/");
+                        if (!dir.exists()) {if (!dir.mkdir()) {ChatHandler.warn(ChatHandler.color("red","Something went wrong while creating the file!"));}}
+                        File file = new File("./mods/ChatTriggers/Imports/DisabledImports/" + args[i]+".txt");
+                        if (!file.exists()) {throw new IOException();}
+                        if (!file.renameTo(new File("./mods/ChatTriggers/Imports/" + args[i] + ".txt"))) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                        ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Enabled " + args[i] + ".txt"));
+                        try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                    }
+
 		 		} catch (IOException e) {
 		 			ChatHandler.warn(ChatHandler.color("red", args[i] + " is not an inactive import!"));
 		 		}
 			}
+            if (showlist) {
+                commandImports();
+            }
 		} else {ChatHandler.warn(ChatHandler.color("red", "/trigger disableImport <import name>"));}
 	}
 	
