@@ -197,29 +197,32 @@ public class StringHandler {
 			global.backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{sneak}", "{string[DefaultString->SNEAK-"+global.TMP_string.size()+"]}");
 		}
-		if (TMP_e.contains("{coordx}")) {
+		if (TMP_e.contains("{coordx}") || TMP_e.contains("{x}")) {
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("DefaultString->COORDX-"+(global.TMP_string.size()+1));
 			temporary.add(Math.round(Minecraft.getMinecraft().thePlayer.posX)+"");
 			global.TMP_string.add(temporary);
 			global.backupTMP_strings.add(temporary);
-			TMP_e = TMP_e.replace("{coordx}", "{string[DefaultString->COORDX-"+global.TMP_string.size()+"]}");
+			TMP_e = TMP_e.replace("{coordx}", "{string[DefaultString->COORDX-"+global.TMP_string.size()+"]}")
+					.replace("{y}", "{string[DefaultString->COORDX-"+global.TMP_string.size()+"]}");
 		}
-		if (TMP_e.contains("{coordy}")) {
+		if (TMP_e.contains("{coordy}") || TMP_e.contains("{y}")) {
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("DefaultString->COORDY-"+(global.TMP_string.size()+1));
 			temporary.add(Math.round(Minecraft.getMinecraft().thePlayer.posY)+"");
 			global.TMP_string.add(temporary);
 			global.backupTMP_strings.add(temporary);
-			TMP_e = TMP_e.replace("{coordy}", "{string[DefaultString->COORDY-"+global.TMP_string.size()+"]}");
+			TMP_e = TMP_e.replace("{coordy}", "{string[DefaultString->COORDY-"+global.TMP_string.size()+"]}")
+							.replace("{y}", "{string[DefaultString->COORDY-"+global.TMP_string.size()+"]}");
 		}
-		if (TMP_e.contains("{coordz}")) {
+		if (TMP_e.contains("{coordz}") || TMP_e.contains("{z}")) {
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("DefaultString->COORDZ-"+(global.TMP_string.size()+1));
 			temporary.add(Math.round(Minecraft.getMinecraft().thePlayer.posZ)+"");
 			global.TMP_string.add(temporary);
 			global.backupTMP_strings.add(temporary);
-			TMP_e = TMP_e.replace("{coordz}", "{string[DefaultString->COORDZ-"+global.TMP_string.size()+"]}");
+			TMP_e = TMP_e.replace("{coordz}", "{string[DefaultString->COORDZ-"+global.TMP_string.size()+"]}")
+					.replace("{y}", "{string[DefaultString->COORDZ-"+global.TMP_string.size()+"]}");
 		}
 		return TMP_e;
 	}
@@ -295,23 +298,23 @@ public class StringHandler {
 
 		if (func.equalsIgnoreCase("SET")) {
 			if (stringnum!=-1) {
-				global.USR_string.get(stringnum).set(1, args);
-				global.backupUSR_strings.get(stringnum).set(1, args);
+				global.USR_string.get(stringnum).set(1, args.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
+				global.backupUSR_strings.get(stringnum).set(1, args.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
 			} else {
-				global.TMP_string.get(tmpstringnum).set(1, args);
-				global.backupTMP_strings.get(tmpstringnum).set(1, args);
+				global.TMP_string.get(tmpstringnum).set(1, args.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
+				global.backupTMP_strings.get(tmpstringnum).set(1, args.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
 			}
-			return args;
+			return "{string["+sn+"]}";
 		} else if (func.equalsIgnoreCase("SAVE")) {
 			if (stringnum!=-1) {
-				global.USR_string.get(stringnum).set(1, args);
-				global.backupUSR_strings.get(stringnum).set(1, args);
+				global.USR_string.get(stringnum).set(1, args.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
+				global.backupUSR_strings.get(stringnum).set(1, args.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
 			} else {
-				global.TMP_string.get(tmpstringnum).set(1, args);
-				global.backupTMP_strings.get(tmpstringnum).set(1, args);
+				global.TMP_string.get(tmpstringnum).set(1, args.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
+				global.backupTMP_strings.get(tmpstringnum).set(1, args.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
 			}
 			try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
-			return args;
+            return "{string["+sn+"]}";
 		} else if (func.equalsIgnoreCase("ADD") || func.equalsIgnoreCase("PLUS") || func.equalsIgnoreCase("+")) {
 			try {
 				Double strnmbr;
@@ -433,7 +436,40 @@ public class StringHandler {
 				else {global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement").replace(args, ""));}
 				return "{string["+sn+"]}";
 			}
-		} else if (func.equalsIgnoreCase("PREFIX")) {
+		} else if (func.equalsIgnoreCase("SUBSTRING")) {
+            args = args.replace("','", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
+            String[] subargs = args.split(",");
+            if (subargs.length == 2) {
+                if (stringnum!=-1) {
+                    String temp = global.USR_string.get(stringnum).get(1).replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
+                    System.out.println(subargs[0]);
+                    System.out.println(temp);
+                    if (temp.contains(subargs[0])) {
+                        System.out.println("first");
+                        temp = temp.substring(temp.indexOf(subargs[0]) + subargs[0].length());
+                        if (temp.contains(subargs[1])) {
+                            System.out.println("second");
+                            temp = temp.substring(0, temp.indexOf(subargs[1]));
+                            global.USR_string.get(stringnum).set(1, temp.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
+                        } else {global.USR_string.get(stringnum).set(1, "false");}
+                    } else {global.USR_string.get(stringnum).set(1, "false");}
+                } else {
+                    String temp = global.TMP_string.get(tmpstringnum).get(1).replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
+                    if (temp.contains(subargs[0])) {
+                        temp = temp.substring(temp.indexOf(subargs[0]) + subargs[0].length());
+                        if (temp.contains(subargs[1])) {
+                            temp = temp.substring(0, temp.indexOf(subargs[1]));
+                            global.TMP_string.get(tmpstringnum).set(1, temp.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
+                        } else {global.TMP_string.get(tmpstringnum).set(1, "false");}
+                    } else {global.TMP_string.get(tmpstringnum).set(1, "false");}
+                }
+                return "{string["+sn+"]}";
+            } else {return "Missing args in .SUBSTRING! expected 2, got " + subargs.length + " {string["+sn+"]}";}
+        } else if (func.equalsIgnoreCase("TRIM")){
+            if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).trim());}
+            else {global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).trim());}
+            return "{string["+sn+"]}";
+        } else if (func.equalsIgnoreCase("PREFIX")) {
 			if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, args + global.USR_string.get(stringnum).get(1));}
 			else {global.TMP_string.get(tmpstringnum).set(1, args + global.TMP_string.get(tmpstringnum).get(1));}
 			return "{string["+sn+"]}";
