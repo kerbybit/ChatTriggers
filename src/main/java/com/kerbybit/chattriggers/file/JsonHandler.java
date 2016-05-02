@@ -156,106 +156,97 @@ public class JsonHandler {
 	
 	public static String importJsonURL(String type, String url, String toImport) {
 		String returnString = "Something went wrong!";
-        String jsonString = "";
-
-		if (global.jsonURL.containsKey(url)) {
-            jsonString = global.jsonURL.get(url);
-        } else {
-            try {
-                URL web = new URL(url);
-                InputStream fis = web.openStream();
-                List<String> lines = new ArrayList<String>();
-                String line;
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
-                while ((line = bufferedReader.readLine()) != null) {
-                    lines.add(line);
-                }
-                bufferedReader.close();
-
-
-                for (String value : lines) {jsonString += value;}
-                jsonString = jsonString.replace("[", "openSquareF6cyUQp9openSquare").replace("]", "closeSquareF6cyUQp9closeSquare")
-                        .replace("+", "plusF6cyUQp9plus").replace("-", "minusF6cyUQp9minus");
-                global.jsonURL.put(url, jsonString);
-
-            } catch (UnsupportedEncodingException e) {
-                returnString = "Unsupported encoding!";
-                e.printStackTrace();
-            } catch (FileNotFoundException e) {
-                returnString = "File not found!";
-                e.printStackTrace();
-            } catch (IOException e) {
-                returnString = "IO exception!";
-                e.printStackTrace();
-            }
-        }
-
-        if (toImport.contains("=>")) {
-            if (type.equalsIgnoreCase("ARRAY")) {
-                String arrayToSave = toImport.substring(0,toImport.indexOf("=>"));
-
-                int whatArray = -1;
-                for (int i=0; i<global.USR_array.size(); i++) {
-                    if (arrayToSave.equals(global.USR_array.get(i).get(0))) {
-                        whatArray = i;
-                    }
-                }
-
-                if (whatArray == -1) {
-                    List<String> temporary = new ArrayList<String>();
-                    temporary.add(arrayToSave);
-                    global.USR_array.add(temporary);
-                    whatArray = global.USR_array.size()-1;
-                }
-
-                String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
-
-                String check = "\""+jsonGet+"\":\"";
-                if (jsonString.contains(check)) {
-                    returnString = "[";
-                    while (jsonString.contains(check)) {
-                        String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
-                        global.USR_array.get(whatArray).add(jsonGot.replace("openSquareF6cyUQp9openSquare","[").replace("closeSquareF6cyUQp9closeSquare","]")
-                                .replace("plusF6cyUQp9plus", "+").replace("minusF6cyUQp9minus", "-"));
-                        jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
-                        returnString += jsonGot+",";
-                    }
-                    returnString = returnString.substring(0, returnString.length()-1) + "]";
-                } else {
-                    returnString = "No "+jsonGet+" in json!";
-                }
-            } else if (type.equalsIgnoreCase("STRING")) {
-                String stringToSave = toImport.substring(0,toImport.indexOf("=>"));
-
-                for (int i=0; i<global.USR_string.size(); i++) {
-                    if (stringToSave.equals(global.USR_string.get(i).get(0))) {
-                        String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
-
-                        String check = "\""+jsonGet+"\":\"";
-                        if (jsonString.contains(check)) {
-                            String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
-                            global.USR_string.get(i).set(1, jsonGot);
-                            returnString = jsonGot;
-                        }
-                    }
-                }
-                for (int i=0; i<global.TMP_string.size(); i++) {
-                    if (stringToSave.equals(global.TMP_string.get(i).get(0))) {
-                        String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
-
-                        String check = "\""+jsonGet+"\":\"";
-                        if (jsonString.contains(check)) {
-                            String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
-                            global.TMP_string.get(i).set(1, jsonGot);
-                            returnString = jsonGot;
-                        }
-                    }
-                }
-            }
-        } else {
-            returnString = "No array! use 'array=>nodes'";
-        }
-
+		try {
+			URL web = new URL(url);
+			InputStream fis = web.openStream();
+			List<String> lines = new ArrayList<String>();
+			String line;
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
+			while ((line = bufferedReader.readLine()) != null) {
+				lines.add(line);
+			}
+			bufferedReader.close();
+			
+			String jsonString = "";
+			for (String value : lines) {jsonString += value;}
+			jsonString = jsonString.replace("[", "openSquareF6cyUQp9openSquare").replace("]", "closeSquareF6cyUQp9closeSquare")
+					.replace("+", "plusF6cyUQp9plus").replace("-", "minusF6cyUQp9minus");
+			
+			if (toImport.contains("=>")) {
+				if (type.equalsIgnoreCase("ARRAY")) {
+					String arrayToSave = toImport.substring(0,toImport.indexOf("=>"));
+					
+					int whatArray = -1;
+					for (int i=0; i<global.USR_array.size(); i++) {
+						if (arrayToSave.equals(global.USR_array.get(i).get(0))) {
+							whatArray = i;
+						}
+					}
+					
+					if (whatArray == -1) {
+						List<String> temporary = new ArrayList<String>();
+						temporary.add(arrayToSave);
+						global.USR_array.add(temporary);
+						whatArray = global.USR_array.size()-1;
+					}
+					
+					String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+					
+					String check = "\""+jsonGet+"\":\"";
+					if (jsonString.contains(check)) {
+						returnString = "[";
+						while (jsonString.contains(check)) {
+							String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+							global.USR_array.get(whatArray).add(jsonGot.replace("openSquareF6cyUQp9openSquare","[").replace("closeSquareF6cyUQp9closeSquare","]")
+									.replace("plusF6cyUQp9plus", "+").replace("minusF6cyUQp9minus", "-"));
+							jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
+							returnString += jsonGot+",";
+						}
+						returnString = returnString.substring(0, returnString.length()-1) + "]";
+					} else {
+						returnString = "No "+jsonGet+" in json!";
+					}
+				} else if (type.equalsIgnoreCase("STRING")) {
+					String stringToSave = toImport.substring(0,toImport.indexOf("=>"));
+					
+					for (int i=0; i<global.USR_string.size(); i++) {
+						if (stringToSave.equals(global.USR_string.get(i).get(0))) {
+							String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+							
+							String check = "\""+jsonGet+"\":\"";
+							if (jsonString.contains(check)) {
+								String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+								global.USR_string.get(i).set(1, jsonGot);
+								returnString = jsonGot;
+							}
+						}
+					}
+					for (int i=0; i<global.TMP_string.size(); i++) {
+						if (stringToSave.equals(global.TMP_string.get(i).get(0))) {
+							String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+							
+							String check = "\""+jsonGet+"\":\"";
+							if (jsonString.contains(check)) {
+								String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+								global.TMP_string.get(i).set(1, jsonGot);
+								returnString = jsonGot;
+							}
+						}
+					}
+				}
+			} else {
+				returnString = "No array! use 'array=>nodes'";
+			}
+		} catch (UnsupportedEncodingException e) {
+			returnString = "Unsupported encoding!";
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			returnString = "File not found!";
+			e.printStackTrace();
+		} catch (IOException e) {
+			returnString = "IO exception!";
+			e.printStackTrace();
+		}
 		return returnString;
 	}
 }

@@ -1,7 +1,6 @@
 package com.kerbybit.chattriggers.globalvars;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class global {
@@ -22,10 +21,6 @@ public class global {
 	public static String importURL = "";
 	public static Boolean canImport = true;
 	public static List<String> neededImports = new ArrayList<String>();
-
-    //key - URL
-    //value - json string
-    public static HashMap<String, String> jsonURL = new HashMap<String, String>();
 	
 	public static List<String> chatHistory = new ArrayList<String>();
 	public static int tick = 0;
