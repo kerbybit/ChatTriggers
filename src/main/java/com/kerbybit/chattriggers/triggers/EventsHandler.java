@@ -507,7 +507,7 @@ public class EventsHandler {
 			}
 		}
 		
-		if (global.waitEvents.size()==0 && global.asyncEvents.size()==0 && global.TMP_string.size()>0) {global.TMP_string.clear();}
+		if (global.waitEvents.size()==0 && global.asyncEvents.size()==0 && global.TMP_string.size()>0) {global.TMP_string.clear(); global.jsonURL.clear();}
 		
 		if (global.waitEvents.size()>0) {
 			if (global.waitEvents.size() == global.waitTime.size()) {
