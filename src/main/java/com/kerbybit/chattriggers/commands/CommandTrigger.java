@@ -375,19 +375,36 @@ public class CommandTrigger extends CommandBase {
 			TMP_l.add(TMP_trig);
 			if (CommandReference.isTriggerType(TMP_type)) {
 				global.trigger.add(TMP_l);
-				int TMP_num = global.trigger.size() - 1;
-				if (!silent) {
-					List<String> TMP_out = new ArrayList<String>();
-					TMP_trig = TMP_trig.replace("'", "\\'");
-					TMP_type = TMP_type.replace("'", "\\'");
-					TMP_out.add("text:'Created trigger ',color:gray");
-					TMP_out.add("text:'" + TMP_trig + " ',color:"+global.settings.get(1));
-					TMP_out.add("text:'with trigger type ',color:gray");
-					TMP_out.add("text:'" + TMP_type + " ',color:"+global.settings.get(1));
-					TMP_out.add("text:'(" + TMP_num + ")',color:gray,hoverEvent:{action:'show_text',value:'Add an event'},clickEvent:{action:'suggest_command',value:'/trigger add " + TMP_num + " '}");
-					ChatHandler.sendJson(TMP_out);
-				}
 				try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                int TMP_num = -1;
+                for (int i=0; i<global.trigger.size(); i++) {
+                    if (global.trigger.get(i).equals(TMP_l)) {
+                        TMP_num = i;
+                    }
+                }
+				if (!silent) {
+                    if (TMP_num == -1) {
+                        List<String> TMP_out = new ArrayList<String>();
+                        TMP_trig = TMP_trig.replace("'", "\\'");
+                        TMP_type = TMP_type.replace("'", "\\'");
+                        TMP_out.add("text:'Created trigger ',color:gray");
+                        TMP_out.add("text:'" + TMP_trig + " ',color:"+global.settings.get(1));
+                        TMP_out.add("text:'with trigger type ',color:gray");
+                        TMP_out.add("text:'" + TMP_type + " ',color:"+global.settings.get(1));
+                        ChatHandler.sendJson(TMP_out);
+                    } else {
+                        List<String> TMP_out = new ArrayList<String>();
+                        TMP_trig = TMP_trig.replace("'", "\\'");
+                        TMP_type = TMP_type.replace("'", "\\'");
+                        TMP_out.add("text:'Created trigger ',color:gray");
+                        TMP_out.add("text:'" + TMP_trig + " ',color:"+global.settings.get(1));
+                        TMP_out.add("text:'with trigger type ',color:gray");
+                        TMP_out.add("text:'" + TMP_type + " ',color:"+global.settings.get(1));
+                        TMP_out.add("text:'(" + TMP_num + ")',color:gray,hoverEvent:{action:'show_text',value:'Add an event'},clickEvent:{action:'suggest_command',value:'/trigger add " + TMP_num + " '}");
+                        ChatHandler.sendJson(TMP_out);
+                    }
+				}
+
 			} else {
 				ChatHandler.warn(ChatHandler.color("red", "Not a valid trigger type"));
 			}
