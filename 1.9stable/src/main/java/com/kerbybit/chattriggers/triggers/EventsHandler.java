@@ -102,10 +102,10 @@ public class EventsHandler {
 			if (TMP_c.equalsIgnoreCase("SAY")) {global.chatQueue.add(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("CHAT")) {ChatHandler.warn(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("DO") && global.debug) {ChatHandler.warn(TMP_e);}
-			if (TMP_c.equalsIgnoreCase("SOUND")) {Minecraft.getMinecraft().thePlayer.playSound(TMP_e
+			if (TMP_c.equalsIgnoreCase("SOUND")) {/*Minecraft.getMinecraft().thePlayer.playSound(TMP_e
 					.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
 					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"), TMP_v, TMP_pi);}
+					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"), TMP_v, TMP_pi);*/}
 			if (TMP_c.equalsIgnoreCase("CANCEL") && chatEvent!=null) {chatEvent.setCanceled(true);}
 			if (TMP_c.equalsIgnoreCase("KILLFEED")) {global.killfeed.add(TMP_e
 					.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
@@ -193,7 +193,7 @@ public class EventsHandler {
 				if (i+1 < tmp_event.size()-1) { //check for events after if event
 					for (int j=i; j<tmp_event.size(); j++) {
 						if (j != tmp_event.size()) {
-							if (chatEvent!=null) {tmp_event.set(j, tmp_event.get(j).replace("{msg}", chatEvent.message.getFormattedText()));}
+							if (chatEvent!=null) {tmp_event.set(j, tmp_event.get(j).replace("{msg}", chatEvent.getMessage().getFormattedText()));}
 							
 							//increase tab
 							if (tmp_event.get(j).toUpperCase().startsWith("IF")
