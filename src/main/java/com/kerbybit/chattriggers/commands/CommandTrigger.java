@@ -168,7 +168,9 @@ public class CommandTrigger extends CommandBase {
 	
 	private static void commandImport(String args[]) {
 		if (args.length>=2) {
-			global.neededImports.addAll(Arrays.asList(args));
+			ArrayList<String> temp = new ArrayList<String>(Arrays.asList(args));
+            temp.remove(0);
+			global.neededImports.addAll(temp);
 		} else {ChatHandler.warn(ChatHandler.color("red", "/trigger import <import name>"));}
 	}
 
