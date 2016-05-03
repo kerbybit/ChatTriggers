@@ -238,19 +238,7 @@ public class EventsHandler {
 			if (TMP_c.equalsIgnoreCase("FOR")) {
 				int tabbed_logic = 0;
 				List<String> eventsToFor = new ArrayList<String>();
-				String[] tmp_valuefor = TMP_e.split(":");
-				String valin = "";
-				String valfrom = "";
-				List<String> arrayto = new ArrayList<String>();
-				if (tmp_valuefor.length==2) {
-					valin = tmp_valuefor[0].trim();
-					valfrom = tmp_valuefor[1].trim();
-				} else {ChatHandler.warn(ChatHandler.color("red", "Malformed FOR loop!"));}
-				for (int j=0; j<global.USR_array.size(); j++) {
-					if (global.USR_array.get(j).get(0).equals(valfrom)) {
-						arrayto.addAll(global.USR_array.get(j));
-					}
-				}
+
 				
 				if (i+1 < tmp_event.size()) {
 					for (int j=i; j<tmp_event.size(); j++) {
@@ -279,15 +267,53 @@ public class EventsHandler {
 				
 				eventsToFor.remove(0);
 				eventsToFor.remove(eventsToFor.size()-1);
-				
-				
-				if (arrayto.size()>0 && eventsToFor.size() > 0) {
-					for (int j=1; j<arrayto.size(); j++) {
-						String[] first = {valin};
-						String[] second = {arrayto.get(j)};
-						doEvents(eventsToFor, chatEvent, first, second);
-					}
-				}
+
+                if (TMP_e.contains(":") || (TMP_e.contains(" in "))) {
+                    String[] tmp_valuefor;
+                    if (TMP_e.contains(":")) {tmp_valuefor = TMP_e.split(":");}
+                    else {tmp_valuefor = TMP_e.split(" in ");}
+
+                    String valin = "";
+                    String valfrom = "";
+                    List<String> arrayto = new ArrayList<String>();
+                    if (tmp_valuefor.length==2) {
+                        valin = tmp_valuefor[0].trim();
+                        valfrom = tmp_valuefor[1].trim();
+                    } else {ChatHandler.warn(ChatHandler.color("red", "Malformed FOR loop!"));}
+                    for (int j=0; j<global.USR_array.size(); j++) {
+                        if (global.USR_array.get(j).get(0).equals(valfrom)) {
+                            arrayto.addAll(global.USR_array.get(j));
+                        }
+                    }
+
+                    if (arrayto.size()>0 && eventsToFor.size() > 0) {
+                        for (int j=1; j<arrayto.size(); j++) {
+                            String[] first = {valin};
+                            String[] second = {arrayto.get(j)};
+                            doEvents(eventsToFor, chatEvent, first, second);
+                        }
+                    }
+                }
+
+                if (TMP_e.contains(" from ") && TMP_e.contains(" to ")) {
+                    String[] args = TMP_e.split(" from | to ");
+                    if (args.length == 3) {
+                        try {
+                            int int_from = Integer.parseInt(args[1].trim());
+                            int int_to = Integer.parseInt(args[2].trim());
+                            for (int j=int_from; j<int_to+1; j++) {
+                                String[] first = {args[0].trim()};
+                                String[] second = {j + ""};
+                                doEvents(eventsToFor, chatEvent, first, second);
+                            }
+                        } catch (NumberFormatException e) {
+                            ChatHandler.warn(ChatHandler.color("red", "'FOR $i FROM $n1 TO $n2' -> either $n1 or $n2 is not a number"));
+                        }
+                    } else {
+                        ChatHandler.warn(ChatHandler.color("red", "Something went wrong while running 'FOR $i FROM $n1 TO $n2'"));
+                    }
+                }
+
 				
 				//move i
 				i += eventsToFor.size();
