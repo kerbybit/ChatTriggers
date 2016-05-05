@@ -195,6 +195,9 @@ public class FileHandler {
 		if (global.settings.size() < 3) {global.settings.add("null");}
 		if (global.settings.size() < 4) {global.settings.add("top-left");}
 		if (global.settings.size() < 5) {global.settings.add("false");}
+        if (global.settings.size() < 6) {global.settings.add("null");}
+        if (global.settings.size() < 7) {global.settings.add("true");}
+        if (global.settings.size() < 8) {global.settings.add("true");}
 		writer.println("color:"+listName.get(0));
 		writer.println("colorName:"+listName.get(1));
 		writer.println("version:"+listName.get(2));
@@ -203,6 +206,8 @@ public class FileHandler {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		Date date = new Date();
 		writer.println("lastOpened:"+dateFormat.format(date));
+        writer.println("t:"+global.settings.get(6));
+        writer.println("tr:"+global.settings.get(7));
 		writer.close();
 	}
 	
@@ -413,7 +418,9 @@ public class FileHandler {
 			if (l.startsWith("version:")) {tmp_settings.add(l.substring(l.indexOf("version:") + 8));}
 			if (l.startsWith("killfeed pos:")) {tmp_settings.add(l.substring(l.indexOf("killfeed pos:")+13));}
 			if (l.startsWith("isBeta:")) {tmp_settings.add(l.substring(l.indexOf("isBeta:")+7));}
-			if (l.startsWith("lastOpened:")) {global.currentDate = l.substring(l.indexOf("lastOpened:")+11);}
+			if (l.startsWith("lastOpened:")) {global.currentDate = l.substring(l.indexOf("lastOpened:")+11); tmp_settings.add(global.currentDate);}
+            if (l.startsWith("t:")) {tmp_settings.add(l.substring(l.indexOf("t:")+2)); System.out.println("AHHHHH");}
+            if (l.startsWith("tr:")) {tmp_settings.add(l.substring(l.indexOf("tr:")+3));}
 		}
 		
 		return tmp_settings;
@@ -451,6 +458,8 @@ public class FileHandler {
 			if (global.settings.size() < 4) {global.settings.add("top-left");}
 			if (global.settings.size() < 5) {global.settings.add("false");}
 			if (global.settings.size() < 6) {global.settings.add("null");}
+			if (global.settings.size() < 7) {global.settings.add("true");}
+			if (global.settings.size() < 8) {global.settings.add("true");}
 			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Chat triggers loaded"));
 		} catch (IOException e1) {
 			ChatHandler.warn(ChatHandler.color("red", "Error loading files!"));
@@ -467,6 +476,8 @@ public class FileHandler {
 			if (global.settings.size() < 4) {global.settings.add("top-left");}
 			if (global.settings.size() < 5) {global.settings.add("false");}
 			if (global.settings.size() < 6) {global.settings.add("null");}
+            if (global.settings.size() < 7) {global.settings.add("true");}
+            if (global.settings.size() < 8) {global.settings.add("true");}
 			
 			try {saveAll(); ChatHandler.warn(ChatHandler.color("green", "New files created!"));} 
 			catch (IOException e111) {ChatHandler.warn(ChatHandler.color("red", "Error saving files! report this to kerbybit ASAP!")); e111.printStackTrace();}
@@ -476,6 +487,8 @@ public class FileHandler {
 		if (global.settings.size() < 4) {global.settings.add("top-left");}
 		if (global.settings.size() < 5) {global.settings.add("false");}
 		if (global.settings.size() < 6) {global.settings.add("null");}
+        if (global.settings.size() < 7) {global.settings.add("true");}
+        if (global.settings.size() < 8) {global.settings.add("true");}
 		try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 	}
 	
