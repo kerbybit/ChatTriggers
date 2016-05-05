@@ -297,7 +297,7 @@ public class StringHandler {
 				ArrayList<String> temp = new ArrayList<String>();
                 temp.add(sn); temp.add("");
                 global.TMP_string.add(temp);
-                tmpstringnum = global.TMP_string.size();
+                tmpstringnum = global.TMP_string.size()-1;
 			}
 		} 
 
