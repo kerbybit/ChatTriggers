@@ -445,25 +445,50 @@ public class StringHandler {
                 return "{string["+sn+"]}";
 			} catch (NumberFormatException e) {return sn+" is not a number!{string["+sn+"]}";}
 		} else if (func.equalsIgnoreCase("REPLACE")) {
-			args = args.replace("','", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
+			args = args
+                    .replace("','", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
+                    .replace("'('", "stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement")
+                    .replace("')'", "stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement");
 			if (args.contains(",")) {
 				String replaced = args.substring(0, args.indexOf(","));
 				String replacer = args.substring(args.indexOf(",")+1);
 
-				if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).replace("','", "stringCommaReplacementF6cyUQp9stringCommaReplacement").replace(replaced, replacer));}
-				else {global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).replace("','", "stringCommaReplacementF6cyUQp9stringCommaReplacement").replace(replaced, replacer));}
+				if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1)
+                        .replace("','", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
+                        .replace("'('", "stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement")
+                        .replace("')'", "stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement")
+                        .replace(replaced, replacer));}
+				else {global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1)
+                        .replace("','", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
+                        .replace("'('", "stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement")
+                        .replace("')'", "stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement")
+                        .replace(replaced, replacer));}
 				return "{string["+sn+"]}";
 			} else {
-				if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement").replace(args, ""));}
-				else {global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement").replace(args, ""));}
+				if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1)
+                        .replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
+                        .replace("(","stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement")
+                        .replace(")","stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement")
+                        .replace(args, ""));}
+				else {global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1)
+                        .replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
+                        .replace("(","stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement")
+                        .replace(")","stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement")
+                        .replace(args, ""));}
 				return "{string["+sn+"]}";
 			}
 		} else if (func.equalsIgnoreCase("SUBSTRING")) {
-            args = args.replace("','", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
+            args = args
+					.replace("','", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
+                    .replace("'('", "stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement")
+                    .replace("')'", "stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement");
             String[] subargs = args.split(",");
             if (subargs.length == 2) {
                 if (stringnum!=-1) {
-                    String temp = global.USR_string.get(stringnum).get(1).replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
+                    String temp = global.USR_string.get(stringnum).get(1)
+                            .replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
+                            .replace("(","stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement")
+                            .replace(")","stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement");
                     System.out.println(subargs[0]);
                     System.out.println(temp);
                     if (temp.contains(subargs[0])) {
@@ -472,16 +497,25 @@ public class StringHandler {
                         if (temp.contains(subargs[1])) {
                             System.out.println("second");
                             temp = temp.substring(0, temp.indexOf(subargs[1]));
-                            global.USR_string.get(stringnum).set(1, temp.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
+                            global.USR_string.get(stringnum).set(1, temp
+                                    .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                                    .replace("stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement","(")
+                                    .replace("stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement",")"));
                         } else {global.USR_string.get(stringnum).set(1, "false");}
                     } else {global.USR_string.get(stringnum).set(1, "false");}
                 } else {
-                    String temp = global.TMP_string.get(tmpstringnum).get(1).replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
+                    String temp = global.TMP_string.get(tmpstringnum).get(1)
+                            .replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
+                            .replace("(","stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement")
+                            .replace(")","stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement");
                     if (temp.contains(subargs[0])) {
                         temp = temp.substring(temp.indexOf(subargs[0]) + subargs[0].length());
                         if (temp.contains(subargs[1])) {
                             temp = temp.substring(0, temp.indexOf(subargs[1]));
-                            global.TMP_string.get(tmpstringnum).set(1, temp.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
+                            global.TMP_string.get(tmpstringnum).set(1, temp
+                                    .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                                    .replace("stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement","(")
+                                    .replace("stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement",")"));
                         } else {global.TMP_string.get(tmpstringnum).set(1, "false");}
                     } else {global.TMP_string.get(tmpstringnum).set(1, "false");}
                 }
@@ -733,6 +767,8 @@ public class StringHandler {
 	}
 	
 	static String stringFunctions(String TMP_e) {
+		TMP_e = TMP_e.replace("'('", "stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement")
+				.replace("')'", "stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement");
 		while (TMP_e.contains("{string[") && TMP_e.contains("]}")) {
 			String testfor = TMP_e.substring(TMP_e.indexOf("]}", TMP_e.indexOf("{string["))+2);
 			if (testfor.contains("]}.") && !(testfor.contains("{string[") || testfor.contains("{array["))) {
@@ -765,22 +801,28 @@ public class StringHandler {
 				TMP_e = efirst + sn + esecond;
 				sn = sn.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
 				while (args.contains("(")) {
-					args = TMP_e.substring(TMP_e.indexOf(args), TMP_e.indexOf(")", TMP_e.indexOf(")")+1));
-					
-					String first;
-					String second;
-					String argsbefore;
-					
-					first = args.substring(0,args.indexOf("("));
-					second = args.substring(args.indexOf("(")+1);
-					argsbefore = args;
-					args = first + "stringOpenBracketF6cyUQp9stringOpenBracket" + second;
-					TMP_e = TMP_e.replace(argsbefore, args);
-					first = args.substring(0,args.indexOf(")"));
-					second = args.substring(args.indexOf(")")+1);
-					argsbefore = args;
-					args = first + "stringCloseBracketF6cyUQp9stringCloseBracket" + second;
-					TMP_e = TMP_e.replace(argsbefore, args);
+					try {
+                        args = TMP_e.substring(TMP_e.indexOf(args), TMP_e.indexOf(")", TMP_e.indexOf(")") + 1));
+
+                        String first;
+                        String second;
+                        String argsbefore;
+
+                        first = args.substring(0, args.indexOf("("));
+                        second = args.substring(args.indexOf("(") + 1);
+                        argsbefore = args;
+                        args = first + "stringOpenBracketF6cyUQp9stringOpenBracket" + second;
+                        TMP_e = TMP_e.replace(argsbefore, args);
+                        first = args.substring(0, args.indexOf(")"));
+                        second = args.substring(args.indexOf(")") + 1);
+                        argsbefore = args;
+                        args = first + "stringCloseBracketF6cyUQp9stringCloseBracket" + second;
+                        TMP_e = TMP_e.replace(argsbefore, args);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        ChatHandler.warn(ChatHandler.color("red","ERR: Missing closing bracket!"));
+                        return "Something broke!!";
+                    }
 				}
 				args = args.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(").replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
 				TMP_e = TMP_e.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(").replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
