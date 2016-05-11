@@ -338,21 +338,40 @@ public class StringHandler {
 
 			return "{string["+sn+"]}";
 		} else if (func.equalsIgnoreCase("SAVE")) {
-            if (!args.equals("~")) {
-                if (stringnum!=-1) {
-                    global.USR_string.get(stringnum).set(1, args.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
-                    global.backupUSR_strings.get(stringnum).set(1, args.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
-                } else {
-                    global.TMP_string.get(tmpstringnum).set(1, args.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
-                    global.backupTMP_strings.get(tmpstringnum).set(1, args.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
-                }
-            } else {
-                if (stringnum!=-1) {
-                    global.backupUSR_strings.get(stringnum).set(1, global.USR_string.get(stringnum).get(1));
-                } else {
-                    global.backupTMP_strings.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1));
-                }
-            }
+			if (!args.equals("~")) {
+				if (stringnum!=-1) {
+					global.USR_string.get(stringnum).set(1, args
+							.replace("stringOpenBracketF6cyUQp9stringOpenBracket","(")
+							.replace("stringCloseBracketF6cyUQp9stringCloseBracket",")")
+							.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
+					global.backupUSR_strings.get(stringnum).set(1, args
+							.replace("stringOpenBracketF6cyUQp9stringOpenBracket","(")
+							.replace("stringCloseBracketF6cyUQp9stringCloseBracket",")")
+							.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
+				} else {
+					global.TMP_string.get(tmpstringnum).set(1, args
+							.replace("stringOpenBracketF6cyUQp9stringOpenBracket","(")
+							.replace("stringCloseBracketF6cyUQp9stringCloseBracket",")")
+							.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
+					global.backupTMP_strings.get(tmpstringnum).set(1, args
+							.replace("stringOpenBracketF6cyUQp9stringOpenBracket","(")
+							.replace("stringCloseBracketF6cyUQp9stringCloseBracket",")")
+							.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
+				}
+			} else {
+				if (stringnum!=-1) {
+					global.backupUSR_strings.get(stringnum).set(1, global.USR_string.get(stringnum).get(1)
+							.replace("stringOpenBracketF6cyUQp9stringOpenBracket","(")
+							.replace("stringCloseBracketF6cyUQp9stringCloseBracket",")")
+							.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
+				} else {
+					global.backupTMP_strings.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1)
+							.replace("stringOpenBracketF6cyUQp9stringOpenBracket","(")
+							.replace("stringCloseBracketF6cyUQp9stringCloseBracket",")")
+							.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
+				}
+			}
+
 			try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
             return "{string["+sn+"]}";
 		} else if (func.equalsIgnoreCase("ADD") || func.equalsIgnoreCase("PLUS") || func.equalsIgnoreCase("+")) {

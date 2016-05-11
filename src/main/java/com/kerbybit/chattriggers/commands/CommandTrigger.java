@@ -35,6 +35,82 @@ public class CommandTrigger extends CommandBase {
 			ChatHandler.warn(ChatHandler.color("red", "/trigger [string/run] <...>"));
 			ChatHandler.warn(ChatHandler.color("red", "/trigger [save/load]"));
 			ChatHandler.warn(ChatHandler.color("red", "/trigger [import/export] <...>"));
+
+		} else if (args[0].equalsIgnoreCase("HELP") || (args[0].equalsIgnoreCase("?"))) {
+            if (args.length==1) {
+                ChatHandler.warnBreak(0);
+                ChatHandler.warn(" &f>> clickable(" + global.settings.get(0) + "Get started,run_command,/trigger help getstarted,&7Getting started guides and tutorials)");
+                ChatHandler.warn("");
+                ChatHandler.warn(" &f>> clickable(" + global.settings.get(0) + "Available trigger types,run_command,/trigger help triggers,&7Trigger type list)");
+                ChatHandler.warn(" &f>> clickable(" + global.settings.get(0) + "Available event types,run_command,/trigger help events,&7Event type list)");
+                ChatHandler.warn("");
+                ChatHandler.warn(" &f>> clickable(" + global.settings.get(0) + "Built in strings,run_command,/trigger help strings,&7Built in string list)");
+                ChatHandler.warn(" &f>> clickable(" + global.settings.get(0) + "String functions,run_command,/trigger help stringfunctions,&7String function list)");
+                ChatHandler.warn(" &f>> clickable(" + global.settings.get(0) + "Array functions,run_command,/trigger help arrayfunctions,&7Array function list)");
+                ChatHandler.warnBreak(1);
+            } else {
+                if (args[1].equalsIgnoreCase("GETSTARTED")) {
+                    ChatHandler.warnBreak(0);
+                    ChatHandler.warn("&fCheck out the help guide online");
+                    ChatHandler.warn(" clickable("+global.settings.get(0)+"ct.kerbybit.com/howto,open_url,http://ct.kerbybit.com/howto/,&7Open the howto guide)");
+                    ChatHandler.warn("");
+                    ChatHandler.warn("&fCheck out the starting tutorial");
+                    ChatHandler.warn(" clickable("+global.settings.get(0)+"ct.kerbybit.com/tutorials,open_url,http://ct.kerbybit.com/tutorials/,&7Open the starting tutorial)");
+                    ChatHandler.warn("");
+                    ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
+                    ChatHandler.warnBreak(1);
+                } else if (args[1].equalsIgnoreCase("TRIGGERS")) {
+                    ChatHandler.warnBreak(0);
+                    ChatHandler.warn("&fTrigger types");
+                    List<String> trigs = new ArrayList<String>(CommandReference.getTriggerTypes());
+                    for (String trig : trigs) {
+                        ChatHandler.warn(global.settings.get(0) + " " + trig);
+                    }
+                    ChatHandler.warn("");
+                    ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
+                    ChatHandler.warnBreak(1);
+                } else if (args[1].equalsIgnoreCase("EVENTS")) {
+                    ChatHandler.warnBreak(0);
+                    ChatHandler.warn("&fEvent types");
+                    List<String> events = new ArrayList<String>(CommandReference.getEventTypes());
+                    for (String event : events) {
+                        ChatHandler.warn(global.settings.get(0) + " " + event);
+                    }
+                    ChatHandler.warn("");
+                    ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
+                    ChatHandler.warnBreak(1);
+                } else if (args[1].equalsIgnoreCase("STRINGS")) {
+                    ChatHandler.warnBreak(0);
+                    ChatHandler.warn("&fBuilt in strings");
+                    List<String> strs = new ArrayList<String>(CommandReference.getStrings());
+                    for (String str : strs) {
+                        ChatHandler.warn(global.settings.get(0) + " " + str);
+                    }
+                    ChatHandler.warn("");
+                    ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
+                    ChatHandler.warnBreak(1);
+                } else if (args[1].equalsIgnoreCase("STRINGFUNCTIONS")) {
+                    ChatHandler.warnBreak(0);
+                    ChatHandler.warn("&fString functions");
+                    List<String> strfuncs = new ArrayList<String>(CommandReference.getStringFunctions());
+                    for (String strfunc : strfuncs) {
+                        ChatHandler.warn(global.settings.get(0) + " " + strfunc);
+                    }
+                    ChatHandler.warn("");
+                    ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
+                    ChatHandler.warnBreak(1);
+                } else if (args[1].equalsIgnoreCase("ARRAYFUNCTIONS")) {
+                    ChatHandler.warnBreak(0);
+                    ChatHandler.warn("&fArray functions");
+                    List<String> arrfuncs = new ArrayList<String>(CommandReference.getArrayFunctions());
+                    for (String arrfunc : arrfuncs) {
+                        ChatHandler.warn(global.settings.get(0) + " " + arrfunc);
+                    }
+                    ChatHandler.warn("");
+                    ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
+                    ChatHandler.warnBreak(1);
+                }
+            }
 		} else if (args[0].equalsIgnoreCase("COPY")) {
 			if (args.length != 1) {
 				if (args.length == 3) {

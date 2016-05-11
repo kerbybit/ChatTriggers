@@ -74,7 +74,10 @@ public class FileHandler {
 			 			for (String value : lines) {writer.println(value);}
 			 			writer.close();
 			 			if (global.debug) {ChatHandler.warn(ChatHandler.color("&7", "Loading imports into triggers"));}
-			 			
+
+						File fcheck = new File("./mods/ChatTriggers/Imports/DisabledImports/"+file);
+						if (fcheck.exists()) {if (!fcheck.delete()) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while deleting the disabled import " + file + "!"));}}
+
 			 			try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while loading the files after an import!"));}
 			 			
 			 			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Got "+file+" successfully!"));
@@ -508,7 +511,6 @@ public class FileHandler {
 		if (global.neededImports.size()>0 && global.canImport) {
 			if (global.canSave) {
 				FileHandler.getImport("http://chattriggers.kerbybit.com/exports/"+global.neededImports.remove(0)+".txt");
-				
 			} else {
 				global.neededImports.clear();
 				ChatHandler.warn(ChatHandler.color("red", "cannot get imports while in test mode"));

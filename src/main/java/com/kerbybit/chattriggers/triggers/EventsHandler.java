@@ -138,7 +138,7 @@ public class EventsHandler {
 						.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")));}
 				catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Unable to open URL! IOExeption"));}
 			}
-            if (TMP_e.equalsIgnoreCase("BREAK")) {i = tmp_event.size();}
+            if (TMP_e.equalsIgnoreCase("BREAK")) {/*i = tmp_event.size(); DISABLED*/}
 			
 			
 		//logic events
