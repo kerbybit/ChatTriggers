@@ -16,11 +16,15 @@ public class OverlayHandler {
 					ScaledResolution var5 = new ScaledResolution(MC);
 					float var6 = var5.getScaledWidth();
 					int col = 0xffffffff;
-					if (global.killfeedDelay.get(i)<50) {col = col - (50-global.killfeedDelay.get(i))*0x05000000;}
+                    if (global.settings.get(9).equalsIgnoreCase("TRUE")) {
+                        if (global.killfeedDelay.get(i)<50) {col = col - (50-global.killfeedDelay.get(i))*0x05000000;}
+                    }
 					MC.fontRendererObj.drawStringWithShadow(global.killfeed.get(i), var6 - MC.fontRendererObj.getStringWidth(global.killfeed.get(i)) - 5, i*10 + 5, col);
 				} else {
 					int col = 0xffffffff;
-					if (global.killfeedDelay.get(i)<50) {col = col - (50-global.killfeedDelay.get(i))*0x05000000;}
+                    if (global.settings.get(9).equalsIgnoreCase("TRUE")) {
+                        if (global.killfeedDelay.get(i)<50) {col = col - (50-global.killfeedDelay.get(i))*0x05000000;}
+                    }
 					MC.fontRendererObj.drawStringWithShadow(global.killfeed.get(i), 5, i*10 + 5, col);
 				}
 			}
@@ -55,13 +59,13 @@ public class OverlayHandler {
 				float var6 = var5.getScaledWidth(); 
 				global.notifyAnimation.get(i).set(4, var6 - MC.fontRendererObj.getStringWidth(global.notify.get(i)) - 5);
 				global.notifyAnimation.get(i).set(5, var6);
-				float var7 = var5.getScaledHeight()-50-(global.notifyAnimation.get(i).get(2)*15);
+				float var7 = var5.getScaledHeight()-50-(global.notifyAnimation.get(i).get(2)*10);
 				global.notifyAnimation.get(i).set(1, var6);
 				global.notifyAnimation.get(i).set(2, var7);
 				global.notifyAnimation.get(i).set(0, (float) 1);
 			} else if (global.notifyAnimation.get(i).get(0)==1) {
 				if (Math.floor(global.notifyAnimation.get(i).get(1)) > global.notifyAnimation.get(i).get(4)) {
-					global.notifyAnimation.get(i).set(1, global.notifyAnimation.get(i).get(1) + (global.notifyAnimation.get(i).get(4)-global.notifyAnimation.get(i).get(1))/10);
+					global.notifyAnimation.get(i).set(1, global.notifyAnimation.get(i).get(1) + (global.notifyAnimation.get(i).get(4)-global.notifyAnimation.get(i).get(1))/global.settingsNotificationSpeed);
 				} else {global.notifyAnimation.get(i).set(0, (float) 2);}
 			} else if (global.notifyAnimation.get(i).get(0)==2) {
 				if (global.notifyAnimation.get(i).get(3)>0) {
@@ -69,7 +73,7 @@ public class OverlayHandler {
 				} else {global.notifyAnimation.get(i).set(0, (float) 3);}
 			} else if (global.notifyAnimation.get(i).get(0)==3) {
 				if (global.notifyAnimation.get(i).get(1) < global.notifyAnimation.get(i).get(5)) {
-					global.notifyAnimation.get(i).set(1, global.notifyAnimation.get(i).get(1) - (global.notifyAnimation.get(i).get(4)-global.notifyAnimation.get(i).get(1))/10);
+					global.notifyAnimation.get(i).set(1, global.notifyAnimation.get(i).get(1) - (global.notifyAnimation.get(i).get(4)-global.notifyAnimation.get(i).get(1))/global.settingsNotificationSpeed);
 				} else {
 					ScaledResolution var5 = new ScaledResolution(MC);
 					float var6 = var5.getScaledHeight(); 

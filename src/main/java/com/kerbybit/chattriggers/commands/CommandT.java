@@ -15,7 +15,6 @@ public class CommandT extends CommandBase{
 	public int getRequiredPermissionLevel() {return 0;}
 	
 	public void processCommand(ICommandSender sender, String[] args) throws CommandException {
-        System.out.println(global.settings.get(6));
 		if (global.settings.get(6).equalsIgnoreCase("true")) {
 			CommandTrigger.doCommand(args, false);
 		} else {

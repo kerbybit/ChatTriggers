@@ -1,5 +1,7 @@
 package com.kerbybit.chattriggers.globalvars;
 
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +30,7 @@ public class global {
     public static HashMap<String, String> jsonURL = new HashMap<String, String>();
 	
 	public static List<String> chatHistory = new ArrayList<String>();
+    public static List<ClientChatReceivedEvent> chatEventHistory = new ArrayList<ClientChatReceivedEvent>();
 	public static int tick = 0;
 	public static int ticksElapsed = 0;
 	public static List<String> chatQueue = new ArrayList<String>();
@@ -96,6 +99,15 @@ public class global {
 	// layout
 	// get(0) = color
 	// get(1) = color name
-	////////////////////////////////////////////////////
+    // get(2) = version
+    // get(3) = killfeed pos
+    // get(4) = isBeta
+    // get(5) = lastOpened
+    // get(6) = t
+    // get(7) = tr
+    // get(8) = notification speed
+    // get(9) = killfeed fade
+    ////////////////////////////////////////////////////
 	public static List<String> settings = new ArrayList<String>();
+    public static int settingsNotificationSpeed = 10;
 }

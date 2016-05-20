@@ -22,6 +22,18 @@ public class CommandReference {
 		try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 		ChatHandler.warn(ChatHandler.color("green", "Reset completed"));
 	}
+
+    public static void silentResetAll() {
+        global.waitEvents.clear();
+        global.asyncEvents.clear();
+        global.backupTMP_strings.clear();
+        global.backupUSR_strings.clear();
+        global.killfeed.clear();
+        global.killfeedDelay.clear();
+        global.notify.clear();
+        global.notifyAnimation.clear();
+        try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+    }
 	
 	
 	static boolean isTriggerType(String TMP_type) {
