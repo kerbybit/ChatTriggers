@@ -107,10 +107,17 @@ public class EventsHandler {
 					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
 					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"), TMP_v, TMP_pi);}
 			if (TMP_c.equalsIgnoreCase("CANCEL") && chatEvent!=null) {chatEvent.setCanceled(true);}
-			if (TMP_c.equalsIgnoreCase("KILLFEED")) {global.killfeed.add(TMP_e
-					.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
-					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")); global.killfeedDelay.add(TMP_t);}
+			if (TMP_c.equalsIgnoreCase("KILLFEED")) {
+                if (global.settings.get(10).equalsIgnoreCase("FALSE")) {
+                    global.killfeed.add(TMP_e
+                            .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                            .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+                            .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")); global.killfeedDelay.add(TMP_t);
+                } else {
+                    TMP_c = "notify";
+                }
+            }
+
 			if (TMP_c.equalsIgnoreCase("NOTIFY")) {
 				global.notify.add(TMP_e
 					.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")

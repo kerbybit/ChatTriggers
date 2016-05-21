@@ -213,6 +213,7 @@ public class FileHandler {
         writer.println("tr:"+global.settings.get(7));
         writer.println("notification speed:"+global.settings.get(8));
         writer.println("killfeed fade:"+global.settings.get(9));
+        writer.println("show killfeed in notifications:"+global.settings.get(10));
 		writer.close();
 	}
 	
@@ -440,6 +441,7 @@ public class FileHandler {
                 }
             }
             if (l.startsWith("killfeed fade:")) {tmp_settings.add(l.substring(l.indexOf("killfeed fade:")+14));}
+            if (l.startsWith("show killfeed in notifications:")) {tmp_settings.add(l.substring(l.indexOf("show killfeed in notifications:")+31));}
 		}
 		
 		return tmp_settings;
@@ -481,6 +483,7 @@ public class FileHandler {
 			if (global.settings.size() < 8) {global.settings.add("true");}
             if (global.settings.size() < 9) {global.settings.add("10");}
             if (global.settings.size() < 10) {global.settings.add("true");}
+            if (global.settings.size() < 11) {global.settings.add("false");}
 			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Chat triggers loaded"));
 		} catch (IOException e1) {
 			ChatHandler.warn(ChatHandler.color("red", "Error loading files!"));
@@ -501,6 +504,7 @@ public class FileHandler {
             if (global.settings.size() < 8) {global.settings.add("true");}
             if (global.settings.size() < 9) {global.settings.add("10");}
             if (global.settings.size() < 10) {global.settings.add("true");}
+            if (global.settings.size() < 11) {global.settings.add("false");}
 			
 			try {saveAll(); ChatHandler.warn(ChatHandler.color("green", "New files created!"));} 
 			catch (IOException e111) {ChatHandler.warn(ChatHandler.color("red", "Error saving files! report this to kerbybit ASAP!")); e111.printStackTrace();}
@@ -514,6 +518,7 @@ public class FileHandler {
         if (global.settings.size() < 8) {global.settings.add("true");}
         if (global.settings.size() < 9) {global.settings.add("10");}
         if (global.settings.size() < 10) {global.settings.add("true");}
+        if (global.settings.size() < 11) {global.settings.add("false");}
 		try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 	}
 	
