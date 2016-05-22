@@ -208,6 +208,9 @@ public class CommandReference {
             r.add("");
             r.add(".importJsonFile($file,$node)");
             r.add(".importJsonURL($URL,$node)");
+            r.add("");
+            r.add(".length()");
+            r.add(".size()");
 
         return r;
     }

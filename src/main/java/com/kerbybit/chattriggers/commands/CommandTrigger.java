@@ -1029,11 +1029,21 @@ public class CommandTrigger extends CommandBase {
                             CommandReference.silentResetAll();
                             ChatHandler.warn(ChatHandler.color("gray", "Toggled killfeed fade") + " " + ChatHandler.color("green", "on"));
                         }
+                    } else if (args[2].equalsIgnoreCase("SHOWINNOTIFICATION") || args[2].equalsIgnoreCase("SHOWINNOTIFICATIONS") || args[2].equalsIgnoreCase("SHOWINNOTIFY")) {
+                        if (global.settings.get(10).equalsIgnoreCase("FALSE")) {
+                            global.settings.set(10, "true");
+                            CommandReference.silentResetAll();
+                            ChatHandler.warn(ChatHandler.color("gray", "Toggled showing killfeed as notifications") + " " + ChatHandler.color("green", "on"));
+                        } else {
+                            global.settings.set(10, "false");
+                            CommandReference.silentResetAll();
+                            ChatHandler.warn(ChatHandler.color("gray", "Toggled showing killfeed as notifications") + " " + ChatHandler.color("red", "off"));
+                        }
                     } else {
-						ChatHandler.warn(ChatHandler.color("red", "/trigger settings killfeed [position/fade] <...>"));
+						ChatHandler.warn(ChatHandler.color("red", "/trigger settings killfeed [position/fade/showInNotify] <...>"));
 					}
 				} else {
-					ChatHandler.warn(ChatHandler.color("red", "/trigger settings killfeed [position/fade] <...>"));
+					ChatHandler.warn(ChatHandler.color("red", "/trigger settings killfeed [position/fade/showInNotify] <...>"));
 				}
 			} else if (args[1].equalsIgnoreCase("NOTIFY")) {
                 if (args.length>2) {

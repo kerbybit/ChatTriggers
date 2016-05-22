@@ -107,6 +107,7 @@ public class global {
     // get(7) = tr
     // get(8) = notification speed
     // get(9) = killfeed fade
+    // get(10) = show killfeed in notifications
     ////////////////////////////////////////////////////
 	public static List<String> settings = new ArrayList<String>();
     public static int settingsNotificationSpeed = 10;

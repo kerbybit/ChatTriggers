@@ -868,10 +868,24 @@ public class StringHandler {
 			if (stringnum!=-1) {
 				global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).replace("\\", "\\\\"));
 			} else {
-				global.TMP_string.get(tmpstringnum).set(1, global.USR_string.get(tmpstringnum).get(1).replace("\\", "\\\\"));
+				global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).replace("\\", "\\\\"));
 			}
 			return "{string["+sn+"]}";
-		}
+		} else if (func.equalsIgnoreCase("LENGTH")) {
+            if (stringnum!=-1) {
+                global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).length()+"");
+            } else {
+                global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).length()+"");
+            }
+            return "{string["+sn+"]}";
+        } else if (func.equalsIgnoreCase("SIZE")) {
+            if (stringnum!=-1) {
+                global.USR_string.get(stringnum).set(1, Minecraft.getMinecraft().fontRendererObj.getStringWidth(global.USR_string.get(stringnum).get(1))+"");
+            } else {
+                global.TMP_string.get(tmpstringnum).set(1, Minecraft.getMinecraft().fontRendererObj.getStringWidth(global.TMP_string.get(tmpstringnum).get(1))+"");
+            }
+            return "{string["+sn+"]}";
+        }
 			
 		else {
 			if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", func+" is not a function!"));}
