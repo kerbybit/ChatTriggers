@@ -70,6 +70,7 @@ public class global {
 	public static List<List<String>> onServerChangeTrigger = new ArrayList<List<String>>();
 	public static List<List<String>> onNewDayTrigger = new ArrayList<List<String>>();
 	public static List<List<String>> onRightClickPlayerTrigger = new ArrayList<List<String>>();
+    public static List<List<String>> onChatTrigger = new ArrayList<List<String>>();
 	
 	
 	///////////////////String matrix/////////////////////

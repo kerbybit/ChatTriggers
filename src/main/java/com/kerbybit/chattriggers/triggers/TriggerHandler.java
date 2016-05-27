@@ -15,6 +15,18 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 
 public class TriggerHandler {
 	public static void onChat(ClientChatReceivedEvent e) {
+
+        //onChat
+        for (int i=0; i<global.onChatTrigger.size(); i++) {
+            //add all events to temp list
+            List<String> TMP_events = new ArrayList<String>();
+            for (int j=2; j<global.onChatTrigger.get(i).size(); j++) {TMP_events.add(global.onChatTrigger.get(i).get(j));}
+
+            //do events
+            EventsHandler.doEvents(TMP_events, null);
+        }
+
+        //chat
 		String msg = e.message.getUnformattedText();
 		String fmsg = e.message.getFormattedText();
         global.chatEventHistory.add(e);

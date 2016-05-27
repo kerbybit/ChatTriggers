@@ -55,6 +55,7 @@ public class CommandReference {
         List<String> r = new ArrayList<String>();
 
             r.add("chat");
+            r.add("onChat");
             r.add("other");
             r.add("");
             r.add("onWorldLoad");
@@ -70,6 +71,7 @@ public class CommandReference {
 	
 	public static void clearTriggerList() {
 		global.chatTrigger.clear();
+        global.onChatTrigger.clear();
 		global.tickTrigger.clear();
 		global.onWorldLoadTrigger.clear();
 		global.onWorldFirstLoadTrigger.clear();
@@ -93,7 +95,9 @@ public class CommandReference {
 					global.tickTriggerTime.add(1);
 				}
 			}
-		} else if (tmp_list.get(0).equalsIgnoreCase("ONWORLDLOAD")) {
+		} else if (tmp_list.get(0).equalsIgnoreCase("ONCHAT")) {
+            global.onChatTrigger.add(tmp_list);
+        } else if (tmp_list.get(0).equalsIgnoreCase("ONWORLDLOAD")) {
 			global.onWorldLoadTrigger.add(tmp_list);
 		} else if (tmp_list.get(0).equalsIgnoreCase("ONWORLDFIRSTLOAD")) {
 			global.onWorldFirstLoadTrigger.add(tmp_list);
