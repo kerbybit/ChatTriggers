@@ -23,7 +23,7 @@ public class TriggerHandler {
             for (int j=2; j<global.onChatTrigger.get(i).size(); j++) {TMP_events.add(global.onChatTrigger.get(i).get(j));}
 
             //do events
-            EventsHandler.doEvents(TMP_events, null);
+            EventsHandler.doEvents(TMP_events, e);
         }
 
         //chat
