@@ -18,16 +18,21 @@ import com.kerbybit.chattriggers.triggers.TagHandler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class CommandTrigger extends CommandBase {
 
-	public String getName() {
-		return "trigger";
-	}
+    public String getName() {
+        return "trigger";
+    }
 
-	public void execute(ICommandSender sender, String[] args) throws CommandException {
+    public void execute(ICommandSender sender, String[] args) throws CommandException {
         if (global.canUse) {doCommand(args, false);}
-	}
+    }
+
+
+
+
 
 	public String getCommandName() {return "trigger";}
 
@@ -43,6 +48,82 @@ public class CommandTrigger extends CommandBase {
 			ChatHandler.warn(ChatHandler.color("red", "/trigger [string/run] <...>"));
 			ChatHandler.warn(ChatHandler.color("red", "/trigger [save/load]"));
 			ChatHandler.warn(ChatHandler.color("red", "/trigger [import/export] <...>"));
+
+		} else if (args[0].equalsIgnoreCase("HELP") || (args[0].equalsIgnoreCase("?"))) {
+            if (args.length==1) {
+                ChatHandler.warnBreak(0);
+                ChatHandler.warn(" &f>> clickable(" + global.settings.get(0) + "Get started,run_command,/trigger help getstarted,&7Getting started guides and tutorials)");
+                ChatHandler.warn("");
+                ChatHandler.warn(" &f>> clickable(" + global.settings.get(0) + "Available trigger types,run_command,/trigger help triggers,&7Trigger type list)");
+                ChatHandler.warn(" &f>> clickable(" + global.settings.get(0) + "Available event types,run_command,/trigger help events,&7Event type list)");
+                ChatHandler.warn("");
+                ChatHandler.warn(" &f>> clickable(" + global.settings.get(0) + "Built in strings,run_command,/trigger help strings,&7Built in string list)");
+                ChatHandler.warn(" &f>> clickable(" + global.settings.get(0) + "String functions,run_command,/trigger help stringfunctions,&7String function list)");
+                ChatHandler.warn(" &f>> clickable(" + global.settings.get(0) + "Array functions,run_command,/trigger help arrayfunctions,&7Array function list)");
+                ChatHandler.warnBreak(1);
+            } else {
+                if (args[1].equalsIgnoreCase("GETSTARTED")) {
+                    ChatHandler.warnBreak(0);
+                    ChatHandler.warn("&fCheck out the help guide online");
+                    ChatHandler.warn(" clickable("+global.settings.get(0)+"ct.kerbybit.com/howto,open_url,http://ct.kerbybit.com/howto/,&7Open the howto guide)");
+                    ChatHandler.warn("");
+                    ChatHandler.warn("&fCheck out the starting tutorial");
+                    ChatHandler.warn(" clickable("+global.settings.get(0)+"ct.kerbybit.com/tutorials,open_url,http://ct.kerbybit.com/tutorials/,&7Open the starting tutorial)");
+                    ChatHandler.warn("");
+                    ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
+                    ChatHandler.warnBreak(1);
+                } else if (args[1].equalsIgnoreCase("TRIGGERS")) {
+                    ChatHandler.warnBreak(0);
+                    ChatHandler.warn("&fTrigger types");
+                    List<String> trigs = new ArrayList<String>(CommandReference.getTriggerTypes());
+                    for (String trig : trigs) {
+                        ChatHandler.warn(global.settings.get(0) + " " + trig);
+                    }
+                    ChatHandler.warn("");
+                    ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
+                    ChatHandler.warnBreak(1);
+                } else if (args[1].equalsIgnoreCase("EVENTS")) {
+                    ChatHandler.warnBreak(0);
+                    ChatHandler.warn("&fEvent types");
+                    List<String> events = new ArrayList<String>(CommandReference.getEventTypes());
+                    for (String event : events) {
+                        ChatHandler.warn(global.settings.get(0) + " " + event);
+                    }
+                    ChatHandler.warn("");
+                    ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
+                    ChatHandler.warnBreak(1);
+                } else if (args[1].equalsIgnoreCase("STRINGS")) {
+                    ChatHandler.warnBreak(0);
+                    ChatHandler.warn("&fBuilt in strings");
+                    List<String> strs = new ArrayList<String>(CommandReference.getStrings());
+                    for (String str : strs) {
+                        ChatHandler.warn(global.settings.get(0) + " " + str);
+                    }
+                    ChatHandler.warn("");
+                    ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
+                    ChatHandler.warnBreak(1);
+                } else if (args[1].equalsIgnoreCase("STRINGFUNCTIONS")) {
+                    ChatHandler.warnBreak(0);
+                    ChatHandler.warn("&fString functions");
+                    List<String> strfuncs = new ArrayList<String>(CommandReference.getStringFunctions());
+                    for (String strfunc : strfuncs) {
+                        ChatHandler.warn(global.settings.get(0) + " " + strfunc);
+                    }
+                    ChatHandler.warn("");
+                    ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
+                    ChatHandler.warnBreak(1);
+                } else if (args[1].equalsIgnoreCase("ARRAYFUNCTIONS")) {
+                    ChatHandler.warnBreak(0);
+                    ChatHandler.warn("&fArray functions");
+                    List<String> arrfuncs = new ArrayList<String>(CommandReference.getArrayFunctions());
+                    for (String arrfunc : arrfuncs) {
+                        ChatHandler.warn(global.settings.get(0) + " " + arrfunc);
+                    }
+                    ChatHandler.warn("");
+                    ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
+                    ChatHandler.warnBreak(1);
+                }
+            }
 		} else if (args[0].equalsIgnoreCase("COPY")) {
 			if (args.length != 1) {
 				if (args.length == 3) {
@@ -950,13 +1031,60 @@ public class CommandTrigger extends CommandBase {
 						} else {
 							ChatHandler.warn(ChatHandler.color("red", "/trigger settings killfeed position [top-left/top-right]"));
 						}
-					} else {
-						ChatHandler.warn(ChatHandler.color("red", "/trigger settings killfeed [position] <...>"));
+					} else if (args[2].equalsIgnoreCase("FADE")) {
+                        if (global.settings.get(9).equalsIgnoreCase("TRUE")) {
+                            global.settings.set(9, "false");
+                            CommandReference.silentResetAll();
+                            ChatHandler.warn(ChatHandler.color("gray", "Toggled killfeed fade") + " " + ChatHandler.color("red", "off"));
+                        } else {
+                            global.settings.set(9, "true");
+                            CommandReference.silentResetAll();
+                            ChatHandler.warn(ChatHandler.color("gray", "Toggled killfeed fade") + " " + ChatHandler.color("green", "on"));
+                        }
+                    } else if (args[2].equalsIgnoreCase("SHOWINNOTIFICATION") || args[2].equalsIgnoreCase("SHOWINNOTIFICATIONS") || args[2].equalsIgnoreCase("SHOWINNOTIFY")) {
+                        if (global.settings.get(10).equalsIgnoreCase("FALSE")) {
+                            global.settings.set(10, "true");
+                            CommandReference.silentResetAll();
+                            ChatHandler.warn(ChatHandler.color("gray", "Toggled showing killfeed as notifications") + " " + ChatHandler.color("green", "on"));
+                        } else {
+                            global.settings.set(10, "false");
+                            CommandReference.silentResetAll();
+                            ChatHandler.warn(ChatHandler.color("gray", "Toggled showing killfeed as notifications") + " " + ChatHandler.color("red", "off"));
+                        }
+                    } else {
+						ChatHandler.warn(ChatHandler.color("red", "/trigger settings killfeed [position/fade/showInNotify] <...>"));
 					}
 				} else {
-					ChatHandler.warn(ChatHandler.color("red", "/trigger settings killfeed [position] <...>"));
+					ChatHandler.warn(ChatHandler.color("red", "/trigger settings killfeed [position/fade/showInNotify] <...>"));
 				}
-			} else if (args[1].equalsIgnoreCase("BETA")) {
+			} else if (args[1].equalsIgnoreCase("NOTIFY")) {
+                if (args.length>2) {
+                    if (args[2].equalsIgnoreCase("SPEED")) {
+                        if (args.length>3) {
+                            try {
+                                int get = Integer.parseInt(args[3]);
+                                if (get<=1) {
+                                    throw new NumberFormatException();
+                                } else {
+                                    global.settings.set(8, get+"");
+                                    global.settingsNotificationSpeed = get;
+                                    ChatHandler.warn(ChatHandler.color("gray", "Notification speed set to") + " " + ChatHandler.color(global.settings.get(0), get+""));
+                                }
+                            } catch(NumberFormatException e) {
+                                e.printStackTrace();
+                                ChatHandler.warn(ChatHandler.color("red", "/trigger settings notify [speed] <integer (greater is slower)>"));
+                                ChatHandler.warn(ChatHandler.color("red", "<integer> MUST be a number greater than 1!"));
+                            }
+                        } else {
+                            ChatHandler.warn(ChatHandler.color("red", "/trigger settings notify [speed] <integer (greater is slower)>"));
+                        }
+                    } else {
+                        ChatHandler.warn(ChatHandler.color("red", "/trigger settings notify [speed] <...>"));
+                    }
+                } else {
+                    ChatHandler.warn(ChatHandler.color("red", "/trigger settings notify [speed] <...>"));
+                }
+            } else if (args[1].equalsIgnoreCase("BETA")) {
 				if (args.length>2) {
 					if (args[2].equalsIgnoreCase("TOGGLE")) {
 						if (global.settings.get(4).equals("false")) {
@@ -1014,30 +1142,35 @@ public class CommandTrigger extends CommandBase {
 						ChatHandler.warn(ChatHandler.color("red", "/trigger settings test [onServerChange/onNewDay]"));
 					}
 				}
-			} else {
-				ChatHandler.warn(ChatHandler.color("red", "/trigger settings [debug/test/color/killfeed/beta] <...>"));
+			}else if (args[1].equalsIgnoreCase("DUMP")) {
+                for (ClientChatReceivedEvent e : global.chatEventHistory) {
+                    String fmsg = e.message.getFormattedText();
+                    String tmp_out = ChatHandler.removeFormatting(fmsg);
+                    global.copyText.add(tmp_out);
+                    tmp_out = tmp_out.replace("'", "\\'");
+                    List<String> TMP_eventout = new ArrayList<String>();
+                    TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size()-1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
+                    ChatHandler.sendJson(TMP_eventout);
+                }
+            } else {
+				ChatHandler.warn(ChatHandler.color("red", "/trigger settings [debug/dump/test/color/killfeed/beta] <...>"));
 			}
 		}
 	}
 	
 	private static void commandSave() {
-		try {
-			FileHandler.saveAll();
-			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Organized and saved files"));
-		} catch (IOException e) {
-			ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));
-		}
+        CommandReference.silentResetAll();
+        ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Organized and saved files"));
 	}
 	
 	private static void commandLoad() {
 		global.canSave = true;
 		try {
-			CommandReference.clearTriggerList();
-			
 			global.trigger = FileHandler.loadTriggers("./mods/ChatTriggers/triggers.txt", false);
 			global.USR_string = FileHandler.loadStrings("./mods/ChatTriggers/strings.txt");
 			global.settings = FileHandler.loadSettings("./mods/ChatTriggers/settings.txt");
 			FileHandler.loadImports("./mods/ChatTriggers/Imports/");
+            CommandReference.silentResetAll();
 			ChatHandler.warn(global.settings.get(0) + "Files loaded");
 		} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error loading triggers!"));}
 	}

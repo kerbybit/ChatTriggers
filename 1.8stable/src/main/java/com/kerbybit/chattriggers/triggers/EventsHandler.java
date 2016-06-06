@@ -37,7 +37,7 @@ public class EventsHandler {
 		}
 		
 		for (int i=0; i<tmp_event.size(); i++) {
-		//SETUP
+        //SETUP
 			String TMP_e = tmp_event.get(i);
 			String TMP_c;
 			if (!TMP_e.contains(" ")) {TMP_c = TMP_e; TMP_e="";}
@@ -107,10 +107,17 @@ public class EventsHandler {
 					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
 					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"), TMP_v, TMP_pi);}
 			if (TMP_c.equalsIgnoreCase("CANCEL") && chatEvent!=null) {chatEvent.setCanceled(true);}
-			if (TMP_c.equalsIgnoreCase("KILLFEED")) {global.killfeed.add(TMP_e
-					.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
-					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")); global.killfeedDelay.add(TMP_t);}
+			if (TMP_c.equalsIgnoreCase("KILLFEED")) {
+                if (global.settings.get(10).equalsIgnoreCase("FALSE")) {
+                    global.killfeed.add(TMP_e
+                            .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                            .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+                            .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")); global.killfeedDelay.add(TMP_t);
+                } else {
+                    TMP_c = "notify";
+                }
+            }
+
 			if (TMP_c.equalsIgnoreCase("NOTIFY")) {
 				global.notify.add(TMP_e
 					.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
@@ -138,6 +145,7 @@ public class EventsHandler {
 						.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")));}
 				catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Unable to open URL! IOExeption"));}
 			}
+            if (TMP_e.equalsIgnoreCase("BREAK")) {/*i = tmp_event.size(); DISABLED*/}
 			
 			
 		//logic events
@@ -275,11 +283,21 @@ public class EventsHandler {
 
                     String valin = "";
                     String valfrom = "";
+                    String valwait = "";
                     List<String> arrayto = new ArrayList<String>();
                     if (tmp_valuefor.length==2) {
                         valin = tmp_valuefor[0].trim();
                         valfrom = tmp_valuefor[1].trim();
-                    } else {ChatHandler.warn(ChatHandler.color("red", "Malformed FOR loop!"));}
+						if (valfrom.contains(" wait ")) {
+                            String[] temp_valuefrom = valfrom.split(" wait ");
+                            if (temp_valuefrom.length==2) {
+                                valfrom = temp_valuefrom[0].trim();
+                                valwait = temp_valuefrom[1].trim();
+                            }
+                        }
+                    } else {
+                        if (global.debug) {ChatHandler.warn(ChatHandler.color("red", "ERR: for $value in $array -> missing value or array!"));}
+                    }
                     for (int j=0; j<global.USR_array.size(); j++) {
                         if (global.USR_array.get(j).get(0).equals(valfrom)) {
                             arrayto.addAll(global.USR_array.get(j));
@@ -287,30 +305,75 @@ public class EventsHandler {
                     }
 
                     if (arrayto.size()>0 && eventsToFor.size() > 0) {
-                        for (int j=1; j<arrayto.size(); j++) {
-                            String[] first = {valin};
-                            String[] second = {arrayto.get(j)};
-                            doEvents(eventsToFor, chatEvent, first, second);
+                        if (valwait.equals("")) {
+                            for (int j=1; j<arrayto.size(); j++) {
+                                String[] first = {valin};
+                                String[] second = {arrayto.get(j)};
+                                doEvents(eventsToFor, chatEvent, first, second);
+                            }
+                        } else {
+                            try {
+                                int intwait = Integer.parseInt(valwait.replace(",",""));
+                                for (int j=1; j<arrayto.size(); j++) {
+                                    List<String> eventsToForFin = new ArrayList<String>(eventsToFor);
+                                    List<String> temporary = new ArrayList<String>();
+                                    temporary.add("TriggerArgument"+j+"-"+global.TMP_string.size());
+                                    temporary.add(arrayto.get(j));
+                                    for (int k=0; k<eventsToFor.size(); k++) {
+                                        eventsToForFin.set(k, eventsToFor.get(k).replace(valin,"{string[TriggerArgument"+j+"-"+global.TMP_string.size()+"]}"));
+                                    }
+                                    global.TMP_string.add(temporary);
+
+                                    global.waitEvents.add(eventsToForFin);
+                                    global.waitTime.add(intwait*(j-1));
+                                }
+                            } catch (NumberFormatException e) {
+                                if (global.debug) {ChatHandler.warn(ChatHandler.color("red", "ERR: for $value in $array wait $ticks -> expected number for ticks!"));}
+                            }
                         }
                     }
                 }
 
                 if (TMP_e.contains(" from ") && TMP_e.contains(" to ")) {
-                    String[] args = TMP_e.split(" from | to ");
-                    if (args.length == 3) {
+                    String[] args = TMP_e.split(" from | to | wait");
+                    if (args.length == 3 || args.length == 4) {
                         try {
                             int int_from = Integer.parseInt(args[1].trim());
                             int int_to = Integer.parseInt(args[2].trim());
-                            for (int j=int_from; j<int_to+1; j++) {
-                                String[] first = {args[0].trim()};
-                                String[] second = {j + ""};
-                                doEvents(eventsToFor, chatEvent, first, second);
+
+                            if (args.length == 3) {
+                                for (int j=int_from; j<int_to+1; j++) {
+                                    String[] first = {args[0].trim()};
+                                    String[] second = {j + ""};
+                                    doEvents(eventsToFor, chatEvent, first, second);
+                                }
+                            } else {
+                                try {
+                                    int intwait = Integer.parseInt(args[3].trim());
+                                    int count = 0;
+                                    for (int j=int_from; j<int_to+1; j++) {
+                                        List<String> eventsToForFin = new ArrayList<String>(eventsToFor);
+                                        List<String> temporary = new ArrayList<String>();
+                                        temporary.add("TriggerArgument"+j+"-"+global.TMP_string.size());
+                                        temporary.add(j+"");
+                                        for (int k=0; k<eventsToFor.size(); k++) {
+                                            eventsToForFin.set(k, eventsToFor.get(k).replace(args[0].trim(),"{string[TriggerArgument"+j+"-"+global.TMP_string.size()+"]}"));
+                                        }
+                                        global.TMP_string.add(temporary);
+
+                                        global.waitEvents.add(eventsToForFin);
+                                        global.waitTime.add(intwait*count);
+                                        count++;
+                                    }
+                                } catch (NumberFormatException e) {
+                                    if (global.debug) {ChatHandler.warn(ChatHandler.color("red", "ERR: for $i from $n1 to $n2 wait $ticks -> expected number for ticks!"));}
+                                }
                             }
-                        } catch (NumberFormatException e) {
-                            ChatHandler.warn(ChatHandler.color("red", "'FOR $i FROM $n1 TO $n2' -> either $n1 or $n2 is not a number"));
+                        }catch (NumberFormatException e) {
+                            if (global.debug) {ChatHandler.warn(ChatHandler.color("red", "'FOR $i FROM $n1 TO $n2' -> either $n1 or $n2 is not a number"));}
                         }
                     } else {
-                        ChatHandler.warn(ChatHandler.color("red", "'FOR $i FROM $n1 TO $n2' -> expecting FROM and TO"));
+                        if (global.debug) {ChatHandler.warn(ChatHandler.color("red", "'FOR $i FROM $n1 TO $n2' -> expecting FROM and TO"));}
                     }
                 }
 

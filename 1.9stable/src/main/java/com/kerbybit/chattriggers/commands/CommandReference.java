@@ -1,6 +1,7 @@
 package com.kerbybit.chattriggers.commands;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
@@ -21,21 +22,56 @@ public class CommandReference {
 		try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 		ChatHandler.warn(ChatHandler.color("green", "Reset completed"));
 	}
+
+    public static void silentResetAll() {
+        global.waitEvents.clear();
+        global.asyncEvents.clear();
+        global.backupTMP_strings.clear();
+        global.backupUSR_strings.clear();
+        global.killfeed.clear();
+        global.killfeedDelay.clear();
+        global.notify.clear();
+        global.notifyAnimation.clear();
+        try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+    }
 	
 	
 	static boolean isTriggerType(String TMP_type) {
-		return (TMP_type.equalsIgnoreCase("CHAT")
-		|| TMP_type.equalsIgnoreCase("OTHER")
-		|| TMP_type.equalsIgnoreCase("ONWORLDLOAD")
-		|| TMP_type.equalsIgnoreCase("ONWORLDFIRSTLOAD")
-		|| TMP_type.equalsIgnoreCase("ONSERVERCHANGE")
-		|| TMP_type.equalsIgnoreCase("ONNEWDAY")
-		|| TMP_type.equalsIgnoreCase("ONCLIENTTICK")
-		|| TMP_type.equalsIgnoreCase("ONRIGHTCLICKPLAYER"));
+
+        List<String> check = new ArrayList<String>(getTriggerTypes());
+
+        for (String value : check) {
+            if (!value.equals("")) {
+                if (TMP_type.equalsIgnoreCase(value)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
 	}
+
+    static List<String> getTriggerTypes() {
+        List<String> r = new ArrayList<String>();
+
+            r.add("chat");
+            r.add("onChat");
+            r.add("other");
+            r.add("");
+            r.add("onWorldLoad");
+            r.add("onWorldFirstLoad");
+            r.add("onServerChange");
+            r.add("onNewDay");
+            r.add("");
+            r.add("onClientTick");
+            r.add("onRightClickPlayer");
+
+        return r;
+    }
 	
 	public static void clearTriggerList() {
 		global.chatTrigger.clear();
+        global.onChatTrigger.clear();
 		global.tickTrigger.clear();
 		global.onWorldLoadTrigger.clear();
 		global.onWorldFirstLoadTrigger.clear();
@@ -59,7 +95,9 @@ public class CommandReference {
 					global.tickTriggerTime.add(1);
 				}
 			}
-		} else if (tmp_list.get(0).equalsIgnoreCase("ONWORLDLOAD")) {
+		} else if (tmp_list.get(0).equalsIgnoreCase("ONCHAT")) {
+            global.onChatTrigger.add(tmp_list);
+        } else if (tmp_list.get(0).equalsIgnoreCase("ONWORLDLOAD")) {
 			global.onWorldLoadTrigger.add(tmp_list);
 		} else if (tmp_list.get(0).equalsIgnoreCase("ONWORLDFIRSTLOAD")) {
 			global.onWorldFirstLoadTrigger.add(tmp_list);
@@ -73,22 +111,128 @@ public class CommandReference {
 	}
 	
 	static Boolean isEventType(String TMP_etype) {
-		return (TMP_etype.equalsIgnoreCase("CHAT")
-		|| TMP_etype.equalsIgnoreCase("CANCEL") 
-		|| TMP_etype.equalsIgnoreCase("CHOOSE") 
-		|| TMP_etype.equalsIgnoreCase("KILLFEED")
-		|| TMP_etype.equalsIgnoreCase("NOTIFY")
-		|| TMP_etype.equalsIgnoreCase("TRIGGER") 
-		|| TMP_etype.equalsIgnoreCase("SOUND")
-		|| TMP_etype.equalsIgnoreCase("COPY")
-		|| TMP_etype.equalsIgnoreCase("URL")
-		|| TMP_etype.equalsIgnoreCase("DO")
-		|| TMP_etype.equalsIgnoreCase("IF")
-		|| TMP_etype.equalsIgnoreCase("ELSE")
-		|| TMP_etype.equalsIgnoreCase("ELSEIF")
-		|| TMP_etype.equalsIgnoreCase("FOR")
-		|| TMP_etype.equalsIgnoreCase("WAIT")
-		|| TMP_etype.equalsIgnoreCase("END")
-		|| TMP_etype.equalsIgnoreCase("ASYNC"));
+        List<String> check = new ArrayList<String>(getEventTypes());
+        for (String value : check) {
+            if (!value.equals("")) {
+                if (TMP_etype.equalsIgnoreCase(value)) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
 	}
+
+    static List<String> getEventTypes() {
+        List<String> r = new ArrayList<String>();
+
+            r.add("chat");
+            r.add("cancel");
+            r.add("killfeed");
+            r.add("notify");
+            r.add("sound");
+            r.add("");
+            r.add("trigger");
+            r.add("copy");
+            r.add("url");
+            r.add("do");
+            r.add("");
+            r.add("if");
+            r.add("else");
+            r.add("elseif");
+            r.add("for");
+            r.add("wait");
+            r.add("choose");
+            r.add("async");
+            r.add("end");
+
+        return r;
+    }
+
+    static List<String> getStrings() {
+        List<String> r = new ArrayList<String>();
+
+            r.add("{msg} {msg[$n]}");
+            r.add("{br}");
+            r.add("{trigsize}");
+            r.add("{notifysize}");
+            r.add("{setcol}");
+            r.add("{debug}");
+            r.add("");
+            r.add("{me}");
+            r.add("{hp}");
+            r.add("{sneak}");
+            r.add("{x} {y} {z}");
+            r.add("");
+            r.add("{server}");
+            r.add("{serverIP}");
+            r.add("{serverMOTD}");
+            r.add("{serverversion}");
+            r.add("{ping}");
+            r.add("{scoreboardtitle}");
+
+        return r;
+    }
+
+    static List<String> getStringFunctions() {
+        List<String> r = new ArrayList<String>();
+
+            r.add(".set($v) .set(~)");
+            r.add(".save($v) .save(~)");
+            r.add("");
+            r.add(".add($n) .plus($n) .+($n)");
+            r.add(".subtract($n) .minus($n) .-($n)");
+            r.add(".multiply($n) .mult($n) .*($n)");
+            r.add(".divide($n) .div($n) ./($n)");
+            r.add(".divideGetPercentage($n) .divPercent($n) ./%($n)");
+            r.add(".power($n) .pow($n) .^($n)");
+            r.add(".modulus($n) .mod($n) .%($n)");
+            r.add(".absolute($n) .abs($n)");
+            r.add("");
+            r.add(".greaterThan($n) .>($n)");
+            r.add(".greaterThanOrEqualTo($n) .>=($n)");
+            r.add(".lessThan($n) .<($n)");
+            r.add(".lessThanOrEqualTo($n) .<=($n)");
+            r.add("");
+            r.add(".equals($v) .=($v) .equalsIgnoreCase($v)");
+            r.add(".startsWith($v) .startsWithIgnoreCase($v)");
+            r.add(".contains($v) .containsIgnoreCase($v)");
+            r.add("endsWith($v) .endsWithIgnoreCase($v)");
+            r.add("");
+            r.add(".replace($v1,$v2) .replace($v)");
+            r.add(".substring($v1,$v2)");
+            r.add(".trim()");
+            r.add(".prefix($v) .suffix($v)");
+            r.add(".toUpper($v) .toUpperCase($v)");
+            r.add(".toLower($v) .toLowerCase($v)");
+            r.add(".removeFormatting() .remForm()");
+            r.add(".capitalizeFirstWord($v) .capFirst($v)");
+            r.add(".capitalizeAllWords($v) .capAll($v)");
+            r.add(".ignoreEscape()");
+            r.add("");
+            r.add(".importJsonFile($file,$node)");
+            r.add(".importJsonURL($URL,$node)");
+            r.add("");
+            r.add(".length()");
+            r.add(".size()");
+
+        return r;
+    }
+
+    static List<String> getArrayFunctions() {
+        List<String> r = new ArrayList<String>();
+
+            r.add(".clear()");
+            r.add(".add($v)");
+            r.add(".remove($v) .remove($n)");
+            r.add(".get($v) .get($n)");
+            r.add(".size()");
+            r.add("");
+            r.add(".setSplit($v,$split)");
+            r.add(".importJsonFile($file,$node)");
+            r.add(".improtJsonURL($URL,$node)");
+            r.add(".exportJson($file,$node)");
+
+        return r;
+    }
 }

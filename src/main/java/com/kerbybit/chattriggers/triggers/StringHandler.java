@@ -164,7 +164,6 @@ public class StringHandler {
 			global.TMP_string.add(temporary);
 			global.backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{chatwidth}", "{string[DefaultString->CHATWIDTH-"+global.TMP_string.size()+"]}");
-			System.out.println(TMP_e);
 		}
 		if (TMP_e.contains("{scoreboardtitle}")) {
 			List<String> temporary = new ArrayList<String>();
@@ -571,8 +570,6 @@ public class StringHandler {
 							.replace("(","stringOpenBracketF6cyUQp9stringOpenBracket")
 							.replace(")","stringCloseBracketF6cyUQp9stringCloseBracket")
                             .replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
-                    System.out.println(subargs[0]);
-                    System.out.println(temp);
                     if (temp.contains(subargs[0])) {
                         temp = temp.substring(temp.indexOf(subargs[0]) + subargs[0].length());
                         if (temp.contains(subargs[1])) {

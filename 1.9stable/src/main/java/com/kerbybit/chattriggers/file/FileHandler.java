@@ -74,7 +74,10 @@ public class FileHandler {
 			 			for (String value : lines) {writer.println(value);}
 			 			writer.close();
 			 			if (global.debug) {ChatHandler.warn(ChatHandler.color("&7", "Loading imports into triggers"));}
-			 			
+
+						File fcheck = new File("./mods/ChatTriggers/Imports/DisabledImports/"+file);
+						if (fcheck.exists()) {if (!fcheck.delete()) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while deleting the disabled import " + file + "!"));}}
+
 			 			try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while loading the files after an import!"));}
 			 			
 			 			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Got "+file+" successfully!"));
@@ -195,6 +198,9 @@ public class FileHandler {
 		if (global.settings.size() < 3) {global.settings.add("null");}
 		if (global.settings.size() < 4) {global.settings.add("top-left");}
 		if (global.settings.size() < 5) {global.settings.add("false");}
+        if (global.settings.size() < 6) {global.settings.add("null");}
+        if (global.settings.size() < 7) {global.settings.add("true");}
+        if (global.settings.size() < 8) {global.settings.add("true");}
 		writer.println("color:"+listName.get(0));
 		writer.println("colorName:"+listName.get(1));
 		writer.println("version:"+listName.get(2));
@@ -203,6 +209,11 @@ public class FileHandler {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		Date date = new Date();
 		writer.println("lastOpened:"+dateFormat.format(date));
+        writer.println("t:"+global.settings.get(6));
+        writer.println("tr:"+global.settings.get(7));
+        writer.println("notification speed:"+global.settings.get(8));
+        writer.println("killfeed fade:"+global.settings.get(9));
+        writer.println("show killfeed in notifications:"+global.settings.get(10));
 		writer.close();
 	}
 	
@@ -413,7 +424,24 @@ public class FileHandler {
 			if (l.startsWith("version:")) {tmp_settings.add(l.substring(l.indexOf("version:") + 8));}
 			if (l.startsWith("killfeed pos:")) {tmp_settings.add(l.substring(l.indexOf("killfeed pos:")+13));}
 			if (l.startsWith("isBeta:")) {tmp_settings.add(l.substring(l.indexOf("isBeta:")+7));}
-			if (l.startsWith("lastOpened:")) {global.currentDate = l.substring(l.indexOf("lastOpened:")+11);}
+			if (l.startsWith("lastOpened:")) {global.currentDate = l.substring(l.indexOf("lastOpened:")+11); tmp_settings.add(global.currentDate);}
+            if (l.startsWith("t:")) {tmp_settings.add(l.substring(l.indexOf("t:")+2));}
+            if (l.startsWith("tr:")) {tmp_settings.add(l.substring(l.indexOf("tr:")+3));}
+            if (l.startsWith("notification speed:")) {
+                tmp_settings.add(l.substring(l.indexOf("notification speed:")+19));
+                try {
+                    global.settingsNotificationSpeed = Integer.parseInt(l.substring(l.indexOf("notification speed:")+19));
+                    if (global.settingsNotificationSpeed <= 1) {
+                        global.settingsNotificationSpeed = 10;
+                        throw new NumberFormatException();
+                    }
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    ChatHandler.warn(ChatHandler.color("red","You need to set the killfeed speed to an integer greater than 0!"));
+                }
+            }
+            if (l.startsWith("killfeed fade:")) {tmp_settings.add(l.substring(l.indexOf("killfeed fade:")+14));}
+            if (l.startsWith("show killfeed in notifications:")) {tmp_settings.add(l.substring(l.indexOf("show killfeed in notifications:")+31));}
 		}
 		
 		return tmp_settings;
@@ -451,6 +479,11 @@ public class FileHandler {
 			if (global.settings.size() < 4) {global.settings.add("top-left");}
 			if (global.settings.size() < 5) {global.settings.add("false");}
 			if (global.settings.size() < 6) {global.settings.add("null");}
+			if (global.settings.size() < 7) {global.settings.add("true");}
+			if (global.settings.size() < 8) {global.settings.add("true");}
+            if (global.settings.size() < 9) {global.settings.add("10");}
+            if (global.settings.size() < 10) {global.settings.add("true");}
+            if (global.settings.size() < 11) {global.settings.add("false");}
 			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Chat triggers loaded"));
 		} catch (IOException e1) {
 			ChatHandler.warn(ChatHandler.color("red", "Error loading files!"));
@@ -467,6 +500,11 @@ public class FileHandler {
 			if (global.settings.size() < 4) {global.settings.add("top-left");}
 			if (global.settings.size() < 5) {global.settings.add("false");}
 			if (global.settings.size() < 6) {global.settings.add("null");}
+            if (global.settings.size() < 7) {global.settings.add("true");}
+            if (global.settings.size() < 8) {global.settings.add("true");}
+            if (global.settings.size() < 9) {global.settings.add("10");}
+            if (global.settings.size() < 10) {global.settings.add("true");}
+            if (global.settings.size() < 11) {global.settings.add("false");}
 			
 			try {saveAll(); ChatHandler.warn(ChatHandler.color("green", "New files created!"));} 
 			catch (IOException e111) {ChatHandler.warn(ChatHandler.color("red", "Error saving files! report this to kerbybit ASAP!")); e111.printStackTrace();}
@@ -476,6 +514,11 @@ public class FileHandler {
 		if (global.settings.size() < 4) {global.settings.add("top-left");}
 		if (global.settings.size() < 5) {global.settings.add("false");}
 		if (global.settings.size() < 6) {global.settings.add("null");}
+        if (global.settings.size() < 7) {global.settings.add("true");}
+        if (global.settings.size() < 8) {global.settings.add("true");}
+        if (global.settings.size() < 9) {global.settings.add("10");}
+        if (global.settings.size() < 10) {global.settings.add("true");}
+        if (global.settings.size() < 11) {global.settings.add("false");}
 		try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 	}
 	
@@ -495,7 +538,6 @@ public class FileHandler {
 		if (global.neededImports.size()>0 && global.canImport) {
 			if (global.canSave) {
 				FileHandler.getImport("http://chattriggers.kerbybit.com/exports/"+global.neededImports.remove(0)+".txt");
-				
 			} else {
 				global.neededImports.clear();
 				ChatHandler.warn(ChatHandler.color("red", "cannot get imports while in test mode"));
