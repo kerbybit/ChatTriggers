@@ -46,6 +46,14 @@ public class ChatHandler {
 	}
 	
 	public static void warn(String cht) {
+        //fix link
+        while (cht.contains("{link[") && cht.contains("],[") && cht.contains("]}")) {
+            String tmp_string = cht.substring(cht.indexOf("{link[")+6, cht.indexOf("]}", cht.indexOf("{link[")));
+            String first = tmp_string.substring(0, tmp_string.indexOf("],["));
+            String second = tmp_string.substring(tmp_string.indexOf("],[")+3);
+            cht = cht.replace("{link[" + first + "],[" + second + "]}", "clickable("+first+",open_url,"+second+",open link)");
+        }
+
 		cht = cht.replace("'('", "LeftParF6cyUQp9LeftPar");
 		cht = cht.replace("')'", "RightParF6cyUQp9RightPar");
 		cht = cht.replace("'", "\\'");

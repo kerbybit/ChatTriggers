@@ -296,6 +296,7 @@ public class StringHandler {
 				ArrayList<String> temp = new ArrayList<String>();
                 temp.add(sn); temp.add("");
                 global.TMP_string.add(temp);
+                global.backupTMP_strings.add(temp);
                 tmpstringnum = global.TMP_string.size()-1;
 			}
 		} 
@@ -334,7 +335,6 @@ public class StringHandler {
 							.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
 				}
 			}
-
 			return "{string["+sn+"]}";
 		} else if (func.equalsIgnoreCase("SAVE")) {
 			if (!args.equals("~")) {
@@ -370,7 +370,6 @@ public class StringHandler {
 							.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
 				}
 			}
-
 			try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
             return "{string["+sn+"]}";
 		} else if (func.equalsIgnoreCase("ADD") || func.equalsIgnoreCase("PLUS") || func.equalsIgnoreCase("+")) {
@@ -387,12 +386,11 @@ public class StringHandler {
 					return "{string["+sn+"]}";
 				} catch (NumberFormatException e) {
 					if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", args+" is not a number!"));}
-					return "{string["+sn+"]}";
 				}
 			} catch (NumberFormatException e) {
 				if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", sn+" is not a number!"));}
-				return "{string["+sn+"]}";
 			}
+            return "{string["+sn+"]}";
 		} else if (func.equalsIgnoreCase("SUBTRACT") || func.equalsIgnoreCase("MINUS") || func.equalsIgnoreCase("-")) {
 			try {
 				Double strnmbr;
@@ -404,15 +402,13 @@ public class StringHandler {
                     if (rtnmbr.endsWith(".0")) {rtnmbr = rtnmbr.substring(0,rtnmbr.length()-2);}
 					if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, rtnmbr);}
 					else {global.TMP_string.get(tmpstringnum).set(1, rtnmbr);}
-					return "{string["+sn+"]}";
 				} catch (NumberFormatException e) {
 					if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", args+" is not a number!"));}
-					return "{string["+sn+"]}";
 				}
 			} catch (NumberFormatException e) {
 				if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", sn+" is not a number!"));}
-				return "{string["+sn+"]}";
 			}
+            return "{string["+sn+"]}";
 		} else if (func.equalsIgnoreCase("MULTIPLY") || func.equalsIgnoreCase("MULT") || func.equalsIgnoreCase("TIMES") || func.equalsIgnoreCase("*")) {
 			try {
 				Double strnmbr;
@@ -424,15 +420,13 @@ public class StringHandler {
                     if (rtnmbr.endsWith(".0")) {rtnmbr = rtnmbr.substring(0,rtnmbr.length()-2);}
 					if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, rtnmbr);}
 					else {global.TMP_string.get(tmpstringnum).set(1, rtnmbr);}
-					return "{string["+sn+"]}";
 				} catch (NumberFormatException e) {
 					if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", args+" is not a number!"));}
-					return "{string["+sn+"]}";
 				}
 			} catch (NumberFormatException e) {
 				if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", sn+" is not a number!"));}
-				return "{string["+sn+"]}";
 			}
+            return "{string["+sn+"]}";
 		} else if (func.equalsIgnoreCase("DIVIDE") || func.equalsIgnoreCase("DIV") || func.equalsIgnoreCase("/")) {
 			try {
 				Double strnmbr;
@@ -444,15 +438,13 @@ public class StringHandler {
                     if (rtnmbr.endsWith(".0")) {rtnmbr = rtnmbr.substring(0,rtnmbr.length()-2);}
 					if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, rtnmbr);}
 					else {global.TMP_string.get(tmpstringnum).set(1, rtnmbr);}
-					return "{string["+sn+"]}";
 				} catch (NumberFormatException e) {
 					if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", args+" is not a number!"));}
-					return "{string["+sn+"]}";
 				}
 			} catch (NumberFormatException e) {
 				if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", sn+" is not a number!"));}
-				return "{string["+sn+"]}";
 			}
+            return "{string["+sn+"]}";
 		} else if (func.equalsIgnoreCase("DIVIDEGETPERCENTAGE") || func.equalsIgnoreCase("DIVPERCENT") || func.equalsIgnoreCase("/%")) {
 			try {
 				Double strnmbr;
@@ -464,15 +456,13 @@ public class StringHandler {
                     if (rtnmbr.endsWith(".0")) {rtnmbr = rtnmbr.substring(0,rtnmbr.length()-2);}
 					if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, rtnmbr);}
 					else {global.TMP_string.get(tmpstringnum).set(1, rtnmbr);}
-					return "{string["+sn+"]}";
 				} catch (NumberFormatException e) {
 					if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", args+" is not a number!"));}
-					return "{string["+sn+"]}";
 				}
 			} catch (NumberFormatException e) {
 				if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", sn+" is not a number!"));}
-				return "{string["+sn+"]}";
 			}
+            return "{string["+sn+"]}";
 		} else if (func.equalsIgnoreCase("POW") || func.equalsIgnoreCase("POWER") || func.equalsIgnoreCase("^")) {
 			try {
 				Double strnmbr;
@@ -484,15 +474,13 @@ public class StringHandler {
                     if (rtnmbr.endsWith(".0")) {rtnmbr = rtnmbr.substring(0,rtnmbr.length()-2);}
 					if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, rtnmbr);}
 					else {global.TMP_string.get(tmpstringnum).set(1, rtnmbr);}
-					return "{string["+sn+"]}";
 				} catch (NumberFormatException e) {
 					if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", args+" is not a number!"));}
-					return "{string["+sn+"]}";
 				}
 			} catch (NumberFormatException e) {
 				if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", sn+" is not a number!"));}
-				return "{string["+sn+"]}";
 			}
+            return "{string["+sn+"]}";
 		} else if (func.equalsIgnoreCase("MODULUS") || func.equalsIgnoreCase("MOD") || func.equalsIgnoreCase("%")) {
 			try {
 				Double strnmbr;
@@ -504,28 +492,47 @@ public class StringHandler {
                     if (rtnmbr.endsWith(".0")) {rtnmbr = rtnmbr.substring(0,rtnmbr.length()-2);}
 					if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, rtnmbr);}
 					else {global.TMP_string.get(tmpstringnum).set(1, rtnmbr);}
-					return "{string["+sn+"]}";
 				} catch (NumberFormatException e) {
 					if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", args+" is not a number!"));}
-					return "{string["+sn+"]}";
 				}
 			} catch (NumberFormatException e) {
 				if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", sn+" is not a number!"));}
-				return "{string["+sn+"]}";
 			}
+            return "{string["+sn+"]}";
 		} else if (func.equalsIgnoreCase("ABSOLUTE") || func.equalsIgnoreCase("ABS")) {
 			try {
-                Double argnmbr = Double.parseDouble(global.USR_string.get(stringnum).get(1).replace(",",""));
+                Double argnmbr;
+                if (stringnum!=-1) {argnmbr = Double.parseDouble(global.USR_string.get(stringnum).get(1).replace(",",""));}
+                else {argnmbr = Double.parseDouble(global.TMP_string.get(tmpstringnum).get(1).replace(",",""));}
                 String rtnmbr = Math.abs(argnmbr) + "";
                 if (rtnmbr.endsWith(".0")) {rtnmbr = rtnmbr.substring(0,rtnmbr.length()-2);}
 				if (stringnum!=-1) {global.USR_string.get(stringnum).set(1,rtnmbr);}
 				else {global.TMP_string.get(tmpstringnum).set(1,rtnmbr);}
-                return "{string["+sn+"]}";
 			} catch (NumberFormatException e) {
 				if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", sn+" is not a number!"));}
-				return "{string["+sn+"]}";
 			}
-		} else if (func.equalsIgnoreCase("REPLACE")) {
+            return "{string["+sn+"]}";
+		} else if (func.equalsIgnoreCase("ROUND")) {
+            try {
+                Float strnmbr;
+                if (stringnum!=-1) {strnmbr = Float.parseFloat(global.USR_string.get(stringnum).get(1).replace(",",""));}
+                else {strnmbr = Float.parseFloat(global.TMP_string.get(tmpstringnum).get(1).replace(",",""));}
+                try {
+                    int argnmbr = Integer.parseInt(args.replace(",",""));
+                    Double rtnmbr = Math.round(strnmbr * Math.pow(10,argnmbr)) / Math.pow(10,argnmbr);
+                    String rtstrng = rtnmbr + "";
+                    if (stringnum!=-1) {global.USR_string.get(stringnum).set(1,rtstrng);}
+                    else {global.TMP_string.get(tmpstringnum).set(1,rtstrng);}
+                } catch (NumberFormatException e) {
+                    if (global.debug) {
+                        ChatHandler.warn(ChatHandler.color("gray", args + " is not a number!"));
+                    }
+                }
+            } catch (NumberFormatException e) {
+                if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", sn+" is not a number!"));}
+            }
+            return "{string["+sn+"]}";
+        } else if (func.equalsIgnoreCase("REPLACE")) {
 			args = args
 					.replace("'('", "stringOpenBracketF6cyUQp9stringOpenBracket")
 					.replace("')'", "stringCloseBracketF6cyUQp9stringCloseBracket")
@@ -880,6 +887,31 @@ public class StringHandler {
                 global.USR_string.get(stringnum).set(1, Minecraft.getMinecraft().fontRendererObj.getStringWidth(global.USR_string.get(stringnum).get(1))+"");
             } else {
                 global.TMP_string.get(tmpstringnum).set(1, Minecraft.getMinecraft().fontRendererObj.getStringWidth(global.TMP_string.get(tmpstringnum).get(1))+"");
+            }
+            return "{string["+sn+"]}";
+        } else if (func.equalsIgnoreCase("FIXLINKS")) {
+            String tmp_string;
+            if (stringnum!=-1) {
+                tmp_string = global.USR_string.get(stringnum).get(1);
+            } else {
+                tmp_string = global.TMP_string.get(tmpstringnum).get(1);
+            }
+
+            String[] split_tmp_string = tmp_string.split(" ");
+            for (String value : split_tmp_string) {
+                String newvalue = value;
+                if (value.contains(".")) {
+                    if (!(value.toUpperCase().startsWith("HTTP://") || value.toUpperCase().startsWith("HTTPS://"))) {
+                        newvalue = "http://"+value;
+                    }
+                    tmp_string = tmp_string.replace(value, "{link[" + value + "],[" + newvalue + "]}");
+                }
+            }
+
+            if (stringnum!=-1) {
+                global.USR_string.get(stringnum).set(1,tmp_string);
+            } else {
+                global.TMP_string.get(tmpstringnum).set(1,tmp_string);
             }
             return "{string["+sn+"]}";
         }
