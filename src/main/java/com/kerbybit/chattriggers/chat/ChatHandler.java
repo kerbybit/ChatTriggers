@@ -47,11 +47,43 @@ public class ChatHandler {
 	
 	public static void warn(String cht) {
         //fix link
+        cht = removeFormatting(cht);
         while (cht.contains("{link[") && cht.contains("],[") && cht.contains("]}")) {
+            String prev_color = "";
+            if (cht.indexOf("{link[")!=0) {
+                System.out.println(cht);
+                String testfor = cht.substring(0, cht.indexOf("{link["));
+                while (testfor.contains("&0") || testfor.contains("&1") || testfor.contains("&2")
+                        || testfor.contains("&3") || testfor.contains("&4") || testfor.contains("&5")
+                        || testfor.contains("&6") || testfor.contains("&7") || testfor.contains("&8")
+                        || testfor.contains("&9") || testfor.contains("&a") || testfor.contains("&b")
+                        || testfor.contains("&c") || testfor.contains("&d") || testfor.contains("&e")
+                        || testfor.contains("&f")) {
+                    System.out.println(testfor);
+                    testfor = testfor.substring(testfor.indexOf("&"));
+                    if (testfor.startsWith("&0")) {prev_color+="&0";}
+                    if (testfor.startsWith("&1")) {prev_color+="&1";}
+                    if (testfor.startsWith("&2")) {prev_color+="&2";}
+                    if (testfor.startsWith("&3")) {prev_color+="&3";}
+                    if (testfor.startsWith("&4")) {prev_color+="&4";}
+                    if (testfor.startsWith("&5")) {prev_color+="&5";}
+                    if (testfor.startsWith("&6")) {prev_color+="&6";}
+                    if (testfor.startsWith("&7")) {prev_color+="&7";}
+                    if (testfor.startsWith("&8")) {prev_color+="&8";}
+                    if (testfor.startsWith("&9")) {prev_color+="&9";}
+                    if (testfor.startsWith("&a")) {prev_color+="&a";}
+                    if (testfor.startsWith("&b")) {prev_color+="&b";}
+                    if (testfor.startsWith("&c")) {prev_color+="&c";}
+                    if (testfor.startsWith("&d")) {prev_color+="&d";}
+                    if (testfor.startsWith("&e")) {prev_color+="&e";}
+                    if (testfor.startsWith("&f")) {prev_color+="&f";}
+                    testfor = testfor.substring(2);
+                }
+            }
             String tmp_string = cht.substring(cht.indexOf("{link[")+6, cht.indexOf("]}", cht.indexOf("{link[")));
             String first = tmp_string.substring(0, tmp_string.indexOf("],["));
             String second = tmp_string.substring(tmp_string.indexOf("],[")+3);
-            cht = cht.replace("{link[" + first + "],[" + second + "]}", "clickable("+first+",open_url,"+second+",open link)");
+            cht = cht.replace("{link[" + first + "],[" + second + "]}", "clickable("+prev_color+first+",open_url,"+deleteFormatting(second)+",open link)"+prev_color);
         }
 
 		cht = cht.replace("'('", "LeftParF6cyUQp9LeftPar");
@@ -238,4 +270,52 @@ public class ChatHandler {
 			.replace("&r", EnumChatFormatting.RESET.toString());
 		return msg;
 	}
+
+    public static String deleteFormatting(String msg) {
+        msg = msg.replace(EnumChatFormatting.BLACK.toString(), "")
+                .replace(EnumChatFormatting.DARK_BLUE.toString(), "")
+                .replace(EnumChatFormatting.DARK_GREEN.toString(), "")
+                .replace(EnumChatFormatting.DARK_AQUA.toString(), "")
+                .replace(EnumChatFormatting.DARK_RED.toString(), "")
+                .replace(EnumChatFormatting.DARK_PURPLE.toString(), "")
+                .replace(EnumChatFormatting.GOLD.toString(), "")
+                .replace(EnumChatFormatting.GRAY.toString(), "")
+                .replace(EnumChatFormatting.DARK_GRAY.toString(), "")
+                .replace(EnumChatFormatting.BLUE.toString(), "")
+                .replace(EnumChatFormatting.GREEN.toString(), "")
+                .replace(EnumChatFormatting.AQUA.toString(), "")
+                .replace(EnumChatFormatting.RED.toString(), "")
+                .replace(EnumChatFormatting.LIGHT_PURPLE.toString(), "")
+                .replace(EnumChatFormatting.YELLOW.toString(), "")
+                .replace(EnumChatFormatting.WHITE.toString(), "")
+                .replace(EnumChatFormatting.OBFUSCATED.toString(), "")
+                .replace(EnumChatFormatting.BOLD.toString(), "")
+                .replace(EnumChatFormatting.STRIKETHROUGH.toString(), "")
+                .replace(EnumChatFormatting.UNDERLINE.toString(), "")
+                .replace(EnumChatFormatting.ITALIC.toString(), "")
+                .replace(EnumChatFormatting.RESET.toString(), "")
+                .replace("&0", "")
+                .replace("&1", "")
+                .replace("&2", "")
+                .replace("&3", "")
+                .replace("&4", "")
+                .replace("&5", "")
+                .replace("&6", "")
+                .replace("&7", "")
+                .replace("&8", "")
+                .replace("&9", "")
+                .replace("&a", "")
+                .replace("&b", "")
+                .replace("&c", "")
+                .replace("&d", "")
+                .replace("&e", "")
+                .replace("&f", "")
+                .replace("&k", "")
+                .replace("&l", "")
+                .replace("&m", "")
+                .replace("&n", "")
+                .replace("&o", "")
+                .replace("&r", "");
+        return msg;
+    }
 }
