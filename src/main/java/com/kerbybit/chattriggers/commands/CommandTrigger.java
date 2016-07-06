@@ -20,6 +20,8 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
+import static com.kerbybit.chattriggers.triggers.TriggerHandler.onChat;
+
 public class CommandTrigger extends CommandBase {
 
 	public String getCommandName() {return "trigger";}
@@ -37,7 +39,15 @@ public class CommandTrigger extends CommandBase {
 			ChatHandler.warn(ChatHandler.color("red", "/trigger [save/load]"));
 			ChatHandler.warn(ChatHandler.color("red", "/trigger [import/export] <...>"));
 
-		} else if (args[0].equalsIgnoreCase("HELP") || (args[0].equalsIgnoreCase("?"))) {
+		} else if (args[0].equalsIgnoreCase("SIMULATE")) {
+            String TMP_e = "";
+            for (int i=1; i<args.length; i++) {
+                TMP_e = TMP_e + args[i] + " ";
+            }
+            TMP_e = TMP_e.trim();
+            ChatHandler.warn(TMP_e);
+            onChat(TMP_e, ChatHandler.deleteFormatting(TMP_e), null);
+        } else if (args[0].equalsIgnoreCase("HELP") || (args[0].equalsIgnoreCase("?"))) {
             if (args.length==1) {
                 ChatHandler.warnBreak(0);
                 ChatHandler.warn(" &f>> clickable(" + global.settings.get(0) + "Get started,run_command,/trigger help getstarted,&7Getting started guides and tutorials)");

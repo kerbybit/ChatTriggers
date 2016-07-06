@@ -145,6 +145,10 @@ public class CommandReference {
             r.add("choose");
             r.add("async");
             r.add("end");
+            r.add("");
+            r.add("debug");
+            r.add("log");
+            r.add("simulate");
 
         return r;
     }

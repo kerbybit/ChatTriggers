@@ -16,6 +16,8 @@ import com.kerbybit.chattriggers.globalvars.global;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
+import static com.kerbybit.chattriggers.triggers.TriggerHandler.onChat;
+
 public class EventsHandler {
 	public static void doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent) {
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
@@ -101,6 +103,15 @@ public class EventsHandler {
 			TMP_e = TMP_e.replace(stringCommaReplace, ",");
 			if (TMP_c.equalsIgnoreCase("SAY")) {global.chatQueue.add(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("CHAT")) {ChatHandler.warn(TMP_e);}
+            if (TMP_c.equalsIgnoreCase("DEBUG")) {if (global.debug) {ChatHandler.warn(TMP_e);}}
+            if (TMP_c.equalsIgnoreCase("LOG")) {System.out.println(TMP_e
+                    .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                    .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+                    .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"));}
+            if (TMP_c.equalsIgnoreCase("SIMULATE")) {
+                ChatHandler.warn(TMP_e);
+                onChat(TMP_e, ChatHandler.deleteFormatting(TMP_e), null);
+            }
 			if (TMP_c.equalsIgnoreCase("DO") && global.debug) {ChatHandler.warn(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("SOUND")) {Minecraft.getMinecraft().thePlayer.playSound(TMP_e
 					.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
