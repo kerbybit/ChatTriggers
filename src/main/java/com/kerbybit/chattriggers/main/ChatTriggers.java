@@ -63,28 +63,46 @@ public class ChatTriggers {
 	
 	@SubscribeEvent
 	public void onRightClickPlayer(EntityInteractEvent e) {
-		if (global.canUse) {
-			if (e.entity.equals(Minecraft.getMinecraft().thePlayer)) {
-				if (e.target instanceof EntityPlayer) {
-					TriggerHandler.onRightClickPlayer(e);
-				}
-			}
-		}
+        try {
+            if (global.canUse) {
+                if (e.entity.equals(Minecraft.getMinecraft().thePlayer)) {
+                    if (e.target instanceof EntityPlayer) {
+                        TriggerHandler.onRightClickPlayer(e);
+                    }
+                }
+            }
+        } catch (Exception exception) {
+            ChatHandler.warn("&4An unknown error has occured while executing \"&conRightClickPlayer&4\"!");
+            ChatHandler.warn("&4Check logs for details.");
+            exception.printStackTrace();
+        }
 	}
 	
 	@SubscribeEvent
 	public void onChat(ClientChatReceivedEvent e) throws IOException, ClassNotFoundException {
-		if (global.canUse) {
-			TriggerHandler.onChat(e);
-		}
+        try {
+            if (global.canUse) {
+                TriggerHandler.onChat(e);
+            }
+        } catch (Exception exception) {
+            ChatHandler.warn("&4An unknown error has occured while executing \"&cchat&4\"!");
+            ChatHandler.warn("&4Check logs for details.");
+            exception.printStackTrace();
+        }
 	}
 	
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load e) {
-		if (global.canUse) {
-			global.worldLoaded=true;
-			global.worldIsLoaded=true;
-		}
+        try {
+            if (global.canUse) {
+                global.worldLoaded=true;
+                global.worldIsLoaded=true;
+            }
+        } catch (Exception exception) {
+            ChatHandler.warn("&4An unknown error has occured while executing \"&conWorldLoad&4\"!");
+            ChatHandler.warn("&4Check logs for details.");
+            exception.printStackTrace();
+        }
 	}
 	
 	@SubscribeEvent
@@ -118,8 +136,14 @@ public class ChatTriggers {
 			OverlayHandler.tickNotify();
 			
 			FileHandler.tickImports();
-			
-			TriggerHandler.onClientTickTriggers();
+
+            try {
+			    TriggerHandler.onClientTickTriggers();
+            } catch (Exception exception) {
+                ChatHandler.warn("&4An unknown error has occured while executing \"&conClientTick&4\"!");
+                ChatHandler.warn("&4Check logs for details.");
+                exception.printStackTrace();
+            }
 			
 			ChatHandler.onClientTick();
 			EventsHandler.eventTick();

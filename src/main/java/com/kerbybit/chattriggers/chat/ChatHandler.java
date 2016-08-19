@@ -93,7 +93,7 @@ public class ChatHandler {
 		cht = cht.replace("]", "\u005D");
 		cht = cht.replace("{", "\u007B");
 		cht = cht.replace("}", "\u007D");
-        cht = cht.replace("','","CommaF6cyUQp9Comma");
+
 		
 		
 		while (cht.contains("clickable(") && cht.contains(")")) {
