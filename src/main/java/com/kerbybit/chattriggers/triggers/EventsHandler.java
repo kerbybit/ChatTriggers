@@ -560,33 +560,72 @@ public class EventsHandler {
 			//run trigger by name
 			for (int k=0; k<global.trigger.size(); k++) {
 				String TMP_trig = global.trigger.get(k).get(1);
-				
+
+                boolean getCase = true;
+                if (TMP_trig.contains("<case=false>")) {
+                    getCase = false;
+                }
+
 				TMP_trig = TagHandler.removeTags(TMP_trig);
 				
 				//check match
-				if (TMP_trig.equals(triggerName)) {
-					//add all events to temp list
-					List<String> TMP_events = new ArrayList<String>();
-					for (int i=2; i<global.trigger.get(k).size(); i++) {TMP_events.add(global.trigger.get(k).get(i));}
-					
-					//do events
-					doEvents(TMP_events, chatEvent);
-				} else {
-					if (TMP_trig.contains("(") && TMP_trig.endsWith(")")) {
-						String TMP_trigtest = TMP_trig.substring(0,TMP_trig.indexOf("("));
-						if (triggerName.startsWith(TMP_trigtest) && triggerName.endsWith(")")) {
-							String TMP_argsIn = triggerName.substring(triggerName.indexOf("(")+1, triggerName.length()-1);
-							String TMP_argsOut = TMP_trig.substring(TMP_trig.indexOf("(")+1, TMP_trig.length()-1);
-							String[] argsIn = TMP_argsIn.split(",");
-							String[] argsOut = TMP_argsOut.split(",");
-							if (argsIn.length == argsOut.length) {
-								List<String> TMP_events = new ArrayList<String>();
-								for (int j=2; j<global.trigger.get(k).size(); j++) {TMP_events.add(global.trigger.get(k).get(j));}
-								doEvents(TMP_events, chatEvent, argsOut, argsIn);
-							}
-						}
-					}
-				}
+                if (getCase) {
+                    if (TMP_trig.equals(triggerName)) {
+                        //add all events to temp list
+                        List<String> TMP_events = new ArrayList<String>();
+                        for (int i = 2; i < global.trigger.get(k).size(); i++) {
+                            TMP_events.add(global.trigger.get(k).get(i));
+                        }
+
+                        //do events
+                        doEvents(TMP_events, chatEvent);
+                    } else {
+                        if (TMP_trig.contains("(") && TMP_trig.endsWith(")")) {
+                            String TMP_trigtest = TMP_trig.substring(0, TMP_trig.indexOf("("));
+                            if (triggerName.startsWith(TMP_trigtest) && triggerName.endsWith(")")) {
+                                String TMP_argsIn = triggerName.substring(triggerName.indexOf("(") + 1, triggerName.length() - 1);
+                                String TMP_argsOut = TMP_trig.substring(TMP_trig.indexOf("(") + 1, TMP_trig.length() - 1);
+                                String[] argsIn = TMP_argsIn.split(",");
+                                String[] argsOut = TMP_argsOut.split(",");
+                                if (argsIn.length == argsOut.length) {
+                                    List<String> TMP_events = new ArrayList<String>();
+                                    for (int j = 2; j < global.trigger.get(k).size(); j++) {
+                                        TMP_events.add(global.trigger.get(k).get(j));
+                                    }
+                                    doEvents(TMP_events, chatEvent, argsOut, argsIn);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if (TMP_trig.equalsIgnoreCase(triggerName)) {
+                        //add all events to temp list
+                        List<String> TMP_events = new ArrayList<String>();
+                        for (int i = 2; i < global.trigger.get(k).size(); i++) {
+                            TMP_events.add(global.trigger.get(k).get(i));
+                        }
+
+                        //do events
+                        doEvents(TMP_events, chatEvent);
+                    } else {
+                        if (TMP_trig.contains("(") && TMP_trig.endsWith(")")) {
+                            String TMP_trigtest = TMP_trig.substring(0, TMP_trig.indexOf("("));
+                            if (triggerName.toUpperCase().startsWith(TMP_trigtest.toUpperCase()) && triggerName.endsWith(")")) {
+                                String TMP_argsIn = triggerName.substring(triggerName.indexOf("(") + 1, triggerName.length() - 1);
+                                String TMP_argsOut = TMP_trig.substring(TMP_trig.indexOf("(") + 1, TMP_trig.length() - 1);
+                                String[] argsIn = TMP_argsIn.split(",");
+                                String[] argsOut = TMP_argsOut.split(",");
+                                if (argsIn.length == argsOut.length) {
+                                    List<String> TMP_events = new ArrayList<String>();
+                                    for (int j = 2; j < global.trigger.get(k).size(); j++) {
+                                        TMP_events.add(global.trigger.get(k).get(j));
+                                    }
+                                    doEvents(TMP_events, chatEvent, argsOut, argsIn);
+                                }
+                            }
+                        }
+                    }
+                }
 			}
 		}
 	}

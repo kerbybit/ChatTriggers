@@ -414,36 +414,71 @@ public class CommandTrigger extends CommandBase {
 				for (int k=0; k<global.trigger.size(); k++) {
 					
 					String TMP_trig = global.trigger.get(k).get(1);
-					
+
+                    boolean getCase = true;
+                    if (TMP_trig.contains("<case=false>")) {
+                        getCase = false;
+                    }
+
 					TMP_trig = TagHandler.removeTags(TMP_trig);
-					
-					if (TMP_trig.equals(TMP_e)) {
-						List<String> TMP_events = new ArrayList<String>();
-						for (int i=2; i<global.trigger.get(k).size(); i++) {
-							TMP_events.add(global.trigger.get(k).get(i));
-						}
-						EventsHandler.doEvents(TMP_events, null);
+
+                    if (getCase) {
+                        if (TMP_trig.equals(TMP_e)) {
+                            List<String> TMP_events = new ArrayList<String>();
+                            for (int i=2; i<global.trigger.get(k).size(); i++) {
+                                TMP_events.add(global.trigger.get(k).get(i));
+                            }
+                            EventsHandler.doEvents(TMP_events, null);
+                        } else {
+                            String TMP_trigtype = global.trigger.get(k).get(0);
+                            if (TMP_trigtype.toUpperCase().startsWith("OTHER")) {
+                                if (TMP_trig.contains("(") && TMP_trig.endsWith(")")) {
+                                    String TMP_trigtest = TMP_trig.substring(0, TMP_trig.indexOf("("));
+                                    if (TMP_e.startsWith(TMP_trigtest) && TMP_e.endsWith(")")) {
+                                        String TMP_argsIn = TMP_e.substring(TMP_e.indexOf("(") + 1, TMP_e.length() - 1);
+                                        String TMP_argsOut = TMP_trig.substring(TMP_trig.indexOf("(") + 1, TMP_trig.length() - 1);
+                                        String[] argsIn = TMP_argsIn.split(",");
+                                        String[] argsOut = TMP_argsOut.split(",");
+                                        if (argsIn.length == argsOut.length) {
+                                            List<String> TMP_events = new ArrayList<String>();
+                                            for (int j = 2; j < global.trigger.get(k).size(); j++) {
+                                                TMP_events.add(global.trigger.get(k).get(j));
+                                            }
+                                            EventsHandler.doEvents(TMP_events, null, argsOut, argsIn);
+                                        }
+                                    }
+                                }
+                            }
+                        }
 					} else {
-						String TMP_trigtype = global.trigger.get(k).get(0);
-						if (TMP_trigtype.toUpperCase().startsWith("OTHER")) {
-							if (TMP_trig.contains("(") && TMP_trig.endsWith(")")) {
-								String TMP_trigtest = TMP_trig.substring(0,TMP_trig.indexOf("("));
-								if (TMP_e.startsWith(TMP_trigtest) && TMP_e.endsWith(")")) {
-									String TMP_argsIn = TMP_e.substring(TMP_e.indexOf("(")+1, TMP_e.length()-1);
-									String TMP_argsOut = TMP_trig.substring(TMP_trig.indexOf("(")+1, TMP_trig.length()-1);
-									String[] argsIn = TMP_argsIn.split(",");
-									String[] argsOut = TMP_argsOut.split(",");
-									if (argsIn.length == argsOut.length) {
-										List<String> TMP_events = new ArrayList<String>();
-										for (int j=2; j<global.trigger.get(k).size(); j++) {
-											TMP_events.add(global.trigger.get(k).get(j));
-										}
-										EventsHandler.doEvents(TMP_events, null, argsOut, argsIn);
-									}
-								}
-							}
-						}
-					}
+                        if (TMP_trig.equalsIgnoreCase(TMP_e)) {
+                            List<String> TMP_events = new ArrayList<String>();
+                            for (int i=2; i<global.trigger.get(k).size(); i++) {
+                                TMP_events.add(global.trigger.get(k).get(i));
+                            }
+                            EventsHandler.doEvents(TMP_events, null);
+                        } else {
+                            String TMP_trigtype = global.trigger.get(k).get(0);
+                            if (TMP_trigtype.toUpperCase().startsWith("OTHER")) {
+                                if (TMP_trig.contains("(") && TMP_trig.endsWith(")")) {
+                                    String TMP_trigtest = TMP_trig.substring(0, TMP_trig.indexOf("("));
+                                    if (TMP_e.toUpperCase().startsWith(TMP_trigtest.toUpperCase()) && TMP_e.endsWith(")")) {
+                                        String TMP_argsIn = TMP_e.substring(TMP_e.indexOf("(") + 1, TMP_e.length() - 1);
+                                        String TMP_argsOut = TMP_trig.substring(TMP_trig.indexOf("(") + 1, TMP_trig.length() - 1);
+                                        String[] argsIn = TMP_argsIn.split(",");
+                                        String[] argsOut = TMP_argsOut.split(",");
+                                        if (argsIn.length == argsOut.length) {
+                                            List<String> TMP_events = new ArrayList<String>();
+                                            for (int j = 2; j < global.trigger.get(k).size(); j++) {
+                                                TMP_events.add(global.trigger.get(k).get(j));
+                                            }
+                                            EventsHandler.doEvents(TMP_events, null, argsOut, argsIn);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
 				}
 			}
 		}
@@ -780,6 +815,7 @@ public class CommandTrigger extends CommandBase {
 					String TMP_list = "";
 					String TMP_w    = "";
 					String TMP_server = "";
+                    String TMP_case = "";
 					Boolean TMP_imported = false;
 					Boolean TMP_formatted = false;
 					
@@ -793,7 +829,9 @@ public class CommandTrigger extends CommandBase {
 					if (TMP_trig.contains("<list=") && TMP_trig.contains(">")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
 					TMP_lists.add(TMP_list);
 					if (TMP_trig.contains("<server=") && TMP_trig.contains(">")) {TMP_server = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_server+">","");}
-					if (TMP_trig.contains("<imported>")) {TMP_imported = true; TMP_trig = TMP_trig.replace("<imported>", "");}
+                    if (TMP_trig.contains("<case=") && TMP_trig.contains(">")) {TMP_case = TMP_trig.substring(TMP_trig.indexOf("<case=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<case="))); TMP_trig = TMP_trig.replace("<case="+TMP_case+">","");}
+                    if (!TMP_case.equals("false")) {TMP_case = "";}
+                    if (TMP_trig.contains("<imported>")) {TMP_imported = true; TMP_trig = TMP_trig.replace("<imported>", "");}
 					if (TMP_trig.contains("<formatted>")) {TMP_formatted = true; TMP_trig = TMP_trig.replace("<formatted>", "");}
 					
 					String TMP_tags = "";
@@ -801,6 +839,7 @@ public class CommandTrigger extends CommandBase {
 					if (!TMP_w.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Modifier: " + TMP_w;}
 					if (!TMP_list.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "List: " + TMP_list;}
 					if (!TMP_server.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Server: " + TMP_server;}
+                    if (!TMP_case.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Case Insensitive";}
 					if (TMP_formatted) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Formatted";}
 					
 					if (TMP_list.equals("")) {
@@ -885,6 +924,7 @@ public class CommandTrigger extends CommandBase {
 					String TMP_list = "";
 					String TMP_w    = "";
 					String TMP_server = "";
+                    String TMP_case = "";
 					Boolean TMP_imported = false;
 					Boolean TMP_formatted = false;
 					
@@ -897,7 +937,9 @@ public class CommandTrigger extends CommandBase {
 					
 					if (TMP_trig.contains("<list=") && TMP_trig.contains(">")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
 					if (TMP_trig.contains("<server=") && TMP_trig.contains(">")) {TMP_server = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_server+">","");}
-					if (TMP_trig.contains("<imported>")) {TMP_imported = true; TMP_trig = TMP_trig.replace("<imported>", "");}
+					if (TMP_trig.contains("<case=") && TMP_trig.contains(">")) {TMP_case = TMP_trig.substring(TMP_trig.indexOf("<case=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<case="))); TMP_trig = TMP_trig.replace("<case="+TMP_case+">","");}
+                    if (!TMP_case.equals("false")) {TMP_case = "";} ///TODo
+                    if (TMP_trig.contains("<imported>")) {TMP_imported = true; TMP_trig = TMP_trig.replace("<imported>", "");}
 					if (TMP_trig.contains("<formatted>")) {TMP_formatted = true; TMP_trig = TMP_trig.replace("<formatted>", "");}
 					
 					String TMP_tags = "";
@@ -905,6 +947,7 @@ public class CommandTrigger extends CommandBase {
 					if (!TMP_w.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Modifier: " + TMP_w;}
 					if (!TMP_list.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "List: " + TMP_list;}
 					if (!TMP_server.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Server: " + TMP_server;}
+                    if (!TMP_case.equals("")) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Case Insensitive";}
 					if (TMP_formatted) {if (!TMP_tags.equals("")) {TMP_tags += "\n";} TMP_tags += "Formatted";}
 					
 					

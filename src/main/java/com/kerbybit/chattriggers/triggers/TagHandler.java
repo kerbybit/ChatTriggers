@@ -31,7 +31,8 @@ public class TagHandler {
 				.replace("<imported>", "").replace("<formatted>", "");
 		if (TMP_trig.contains("<list=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<list=")+6, TMP_trig.indexOf(">", TMP_trig.indexOf("<list="))); TMP_trig = TMP_trig.replace("<list="+TMP_list+">","");}
 		if (TMP_trig.contains("<server=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<server=")+8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))); TMP_trig = TMP_trig.replace("<server="+TMP_list+">","");}
-		
+		if (TMP_trig.contains("<case=")) {TMP_list = TMP_trig.substring(TMP_trig.indexOf("<case=")+6, TMP_trig.indexOf(">",TMP_trig.indexOf("<case="))); TMP_trig = TMP_trig.replace("<case="+TMP_list+">","");}
+
 		return TMP_trig;
 	}
 }
