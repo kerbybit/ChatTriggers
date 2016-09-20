@@ -38,7 +38,7 @@ public class StringHandler {
 			if (TMP_e.contains("{msg}")) {
 				List<String> temporary = new ArrayList<String>();
 				temporary.add("DefaultString->MSG-"+(global.TMP_string.size()+1));
-				temporary.add(ChatHandler.removeFormatting(chatEvent.getMessage().getFormattedText()));
+				temporary.add(ChatHandler.removeFormatting(chatEvent.message.getFormattedText()));
 				global.TMP_string.add(temporary);
 				global.backupTMP_strings.add(temporary);
 				TMP_e = TMP_e.replace("{msg}", "{string[DefaultString->MSG-"+global.TMP_string.size()+"]}");

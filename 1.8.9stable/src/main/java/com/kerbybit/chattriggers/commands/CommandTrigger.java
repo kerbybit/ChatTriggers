@@ -18,7 +18,6 @@ import com.kerbybit.chattriggers.triggers.TagHandler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 import static com.kerbybit.chattriggers.triggers.TriggerHandler.onChat;
@@ -32,13 +31,8 @@ public class CommandTrigger extends CommandBase {
 	public int getRequiredPermissionLevel() {return 0;}
 
 	public String getCommandUsage(ICommandSender sender) {return "/trigger [create/add/list] <...>";}
-
-    @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (global.canUse) {doCommand(args, false);}
-    }
-
-    public static void doCommand(String args[], Boolean silent) {
+	
+	public static void doCommand(String args[], Boolean silent) {
 		if (args.length == 0) {
 			ChatHandler.warn(ChatHandler.color("red", "/trigger [create/add/list] <...>"));
 			ChatHandler.warn(ChatHandler.color("red", "/trigger [string/run] <...>"));
@@ -1191,7 +1185,7 @@ public class CommandTrigger extends CommandBase {
 				}
 			}else if (args[1].equalsIgnoreCase("DUMP")) {
                 for (ClientChatReceivedEvent e : global.chatEventHistory) {
-                    String fmsg = e.getMessage().getFormattedText();
+                    String fmsg = e.message.getFormattedText();
                     String tmp_out = ChatHandler.removeFormatting(fmsg);
                     global.copyText.add(tmp_out);
                     tmp_out = tmp_out.replace("'", "\\'");

@@ -23,7 +23,7 @@ import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
-//import net.minecraftforge.event.entity.player.EntityInteractEvent;
+import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -60,8 +60,7 @@ public class ChatTriggers {
 			}
 		}
 	}
-
-    /*
+	
 	@SubscribeEvent
 	public void onRightClickPlayer(EntityInteractEvent e) {
         try {
@@ -77,7 +76,7 @@ public class ChatTriggers {
             ChatHandler.warn("&4Check logs for details.");
             exception.printStackTrace();
         }
-	}*/
+	}
 	
 	@SubscribeEvent
 	public void onChat(ClientChatReceivedEvent e) throws IOException, ClassNotFoundException {

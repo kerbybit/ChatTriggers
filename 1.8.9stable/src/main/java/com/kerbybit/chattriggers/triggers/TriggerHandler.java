@@ -11,7 +11,7 @@ import com.kerbybit.chattriggers.globalvars.global;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
-//import net.minecraftforge.event.entity.player.EntityInteractEvent;
+import net.minecraftforge.event.entity.player.EntityInteractEvent;
 
 public class TriggerHandler {
     public static void onChat(String fmsg, String msg, ClientChatReceivedEvent e) {
@@ -240,8 +240,8 @@ public class TriggerHandler {
         }
 
         //chat
-		String msg = e.getMessage().getUnformattedText();
-		String fmsg = e.getMessage().getFormattedText();
+		String msg = e.message.getUnformattedText();
+		String fmsg = e.message.getFormattedText();
         global.chatEventHistory.add(e);
         if (global.chatEventHistory.size()>100) {global.chatEventHistory.remove(0);}
 		global.chatHistory.add(ChatHandler.removeFormatting(fmsg));
@@ -265,7 +265,7 @@ public class TriggerHandler {
 		}
 	}
 	
-	/*public static void onRightClickPlayer(EntityInteractEvent e) {
+	public static void onRightClickPlayer(EntityInteractEvent e) {
 		for (int i=0; i<global.onRightClickPlayerTrigger.size(); i++) {
 			//add all events to temp list
 			List<String> TMP_events = new ArrayList<String>();
@@ -274,7 +274,7 @@ public class TriggerHandler {
 			//do events
 			EventsHandler.doEvents(TMP_events, null);
 		}
-	}*/
+	}
 	
 	public static void worldLoadTriggers() {
 		if (global.worldLoaded) {
