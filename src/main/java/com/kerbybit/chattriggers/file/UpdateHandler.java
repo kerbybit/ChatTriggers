@@ -43,7 +43,7 @@ public class UpdateHandler {
 			 					}
 		 					} catch (Exception e) {
 		 						e.printStackTrace();
-		 						System.out.println("Could not get list! ChatTriggers may not work properly!");
+		 						System.out.println("Update not loading. Is www.kerbybit.com down?");
 		 					}
 		 				}
 		 			}

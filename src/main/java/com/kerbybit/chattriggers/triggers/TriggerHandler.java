@@ -85,7 +85,7 @@ public class TriggerHandler {
             }
 
             for (String value : TMP_server) {
-                if (current_server.contains(value)) {
+                if (current_server.contains(value.replace("99.198.123.2","hypixel"))) {
                     correct_server = true;
                 }
             }

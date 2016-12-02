@@ -663,7 +663,7 @@ public class EventsHandler {
 					}
 				}
 			} else {
-				ChatHandler.warn(ChatHandler.color("red","SOMETHING WENT WRONG!!! (wait event/time unsynced)"));
+				ChatHandler.warn(ChatHandler.color("red","ERR: wait events and wait time unsynced"));
 				global.waitEvents.clear();
 				global.waitTime.clear();
 			}
@@ -674,6 +674,4 @@ public class EventsHandler {
 	    Random rand = new Random();
 	    return rand.nextInt((max - min) + 1) + min;
 	}
-	
-	
 }

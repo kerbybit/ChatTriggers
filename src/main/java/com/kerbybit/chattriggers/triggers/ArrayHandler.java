@@ -88,6 +88,37 @@ class ArrayHandler {
 			global.backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.add(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"ADD"+checkTo+"-"+global.TMP_string.size()+"]}");
 		}
+
+        while (TMP_e.contains("{array[") && TMP_e.contains("]}.prepend(") && TMP_e.contains(")")) {
+            String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.prepend(", TMP_e.indexOf("{array[")));
+            String checkTo = TMP_e.substring(TMP_e.indexOf("]}.prepend(")+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.prepend(")));
+            Boolean isArray = false;
+
+            if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
+                checkFrom = StringHandler.stringFunctions(checkFrom);
+            }
+
+            for (int j=0; j<global.USR_array.size(); j++) {
+                if (global.USR_array.get(j).get(0).equals(checkFrom)) {
+                    global.USR_array.get(j).add(1, checkTo);
+                    isArray = true;
+                }
+            }
+
+            if (!isArray) {
+                List<String> prearray = new ArrayList<String>();
+                prearray.add(checkFrom);
+                prearray.add(checkTo);
+                global.USR_array.add(prearray);
+            }
+
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("ArrayToString->"+checkFrom+"PREPEND"+checkTo+"-"+(global.TMP_string.size()+1));
+            temporary.add(checkTo);
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+            TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.add(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"PREPEND"+checkTo+"-"+global.TMP_string.size()+"]}");
+        }
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.clear()")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.clear()", TMP_e.indexOf("{array[")));

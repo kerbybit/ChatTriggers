@@ -26,8 +26,8 @@ public class StringHandler {
 				int num = Integer.parseInt(strnum);
 				if (num>=0) {
 					if (num<global.chatHistory.size()) {temporary.add(ChatHandler.removeFormatting(global.chatHistory.get(global.chatHistory.size()-(num+1))));} 
-					else {temporary.add("Number must be less than the chat history size! ("+global.chatHistory.size()+")");}
-				} else {temporary.add("Number must be greater than or equal to 0!");}
+					else {temporary.add("Number must be less then the chat history size! ("+global.chatHistory.size()+")");}
+				} else {temporary.add("Number must be greater then or equal to 0!");}
 			} catch (NumberFormatException e) {temporary.add("Not a number!");}
 			global.TMP_string.add(temporary);
 			global.backupTMP_strings.add(temporary);
@@ -35,6 +35,118 @@ public class StringHandler {
 			TMP_e = TMP_e.replace("{msg["+strnum+"]}", "{string[DefaultString->MSGHISTORY"+strnum+"-"+global.TMP_string.size()+"]}");
 		}
 		if (chatEvent!=null) {
+            if (TMP_e.contains("{msg}.meta().clickEvent().action()")) {
+                String tmp = chatEvent.message.getChatStyle().toString();
+                if (tmp.contains("clickEvent=ClickEvent{") && tmp.contains("}")) {
+                    tmp = tmp.substring(tmp.indexOf("clickEvent=ClickEvent{")+22, tmp.indexOf("}", tmp.indexOf("clickEvent=ClickEvent{")));
+                    if (tmp.contains("action=")) {
+                        tmp = tmp.substring(tmp.indexOf("action=")+7, tmp.indexOf(", value", tmp.indexOf("action=")+7));
+                    } else {
+                        tmp = "null";
+                    }
+                } else {
+                    tmp = "null";
+                }
+                List<String> temporary = new ArrayList<String>();
+                temporary.add("DefaultString->MSGMETACLICKACTION-"+(global.TMP_string.size()+1));
+                temporary.add(tmp);
+                global.TMP_string.add(temporary);
+                global.backupTMP_strings.add(temporary);
+                TMP_e = TMP_e.replace("{msg}.meta().clickEvent().action()", "{string[DefaultString->MSGMETACLICKACTION-"+global.TMP_string.size()+"]}");
+            }
+            if (TMP_e.contains("{msg}.meta().clickEvent().value()")) {
+                String tmp = chatEvent.message.getChatStyle().toString();
+                if (tmp.contains("clickEvent=ClickEvent{") && tmp.contains("}")) {
+                    tmp = tmp.substring(tmp.indexOf("clickEvent=ClickEvent{")+22, tmp.indexOf("}", tmp.indexOf("clickEvent=ClickEvent{")));
+                    if (tmp.contains("value='")) {
+                        tmp = tmp.substring(tmp.indexOf("value='")+7, tmp.indexOf("'", tmp.indexOf("value='")+7));
+                    } else {
+                        tmp = "null";
+                    }
+                } else {
+                    tmp = "null";
+                }
+                List<String> temporary = new ArrayList<String>();
+                temporary.add("DefaultString->MSGMETACLICKVALUE-"+(global.TMP_string.size()+1));
+                temporary.add(tmp);
+                global.TMP_string.add(temporary);
+                global.backupTMP_strings.add(temporary);
+                TMP_e = TMP_e.replace("{msg}.meta().clickEvent().value()", "{string[DefaultString->MSGMETACLICKVALUE-"+global.TMP_string.size()+"]}");
+            }
+            if (TMP_e.contains("{msg}.meta().hoverEvent().action()")) {
+                String tmp = chatEvent.message.getChatStyle().toString();
+                if (tmp.contains("hoverEvent=HoverEvent{") && tmp.contains("}")) {
+                    tmp = tmp.substring(tmp.indexOf("hoverEvent=HoverEvent{")+22, tmp.indexOf("}", tmp.indexOf("hoverEvent=HoverEvent{")));
+                    if (tmp.contains("action=")) {
+                        tmp = tmp.substring(tmp.indexOf("action=")+7, tmp.indexOf(", value", tmp.indexOf("action=")+7));
+                    } else {
+                        tmp = "null";
+                    }
+                } else {
+                    tmp = "null";
+                }
+                List<String> temporary = new ArrayList<String>();
+                temporary.add("DefaultString->MSGMETAHOVERACTION-"+(global.TMP_string.size()+1));
+                temporary.add(tmp);
+                global.TMP_string.add(temporary);
+                global.backupTMP_strings.add(temporary);
+                TMP_e = TMP_e.replace("{msg}.meta().hoverEvent().action()", "{string[DefaultString->MSGMETAHOVERACTION-"+global.TMP_string.size()+"]}");
+            }
+            if (TMP_e.contains("{msg}.meta().hoverEvent().value()")) {
+                String tmp = chatEvent.message.getChatStyle().toString();
+                if (tmp.contains("hoverEvent=HoverEvent{") && tmp.contains("}")) {
+                    tmp = tmp.substring(tmp.indexOf("hoverEvent=HoverEvent{")+22, tmp.indexOf("}", tmp.indexOf("hoverEvent=HoverEvent{")));
+                    if (tmp.contains("action=")) {
+                        tmp = tmp.substring(tmp.indexOf("value='TextComponent{text='")+27, tmp.indexOf("',", tmp.indexOf("value='TextComponent{text='")+27));
+                    } else {
+                        tmp = "null";
+                    }
+                } else {
+                    tmp = "null";
+                }
+                List<String> temporary = new ArrayList<String>();
+                temporary.add("DefaultString->MSGMETAHOVERVALUE-"+(global.TMP_string.size()+1));
+                temporary.add(tmp);
+                global.TMP_string.add(temporary);
+                global.backupTMP_strings.add(temporary);
+                TMP_e = TMP_e.replace("{msg}.meta().hoverEvent().value()", "{string[DefaultString->MSGMETAHOVERVALUE-"+global.TMP_string.size()+"]}");
+            }
+            if (TMP_e.contains("{msg}.meta().clickEvent()")) {
+                String tmp = chatEvent.message.getChatStyle().toString();
+                if (tmp.contains("clickEvent=") && tmp.contains(", hoverEvent")) {
+                    tmp = tmp.substring(tmp.indexOf("clickEvent=")+11, tmp.indexOf(", hoverEvent=", tmp.indexOf("clickEvent=")));
+                } else {
+                    tmp = "An unknown error has occured";
+                }
+                List<String> temporary = new ArrayList<String>();
+                temporary.add("DefaultString->MSGMETACLICK-"+(global.TMP_string.size()+1));
+                temporary.add(tmp);
+                global.TMP_string.add(temporary);
+                global.backupTMP_strings.add(temporary);
+                TMP_e = TMP_e.replace("{msg}.meta().clickEvent()", "{string[DefaultString->MSGMETACLICK-"+global.TMP_string.size()+"]}");
+            }
+            if (TMP_e.contains("{msg}.meta().hoverEvent()")) {
+                String tmp = chatEvent.message.getChatStyle().toString();
+                if (tmp.contains("hoverEvent=") && tmp.contains(", insertion=")) {
+                    tmp = tmp.substring(tmp.indexOf("hoverEvent=")+11, tmp.indexOf(", insertion=", tmp.indexOf("hoverEvent=")));
+                } else {
+                    tmp = "An unknown error has occured";
+                }
+                List<String> temporary = new ArrayList<String>();
+                temporary.add("DefaultString->MSGMETAHOVER-"+(global.TMP_string.size()+1));
+                temporary.add(tmp);
+                global.TMP_string.add(temporary);
+                global.backupTMP_strings.add(temporary);
+                TMP_e = TMP_e.replace("{msg}.meta().hoverEvent()", "{string[DefaultString->MSGMETAHOVER-"+global.TMP_string.size()+"]}");
+            }
+            if (TMP_e.contains("{msg}.meta()")) {
+                List<String> temporary = new ArrayList<String>();
+                temporary.add("DefaultString->MSGMETA-"+(global.TMP_string.size()+1));
+                temporary.add(ChatHandler.removeFormatting(chatEvent.message.getChatStyle().toString()));
+                global.TMP_string.add(temporary);
+                global.backupTMP_strings.add(temporary);
+                TMP_e = TMP_e.replace("{msg}.meta()", "{string[DefaultString->MSGMETA-"+global.TMP_string.size()+"]}");
+            }
 			if (TMP_e.contains("{msg}")) {
 				List<String> temporary = new ArrayList<String>();
 				temporary.add("DefaultString->MSG-"+(global.TMP_string.size()+1));
