@@ -117,7 +117,7 @@ class ArrayHandler {
             temporary.add(checkTo);
             global.TMP_string.add(temporary);
             global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.add(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"PREPEND"+checkTo+"-"+global.TMP_string.size()+"]}");
+            TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.prepend(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"PREPEND"+checkTo+"-"+global.TMP_string.size()+"]}");
         }
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.clear()")) {

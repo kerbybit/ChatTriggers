@@ -26,8 +26,8 @@ public class StringHandler {
 				int num = Integer.parseInt(strnum);
 				if (num>=0) {
 					if (num<global.chatHistory.size()) {temporary.add(ChatHandler.removeFormatting(global.chatHistory.get(global.chatHistory.size()-(num+1))));} 
-					else {temporary.add("Number must be less then the chat history size! ("+global.chatHistory.size()+")");}
-				} else {temporary.add("Number must be greater then or equal to 0!");}
+					else {temporary.add("Number must be less than the chat history size! ("+global.chatHistory.size()+")");}
+				} else {temporary.add("Number must be greater than or equal to 0!");}
 			} catch (NumberFormatException e) {temporary.add("Not a number!");}
 			global.TMP_string.add(temporary);
 			global.backupTMP_strings.add(temporary);
