@@ -156,6 +156,9 @@ public class ChatHandler {
 				cht.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
 					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
 					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")
+                    .replace("AmpF6cyUQp9Amp","&")
+                    .replace("\\","\\\\")
+                    .replace("BackslashF6cyUQp9Backslash","\\\\")
 				+  "'}";
 		TMP_o += "]";
 		IChatComponent TMP_out = IChatComponent.Serializer.jsonToComponent(TMP_o);

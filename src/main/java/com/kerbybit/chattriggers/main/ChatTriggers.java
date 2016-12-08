@@ -86,8 +86,14 @@ public class ChatTriggers {
             }
         } catch (Exception exception) {
             ChatHandler.warn("&4An unknown error has occured while executing \"&cchat&4\"!");
-            ChatHandler.warn("&4Check logs for details.");
             exception.printStackTrace();
+            global.bugReport.clear();
+            for (StackTraceElement stack : exception.getStackTrace()) {
+                if (stack.toString().toUpperCase().contains("CHATTRIGGERS")) {
+                    global.bugReport.add(stack.toString());
+                }
+            }
+            ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitbugreport,Send a bug report) &4to submit a bug report");
         }
 	}
 	

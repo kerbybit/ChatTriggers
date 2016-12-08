@@ -3,8 +3,10 @@ package com.kerbybit.chattriggers.commands;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.*;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
@@ -15,6 +17,7 @@ import com.kerbybit.chattriggers.triggers.EventsHandler;
 import com.kerbybit.chattriggers.triggers.StringHandler;
 import com.kerbybit.chattriggers.triggers.TagHandler;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -44,6 +47,49 @@ public class CommandTrigger extends CommandBase {
             ChatHandler.warn(ChatHandler.color("red", "/trigger [save/load]"));
             ChatHandler.warn(ChatHandler.color("red", "/trigger [import/export] <...>"));
 
+        } else if (args[0].equalsIgnoreCase("SUBMITBUGREPORT")) {
+            if (global.bugReport.size() > 0) {
+                Thread threadSubmitBugReport = new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            ChatHandler.warn("&7Sending bug report...");
+                            String bug = "";
+                            for (String b : global.bugReport) {
+                                bug += b + "\n";
+                            }
+                            URL url = new URL("http://ct.kerbybit.com/bugreport/");
+                            Map<String,Object> params = new LinkedHashMap<String,Object>();
+                            params.put("name", Minecraft.getMinecraft().thePlayer.getDisplayNameString());
+                            params.put("uuid", Minecraft.getMinecraft().thePlayer.getUniqueID());
+                            params.put("bug", bug);
+
+                            StringBuilder postData = new StringBuilder();
+                            for (Map.Entry<String,Object> param : params.entrySet()) {
+                                if (postData.length() != 0) postData.append('&');
+                                postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
+                                postData.append('=');
+                                postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
+                            }
+                            byte[] postDataBytes = postData.toString().getBytes("UTF-8");
+
+                            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                            conn.setRequestMethod("POST");
+                            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                            conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
+                            conn.setDoOutput(true);
+                            conn.getOutputStream().write(postDataBytes);
+                            Reader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                            ChatHandler.warn(global.settings.get(0) + "Bug report submitted successfully!");
+                            global.bugReport.clear();
+                        } catch (Exception e) {
+                            ChatHandler.warn("&4An error occured while submitting a bug report!");
+                            ChatHandler.warn("&4Is ct.kerbybit.com down?");
+                        }
+
+                    }
+                });
+                threadSubmitBugReport.start();
+            }
         } else if (args[0].equalsIgnoreCase("SIMULATE")) {
             String TMP_e = "";
             for (int i=1; i<args.length; i++) {
@@ -514,9 +560,9 @@ public class CommandTrigger extends CommandBase {
                 if (!silent) {
                     TMP_trig = TMP_trig.replace("(","LeftParF6cyUQp9LeftPar").replace(")","RightParF6cyUQp9RightPar").replace("&","AmpF6cyUQp9Amp");
                     if (TMP_num == -1) {
-                        ChatHandler.warn("&7Created trigger "+global.settings.get(0)+TMP_trig+" &7with trigger type "+global.settings.get(0)+TMP_type);
+                        ChatHandler.warn("&7Created trigger "+global.settings.get(0)+TMP_trig.replace(" "," "+global.settings.get(0))+" &7with trigger type "+global.settings.get(0)+TMP_type);
                     } else {
-                        ChatHandler.warn("&7Created trigger "+global.settings.get(0)+TMP_trig+" &7with trigger type "+global.settings.get(0)+TMP_type+" clickable(&7("+TMP_num+"),suggest_command,/trigger add "+TMP_num+" ,Add an event)");
+                        ChatHandler.warn("&7Created trigger "+global.settings.get(0)+TMP_trig.replace(" "," "+global.settings.get(0))+" &7with trigger type "+global.settings.get(0)+TMP_type+" clickable(&7("+TMP_num+"),suggest_command,/trigger add "+TMP_num+" ,Add an event)");
                     }
                 }
 
@@ -829,7 +875,7 @@ public class CommandTrigger extends CommandBase {
                         String post_out = "";
                         if (!TMP_tags.equals("")) {post_out = "hover(&8tags ,"+TMP_tags+")";}
                         if (!TMP_imported) {post_out += "clickable(&c-,suggest_command,/trigger delete "+i+" [enter to confirm],Remove trigger)";}
-                        ChatHandler.warn(pre_out+" &8"+TMP_type+" "+global.settings.get(0)+TMP_trig+" "+post_out);
+                        ChatHandler.warn(pre_out+" &8"+TMP_type+" "+global.settings.get(0)+TMP_trig.replace(" "," "+global.settings.get(0))+" "+post_out);
 
                         int tabbed_logic = 0;
 
@@ -853,7 +899,7 @@ public class CommandTrigger extends CommandBase {
                             String pre_out_event;
                             if (TMP_imported) {pre_out_event = " ";}
                             else {pre_out_event = "clickable(&c-,suggest_command,/trigger remove "+i+" "+j+" [enter to confirm],Remove event)";}
-                            ChatHandler.warn(TMP_extraspaces+pre_out_event+" &8"+TMP_c+" &7"+TMP_e);
+                            ChatHandler.warn(TMP_extraspaces+pre_out_event+" &8"+TMP_c+" &7"+TMP_e.replace(" "," &7").replace("\\","BackslashF6cyUQp9Backslash"));
 
 
                             if (TMP_c.toUpperCase().startsWith("IF")
@@ -931,7 +977,7 @@ public class CommandTrigger extends CommandBase {
                         String post_out = "";
                         if (!TMP_tags.equals("")) {post_out = "hover(&8tags ,"+TMP_tags+")";}
                         if (!TMP_imported) {post_out += "clickable(&c-,suggest_command,/trigger delete "+i+" [enter to confirm],Remove trigger)";}
-                        ChatHandler.warn(pre_out+" &8"+TMP_type+" "+global.settings.get(0)+TMP_trig+" "+post_out);
+                        ChatHandler.warn(pre_out+" &8"+TMP_type+" "+global.settings.get(0)+TMP_trig.replace(" "," "+global.settings.get(0))+" "+post_out);
 
                         int tabbed_logic=0;
 
@@ -954,7 +1000,7 @@ public class CommandTrigger extends CommandBase {
                             String pre_out_event;
                             if (TMP_imported) {pre_out_event = " ";}
                             else {pre_out_event = "clickable(&c-,suggest_command,/trigger remove "+i+" "+j+" [enter to confirm],Remove event)";}
-                            ChatHandler.warn(TMP_extraspaces+pre_out_event+" &8"+TMP_c+" &7"+TMP_e);
+                            ChatHandler.warn(TMP_extraspaces+pre_out_event+" &8"+TMP_c+" &7"+TMP_e.replace(" "," &7").replace("\\","BackslashF6cyUQp9Backslash"));
 
                             if (TMP_c.toUpperCase().startsWith("IF")
                                     || TMP_c.toUpperCase().startsWith("FOR")
