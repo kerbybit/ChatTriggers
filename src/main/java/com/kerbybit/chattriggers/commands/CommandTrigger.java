@@ -30,7 +30,19 @@ public class CommandTrigger extends CommandBase {
 
     public String getCommandName() {return "trigger";}
 
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException {if (global.canUse) {doCommand(args, false);}}
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException {
+        try {
+            if (global.canUse) {doCommand(args, false);}
+        } catch (Exception e) {
+            for (StackTraceElement stack : e.getStackTrace()) {
+                if (stack.toString().toUpperCase().contains("CHATTRIGGERS")) {
+                    global.bugReport.add(stack.toString());
+                }
+            }
+            ChatHandler.warn(ChatHandler.color("red","An unknown error occurred while performing this command"));
+            ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitbugreport,Send a bug report) &4to submit a bug report");
+        }
+    }
 
     public int getRequiredPermissionLevel() {return 0;}
 

@@ -159,6 +159,7 @@ public class ChatHandler {
                     .replace("AmpF6cyUQp9Amp","&")
                     .replace("\\","\\\\")
                     .replace("BackslashF6cyUQp9Backslash","\\\\")
+                    .replace("'", "\'")
 				+  "'}";
 		TMP_o += "]";
 		IChatComponent TMP_out = IChatComponent.Serializer.jsonToComponent(TMP_o);
