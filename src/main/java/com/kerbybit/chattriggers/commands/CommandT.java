@@ -2,6 +2,7 @@ package com.kerbybit.chattriggers.commands;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
+import com.kerbybit.chattriggers.references.BugTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -25,13 +26,7 @@ public class CommandT extends CommandBase{
                 Minecraft.getMinecraft().thePlayer.sendChatMessage("/t " + send.trim());
             }
         } catch (Exception e) {
-            for (StackTraceElement stack : e.getStackTrace()) {
-                if (stack.toString().toUpperCase().contains("CHATTRIGGERS")) {
-                    global.bugReport.add(stack.toString());
-                }
-            }
-            ChatHandler.warn(ChatHandler.color("red","An unknown error occurred while performing this command"));
-            ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitbugreport,Send a bug report) &4to submit a bug report");
+            BugTracker.send(e, "command");
         }
 	}
 }

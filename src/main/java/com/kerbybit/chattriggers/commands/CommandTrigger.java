@@ -13,6 +13,7 @@ import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.file.UpdateHandler;
 import com.kerbybit.chattriggers.globalvars.global;
+import com.kerbybit.chattriggers.references.BugTracker;
 import com.kerbybit.chattriggers.triggers.EventsHandler;
 import com.kerbybit.chattriggers.triggers.StringHandler;
 import com.kerbybit.chattriggers.triggers.TagHandler;
@@ -34,13 +35,7 @@ public class CommandTrigger extends CommandBase {
         try {
             if (global.canUse) {doCommand(args, false);}
         } catch (Exception e) {
-            for (StackTraceElement stack : e.getStackTrace()) {
-                if (stack.toString().toUpperCase().contains("CHATTRIGGERS")) {
-                    global.bugReport.add(stack.toString());
-                }
-            }
-            ChatHandler.warn(ChatHandler.color("red","An unknown error occurred while performing this command"));
-            ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitbugreport,Send a bug report) &4to submit a bug report");
+            BugTracker.send(e, "command");
         }
     }
 

@@ -157,8 +157,10 @@ public class ChatHandler {
 					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
 					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")
                     .replace("AmpF6cyUQp9Amp","&")
+                    .replace("\\n","NewLineF6cyUQp9NewLine")
                     .replace("\\","\\\\")
                     .replace("BackslashF6cyUQp9Backslash","\\\\")
+                    .replace("NewLineF6cyUQp9NewLine","\\n")
                     .replace("'", "\'")
 				+  "'}";
 		TMP_o += "]";

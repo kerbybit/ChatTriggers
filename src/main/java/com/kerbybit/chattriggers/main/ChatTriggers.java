@@ -2,6 +2,7 @@ package com.kerbybit.chattriggers.main;
 
 import java.io.IOException;
 
+import com.kerbybit.chattriggers.references.BugTracker;
 import org.lwjgl.input.Keyboard;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
@@ -72,14 +73,7 @@ public class ChatTriggers {
                 }
             }
         } catch (Exception exception) {
-            ChatHandler.warn("&4An unknown error has occured while executing \"&conRightClickPlayer&4\"!");
-            exception.printStackTrace();
-            for (StackTraceElement stack : exception.getStackTrace()) {
-                if (stack.toString().toUpperCase().contains("CHATTRIGGERS")) {
-                    global.bugReport.add(stack.toString());
-                }
-            }
-            ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitbugreport,Send a bug report) &4to submit a bug report");
+            BugTracker.send(exception, "onRightClickPlayer");
         }
 	}
 	
@@ -90,15 +84,7 @@ public class ChatTriggers {
                 TriggerHandler.onChat(e);
             }
         } catch (Exception exception) {
-            ChatHandler.warn("&4An unknown error has occured while executing \"&cchat&4\"!");
-            exception.printStackTrace();
-            global.bugReport.clear();
-            for (StackTraceElement stack : exception.getStackTrace()) {
-                if (stack.toString().toUpperCase().contains("CHATTRIGGERS")) {
-                    global.bugReport.add(stack.toString());
-                }
-            }
-            ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitbugreport,Send a bug report) &4to submit a bug report");
+            BugTracker.send(exception, "chat");
         }
 	}
 	
@@ -110,14 +96,7 @@ public class ChatTriggers {
                 global.worldIsLoaded=true;
             }
         } catch (Exception exception) {
-            ChatHandler.warn("&4An unknown error has occured while executing \"&conWorldLoad&4\"!");
-            exception.printStackTrace();
-            for (StackTraceElement stack : exception.getStackTrace()) {
-                if (stack.toString().toUpperCase().contains("CHATTRIGGERS")) {
-                    global.bugReport.add(stack.toString());
-                }
-            }
-            ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitbugreport,Send a bug report) &4to submit a bug report");
+            BugTracker.send(exception, "onWorldLoad");
         }
 	}
 	
@@ -156,14 +135,7 @@ public class ChatTriggers {
             try {
 			    TriggerHandler.onClientTickTriggers();
             } catch (Exception exception) {
-                ChatHandler.warn("&4An unknown error has occured while executing \"&conClientTick&4\"!");
-                exception.printStackTrace();
-                for (StackTraceElement stack : exception.getStackTrace()) {
-                    if (stack.toString().toUpperCase().contains("CHATTRIGGERS")) {
-                        global.bugReport.add(stack.toString());
-                    }
-                }
-                ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitbugreport,Send a bug report) &4to submit a bug report");
+                BugTracker.send(exception, "onClientTick");
             }
 			
 			ChatHandler.onClientTick();
