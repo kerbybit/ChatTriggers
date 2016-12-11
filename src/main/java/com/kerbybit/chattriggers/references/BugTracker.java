@@ -15,7 +15,7 @@ public class BugTracker {
                 global.bugReport.add(stack.toString());
             //}
         }
-        ChatHandler.warn(ChatHandler.color("red",getError(type)));
+        ChatHandler.warn(ChatHandler.color("darkred",getError(type)));
         ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitbugreport,Send a bug report) &4to submit a bug report");
     }
 

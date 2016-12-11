@@ -158,9 +158,11 @@ public class ChatHandler {
 					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")
                     .replace("AmpF6cyUQp9Amp","&")
                     .replace("\\n","NewLineF6cyUQp9NewLine")
+                    .replace("\\'","SingleQuoteF6cyUQp9SingleQuote")
                     .replace("\\","\\\\")
                     .replace("BackslashF6cyUQp9Backslash","\\\\")
                     .replace("NewLineF6cyUQp9NewLine","\\n")
+                    .replace("SingleQuoteF6cyUQp9SingleQuote","\\'")
                     .replace("'", "\'")
 				+  "'}";
 		TMP_o += "]";
