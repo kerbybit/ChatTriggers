@@ -216,7 +216,7 @@ public class StringHandler {
 			global.backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{serverIP}", "{string[DefaultString->SERVERIP-"+global.TMP_string.size()+"]}");
 		}
-		if (TMP_e.contains("{ping}")) {
+		if (TMP_e.contains("{ping}")) {///TODO
 			String returnString;
 			if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "5";}
 			else {returnString = Minecraft.getMinecraft().getCurrentServerData().pingToServer+"";}
@@ -1026,11 +1026,27 @@ public class StringHandler {
                 global.TMP_string.get(tmpstringnum).set(1,tmp_string);
             }
             return "{string["+sn+"]}";
-        }
-			
-		else {
-			if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", func+" is not a function!"));}
-			return "{string["+sn+"]}";
+        } else { ///TODO
+            Boolean is_function = false;
+            for (List<String> function : global.function) {
+                if (function.size() > 2) {
+                    String func_define = function.get(0);
+                    if (func_define.contains(".") && func_define.contains("(") && func_define.contains(")")) {
+                        String func_name = func_define.substring(func_define.indexOf("."), func_define.indexOf("(", func_define.indexOf(".")));
+                        if (func_name.equals(func)) {
+                            is_function = true;
+                            return "{string[" + sn + "]}";
+                        }
+                    }
+                }
+            }
+            if (!is_function) {
+                if (global.debug) {
+                    ChatHandler.warn(ChatHandler.color("gray", func + " is not a function!"));
+                }
+                return "{string[" + sn + "]}";
+            }
+            return "{string[" + sn + "]}";
 		}
 	}
 	

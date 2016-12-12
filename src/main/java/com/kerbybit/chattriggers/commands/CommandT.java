@@ -26,7 +26,7 @@ public class CommandT extends CommandBase{
                 Minecraft.getMinecraft().thePlayer.sendChatMessage("/t " + send.trim());
             }
         } catch (Exception e) {
-            BugTracker.send(e, "command");
+            BugTracker.show(e, "command");
         }
 	}
 }

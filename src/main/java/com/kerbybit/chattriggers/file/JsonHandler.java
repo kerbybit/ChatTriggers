@@ -74,7 +74,7 @@ public class JsonHandler {
 			String jsonString = "";
 			for (String value : lines) {jsonString += value;}
 			jsonString = jsonString.replace("[", "openSquareF6cyUQp9openSquare").replace("]", "closeSquareF6cyUQp9closeSquare")
-					.replace("+", "plusF6cyUQp9plus").replace("-", "minusF6cyUQp9minus");
+					.replace("+", "plusF6cyUQp9plus").replace("-", "minusF6cyUQp9minus").replace("*", "timesF6cyUQp9times");
 			
 			if (toImport.contains("=>")) {
 				if (type.equalsIgnoreCase("ARRAY")) {
@@ -102,7 +102,7 @@ public class JsonHandler {
 						while (jsonString.contains(check)) {
 							String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
 							global.USR_array.get(whatArray).add(jsonGot.replace("openSquareF6cyUQp9openSquare","[").replace("closeSquareF6cyUQp9closeSquare","]")
-									.replace("plusF6cyUQp9plus", "+").replace("minusF6cyUQp9minus", "-"));
+									.replace("plusF6cyUQp9plus", "+").replace("minusF6cyUQp9minus", "-").replace("timesF6cyUQp9times", "*"));
 							jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
 							returnString += jsonGot+",";
 						}

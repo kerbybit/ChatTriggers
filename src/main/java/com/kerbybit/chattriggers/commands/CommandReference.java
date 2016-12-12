@@ -65,6 +65,8 @@ public class CommandReference {
             r.add("");
             r.add("onClientTick");
             r.add("onRightClickPlayer");
+            r.add("");
+            r.add("function");
 
         return r;
     }
@@ -107,7 +109,9 @@ public class CommandReference {
 			global.onNewDayTrigger.add(tmp_list);
 		} else if (tmp_list.get(0).equalsIgnoreCase("ONRIGHTCLICKPLAYER")) {
 			global.onRightClickPlayerTrigger.add(tmp_list);
-		}
+		} else if (tmp_list.get(0).equalsIgnoreCase("FUNCTION")) {
+            global.function.add(tmp_list);
+        }
 	}
 	
 	static Boolean isEventType(String TMP_etype) {

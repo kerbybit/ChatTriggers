@@ -73,7 +73,7 @@ public class ChatTriggers {
                 }
             }
         } catch (Exception exception) {
-            BugTracker.send(exception, "onRightClickPlayer");
+            BugTracker.show(exception, "onRightClickPlayer");
         }
 	}
 	
@@ -84,7 +84,7 @@ public class ChatTriggers {
                 TriggerHandler.onChat(e);
             }
         } catch (Exception exception) {
-            BugTracker.send(exception, "chat");
+            BugTracker.show(exception, "chat");
         }
 	}
 	
@@ -96,7 +96,7 @@ public class ChatTriggers {
                 global.worldIsLoaded=true;
             }
         } catch (Exception exception) {
-            BugTracker.send(exception, "onWorldLoad");
+            BugTracker.show(exception, "onWorldLoad");
         }
 	}
 	
@@ -135,7 +135,7 @@ public class ChatTriggers {
             try {
 			    TriggerHandler.onClientTickTriggers();
             } catch (Exception exception) {
-                BugTracker.send(exception, "onClientTick");
+                BugTracker.show(exception, "onClientTick");
             }
 			
 			ChatHandler.onClientTick();

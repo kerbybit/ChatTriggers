@@ -32,7 +32,7 @@ public class CommandTR extends CommandBase {
                 Minecraft.getMinecraft().thePlayer.sendChatMessage("/tr " + send.trim());
             }
         } catch (Exception e) {
-            BugTracker.send(e, "command");
+            BugTracker.show(e, "command");
         }
 	}
 }
