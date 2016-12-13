@@ -1011,9 +1011,9 @@ public class StringHandler {
 
             String[] split_tmp_string = tmp_string.split(" ");
             for (String value : split_tmp_string) {
-                String newvalue = value;
+                String newvalue = ChatHandler.deleteFormatting(value);
                 if (value.contains(".")) {
-                    if (!(value.toUpperCase().startsWith("HTTP://") || value.toUpperCase().startsWith("HTTPS://"))) {
+                    if (!(newvalue.toUpperCase().startsWith("HTTP://") || newvalue.toUpperCase().startsWith("HTTPS://"))) {
                         newvalue = "http://"+value;
                     }
                     tmp_string = tmp_string.replace(value, "{link[" + value + "],[" + newvalue + "]}");
