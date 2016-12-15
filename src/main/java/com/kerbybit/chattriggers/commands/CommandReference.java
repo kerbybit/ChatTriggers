@@ -80,6 +80,7 @@ public class CommandReference {
 		global.onServerChangeTrigger.clear();
 		global.onNewDayTrigger.clear();
 		global.onRightClickPlayerTrigger.clear();
+        global.function.clear();
 	}
 	
 	public static void addToTriggerList(List<String> tmp_list) {

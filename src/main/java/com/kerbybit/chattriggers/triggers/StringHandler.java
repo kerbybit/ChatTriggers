@@ -385,20 +385,20 @@ public class StringHandler {
 		return -1;
 	}
 	
-	private static String doStringFunctions(String sn, String func, String args) {
+	private static String doStringFunctions(String sn, String func, String args, ClientChatReceivedEvent chatEvent) {
 		int stringnum;
 		int tmpstringnum = -1;
 		
-		args = stringFunctions(args);
+		args = stringFunctions(args, chatEvent);
 		while (args.contains("{array[") && args.contains("]}")) {
-			args = ArrayHandler.arrayFunctions(args);
-			args = stringFunctions(args);
+			args = ArrayHandler.arrayFunctions(args, chatEvent);
+			args = stringFunctions(args, chatEvent);
 		}
 		while (args.contains("{string[") && args.contains("]}")) {
-			args = stringFunctions(args);
+			args = stringFunctions(args, chatEvent);
 		}
 		
-		sn = stringFunctions(sn);
+		sn = stringFunctions(sn, chatEvent);
 		
 		stringnum = getStringNum(sn);
 		
@@ -1027,30 +1027,37 @@ public class StringHandler {
             }
             return "{string["+sn+"]}";
         } else { ///TODO
-            Boolean is_function = false;
             for (List<String> function : global.function) {
                 if (function.size() > 2) {
-                    String func_define = function.get(0);
+                    String func_define = function.get(1);
                     if (func_define.contains(".") && func_define.contains("(") && func_define.contains(")")) {
-                        String func_name = func_define.substring(func_define.indexOf("."), func_define.indexOf("(", func_define.indexOf(".")));
+                        String func_name = func_define.substring(func_define.indexOf(".")+1, func_define.indexOf("(", func_define.indexOf(".")));
                         if (func_name.equals(func)) {
-                            is_function = true;
+                            String func_to = func_define.substring(0, func_define.indexOf("."));
+                            List<String> TMP_events = new ArrayList<String>();
+                            for (int j = 2; j < function.size(); j++) {
+                                TMP_events.add(function.get(j));
+                            }
+                            if (stringnum!=-1) {
+                                String ret = EventsHandler.doEvents(TMP_events, chatEvent, new String[] {func_to}, new String[] {global.USR_string.get(stringnum).get(1)});
+                                global.USR_string.get(stringnum).set(1, ret);
+                            } else {
+                                String ret = EventsHandler.doEvents(TMP_events, chatEvent, new String[] {func_to}, new String[] {global.TMP_string.get(tmpstringnum).get(1)});
+                                global.TMP_string.get(tmpstringnum).set(1, ret);
+                            }
                             return "{string[" + sn + "]}";
                         }
                     }
                 }
             }
-            if (!is_function) {
-                if (global.debug) {
-                    ChatHandler.warn(ChatHandler.color("gray", func + " is not a function!"));
-                }
-                return "{string[" + sn + "]}";
+            if (global.debug) {
+                ChatHandler.warn(ChatHandler.color("gray", func + " is not a function!"));
             }
             return "{string[" + sn + "]}";
 		}
 	}
 	
-	static String stringFunctions(String TMP_e) {
+	static String stringFunctions(String TMP_e, ClientChatReceivedEvent chatEvent) {
 		TMP_e = TMP_e.replace("'('", "stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement")
 				.replace("')'", "stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement");
 		while (TMP_e.contains("{string[") && TMP_e.contains("]}")) {
@@ -1080,7 +1087,7 @@ public class StringHandler {
 				
 				String efirst = TMP_e.substring(0, TMP_e.indexOf(sn));
 				String esecond = TMP_e.substring(TMP_e.indexOf(sn)+sn.length());
-				sn = stringFunctions(sn);
+				sn = stringFunctions(sn, chatEvent);
 				
 				TMP_e = efirst + sn + esecond;
 				sn = sn.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
@@ -1114,7 +1121,7 @@ public class StringHandler {
 				String firstpart = TMP_e.substring(0, TMP_e.indexOf(fullreplace));
 				String secondpart = TMP_e.substring(TMP_e.indexOf(fullreplace)+fullreplace.length());
 				
-				TMP_e = firstpart + StringHandler.doStringFunctions(sn,func,args) + secondpart;
+				TMP_e = firstpart + StringHandler.doStringFunctions(sn,func,args, chatEvent) + secondpart;
 			} else {
 				String sn = TMP_e.substring(TMP_e.indexOf("{string[")+8, TMP_e.indexOf("]}", TMP_e.indexOf("{string[")));
 				while (sn.contains("{string[")) {
@@ -1135,7 +1142,7 @@ public class StringHandler {
 				
 				String efirst = TMP_e.substring(0, TMP_e.indexOf(sn));
 				String esecond = TMP_e.substring(TMP_e.indexOf(sn)+sn.length());
-				sn = stringFunctions(sn);
+				sn = stringFunctions(sn, chatEvent);
 				
 				TMP_e = efirst + sn + esecond;
 				

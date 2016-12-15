@@ -19,14 +19,15 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import static com.kerbybit.chattriggers.triggers.TriggerHandler.onChat;
 
 public class EventsHandler {
-	public static void doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent) {
+	public static String doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent) {
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
-		doEvents(tmp_event, chatEvent, null, null);
+		return doEvents(tmp_event, chatEvent, null, null);
 	}
 	
-	public static void doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, String[] toreplace, String[] replacement) {
+	public static String doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, String[] toreplace, String[] replacement) {
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
 		String stringCommaReplace = "stringCommaReplacementF6cyUQp9stringCommaReplacement";
+        String ret = "null";
 		
 		if (toreplace != null) {
 			for (int i=0; i<toreplace.length; i++) {
@@ -58,9 +59,9 @@ public class EventsHandler {
 		//user strings and functions
 			TMP_e = TMP_e.replace("{string<", "{string[").replace("{array<", "{array[").replace(">}", "]}");
 			
-			TMP_e = StringHandler.stringFunctions(TMP_e);
-			TMP_e = ArrayHandler.arrayFunctions(TMP_e);
-			TMP_e = StringHandler.stringFunctions(TMP_e);
+			TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent);
+			TMP_e = ArrayHandler.arrayFunctions(TMP_e, chatEvent);
+			TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent);
 			
 		//tags
 			try {
@@ -156,7 +157,12 @@ public class EventsHandler {
 						.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")));}
 				catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Unable to open URL! IOExeption"));}
 			}
-            if (TMP_e.equalsIgnoreCase("BREAK")) {/*i = tmp_event.size(); DISABLED*/}
+            if (TMP_c.equalsIgnoreCase("RETURN")) {
+                ret = TMP_e
+                        .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                        .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+                        .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
+            }
 			
 			
 		//logic events
@@ -320,7 +326,7 @@ public class EventsHandler {
                             for (int j=1; j<arrayto.size(); j++) {
                                 String[] first = {valin};
                                 String[] second = {arrayto.get(j)};
-                                doEvents(eventsToFor, chatEvent, first, second);
+                                ret = doEvents(eventsToFor, chatEvent, first, second);
                             }
                         } else {
                             try {
@@ -356,7 +362,7 @@ public class EventsHandler {
                                 for (int j=int_from; j<int_to+1; j++) {
                                     String[] first = {args[0].trim()};
                                     String[] second = {j + ""};
-                                    doEvents(eventsToFor, chatEvent, first, second);
+                                    ret = doEvents(eventsToFor, chatEvent, first, second);
                                 }
                             } else {
                                 try {
@@ -457,16 +463,16 @@ public class EventsHandler {
 					if (TMP_e.equalsIgnoreCase("TRUE") || TMP_e.equalsIgnoreCase("NOT FALSE")) {
 						if (eventsToIf.size()>0) {
 							eventsToIf.remove(0);
-							doEvents(eventsToIf, chatEvent);
+							ret = doEvents(eventsToIf, chatEvent);
 						}
 					} else {
 						if (eventsToElse.size()>0) {
 							if (eventsToElse.get(0).toUpperCase().startsWith("ELSEIF")) {
 								eventsToElse.set(0, eventsToElse.get(0).substring(4));
-								doEvents(eventsToElse, chatEvent);
+								ret = doEvents(eventsToElse, chatEvent);
 							} else {
 								eventsToElse.remove(0);
-								doEvents(eventsToElse, chatEvent);
+								ret = doEvents(eventsToElse, chatEvent);
 							}
 						}
 					}
@@ -533,7 +539,7 @@ public class EventsHandler {
 					int rand = randInt(1,eventsToChoose.size()-2);
 					
 					//do events
-					doEvents(eventsToChoose.get(rand), chatEvent);
+					ret = doEvents(eventsToChoose.get(rand), chatEvent);
 					
 					//move i to closing end
 					int moveEvents = 0;
@@ -542,6 +548,7 @@ public class EventsHandler {
 				}
 			}
 		}
+        return ret;
 	}
 	
 	private static void doTrigger(String triggerName, ClientChatReceivedEvent chatEvent) {
