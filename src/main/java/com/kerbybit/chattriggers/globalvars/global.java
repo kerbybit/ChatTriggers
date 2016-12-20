@@ -95,8 +95,17 @@ public class global {
 	// get(1+) = array values
 	////////////////////////////////////////////////////
 	public static List<List<String>> USR_array = new ArrayList<List<String>>();
-	
-	
+
+
+
+    ////////////////Display matrix//////////////////////
+    // layout
+    // get(0) = display name
+    // get(1) = display x
+    // get(2) = display y
+    // get(3+) = display values
+    ////////////////////////////////////////////////////
+	public static List<List<String>> displays = new ArrayList<List<String>>();
 	
 	//////////////////Settings matrix///////////////////
 	// layout

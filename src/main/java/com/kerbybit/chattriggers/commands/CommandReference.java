@@ -12,6 +12,7 @@ public class CommandReference {
 	public static void resetAll() {
 		ChatHandler.warn(ChatHandler.color("red", "Resetting everything in attempt to fix things"));
 		global.waitEvents.clear();
+        global.waitTime.clear();
 		global.asyncEvents.clear();
 		global.backupTMP_strings.clear();
 		global.backupUSR_strings.clear();
@@ -25,6 +26,7 @@ public class CommandReference {
 
     public static void silentResetAll() {
         global.waitEvents.clear();
+        global.waitTime.clear();
         global.asyncEvents.clear();
         global.backupTMP_strings.clear();
         global.backupUSR_strings.clear();

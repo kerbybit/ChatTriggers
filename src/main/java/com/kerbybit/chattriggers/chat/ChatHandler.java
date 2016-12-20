@@ -229,7 +229,7 @@ public class ChatHandler {
 	}
 	
 	public static String removeFormatting(String msg) {
-		msg = msg.replace(EnumChatFormatting.BLACK.toString(), "&0")
+		return msg.replace(EnumChatFormatting.BLACK.toString(), "&0")
 			.replace(EnumChatFormatting.DARK_BLUE.toString(), "&1")
 			.replace(EnumChatFormatting.DARK_GREEN.toString(), "&2")
 			.replace(EnumChatFormatting.DARK_AQUA.toString(), "&3")
@@ -251,11 +251,10 @@ public class ChatHandler {
 			.replace(EnumChatFormatting.UNDERLINE.toString(), "&n")
 			.replace(EnumChatFormatting.ITALIC.toString(), "&o")
 			.replace(EnumChatFormatting.RESET.toString(), "&r");
-		return msg;
 	}
 	
 	public static String addFormatting(String msg) {
-		msg = msg.replace("&0", EnumChatFormatting.BLACK.toString())
+		return msg.replace("&0", EnumChatFormatting.BLACK.toString())
 			.replace("&1", EnumChatFormatting.DARK_BLUE.toString())
 			.replace("&2", EnumChatFormatting.DARK_GREEN.toString())
 			.replace("&3", EnumChatFormatting.DARK_AQUA.toString())
@@ -277,11 +276,10 @@ public class ChatHandler {
 			.replace("&n", EnumChatFormatting.UNDERLINE.toString())
 			.replace("&o", EnumChatFormatting.ITALIC.toString())
 			.replace("&r", EnumChatFormatting.RESET.toString());
-		return msg;
 	}
 
     public static String deleteFormatting(String msg) {
-        msg = msg.replace(EnumChatFormatting.BLACK.toString(), "")
+        return msg.replace(EnumChatFormatting.BLACK.toString(), "")
                 .replace(EnumChatFormatting.DARK_BLUE.toString(), "")
                 .replace(EnumChatFormatting.DARK_GREEN.toString(), "")
                 .replace(EnumChatFormatting.DARK_AQUA.toString(), "")
@@ -325,6 +323,5 @@ public class ChatHandler {
                 .replace("&n", "")
                 .replace("&o", "")
                 .replace("&r", "");
-        return msg;
     }
 }
