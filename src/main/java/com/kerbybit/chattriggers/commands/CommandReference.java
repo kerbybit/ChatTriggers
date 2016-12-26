@@ -69,6 +69,7 @@ public class CommandReference {
             r.add("onRightClickPlayer");
             r.add("");
             r.add("function");
+            r.add("onUnknownError");
 
         return r;
     }
@@ -83,6 +84,7 @@ public class CommandReference {
 		global.onNewDayTrigger.clear();
 		global.onRightClickPlayerTrigger.clear();
         global.function.clear();
+        global.onUnknownError.clear();
 	}
 	
 	public static void addToTriggerList(List<String> tmp_list) {
@@ -114,6 +116,8 @@ public class CommandReference {
 			global.onRightClickPlayerTrigger.add(tmp_list);
 		} else if (tmp_list.get(0).equalsIgnoreCase("FUNCTION")) {
             global.function.add(tmp_list);
+        } else if (tmp_list.get(0).equalsIgnoreCase("ONUNKNOWNERROR")) {
+            global.onUnknownError.add(tmp_list);
         }
 	}
 	

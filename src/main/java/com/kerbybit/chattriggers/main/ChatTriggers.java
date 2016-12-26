@@ -2,6 +2,7 @@ package com.kerbybit.chattriggers.main;
 
 import java.io.IOException;
 
+import com.kerbybit.chattriggers.gui.DisplayOverlay;
 import com.kerbybit.chattriggers.references.BugTracker;
 import org.lwjgl.input.Keyboard;
 
@@ -56,8 +57,9 @@ public class ChatTriggers {
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if (global.canUse) {
 			if (altGuiKey.isPressed()) {
-				GuiTriggerList.inMenu = -1;
-				global.showAltInputGui = true;
+                global.showDisplayGui = true;
+				//GuiTriggerList.inMenu = -1;
+				//global.showAltInputGui = true;
 			}
 		}
 	}
@@ -114,6 +116,7 @@ public class ChatTriggers {
 			OverlayHandler.drawNotify(event);
 			
 			GuiTriggerList.openGui();
+            DisplayOverlay.openGui();
 			
 			FileHandler.firstFileLoad();
 			

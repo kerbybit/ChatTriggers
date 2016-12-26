@@ -2,6 +2,7 @@ package com.kerbybit.chattriggers.references;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
+import com.kerbybit.chattriggers.triggers.EventsHandler;
 import net.minecraft.client.Minecraft;
 
 import java.io.BufferedReader;
@@ -10,7 +11,9 @@ import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BugTracker {
@@ -69,6 +72,15 @@ public class BugTracker {
         }
         ChatHandler.warn(ChatHandler.color("darkred",getError(type)));
         ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitbugreport,Send a bug report) &4to submit a bug report");
+
+        for (int i=0; i<global.onUnknownError.size(); i++) {
+            //add all events to temp list
+            List<String> TMP_events = new ArrayList<String>();
+            for (int j=2; j<global.onUnknownError.get(i).size(); j++) {TMP_events.add(global.onUnknownError.get(i).get(j));}
+
+            //do events
+            EventsHandler.doEvents(TMP_events, null);
+        }
     }
 
     private static String getError(String type) {

@@ -41,6 +41,8 @@ public class global {
 	
 	public static List<String> killfeed = new ArrayList<String>();
 	public static List<Integer> killfeedDelay = new ArrayList<Integer>();
+    public static double killfeed_x = 0;
+    public static double killfeed_y = 0;
 	
 	public static List<List<String>> waitEvents = new ArrayList<List<String>>();
 	public static List<Integer> waitTime = new ArrayList<Integer>();
@@ -56,6 +58,7 @@ public class global {
 	
 	public static boolean showGUI = false;
 	public static boolean showAltInputGui = false;
+    public static boolean showDisplayGui = false;
 	
 	//////////////////Trigger matrix////////////////////
 	// layout
@@ -74,6 +77,7 @@ public class global {
 	public static List<List<String>> onRightClickPlayerTrigger = new ArrayList<List<String>>();
     public static List<List<String>> onChatTrigger = new ArrayList<List<String>>();
     public static List<List<String>> function = new ArrayList<List<String>>();
+    public static List<List<String>> onUnknownError = new ArrayList<List<String>>();
 	
 	///////////////////String matrix/////////////////////
 	// layout
