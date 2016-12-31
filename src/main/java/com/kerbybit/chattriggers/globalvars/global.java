@@ -3,6 +3,7 @@ package com.kerbybit.chattriggers.globalvars;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -127,4 +128,10 @@ public class global {
     ////////////////////////////////////////////////////
 	public static List<String> settings = new ArrayList<String>();
     public static int settingsNotificationSpeed = 10;
+
+    public static String[] append(String[] array, String value) {
+        String[] result = Arrays.copyOf(array, array.length+1);
+        result[result.length-1] = value;
+        return result;
+    }
 }

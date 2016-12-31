@@ -1026,7 +1026,7 @@ public class StringHandler {
                 global.TMP_string.get(tmpstringnum).set(1,tmp_string);
             }
             return "{string["+sn+"]}";
-        } else { ///TODO
+        } else {
             for (List<String> function : global.function) {
                 if (function.size() > 2) {
                     String func_define = function.get(1);
@@ -1034,18 +1034,38 @@ public class StringHandler {
                         String func_name = func_define.substring(func_define.indexOf(".")+1, func_define.indexOf("(", func_define.indexOf(".")));
                         if (func_name.equals(func)) {
                             String func_to = func_define.substring(0, func_define.indexOf("."));
-                            List<String> TMP_events = new ArrayList<String>();
-                            for (int j = 2; j < function.size(); j++) {
-                                TMP_events.add(function.get(j));
-                            }
-                            if (stringnum!=-1) {
-                                String ret = EventsHandler.doEvents(TMP_events, chatEvent, new String[] {func_to}, new String[] {global.USR_string.get(stringnum).get(1)});
-                                global.USR_string.get(stringnum).set(1, ret);
+                            String func_arg = func_define.substring(func_define.indexOf("(")+1, func_define.indexOf(")", func_define.indexOf(")")));
+                            if (func_arg.contains(",")) {
+                                String[] func_args = func_arg.split(",");
+                                String[] func_args_to = args.split(",");
+                                if (func_args.length == func_args_to.length) {
+                                    List<String> TMP_events = new ArrayList<String>();
+                                    for (int j = 2; j < function.size(); j++) {
+                                        TMP_events.add(function.get(j));
+                                    }
+                                    if (stringnum != -1) {
+                                        String ret = EventsHandler.doEvents(TMP_events, chatEvent, global.append(func_args, func_to), global.append(func_args_to, global.USR_string.get(stringnum).get(1)));
+                                        global.USR_string.get(stringnum).set(1, ret);
+                                    } else {
+                                        String ret = EventsHandler.doEvents(TMP_events, chatEvent, global.append(func_args, func_to), global.append(func_args_to, global.TMP_string.get(tmpstringnum).get(1)));
+                                        global.TMP_string.get(tmpstringnum).set(1, ret);
+                                    }
+                                    return "{string[" + sn + "]}";
+                                }
                             } else {
-                                String ret = EventsHandler.doEvents(TMP_events, chatEvent, new String[] {func_to}, new String[] {global.TMP_string.get(tmpstringnum).get(1)});
-                                global.TMP_string.get(tmpstringnum).set(1, ret);
+                                List<String> TMP_events = new ArrayList<String>();
+                                for (int j = 2; j < function.size(); j++) {
+                                    TMP_events.add(function.get(j));
+                                }
+                                if (stringnum != -1) {
+                                    String ret = EventsHandler.doEvents(TMP_events, chatEvent, new String[] {func_to}, new String[] {global.USR_string.get(stringnum).get(1)});
+                                    global.USR_string.get(stringnum).set(1, ret);
+                                } else {
+                                    String ret = EventsHandler.doEvents(TMP_events, chatEvent, new String[] {func_to}, new String[] {global.TMP_string.get(tmpstringnum).get(1)});
+                                    global.TMP_string.get(tmpstringnum).set(1, ret);
+                                }
+                                return "{string[" + sn + "]}";
                             }
-                            return "{string[" + sn + "]}";
                         }
                     }
                 }
