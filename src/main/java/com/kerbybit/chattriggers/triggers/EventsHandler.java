@@ -246,13 +246,61 @@ public class EventsHandler {
 						int TMP_time = Integer.parseInt(TMP_e);
 						if (TMP_time>0) {
 							global.waitEvents.add(eventsToWait);
-							global.waitTime.add(Integer.parseInt(TMP_e));
+							global.waitTime.add(TMP_time);
 						} else {
 							ChatHandler.warn(ChatHandler.color("red", "Malformed WAIT event - skipping"));
 						}
 					} catch (NumberFormatException e) {
-						e.printStackTrace();
-						ChatHandler.warn(ChatHandler.color("red", "Malformed WAIT event - skipping"));
+                        String get_time = TMP_e.toUpperCase();
+						if (get_time.contains("H") || get_time.contains("M") || get_time.contains("S")) {
+                            try {
+                                if (get_time.startsWith("H") || get_time.startsWith("M") || get_time.startsWith("S")) {
+                                    ChatHandler.warn(ChatHandler.color("red", "Malformed WAIT event - skipping"));
+                                } else {
+                                    String hours = "0";
+                                    if (get_time.contains("H")) {
+                                        hours = get_time.substring(0, get_time.indexOf("H"));
+                                        if (hours.contains("M")) {
+                                            hours = hours.substring(hours.indexOf("M")+1);
+                                        }
+                                        if (hours.contains("S")) {
+                                            hours = hours.substring(hours.indexOf("S")+1);
+                                        }
+                                    }
+                                    String minutes = "0";
+                                    if (get_time.contains("M")) {
+                                        minutes = get_time.substring(0, get_time.indexOf("M"));
+                                        if (minutes.contains("H")) {
+                                            minutes = minutes.substring(minutes.indexOf("H")+1);
+                                        }
+                                        if (minutes.contains("S")) {
+                                            minutes = minutes.substring(minutes.indexOf("S")+1);
+                                        }
+                                    }
+                                    String seconds = "0";
+                                    if (get_time.contains("S")) {
+                                        seconds = get_time.substring(0, get_time.indexOf("S"));
+                                        if (seconds.contains("H")) {
+                                            seconds = seconds.substring(seconds.indexOf("H")+1);
+                                        }
+                                        if (seconds.contains("M")) {
+                                            seconds = seconds.substring(seconds.indexOf("M")+1);
+                                        }
+                                    }
+                                    int TMP_time = Integer.parseInt(hours)*72000 + Integer.parseInt(minutes)*1200 + Integer.parseInt(seconds)*20;
+                                    if (TMP_time>0) {
+                                        global.waitEvents.add(eventsToWait);
+                                        global.waitTime.add(TMP_time);
+                                    } else {
+                                        ChatHandler.warn(ChatHandler.color("red", "Malformed WAIT event - skipping"));
+                                    }
+                                }
+                            } catch (NumberFormatException e2) {
+                                ChatHandler.warn(ChatHandler.color("red", "Malformed WAIT event - skipping"));
+                            }
+                        } else {
+                            ChatHandler.warn(ChatHandler.color("red", "Malformed WAIT event - skipping"));
+                        }
 					}
 				}
 				
