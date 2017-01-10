@@ -44,8 +44,8 @@ public class DisplayOverlay extends GuiScreen {
 
         if (grabbed) {
             grabbed = false; can_grab = false;
-            //global.settings.set(3, global.killfeed_x + " " + global.killfeed_y);
-            //FileHandler.saveAll();
+            global.settings.set(3, global.killfeed_x + " " + global.killfeed_y);
+            FileHandler.saveAll();
         }
         if (can_grab) {
             if (kx < width /2) {
@@ -104,6 +104,7 @@ public class DisplayOverlay extends GuiScreen {
             if (x > (int)width - 7) {global.killfeed_x = ((int)width - 5)/width;}
             if (y > (int)height - 7) {global.killfeed_y = ((int)height - 5)/height;}
             if ((x > ((int)width / 2) - 3) && (x < ((int)width / 2) + 3)) {global.killfeed_x = ((int)width / 2)/width;}
+            MC.fontRendererObj.drawStringWithShadow(global.killfeed_x + ", " + global.killfeed_y,0, 0,  0xffffffff);
         }
 
         if (kx < width / 3) {

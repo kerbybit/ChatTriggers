@@ -430,8 +430,8 @@ public class FileHandler {
                 try {
 
                     String[] xy = temp.split(" ");
-                    global.killfeed_x = Integer.parseInt(xy[0]);
-                    global.killfeed_y = Integer.parseInt(xy[1]);
+                    global.killfeed_x = Double.parseDouble(xy[0]);
+                    global.killfeed_y = Double.parseDouble(xy[1]);
                 } catch (Exception e) {
                     ScaledResolution var5 = new ScaledResolution(Minecraft.getMinecraft());
                     float width = var5.getScaledWidth();
