@@ -18,6 +18,31 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class StringHandler {
 	static String builtInStrings(String TMP_e, ClientChatReceivedEvent chatEvent) {
+        while (TMP_e.contains("{random(") && TMP_e.contains(")}")) {
+            List<String> temporary = new ArrayList<String>();
+            String lowhigh = TMP_e.substring(TMP_e.indexOf("{random(")+8, TMP_e.indexOf(")}", TMP_e.indexOf("{random(")));
+            temporary.add("DefaultString->RANDOM"+lowhigh+"-"+(global.TMP_string.size()+1));
+            try {
+                int low = 0;
+                int high = 0;
+                if (lowhigh.contains(",")) {
+                    String[] tmp_lowhigh = lowhigh.split(",");
+                    low = Integer.parseInt(tmp_lowhigh[0].trim());
+                    high = Integer.parseInt(tmp_lowhigh[1].trim());
+                } else {
+                    high = Integer.parseInt(lowhigh);
+                }
+
+                temporary.add(EventsHandler.randInt(low,high) + "");
+            } catch (NumberFormatException e) {
+                temporary.add("Not a number!");
+            }
+
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+
+            TMP_e = TMP_e.replace("{random("+lowhigh+")}", "{string[DefaultString->RANDOM"+lowhigh+"-"+global.TMP_string.size()+"]}");
+        }
 		while (TMP_e.contains("{msg[") && TMP_e.contains("]}")) {
 			String strnum = TMP_e.substring(TMP_e.indexOf("{msg[")+5, TMP_e.indexOf("]}", TMP_e.indexOf("{msg[")));
 			List<String> temporary = new ArrayList<String>();
