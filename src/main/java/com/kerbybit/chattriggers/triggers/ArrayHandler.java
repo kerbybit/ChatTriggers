@@ -62,15 +62,30 @@ class ArrayHandler {
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.add(") && TMP_e.contains(")")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.add(", TMP_e.indexOf("{array[")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.add(")+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.add(")));
+            String fin_checkTo = checkTo;
 			Boolean isArray = false;
-			
+            int where = -1;
+
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
 				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
 			}
-			
+
+            if (checkTo.contains(",")) {
+                try {
+                    where = Integer.parseInt(checkTo.split(",")[0]);
+                    fin_checkTo = checkTo.substring(checkTo.indexOf(",") + 1);
+                } catch (NumberFormatException e) {
+                    where = -1;
+                }
+            }
+
 			for (int j=0; j<global.USR_array.size(); j++) {
 				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
-					global.USR_array.get(j).add(checkTo);
+                    if (where == -1) {
+                        global.USR_array.get(j).add(fin_checkTo);
+                    } else {
+                        global.USR_array.get(j).add(where, fin_checkTo);
+                    }
 					isArray = true;
 				}
 			}
@@ -78,8 +93,8 @@ class ArrayHandler {
 			if (!isArray) {
 				List<String> prearray = new ArrayList<String>();
 				prearray.add(checkFrom);
-				prearray.add(checkTo);
-				global.USR_array.add(prearray);
+				prearray.add(fin_checkTo);
+                global.USR_array.add(prearray);
 			}
 			
 			List<String> temporary = new ArrayList<String>();

@@ -24,7 +24,7 @@ public class StringHandler {
             temporary.add("DefaultString->RANDOM"+lowhigh+"-"+(global.TMP_string.size()+1));
             try {
                 int low = 0;
-                int high = 0;
+                int high;
                 if (lowhigh.contains(",")) {
                     String[] tmp_lowhigh = lowhigh.split(",");
                     low = Integer.parseInt(tmp_lowhigh[0].trim());
