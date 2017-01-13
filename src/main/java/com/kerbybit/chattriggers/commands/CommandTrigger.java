@@ -1160,8 +1160,7 @@ public class CommandTrigger extends CommandBase {
                     }
                 }
             }else if (args[1].equalsIgnoreCase("DUMP")) {
-                for (ClientChatReceivedEvent e : global.chatEventHistory) {
-                    String fmsg = e.message.getFormattedText();
+                for (String fmsg : global.chatHistory) {
                     String tmp_out = ChatHandler.removeFormatting(fmsg);
                     global.copyText.add(tmp_out);
                     /*String tmp_outfin = tmp_out.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")

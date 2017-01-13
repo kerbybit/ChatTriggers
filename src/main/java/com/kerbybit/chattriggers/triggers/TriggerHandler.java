@@ -242,9 +242,13 @@ public class TriggerHandler {
         //chat
 		String msg = e.message.getUnformattedText();
 		String fmsg = e.message.getFormattedText();
-        global.chatEventHistory.add(e);
-        if (global.chatEventHistory.size()>100) {global.chatEventHistory.remove(0);}
-		global.chatHistory.add(ChatHandler.removeFormatting(fmsg));
+        if (global.chatHistory.size() >= 1) {
+            if (!global.chatHistory.get(global.chatHistory.size()-1).equals(ChatHandler.removeFormatting(fmsg))) {
+                global.chatHistory.add(ChatHandler.removeFormatting(fmsg));
+            }
+        } else {
+            global.chatHistory.add(ChatHandler.removeFormatting(fmsg));
+        }
 		if (global.chatHistory.size()>100) {global.chatHistory.remove(0);}
 
         onChat(fmsg, msg, e);

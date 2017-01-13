@@ -33,7 +33,6 @@ public class global {
     public static HashMap<String, String> jsonURL = new HashMap<String, String>();
 	
 	public static List<String> chatHistory = new ArrayList<String>();
-    public static List<ClientChatReceivedEvent> chatEventHistory = new ArrayList<ClientChatReceivedEvent>();
 	public static int tick = 0;
 	public static int ticksElapsed = 0;
 	public static List<String> chatQueue = new ArrayList<String>();
