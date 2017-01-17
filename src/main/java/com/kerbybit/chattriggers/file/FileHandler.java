@@ -552,7 +552,7 @@ public class FileHandler {
 	    	if (global.settings.get(4).equals("false")) {UpdateHandler.loadVersion("http://chattriggers.kerbybit.com/download/version.txt");} 
 	    	else {UpdateHandler.loadVersion("http://chattriggers.kerbybit.com/download/betaversion.txt");}
 	    	
-	    	UpdateHandler.getCanUse("http://www.kerbybit.com/blacklist/", "http://www.kerbybit.com/enabledmods/");
+	    	UpdateHandler.getCanUse("http://www.kerbybit.com/blacklist/", "http://www.kerbybit.com/enabledmods/", "http://ct.kerbybit.com/creators/");
 		}
 	}
 	

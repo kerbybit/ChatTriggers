@@ -15,9 +15,10 @@ import com.kerbybit.chattriggers.globalvars.global;
 import net.minecraft.client.Minecraft;
 
 public class UpdateHandler {
-	public static void getCanUse(String url1, String url2) {
+	public static void getCanUse(String url1, String url2, String url3) {
 		global.canUseURL1 = url1;
 		global.canUseURL2 = url2;
+        global.hasWatermarkURL = url3;
 		Thread threadCanUse1 = new Thread(new Runnable() {
 			public void run() {
 				try {
@@ -75,6 +76,23 @@ public class UpdateHandler {
 		 					}
 		 				}
 		 			}
+
+                    web = new URL(global.hasWatermarkURL);
+                    fis = web.openStream();
+                    lines = new ArrayList<String>();
+                    bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
+                    while ((line = bufferedReader.readLine()) != null) {
+                        lines.add(line);
+                    }
+                    bufferedReader.close();
+
+                    String myuuid = Minecraft.getMinecraft().thePlayer.getUniqueID().toString().replace("-","");
+
+                    for (String getline : lines) {
+                        if (myuuid.equals(getline.trim())) {
+                            global.hasWatermark = false;
+                        }
+                    }
 		 			
 				} catch (MalformedURLException e) {
 		 			ChatHandler.warn(ChatHandler.color("red", "Can't grab update! Update services must be down"));

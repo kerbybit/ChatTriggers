@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import com.kerbybit.chattriggers.gui.DisplayOverlay;
 import com.kerbybit.chattriggers.references.BugTracker;
-import com.kerbybit.chattriggers.references.ClientChatSendingEvent;
-import net.minecraftforge.event.CommandEvent;
 import org.lwjgl.input.Keyboard;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;

@@ -19,6 +19,8 @@ public class global {
 	public static String canUseURL1 = "";
 	public static String canUseURL2 = "";
 	public static Boolean canUse = true;
+    public static Boolean hasWatermark = true;
+    public static String hasWatermarkURL = "";
 	
 	public static int playerHealth = -1;
 	

@@ -164,6 +164,7 @@ public class ChatHandler {
                     .replace("NewLineF6cyUQp9NewLine","\\n")
                     .replace("SingleQuoteF6cyUQp9SingleQuote","\\'")
                     .replace("'", "\'")
+                    .replace("\0","")
 				+  "'}";
 		TMP_o += "]";
 		IChatComponent TMP_out = IChatComponent.Serializer.jsonToComponent(TMP_o);
