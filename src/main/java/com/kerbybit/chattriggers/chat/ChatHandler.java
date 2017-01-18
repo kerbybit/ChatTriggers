@@ -156,6 +156,8 @@ public class ChatHandler {
 				cht.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
 					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
 					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")
+                    .replace("stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement", "(")
+                    .replace("stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement", ")")
                     .replace("AmpF6cyUQp9Amp","&")
                     .replace("\\n","NewLineF6cyUQp9NewLine")
                     .replace("\\'","SingleQuoteF6cyUQp9SingleQuote")
