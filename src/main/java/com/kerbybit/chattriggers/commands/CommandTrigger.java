@@ -1160,17 +1160,43 @@ public class CommandTrigger extends CommandBase {
                     }
                 }
             }else if (args[1].equalsIgnoreCase("DUMP")) {
-                for (String fmsg : global.chatHistory) {
-                    String tmp_out = ChatHandler.removeFormatting(fmsg);
-                    global.copyText.add(tmp_out);
-                    /*String tmp_outfin = tmp_out.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
-                            .replace("(", "stringOpenBracketF6cyUQp9stringOpenBracket")
-                            .replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket");
-                    ChatHandler.warn("clickable("+tmp_outfin+",run_command,/t copy CopyFromDebugChat "+(global.copyText.size()-1)+",Click to copy\n"+tmp_out+")");*/
-                    tmp_out = tmp_out.replace("'", "\\'");
-                    List<String> TMP_eventout = new ArrayList<String>();
-                    TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size()-1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
-                    ChatHandler.sendJson(TMP_eventout);
+                if (args.length == 2) {
+                    for (String fmsg : global.chatHistory) {
+                        String tmp_out = ChatHandler.removeFormatting(fmsg);
+                        global.copyText.add(tmp_out);
+                        /*String tmp_outfin = tmp_out.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
+                                .replace("(", "stringOpenBracketF6cyUQp9stringOpenBracket")
+                                .replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket");
+                        ChatHandler.warn("clickable("+tmp_outfin+",run_command,/t copy CopyFromDebugChat "+(global.copyText.size()-1)+",Click to copy\n"+tmp_out+")");*/
+                        tmp_out = tmp_out.replace("'", "\\'");
+                        List<String> TMP_eventout = new ArrayList<String>();
+                        TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size()-1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
+                        ChatHandler.sendJson(TMP_eventout);
+                    }
+                } else {
+                    try {
+                        int get = Integer.parseInt(args[2]);
+                        if (get > global.chatHistory.size()) {
+                            ChatHandler.warn("&c/trigger settings dump [number]");
+                            ChatHandler.warn("&c[number] must not be bigger than "+global.chatHistory.size()+"!");
+                        } else {
+                            for (int i=0; i<get; i++) {
+                                String tmp_out = ChatHandler.removeFormatting(global.chatHistory.get(i));
+                                global.copyText.add(tmp_out);
+                                /*String tmp_outfin = tmp_out.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
+                                        .replace("(", "stringOpenBracketF6cyUQp9stringOpenBracket")
+                                        .replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket");
+                                ChatHandler.warn("clickable("+tmp_outfin+",run_command,/t copy CopyFromDebugChat "+(global.copyText.size()-1)+",Click to copy\n"+tmp_out+")");*/
+                                tmp_out = tmp_out.replace("'", "\\'");
+                                List<String> TMP_eventout = new ArrayList<String>();
+                                TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size() - 1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
+                                ChatHandler.sendJson(TMP_eventout);
+                            }
+                        }
+                    } catch (Exception e) {
+                        ChatHandler.warn("&c/trigger settings dump [number]");
+                        ChatHandler.warn("&c" + args[2] + " is not a number!");
+                    }
                 }
             } else {
                 ChatHandler.warn(ChatHandler.color("red", "/trigger settings [debug/dump/test/color/killfeed/beta] <...>"));
