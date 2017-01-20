@@ -1,5 +1,6 @@
 package com.kerbybit.chattriggers.triggers;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +19,38 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class StringHandler {
 	static String builtInStrings(String TMP_e, ClientChatReceivedEvent chatEvent) {
+        while (TMP_e.contains("{imported(") && TMP_e.contains(")}")) {
+            List<String> temporary = new ArrayList<String>();
+            String imp = TMP_e.substring(TMP_e.indexOf("{imported(")+10, TMP_e.indexOf(")}", TMP_e.indexOf("{imported(")));
+            temporary.add("DefaultString->IMPORTED"+imp+"-"+(global.TMP_string.size()+1));
+            Boolean isImported = false;
+
+            File dir = new File("./mods/ChatTriggers/Imports/");
+            if (!dir.exists()) {
+                if (!dir.mkdir()) {ChatHandler.warn(ChatHandler.color("red", "Unable to create file!"));}
+            }
+            File[] files = dir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        if (file.getName().equals(imp+".txt")) {
+                            isImported = true;
+                        }
+                    }
+                }
+            }
+
+            if (isImported) {
+                temporary.add("true");
+            } else {
+                temporary.add("false");
+            }
+
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+
+            TMP_e = TMP_e.replace("{imported("+imp+")}", "{string[DefaultString->IMPORTED"+imp+"-"+global.TMP_string.size()+"]}");
+        }
         while (TMP_e.contains("{random(") && TMP_e.contains(")}")) {
             List<String> temporary = new ArrayList<String>();
             String lowhigh = TMP_e.substring(TMP_e.indexOf("{random(")+8, TMP_e.indexOf(")}", TMP_e.indexOf("{random(")));
