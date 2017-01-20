@@ -666,7 +666,7 @@ public class CommandTrigger extends CommandBase {
                             if (!TMP_list.equals("")) {TMP_l.add(TMP_list);}
                             global.USR_string.add(TMP_l);
                             if (!silent) {
-                                TMP_sn = TMP_sn.replace("(","LeftParF6cyUQp9LeftPar").replace(")","RightParF6cyUQp9RightPar").replace("&","AmpF6cyUQp9Amp");
+                                TMP_sn = TMP_sn.replace("(","LeftParF6cyUQp9LeftPar").replace(")","RightParF6cyUQp9RightPar").replace("&","AmpF6cyUQp9Amp").replace("\\", "BackslashF6cyUQp9Backslash");
                                 ChatHandler.warn("&7Created string clickable("+global.settings.get(0)+TMP_sn+",suggest_command,/trigger string set "+TMP_sn+" ,Set "+TMP_sn+")");
                             }
                             try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
@@ -693,6 +693,7 @@ public class CommandTrigger extends CommandBase {
                         if (num>-1 && num<global.USR_string.size()) {
                             String TMP_rem = global.USR_string.remove(num).get(0);
                             if (!silent) {
+                                TMP_rem = TMP_rem.replace("(","LeftParF6cyUQp9LeftPar").replace(")","RightParF6cyUQp9RightPar").replace("&","AmpF6cyUQp9Amp");
                                 ChatHandler.warnUnformatted(ChatHandler.color("gray", "Deleted string") + " " + ChatHandler.color(global.settings.get(0), TMP_rem));
                             }
                             try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}

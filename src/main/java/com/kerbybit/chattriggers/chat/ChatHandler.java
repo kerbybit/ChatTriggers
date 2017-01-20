@@ -27,6 +27,7 @@ public class ChatHandler {
 	
 	public static void warnUnformatted(String cht) {
 		cht = cht.replace("'", "\\'");
+        cht = cht.replace("\\", "\\\\");
 		String TMP_o = "['',";
 		TMP_o += "{text:'" + cht +  "'}";
 		TMP_o += "]";
