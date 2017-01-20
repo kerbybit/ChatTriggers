@@ -1180,7 +1180,7 @@ public class CommandTrigger extends CommandBase {
                             ChatHandler.warn("&c/trigger settings dump [number]");
                             ChatHandler.warn("&c[number] must not be bigger than "+global.chatHistory.size()+"!");
                         } else {
-                            for (int i=0; i<get; i++) {
+                            for (int i=global.chatHistory.size() - get; i < global.chatHistory.size(); i++) {
                                 String tmp_out = ChatHandler.removeFormatting(global.chatHistory.get(i));
                                 global.copyText.add(tmp_out);
                                 /*String tmp_outfin = tmp_out.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
