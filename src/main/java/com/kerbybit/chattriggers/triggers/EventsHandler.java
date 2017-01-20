@@ -47,7 +47,7 @@ public class EventsHandler {
 			else {TMP_c = TMP_e.substring(0, TMP_e.indexOf(" ")); TMP_e = TMP_e.substring(TMP_e.indexOf(" ")+1, TMP_e.length());}
 			int TMP_t = 50;
 			int TMP_p = global.notifySize;
-			int TMP_v = 10000;
+			int TMP_v = 100;
 			int TMP_pi = 1;
 			
 		//setup backup for functions so strings don't get overwritten
@@ -86,9 +86,9 @@ public class EventsHandler {
 			} catch (NumberFormatException e1) {ChatHandler.warn(ChatHandler.color("red", "<vol=v> v must be an integer!"));}
 			
 			try {
-				if (TMP_e.contains("<pitch") && TMP_e.contains(">")) {
+				if (TMP_e.contains("<pitch=") && TMP_e.contains(">")) {
 					TMP_pi = Integer.parseInt(TagHandler.eventTags(4, TMP_e));
-					TMP_e = TMP_e.replace("<pitch"+TMP_pi+">", "");
+					TMP_e = TMP_e.replace("<pitch="+TMP_pi+">", "");
 				}
 			} catch (NumberFormatException e1) {ChatHandler.warn(ChatHandler.color("red", "<pitch=p> p must be an integer!"));}
 			
@@ -124,10 +124,12 @@ public class EventsHandler {
                 onChat(TMP_e, ChatHandler.deleteFormatting(TMP_e), null);
             }
 			if (TMP_c.equalsIgnoreCase("DO") && global.debug) {ChatHandler.warn(TMP_e);}
-			if (TMP_c.equalsIgnoreCase("SOUND")) {Minecraft.getMinecraft().thePlayer.playSound(TMP_e
+			if (TMP_c.equalsIgnoreCase("SOUND")) {
+                float real_v = ((float)TMP_v) / 100;
+                Minecraft.getMinecraft().thePlayer.playSound(TMP_e
 					.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
 					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"), TMP_v, TMP_pi);}
+					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"), real_v, TMP_pi);}
 			if (TMP_c.equalsIgnoreCase("CANCEL") && chatEvent!=null) {chatEvent.setCanceled(true);}
 			if (TMP_c.equalsIgnoreCase("KILLFEED")) {
                 if (global.settings.get(10).equalsIgnoreCase("FALSE")) {
