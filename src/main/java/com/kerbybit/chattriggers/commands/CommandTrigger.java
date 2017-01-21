@@ -463,6 +463,19 @@ public class CommandTrigger extends CommandBase {
                                             }
                                             EventsHandler.doEvents(TMP_events, null, argsOut, argsIn);
                                         }
+                                    } else if (TMP_e.startsWith(TMP_trigtest)) {
+                                        String[] argsIn = TMP_e.replace(TMP_trigtest,"").trim().split(" ");
+
+                                        String TMP_argsOut = TMP_trig.substring(TMP_trig.indexOf("(") + 1, TMP_trig.length() - 1);
+                                        String[] argsOut = TMP_argsOut.split(",");
+
+                                        if (argsIn.length == argsOut.length) {
+                                            List<String> TMP_events = new ArrayList<String>();
+                                            for (int j = 2; j < global.trigger.get(k).size(); j++) {
+                                                TMP_events.add(global.trigger.get(k).get(j));
+                                            }
+                                            EventsHandler.doEvents(TMP_events, null, argsOut, argsIn);
+                                        }
                                     }
                                 }
                             }

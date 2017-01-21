@@ -202,7 +202,7 @@ public class CommandReference {
             r.add(".divideGetPercentage($n) .divPercent($n) ./%($n)");
             r.add(".power($n) .pow($n) .^($n)");
             r.add(".modulus($n) .mod($n) .%($n)");
-            r.add(".absolute($n) .abs($n)");
+            r.add(".absolute() .abs()");
             r.add("");
             r.add(".greaterThan($n) .>($n)");
             r.add(".greaterThanOrEqualTo($n) .>=($n)");
@@ -218,11 +218,11 @@ public class CommandReference {
             r.add(".substring($v1,$v2)");
             r.add(".trim()");
             r.add(".prefix($v) .suffix($v)");
-            r.add(".toUpper($v) .toUpperCase($v)");
-            r.add(".toLower($v) .toLowerCase($v)");
+            r.add(".toUpper() .toUpperCase()");
+            r.add(".toLower() .toLowerCase()");
             r.add(".removeFormatting() .remForm()");
-            r.add(".capitalizeFirstWord($v) .capFirst($v)");
-            r.add(".capitalizeAllWords($v) .capAll($v)");
+            r.add(".capitalizeFirstWord() .capFirst()");
+            r.add(".capitalizeAllWords() .capAll()");
             r.add(".ignoreEscape()");
             r.add("");
             r.add(".importJsonFile($file,$node)");

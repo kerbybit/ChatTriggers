@@ -110,7 +110,7 @@ public class EventsHandler {
                     ChatHandler.warn(TMP_e);
                 }
             }
-            if (TMP_c.equalsIgnoreCase("DEBUG")) {if (global.debug) {ChatHandler.warn(TMP_e);}}
+            if (TMP_c.equalsIgnoreCase("DEBUG") || TMP_c.equalsIgnoreCase("DO")) {if (global.debug) {ChatHandler.warn(TMP_e);}}
             if (TMP_c.equalsIgnoreCase("LOG")) {System.out.println(TMP_e
                     .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
                     .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
@@ -123,7 +123,6 @@ public class EventsHandler {
                 }
                 onChat(TMP_e, ChatHandler.deleteFormatting(TMP_e), null);
             }
-			if (TMP_c.equalsIgnoreCase("DO") && global.debug) {ChatHandler.warn(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("SOUND")) {
                 float real_v = ((float)TMP_v) / 100;
                 Minecraft.getMinecraft().thePlayer.playSound(TMP_e
