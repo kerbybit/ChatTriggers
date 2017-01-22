@@ -18,12 +18,14 @@ public class CommandT extends CommandBase{
 	
 	public void processCommand(ICommandSender sender, String[] args) {
         try {
-            if (global.settings.get(6).equalsIgnoreCase("true")) {
-                CommandTrigger.doCommand(args, false);
-            } else {
-                String send = "";
-                for (String arg : args) {send += arg + " ";}
-                Minecraft.getMinecraft().thePlayer.sendChatMessage("/t " + send.trim());
+            if (global.canUse) {
+                if (global.settings.get(6).equalsIgnoreCase("true")) {
+                    CommandTrigger.doCommand(args, false);
+                } else {
+                    String send = "";
+                    for (String arg : args) {send += arg + " ";}
+                    Minecraft.getMinecraft().thePlayer.sendChatMessage("/t " + send.trim());
+                }
             }
         } catch (Exception e) {
             BugTracker.show(e, "command");

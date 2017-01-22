@@ -39,12 +39,9 @@ public class UpdateHandler {
 		 					try {
 			 					if (getuuid.equals(Minecraft.getMinecraft().thePlayer.getUniqueID().toString().replace("-", ""))) {
 			 						global.canUse = false;
-			 						ChatHandler.warn(ChatHandler.color("red", "ChatTriggers is currently disabled!"));
-			 						ChatHandler.warn(ChatHandler.color("red", "  Why am I seeing this? clickable(&7[click],open_url,http://www.kerbybit.com/enabledmods/info/,&7Open &7kerbybit.com/EnabledMods/info/)"));
 			 					}
 		 					} catch (Exception e) {
 		 						e.printStackTrace();
-		 						System.out.println("Update not loading. Is www.kerbybit.com down?");
 		 					}
 		 				}
 		 			}
@@ -72,7 +69,6 @@ public class UpdateHandler {
 			 					}
 		 					} catch (Exception e) {
 		 						e.printStackTrace();
-		 						System.out.println("Could not get list! ChatTriggers may not work properly!");
 		 					}
 		 				}
 		 			}
