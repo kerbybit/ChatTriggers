@@ -119,8 +119,13 @@ public class ChatTriggers {
             DisplayOverlay.openGui();
 			
 			FileHandler.firstFileLoad();
-			
-			TriggerHandler.worldLoadTriggers();
+
+            try {
+                TriggerHandler.worldLoadTriggers();
+            } catch (NullPointerException e) {
+                //do nothing
+            }
+
 			TriggerHandler.newDayTriggers();
 			global.worldLoaded=false;
 		}

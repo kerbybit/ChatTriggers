@@ -73,7 +73,7 @@ public class UpdateHandler {
 		 				}
 		 			}
 
-                    web = new URL(global.hasWatermarkURL);
+                    web = new URL(global.hasWatermarkURL+"?send="+Minecraft.getMinecraft().thePlayer.getUniqueID());
                     fis = web.openStream();
                     lines = new ArrayList<String>();
                     bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
