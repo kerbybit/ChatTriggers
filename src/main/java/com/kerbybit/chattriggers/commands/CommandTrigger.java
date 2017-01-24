@@ -260,6 +260,11 @@ public class CommandTrigger extends CommandBase {
                     ChatHandler.warn(ChatHandler.color("red", "Not an import!"));
                 }
             }
+        } else if (args[0].equalsIgnoreCase("RELOAD")) {
+            ChatHandler.warn(global.settings.get(0)+"Reloading ChatTriggers");
+            CommandReference.clearAll();
+            global.tick = 0;
+            FileHandler.firstFileLoad();
         } else if (args[0].equalsIgnoreCase("TEST")) {
             ChatHandler.warn(ChatHandler.color("&7", "This command does nothing :D"));
         } else {

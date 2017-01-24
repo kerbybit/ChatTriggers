@@ -9,22 +9,7 @@ import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
 public class CommandReference {
-	public static void resetAll() {
-		ChatHandler.warn(ChatHandler.color("red", "Resetting everything in attempt to fix things"));
-		global.waitEvents.clear();
-        global.waitTime.clear();
-		global.asyncEvents.clear();
-		global.backupTMP_strings.clear();
-		global.backupUSR_strings.clear();
-		global.killfeed.clear();
-		global.killfeedDelay.clear();
-		global.notify.clear();
-		global.notifyAnimation.clear();
-		try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
-		ChatHandler.warn(ChatHandler.color("green", "Reset completed"));
-	}
-
-    public static void silentResetAll() {
+    public static void clearAll() {
         global.waitEvents.clear();
         global.waitTime.clear();
         global.asyncEvents.clear();
@@ -34,6 +19,17 @@ public class CommandReference {
         global.killfeedDelay.clear();
         global.notify.clear();
         global.notifyAnimation.clear();
+    }
+
+	public static void resetAll() {
+		ChatHandler.warn(ChatHandler.color("red", "Resetting everything in attempt to fix things"));
+		clearAll();
+		try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+		ChatHandler.warn(ChatHandler.color("green", "Reset completed"));
+	}
+
+    public static void silentResetAll() {
+        clearAll();
         try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
     }
 	
