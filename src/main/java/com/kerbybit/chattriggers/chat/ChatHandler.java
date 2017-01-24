@@ -224,10 +224,12 @@ public class ChatHandler {
 				if (global.debug) {CommandTrigger.doCommand(args, false);}
 				else {CommandTrigger.doCommand(args, true);}
 			} else {
-				Minecraft.getMinecraft().thePlayer.sendChatMessage("/" + 
-						cht.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
-							.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-							.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"));
+                if (!global.hasWatermark) {
+                    Minecraft.getMinecraft().thePlayer.sendChatMessage("/" +
+                            cht.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                                    .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+                                    .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"));
+                }
 			}
 		}
 	}

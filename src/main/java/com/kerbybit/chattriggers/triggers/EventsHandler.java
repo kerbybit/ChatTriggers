@@ -153,7 +153,7 @@ public class EventsHandler {
 				global.notifyAnimation.add(temp_list);
 				global.notifySize++;
 			}
-			if (TMP_c.equalsIgnoreCase("COMMAND")) {if (!global.hasWatermark) {global.commandQueue.add(TMP_e);}}
+			if (TMP_c.equalsIgnoreCase("COMMAND")) {global.commandQueue.add(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("COPY")) {
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clipboard.setContents(new StringSelection(TMP_e
