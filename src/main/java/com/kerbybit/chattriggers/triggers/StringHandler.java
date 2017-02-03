@@ -742,63 +742,122 @@ public class StringHandler {
 					.replace("','", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
             String[] subargs = args.split(",");
             if (subargs.length == 2) {
-                try {
-                    if (stringnum!=-1) {
-                        String temp = global.USR_string.get(stringnum).get(1);
-                        int num1 = Integer.parseInt(subargs[0]);
-                        subargs[1] = subargs[1].replace("<end>",temp.length()+"").replace("<e>",temp.length()+"");
-                        int num2 = Integer.parseInt(subargs[1]);
-                        if (num1 >= 0 && num1 < num2) {
-                            temp = temp.substring(num1, num2);
-                            global.USR_string.get(stringnum).set(1, temp);
-                        }
-                    } else {
-                        String temp = global.TMP_string.get(stringnum).get(1);
-                        int num1 = Integer.parseInt(subargs[0]);
-                        subargs[1] = subargs[1].replace("<end>",temp.length()+"").replace("<e>",temp.length()+"");
-                        int num2 = Integer.parseInt(subargs[1]);
-                        if (num1 >= 0 && num1 < num2) {
-                            temp = temp.substring(num1, num2);
-                            global.TMP_string.get(stringnum).set(1, temp);
+                int first = -1;
+                int last = -1;
+                Boolean getStart = false;
+                Boolean startContain = false;
+                Boolean getEnd = false;
+                Boolean endContain = false;
+                if (subargs[0].toUpperCase().contains("<START>") || subargs[0].toUpperCase().contains("<S>")) {
+                    getStart = true;
+                    subargs[0] = subargs[0].replaceAll("(?i)<start>","").replaceAll("(?i)<s>","");
+                }
+                if (subargs[0].toUpperCase().contains("<INCLUDE>") || subargs[0].toUpperCase().contains("<I>")) {
+                    startContain = true;
+                    subargs[0] = subargs[0].replaceAll("(?i)<include>","").replaceAll("(?i)<i>","");
+                }
+                if (subargs[1].toUpperCase().contains("<END>") || subargs[1].toUpperCase().contains("<E>")) {
+                    getEnd = true;
+                    subargs[1] = subargs[1].replaceAll("(?i)<end>","").replaceAll("(?i)<e>","");
+                }
+                if (subargs[1].toUpperCase().contains("<INCLUDE>") || subargs[1].toUpperCase().contains("<I>")) {
+                    endContain = true;
+                    subargs[1] = subargs[1].replaceAll("(?i)<include>","").replaceAll("(?i)<i>","");
+                }
+
+                if (stringnum!=-1) {
+                    String temp = global.USR_string.get(stringnum).get(1)
+                            .replace("(","stringOpenBracketF6cyUQp9stringOpenBracket")
+                            .replace(")","stringCloseBracketF6cyUQp9stringCloseBracket")
+                            .replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
+                    if (getStart) {first = 0;}
+                    if (getEnd) {last = 0;}
+                    if (first == -1) {
+                        if (temp.contains(subargs[0])) {
+                            if (startContain) {
+                                first = temp.indexOf(subargs[0]);
+                            } else {
+                                first = temp.indexOf(subargs[0]) + subargs[0].length();
+                            }
+                        } else {
+                            try {
+                                first = Integer.parseInt(subargs[0]);
+                            } catch (NumberFormatException e) {
+                                global.USR_string.get(stringnum).set(1,"false");
+                                if (global.debug) {ChatHandler.warn(ChatHandler.color("gray","Did not find " + subargs[0] + " in string"));}
+                            }
                         }
                     }
-                } catch (NumberFormatException e) {
-                    if (stringnum!=-1) {
-                        String temp = global.USR_string.get(stringnum).get(1)
-                                .replace("(","stringOpenBracketF6cyUQp9stringOpenBracket")
-                                .replace(")","stringCloseBracketF6cyUQp9stringCloseBracket")
-                                .replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
-                        if (temp.contains(subargs[0])) {
-                            temp = temp.substring(temp.indexOf(subargs[0]) + subargs[0].length());
-                            if (temp.contains(subargs[1])) {
-                                temp = temp.substring(0, temp.indexOf(subargs[1]));
-                                global.USR_string.get(stringnum).set(1, temp
-                                        .replace("stringOpenBracketF6cyUQp9stringOpenBracket","(")
-                                        .replace("stringCloseBracketF6cyUQp9stringCloseBracket",")")
-                                        .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
-                            } else {global.USR_string.get(stringnum).set(1, "false");}
-                            if (global.debug) {ChatHandler.warn(ChatHandler.color("gray","Did not find " + subargs[1] + " in string"));}
+                    if (last == -1) {
+                        if (temp.contains(subargs[1])) {
+                            if (endContain) {
+                                last = temp.indexOf(subargs[1]) + subargs[1].length();
+                            } else {
+                                last = temp.indexOf(subargs[1]);
+                            }
                         } else {
-                            global.USR_string.get(stringnum).set(1, "false");
-                            if (global.debug) {ChatHandler.warn(ChatHandler.color("gray","Did not find " + subargs[0] + " in string"));}
+                            try {
+                                last = Integer.parseInt(subargs[1]);
+                            } catch (NumberFormatException e) {
+                                global.USR_string.get(stringnum).set(1,"false");
+                                if (global.debug) {ChatHandler.warn(ChatHandler.color("gray","Did not find " + subargs[1] + " in string"));}
+                            }
                         }
-                    } else {
-                        String temp = global.TMP_string.get(tmpstringnum).get(1)
-                                .replace("(","stringOpenBracketF6cyUQp9stringOpenBracket")
-                                .replace(")","stringCloseBracketF6cyUQp9stringCloseBracket")
-                                .replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
+                    }
+
+                    if (first!=-1 && last!=-1) {
+                        temp = temp.substring(first, last);
+                        global.USR_string.get(stringnum).set(1, temp
+                                .replace("stringOpenBracketF6cyUQp9stringOpenBracket","(")
+                                .replace("stringCloseBracketF6cyUQp9stringCloseBracket",")")
+                                .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
+                    }
+                } else {
+                    String temp = global.TMP_string.get(tmpstringnum).get(1)
+                            .replace("(","stringOpenBracketF6cyUQp9stringOpenBracket")
+                            .replace(")","stringCloseBracketF6cyUQp9stringCloseBracket")
+                            .replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
+                    if (getStart) {first = 0;}
+                    if (getEnd) {last = 0;}
+                    if (first == -1) {
                         if (temp.contains(subargs[0])) {
-                            temp = temp.substring(temp.indexOf(subargs[0]) + subargs[0].length());
-                            if (temp.contains(subargs[1])) {
-                                temp = temp.substring(0, temp.indexOf(subargs[1]));
-                                global.TMP_string.get(tmpstringnum).set(1, temp
-                                        .replace("stringOpenBracketF6cyUQp9stringOpenBracket","(")
-                                        .replace("stringCloseBracketF6cyUQp9stringCloseBracket",")")
-                                        .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
-                            } else {global.TMP_string.get(tmpstringnum).set(1, "false");
-                                if (global.debug) {ChatHandler.warn(ChatHandler.color("gray","Did not find " + subargs[1] + " in string"));}}
-                        } else {global.TMP_string.get(tmpstringnum).set(1, "false");
-                            if (global.debug) {ChatHandler.warn(ChatHandler.color("gray","Did not find " + subargs[1] + " in string"));}}
+                            if (startContain) {
+                                first = temp.indexOf(subargs[0]);
+                            } else {
+                                first = temp.indexOf(subargs[0]) + subargs[0].length();
+                            }
+                        } else {
+                            try {
+                                last = Integer.parseInt(subargs[0]);
+                            } catch (NumberFormatException e) {
+                                global.TMP_string.get(tmpstringnum).set(1, "false");
+                                if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Did not find " + subargs[0] + " in string"));}
+                            }
+                        }
+                    }
+                    if (last == -1) {
+                        if (temp.contains(subargs[1])) {
+                            if (endContain) {
+                                last = temp.indexOf(subargs[1]) + subargs[1].length();
+                            } else {
+                                last = temp.indexOf(subargs[1]);
+                            }
+                        } else {
+                            try {
+                                last = Integer.parseInt(subargs[1]);
+                            } catch (NumberFormatException e) {
+                                global.TMP_string.get(tmpstringnum).set(1, "false");
+                                if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Did not find " + subargs[1] + " in string"));}
+                            }
+                        }
+                    }
+
+                    if (first!=-1 && last!=-1) {
+                        temp = temp.substring(first, last);
+                        global.TMP_string.get(tmpstringnum).set(1, temp
+                                .replace("stringOpenBracketF6cyUQp9stringOpenBracket","(")
+                                .replace("stringCloseBracketF6cyUQp9stringCloseBracket",")")
+                                .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
                     }
                 }
                 return "{string["+sn+"]}";
