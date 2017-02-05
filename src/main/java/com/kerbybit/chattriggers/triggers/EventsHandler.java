@@ -34,7 +34,9 @@ public class EventsHandler {
 				List<String> temporary = new ArrayList<String>();
 				temporary.add("TriggerArgument"+i+"-"+global.TMP_string.size());
 				temporary.add(replacement[i]);
-				for (int j=0; j<tmp_event.size(); j++) {tmp_event.set(j, tmp_event.get(j).replace(toreplace[i],"{string[TriggerArgument"+i+"-"+global.TMP_string.size()+"]}"));}
+				for (int j=0; j<tmp_event.size(); j++) {
+                    tmp_event.set(j, tmp_event.get(j).replace(toreplace[i],"{string[TriggerArgument"+i+"-"+global.TMP_string.size()+"]}"));
+                }
 				global.TMP_string.add(temporary);
 			}
 		}

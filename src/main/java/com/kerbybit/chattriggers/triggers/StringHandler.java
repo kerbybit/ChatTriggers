@@ -1177,7 +1177,7 @@ public class StringHandler {
                         if (func_name.equals(func)) {
                             String func_to = func_define.substring(0, func_define.indexOf("."));
                             String func_arg = func_define.substring(func_define.indexOf("(")+1, func_define.indexOf(")", func_define.indexOf(")")));
-                            if (func_arg.contains(",")) {
+                            if (!func_arg.equals("")) {
                                 String[] func_args = func_arg.split(",");
                                 String[] func_args_to = args.split(",");
                                 if (func_args.length == func_args_to.length) {
