@@ -771,7 +771,7 @@ public class StringHandler {
                             .replace(")","stringCloseBracketF6cyUQp9stringCloseBracket")
                             .replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
                     if (getStart) {first = 0;}
-                    if (getEnd) {last = 0;}
+                    if (getEnd) {last = temp.length();}
                     if (first == -1) {
                         if (temp.contains(subargs[0])) {
                             if (startContain) {
@@ -818,7 +818,7 @@ public class StringHandler {
                             .replace(")","stringCloseBracketF6cyUQp9stringCloseBracket")
                             .replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
                     if (getStart) {first = 0;}
-                    if (getEnd) {last = 0;}
+                    if (getEnd) {last = temp.length();}
                     if (first == -1) {
                         if (temp.contains(subargs[0])) {
                             if (startContain) {

@@ -601,15 +601,18 @@ public class CommandTrigger extends CommandBase {
                     if (CommandReference.isEventType(TMP_etype)) {
                         global.trigger.get(num).add(TMP_e);
                         if (!silent) {
-                            ChatHandler.warnUnformatted(ChatHandler.color("gray", "Added event") + " " + ChatHandler.color(global.settings.get(0), TMP_e) + " " + ChatHandler.color("gray", "to trigger") + " " + ChatHandler.color(global.settings.get(0), global.trigger.get(num).get(1)));
+                            TMP_e = TMP_e.replace("(", "LeftParF6cyUQp9LeftPar")
+                                    .replace(")", "RightParF6cyUQp9RightPar")
+                                    .replace(",", "CommaReplacementF6cyUQp9CommaReplacement");
+                            ChatHandler.warn(ChatHandler.color("gray", "Added event") + " " + ChatHandler.color(global.settings.get(0), ChatHandler.ignoreFormatting(TMP_e)) + " " + ChatHandler.color("gray", "to trigger") + " " + ChatHandler.color(global.settings.get(0), ChatHandler.ignoreFormatting(global.trigger.get(num).get(1))));
                         }
                         try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                     } else {
                         ChatHandler.warn(ChatHandler.color("red", "Not a valid event type!"));
                     }
                 } else {
-                    ChatHandler.warnUnformatted(ChatHandler.color("red", "You cannot edit imported triggers!"));
-                    ChatHandler.warnUnformatted(ChatHandler.color("red", "You must edit them from the imported file!"));
+                    ChatHandler.warn(ChatHandler.color("red", "You cannot edit imported triggers!"));
+                    ChatHandler.warn(ChatHandler.color("red", "You must edit them from the imported file!"));
                 }
             } else {
                 ChatHandler.warn(ChatHandler.color("red", "/trigger add <trigger number> <event> <event argument(s)>"));

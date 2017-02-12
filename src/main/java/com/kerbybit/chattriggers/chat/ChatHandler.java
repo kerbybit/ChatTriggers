@@ -26,8 +26,8 @@ public class ChatHandler {
 	}
 	
 	public static void warnUnformatted(String cht) {
-		cht = cht.replace("'", "\\'");
-        cht = cht.replace("\\", "\\\\");
+		cht = cht.replace("'", "\\'")
+                .replace("\\", "\\\\");
 		String TMP_o = "['',";
 		TMP_o += "{text:'" + cht +  "'}";
 		TMP_o += "]";
@@ -87,13 +87,14 @@ public class ChatHandler {
             cht = cht.replace("{link[" + first + "],[" + second + "]}", "clickable("+prev_color+first+",open_url,"+deleteFormatting(second)+",open link)"+prev_color);
         }
 
-		cht = cht.replace("'('", "LeftParF6cyUQp9LeftPar");
-		cht = cht.replace("')'", "RightParF6cyUQp9RightPar");
-		cht = cht.replace("'", "\\'");
-		cht = cht.replace("[", "\u005B");
-		cht = cht.replace("]", "\u005D");
-		cht = cht.replace("{", "\u007B");
-		cht = cht.replace("}", "\u007D");
+		cht = cht.replace("'('", "LeftParF6cyUQp9LeftPar")
+                .replace("')'", "RightParF6cyUQp9RightPar")
+                .replace("','", "CommaReplacementF6cyUQp9CommaReplacement")
+                .replace("'", "\\'")
+                .replace("[", "\u005B")
+                .replace("]", "\u005D")
+                .replace("{", "\u007B")
+                .replace("}", "\u007D");
 
 		
 		
@@ -145,8 +146,9 @@ public class ChatHandler {
 			}
 		}
 		
-		cht = cht.replace("LeftParF6cyUQp9LeftPar", "(");
-		cht = cht.replace("RightParF6cyUQp9RightPar", ")");
+		cht = cht.replace("LeftParF6cyUQp9LeftPar", "(")
+                .replace("RightParF6cyUQp9RightPar", ")")
+                .replace("CommaReplacementF6cyUQp9CommaReplacement", ",");
 		
 		cht = addFormatting(cht);
 		
@@ -258,6 +260,31 @@ public class ChatHandler {
 			.replace(EnumChatFormatting.ITALIC.toString(), "&o")
 			.replace(EnumChatFormatting.RESET.toString(), "&r");
 	}
+
+    public static String ignoreFormatting(String msg) {
+        return msg.replace(EnumChatFormatting.BLACK.toString(), "AmpF6cyUQp9Amp0")
+                .replace(EnumChatFormatting.DARK_BLUE.toString(), "AmpF6cyUQp9Amp1")
+                .replace(EnumChatFormatting.DARK_GREEN.toString(), "AmpF6cyUQp9Amp2")
+                .replace(EnumChatFormatting.DARK_AQUA.toString(), "AmpF6cyUQp9Amp3")
+                .replace(EnumChatFormatting.DARK_RED.toString(), "AmpF6cyUQp9Amp4")
+                .replace(EnumChatFormatting.DARK_PURPLE.toString(), "AmpF6cyUQp9Amp5")
+                .replace(EnumChatFormatting.GOLD.toString(), "AmpF6cyUQp9Amp6")
+                .replace(EnumChatFormatting.GRAY.toString(), "AmpF6cyUQp9Amp7")
+                .replace(EnumChatFormatting.DARK_GRAY.toString(), "AmpF6cyUQp9Amp8")
+                .replace(EnumChatFormatting.BLUE.toString(), "AmpF6cyUQp9Amp9")
+                .replace(EnumChatFormatting.GREEN.toString(), "AmpF6cyUQp9Ampa")
+                .replace(EnumChatFormatting.AQUA.toString(), "AmpF6cyUQp9Ampb")
+                .replace(EnumChatFormatting.RED.toString(), "AmpF6cyUQp9Ampc")
+                .replace(EnumChatFormatting.LIGHT_PURPLE.toString(), "AmpF6cyUQp9Ampd")
+                .replace(EnumChatFormatting.YELLOW.toString(), "AmpF6cyUQp9Ampe")
+                .replace(EnumChatFormatting.WHITE.toString(), "AmpF6cyUQp9Ampf")
+                .replace(EnumChatFormatting.OBFUSCATED.toString(), "AmpF6cyUQp9Ampk")
+                .replace(EnumChatFormatting.BOLD.toString(), "AmpF6cyUQp9Ampl")
+                .replace(EnumChatFormatting.STRIKETHROUGH.toString(), "AmpF6cyUQp9Ampm")
+                .replace(EnumChatFormatting.UNDERLINE.toString(), "AmpF6cyUQp9Ampn")
+                .replace(EnumChatFormatting.ITALIC.toString(), "AmpF6cyUQp9Ampo")
+                .replace(EnumChatFormatting.RESET.toString(), "AmpF6cyUQp9Ampr");
+    }
 	
 	public static String addFormatting(String msg) {
 		return msg.replace("&0", EnumChatFormatting.BLACK.toString())

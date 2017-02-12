@@ -304,8 +304,8 @@ public class TriggerHandler {
 			
 			for (int i=0; i<global.onServerChangeTrigger.size(); i++) {
 				String currentServer;
-				if (Minecraft.getMinecraft().isSingleplayer()) {currentServer = "SinglePlayer";} 
-				else {currentServer = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
+				if (Minecraft.getMinecraft().isSingleplayer()) {currentServer = "SinglePlayer";}
+                else {currentServer = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
 				
 				if (!currentServer.equals(global.connectedToServer)) {
 					//add all events to temp list
