@@ -50,10 +50,39 @@ public class CommandTrigger extends CommandBase {
     public static void doCommand(String args[], Boolean silent) {
         if (args.length == 0) {
             ChatHandler.warn(ChatHandler.color("red", "/trigger [create/add/list] <...>"));
-            ChatHandler.warn(ChatHandler.color("red", "/trigger [string/run] <...>"));
+            ChatHandler.warn(ChatHandler.color("red", "/trigger [string/array] <...>"));
             ChatHandler.warn(ChatHandler.color("red", "/trigger [save/load]"));
-            ChatHandler.warn(ChatHandler.color("red", "/trigger [import/export] <...>"));
-
+            ChatHandler.warn(ChatHandler.color("red", "/trigger [run/import/export] <...>"));
+        } else if (args[0].equalsIgnoreCase("ARRAYS") || args[0].equalsIgnoreCase("ARRAY")) {
+            ChatHandler.warnBreak(0);
+            if (global.USR_array.size() > 0) {
+                if (args.length == 1) {
+                    for (List<String> array : global.USR_array) {
+                        ChatHandler.warn("clickable("+array.get(0)+",run_command,/trigger array "+array.get(0)+",&7Get values stored in "+array.get(0)+")");
+                    }
+                } else {
+                    String get_array = "";
+                    Boolean is_array = false;
+                    for (int i=1; i<args.length; i++) {
+                        get_array += " " + args[i];
+                    }
+                    for (List<String> array : global.USR_array) {
+                        if (array.get(0).equals(get_array.trim())) {
+                            is_array = true;
+                            ChatHandler.warn(array.get(0));
+                            for (int i=1; i<array.size(); i++) {
+                                ChatHandler.warn("  " + ChatHandler.ignoreFormatting(array.get(i)));
+                            }
+                        }
+                    }
+                    if (!is_array) {
+                        ChatHandler.warn(ChatHandler.color("red", "That is not currently an array"));
+                    }
+                }
+            } else {
+                ChatHandler.warn(ChatHandler.color("red","There are currently no arrays"));
+            }
+            ChatHandler.warnBreak(1);
         } else if (args[0].equalsIgnoreCase("SUBMITBUGREPORT")) {
             BugTracker.send();
         } else if (args[0].equalsIgnoreCase("SIMULATE")) {
