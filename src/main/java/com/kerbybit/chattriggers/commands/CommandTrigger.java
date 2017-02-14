@@ -49,10 +49,10 @@ public class CommandTrigger extends CommandBase {
 
     public static void doCommand(String args[], Boolean silent) {
         if (args.length == 0) {
-            ChatHandler.warn(ChatHandler.color("red", "/trigger [create/add/list] <...>"));
-            ChatHandler.warn(ChatHandler.color("red", "/trigger [string/array] <...>"));
-            ChatHandler.warn(ChatHandler.color("red", "/trigger [save/load]"));
-            ChatHandler.warn(ChatHandler.color("red", "/trigger [run/import/export] <...>"));
+            ChatHandler.warn("&c/trigger &c[clickable(&ccreate,suggest_command,/trigger create ,&7Suggest &7/trigger &7create)&c/clickable(&cadd,suggest_command,/trigger add ,&7Suggest &7/trigger &7add)&c/clickable(&clist,run_command,/trigger list,&7Run &7/trigger &7list)&c] &c<...>");
+            ChatHandler.warn("&c/trigger &c[clickable(&cstring,suggest_command,/trigger string ,&7Suggest &7/trigger &7string)&c/clickable(&carray,run_command,/trigger array,&7Run &7/trigger &7array)&c] &c<...>");
+            ChatHandler.warn("&c/trigger &c[clickable(&csave,run_command,/trigger save,&7Run &7/trigger &7save)&c/clickable(&cload,run_command,/trigger load,&7Run &7/trigger 77load)&c]");
+            ChatHandler.warn("&c/trigger &c[clickable(&crun,suggest_command,/trigger run ,&7Suggest &7/trigger &7run)&c/clickable(&cimport,suggest_command,/trigger import ,&7Suggest &7/trigger &7import)&c/clickable(&cimports,run_command,/trigger imports,&7Run &7/trigger &7imports)&c] &c<...>");
         } else if (args[0].equalsIgnoreCase("ARRAYS") || args[0].equalsIgnoreCase("ARRAY")) {
             ChatHandler.warnBreak(0);
             if (global.USR_array.size() > 0) {
@@ -297,10 +297,10 @@ public class CommandTrigger extends CommandBase {
         } else if (args[0].equalsIgnoreCase("TEST")) {
             ChatHandler.warn(ChatHandler.color("&7", "This command does nothing :D"));
         } else {
-            ChatHandler.warn(ChatHandler.color("red", "/trigger [create/add/list] <...>"));
-            ChatHandler.warn(ChatHandler.color("red", "/trigger [string/run] <...>"));
-            ChatHandler.warn(ChatHandler.color("red", "/trigger [save/load]"));
-            ChatHandler.warn(ChatHandler.color("red", "/trigger [import/export] <...>"));
+            ChatHandler.warn("&c/trigger &c[clickable(&ccreate,suggest_command,/trigger create ,&7Suggest &7/trigger &7create)&c/clickable(&cadd,suggest_command,/trigger add ,&7Suggest &7/trigger &7add)&c/clickable(&clist,run_command,/trigger list,&7Run &7/trigger &7list)&c] &c<...>");
+            ChatHandler.warn("&c/trigger &c[clickable(&cstring,suggest_command,/trigger string ,&7Suggest &7/trigger &7string)&c/clickable(&carray,run_command,/trigger array,&7Run &7/trigger &7array)&c] &c<...>");
+            ChatHandler.warn("&c/trigger &c[clickable(&csave,run_command,/trigger save,&7Run &7/trigger &7save)&c/clickable(&cload,run_command,/trigger load,&7Run &7/trigger 77load)&c]");
+            ChatHandler.warn("&c/trigger &c[clickable(&crun,suggest_command,/trigger run ,&7Suggest &7/trigger &7run)&c/clickable(&cimport,suggest_command,/trigger import ,&7Suggest &7/trigger &7import)&c/clickable(&cimports,run_command,/trigger imports,&7Run &7/trigger &7imports)&c] &c<...>");
         }
     }
 
@@ -550,7 +550,12 @@ public class CommandTrigger extends CommandBase {
 
     private static void commandCreate(String args[], Boolean silent) {
         if (args.length < 3) {
-            ChatHandler.warn(ChatHandler.color("red", "/trigger create <type> <trigger>"));
+            String hover_value = "";
+            for (String value : CommandReference.getTriggerTypes()) {
+                hover_value += " " + value;
+            }
+            hover_value = hover_value.trim().replace(" ", "\n&7");
+            ChatHandler.warn("&c/trigger &ccreate &c<hover(&ctype,&7"+hover_value+")&c> &c<trigger>");
         } else {
             String TMP_type = args[1];
             String TMP_trig = "";
@@ -612,7 +617,12 @@ public class CommandTrigger extends CommandBase {
 
     private static void commandAdd(String args[], Boolean silent) {
         if (args.length < 3) {
-            ChatHandler.warn(ChatHandler.color("red", "/trigger add <trigger number> <event> <event argument(s)>"));
+            String hover_value = "";
+            for (String value : CommandReference.getEventTypes()) {
+                hover_value += " " + value;
+            }
+            hover_value = hover_value.trim().replace(" ", "\n&7");
+            ChatHandler.warn("&c/trigger &cadd &c<trigger number> &c<hover(&cevent,&7"+hover_value+")&c> &c<event &cargument(s)>");
         } else {
             int num;
             try {num = Integer.parseInt(args[1]);}
