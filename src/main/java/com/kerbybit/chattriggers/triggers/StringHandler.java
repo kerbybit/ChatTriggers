@@ -1175,7 +1175,7 @@ public class StringHandler {
                     if (func_define.contains(".") && func_define.contains("(") && func_define.contains(")")) {
                         String func_name = func_define.substring(func_define.indexOf(".")+1, func_define.indexOf("(", func_define.indexOf(".")));
                         if (func_name.equals(func)) {
-                            String func_to = func_define.substring(0, func_define.indexOf("."));
+                            String func_to = TagHandler.removeTags(func_define.substring(0, func_define.indexOf(".")));
                             String func_arg = func_define.substring(func_define.indexOf("(")+1, func_define.indexOf(")", func_define.indexOf(")")));
                             if (!func_arg.equals("")) {
                                 String[] func_args = func_arg.split(",");
