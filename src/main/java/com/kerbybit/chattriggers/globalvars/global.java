@@ -29,6 +29,10 @@ public class global {
 	public static List<String> neededImports = new ArrayList<String>();
 
     public static List<String> bugReport = new ArrayList<String>();
+    public static String lastCommand = "";
+    public static String bugLastCommand = "";
+    public static String lastEvent = "";
+    public static String bugLastEvent = "";
 
     //key - URL
     //value - json string

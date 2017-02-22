@@ -44,6 +44,7 @@ public class EventsHandler {
 		for (int i=0; i<tmp_event.size(); i++) {
         //SETUP
 			String TMP_e = tmp_event.get(i);
+            global.lastEvent = TMP_e;
 			String TMP_c;
 			if (!TMP_e.contains(" ")) {TMP_c = TMP_e; TMP_e="";}
 			else {TMP_c = TMP_e.substring(0, TMP_e.indexOf(" ")); TMP_e = TMP_e.substring(TMP_e.indexOf(" ")+1, TMP_e.length());}

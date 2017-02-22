@@ -48,6 +48,11 @@ public class CommandTrigger extends CommandBase {
     }
 
     public static void doCommand(String args[], Boolean silent) {
+        String temp_command = "/trigger";
+        for (String arg : args) {
+            temp_command += " " + arg;
+        }
+        global.lastCommand = temp_command;
         if (args.length == 0) {
             ChatHandler.warn("&c/trigger &c[clickable(&ccreate,suggest_command,/trigger create ,&7Suggest &7/trigger &7create)&c/clickable(&cadd,suggest_command,/trigger add ,&7Suggest &7/trigger &7add)&c/clickable(&clist,run_command,/trigger list,&7Run &7/trigger &7list)&c] &c<...>");
             ChatHandler.warn("&c/trigger &c[clickable(&cstring,suggest_command,/trigger string ,&7Suggest &7/trigger &7string)&c/clickable(&carray,run_command,/trigger array,&7Run &7/trigger &7array)&c] &c<...>");
@@ -601,13 +606,13 @@ public class CommandTrigger extends CommandBase {
                 String TMP_rem = global.trigger.get(num).get(1);
                 if (!TMP_rem.contains("<imported>")) {
                     if (!silent) {
-                        ChatHandler.warnUnformatted(ChatHandler.color("gray", "Deleted trigger") + " " + ChatHandler.color(global.settings.get(0), TMP_rem) + " " + ChatHandler.color("gray", "and all of its events"));
+                        ChatHandler.warn(ChatHandler.color("gray", "Deleted trigger") + " " + ChatHandler.color(global.settings.get(0), ChatHandler.ignoreFormatting(TMP_rem)) + " " + ChatHandler.color("gray", "and all of its events"));
                     }
                     global.trigger.remove(num).get(1);
                     try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                 } else {
-                    ChatHandler.warnUnformatted(ChatHandler.color("red", "You cannot edit imported triggers!"));
-                    ChatHandler.warnUnformatted(ChatHandler.color("red", "You must edit them from the imported file!"));
+                    ChatHandler.warn(ChatHandler.color("red", "You cannot edit imported triggers!"));
+                    ChatHandler.warn(ChatHandler.color("red", "You must edit them from the imported file!"));
                 }
             } else {
                 ChatHandler.warn(ChatHandler.color("red", "/trigger delete <trigger number>"));

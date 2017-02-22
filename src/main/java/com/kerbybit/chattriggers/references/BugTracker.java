@@ -24,6 +24,11 @@ public class BugTracker {
                     try {
                         ChatHandler.warn("&7Sending bug report...");
                         String bug = "";
+                        if (global.bugLastCommand.equals("")) {
+                            bug += global.bugLastEvent+"\n\n";
+                        } else {
+                            bug += global.bugLastCommand+"\n\n";
+                        }
                         for (String b : global.bugReport) {
                             bug += b + "\n";
                         }
@@ -69,6 +74,13 @@ public class BugTracker {
     public static void show(Exception e, String type) {
         for (StackTraceElement stack : e.getStackTrace()) {
             global.bugReport.add(stack.toString());
+        }
+        if (type.equals("command")) {
+            global.bugLastCommand = global.lastCommand;
+            global.bugLastEvent = "";
+        } else {
+            global.bugLastCommand = "";
+            global.bugLastEvent = global.lastEvent;
         }
         ChatHandler.warn(ChatHandler.color("darkred",getError(type)));
         ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitbugreport,Send a bug report) &4to submit a bug report");
