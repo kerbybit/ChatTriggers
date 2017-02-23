@@ -81,7 +81,12 @@ public class TriggerHandler {
             if (Minecraft.getMinecraft().isSingleplayer()) {
                 current_server = "SinglePlayer";
             } else {
-                current_server = Minecraft.getMinecraft().getCurrentServerData().serverIP;
+                try {
+                    current_server = Minecraft.getMinecraft().getCurrentServerData().serverIP;
+                } catch (Exception exception) {
+                    current_server = "SinglePlayer";
+                    //Catch for ReplayMod//
+                }
             }
 
             for (String value : TMP_server) {

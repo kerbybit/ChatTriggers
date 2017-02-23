@@ -339,11 +339,16 @@ public class StringHandler {
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("DefaultString->SCOREBOARDTITLE-"+(global.TMP_string.size()+1));
 			String boardTitle = "null";
-			if (Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(0) != null) {
-				boardTitle = Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(0).getDisplayName();
-	        } else if (Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(1) != null) {
-	        	boardTitle = Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(1).getDisplayName();
-	        }
+            try {
+                if (Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(0) != null) {
+                    boardTitle = Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(0).getDisplayName();
+                } else if (Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(1) != null) {
+                    boardTitle = Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(1).getDisplayName();
+                }
+            } catch (Exception e) {
+                //Do nothing//
+                //catch for ReplayMod//
+            }
 			temporary.add(ChatHandler.removeFormatting(boardTitle));
 			global.TMP_string.add(temporary);
 			global.backupTMP_strings.add(temporary);
