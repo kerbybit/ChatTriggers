@@ -1,7 +1,6 @@
 package com.kerbybit.chattriggers.triggers;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -275,9 +274,25 @@ public class StringHandler {
 			TMP_e = TMP_e.replace("{serverIP}", "{string[DefaultString->SERVERIP-"+global.TMP_string.size()+"]}");
 		}
 		if (TMP_e.contains("{ping}")) {///TODO
-			String returnString;
+			String returnString = "-1";
 			if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "5";}
-			else {returnString = Minecraft.getMinecraft().getCurrentServerData().pingToServer+"";}
+			else {
+                try {
+                    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")) {
+                        String command = "ping -n 1 " + Minecraft.getMinecraft().getCurrentServerData().serverIP;
+                        Process process = Runtime.getRuntime().exec(command);
+                        BufferedReader is = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                        String line;
+                        while ((line = is.readLine()) != null) {
+                            if (line.contains("Minimum = ") && line.contains("ms")) {
+                                returnString = line.substring(line.indexOf("Minimum = ")+10, line.indexOf("ms"));
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    returnString = "-1";
+                }
+            }
 			
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("DefaultString->SERVERPING-"+(global.TMP_string.size()+1));
@@ -1159,11 +1174,12 @@ public class StringHandler {
             String[] split_tmp_string = tmp_string.split(" ");
             for (String value : split_tmp_string) {
                 String newvalue = ChatHandler.deleteFormatting(value);
+                value = value.replace("...","TripleDotF6cyUQp9TripleDot");
                 if (value.contains(".")) {
                     if (!(newvalue.toUpperCase().startsWith("HTTP://") || newvalue.toUpperCase().startsWith("HTTPS://"))) {
                         newvalue = "http://"+value;
                     }
-                    tmp_string = tmp_string.replace(value, "{link[" + value + "],[" + newvalue + "]}");
+                    tmp_string = tmp_string.replace(value.replace("...","TripleDotF6cyUQp9TripleDot"), "{link[" + value + "],[" + newvalue + "]}");
                 }
             }
 

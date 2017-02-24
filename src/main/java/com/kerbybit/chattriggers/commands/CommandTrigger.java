@@ -4,9 +4,6 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.*;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
@@ -18,12 +15,10 @@ import com.kerbybit.chattriggers.triggers.EventsHandler;
 import com.kerbybit.chattriggers.triggers.StringHandler;
 import com.kerbybit.chattriggers.triggers.TagHandler;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 import static com.kerbybit.chattriggers.triggers.TriggerHandler.onChat;
 
@@ -947,7 +942,7 @@ public class CommandTrigger extends CommandBase {
                 }
                 Set<String> uniqueTMP_lists = new HashSet<String>(TMP_lists);
                 for (String value : uniqueTMP_lists) {
-                    if (!value.equals("")) {//TODO fix with ChatHandler.warn
+                    if (!value.equals("")) {
                         ChatHandler.warn("clickable(&7List>,run_command,/trigger list "+value+") "+global.settings.get(0)+value);
                     }
                 }
@@ -1109,10 +1104,10 @@ public class CommandTrigger extends CommandBase {
                                 ChatHandler.warn(ChatHandler.color("gray", "Changed killfeed position to ") + " " + ChatHandler.color(global.settings.get(0), "top-right"));
                                 try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                             } else {
-                                ChatHandler.warn(ChatHandler.color("red", "/trigger settings killfeed position [top-left/top-right]"));
+                                global.showDisplayGui = true;
                             }
                         } else {
-                            ChatHandler.warn(ChatHandler.color("red", "/trigger settings killfeed position [top-left/top-right]"));
+                            global.showDisplayGui = true;
                         }
                     } else if (args[2].equalsIgnoreCase("FADE")) {
                         if (global.settings.get(9).equalsIgnoreCase("TRUE")) {

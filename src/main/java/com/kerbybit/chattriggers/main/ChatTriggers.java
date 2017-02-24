@@ -38,7 +38,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION)
 public class ChatTriggers {
-	public static KeyBinding altGuiKey;
+	private static KeyBinding altGuiKey;
+    private static KeyBinding displayKey;
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event) throws ClassNotFoundException, IOException {
@@ -49,18 +50,23 @@ public class ChatTriggers {
         ClientCommandHandler.instance.registerCommand(new CommandT());
         ClientCommandHandler.instance.registerCommand(new CommandTR());
         
-        altGuiKey = new KeyBinding("Trigger GUI", Keyboard.KEY_GRAVE, "ChatTriggers");
+        altGuiKey = new KeyBinding("Trigger GUI", Keyboard.KEY_L, "ChatTriggers");
+        displayKey = new KeyBinding("Killfeed position", Keyboard.KEY_K, "ChatTriggers");
+
         ClientRegistry.registerKeyBinding(altGuiKey);
+        ClientRegistry.registerKeyBinding(displayKey);
 	}
 	
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if (global.canUse) {
 			if (altGuiKey.isPressed()) {
-                global.showDisplayGui = true;
-				//GuiTriggerList.inMenu = -1;
-				//global.showAltInputGui = true;
+				GuiTriggerList.inMenu = -1;
+				global.showAltInputGui = true;
 			}
+            if (displayKey.isPressed()) {
+                global.showDisplayGui = true;
+            }
 		}
 	}
 	

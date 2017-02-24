@@ -3,7 +3,6 @@ package com.kerbybit.chattriggers.commands;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.references.BugTracker;
 import net.minecraft.client.Minecraft;

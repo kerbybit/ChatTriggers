@@ -48,27 +48,39 @@ public class DisplayOverlay extends GuiScreen {
             FileHandler.saveAll();
         }
         if (can_grab) {
-            if (kx < width /2) {
+            if (kx < width/3) {
                 if (ky < height/2) {
-                    if (mouseX > kx && mouseX < kx + MC.fontRendererObj.getStringWidth("KILLFEED")
+                    if (mouseX > kx && mouseX < kx + MC.fontRendererObj.getStringWidth("Click to move")
                             && mouseY > ky && mouseY < ky + 100) {
                         grabbed = true;
                     }
                 } else {
-                    if (mouseX > kx && mouseX < kx + MC.fontRendererObj.getStringWidth("KILLFEED")
+                    if (mouseX > kx && mouseX < kx + MC.fontRendererObj.getStringWidth("Click to move")
+                            && mouseY < ky && mouseY > ky - 100) {
+                        grabbed = true;
+                    }
+                }
+            } else if (kx > width/3) {
+                if (ky < height/2) {
+                    if (mouseX < kx && mouseX > kx - MC.fontRendererObj.getStringWidth("Click to move")
                             && mouseY > ky && mouseY < ky + 100) {
+                        grabbed = true;
+                    }
+                } else {
+                    if (mouseX < kx && mouseX > kx - MC.fontRendererObj.getStringWidth("Click to move")
+                            && mouseY < ky && mouseY > ky - 100) {
                         grabbed = true;
                     }
                 }
             } else {
                 if (ky < height/2) {
-                    if (mouseX < kx && mouseX > kx - MC.fontRendererObj.getStringWidth("KILLFEED")
+                    if (mouseX < kx + MC.fontRendererObj.getStringWidth("Click to move")/2 && mouseX > kx - MC.fontRendererObj.getStringWidth("Click to move")/2
                             && mouseY > ky && mouseY < ky + 100) {
                         grabbed = true;
                     }
                 } else {
-                    if (mouseX < kx && mouseX > kx - MC.fontRendererObj.getStringWidth("KILLFEED")
-                            && mouseY > ky && mouseY < ky + 100) {
+                    if (mouseX < kx + MC.fontRendererObj.getStringWidth("Click to move")/2 && mouseX > kx - MC.fontRendererObj.getStringWidth("Click to move")/2
+                            && mouseY < ky && mouseY > ky - 100) {
                         grabbed = true;
                     }
                 }
@@ -104,32 +116,40 @@ public class DisplayOverlay extends GuiScreen {
             if (x > (int)width - 7) {global.killfeed_x = ((int)width - 5)/width;}
             if (y > (int)height - 7) {global.killfeed_y = ((int)height - 5)/height;}
             if ((x > ((int)width / 2) - 3) && (x < ((int)width / 2) + 3)) {global.killfeed_x = ((int)width / 2)/width;}
-            MC.fontRendererObj.drawStringWithShadow(global.killfeed_x + ", " + global.killfeed_y,0, 0,  0xffffffff);
+            if (global.debug) {
+                MC.fontRendererObj.drawStringWithShadow(global.killfeed_x + ", " + global.killfeed_y,0, 0,  0xffffffff);
+            }
         }
 
         if (kx < width / 3) {
             if (ky < height / 2) {
                 MC.fontRendererObj.drawStringWithShadow("KILLFEED", kx, ky, 0xffffffff);
-                drawRect(kx, ky, kx + MC.fontRendererObj.getStringWidth("KILLFEED"), ky + 100, 0x50ffffff);
+                MC.fontRendererObj.drawStringWithShadow("Click to move", kx, ky+10, 0xffffffff);
+                drawRect(kx, ky, kx + MC.fontRendererObj.getStringWidth("Click to move"), ky + 100, 0x50ffffff);
             } else {
                 MC.fontRendererObj.drawStringWithShadow("KILLFEED", kx, ky, 0xffffffff);
-                drawRect(kx, ky+10, kx + MC.fontRendererObj.getStringWidth("KILLFEED"), ky - 100, 0x50ffffff);
+                MC.fontRendererObj.drawStringWithShadow("Click to move", kx, ky-10, 0xffffffff);
+                drawRect(kx, ky+10, kx + MC.fontRendererObj.getStringWidth("Click to move"), ky - 100, 0x50ffffff);
             }
         } else if (kx > (width - width/3)){
             if (ky < height / 2) {
                 MC.fontRendererObj.drawStringWithShadow("KILLFEED", kx - MC.fontRendererObj.getStringWidth("KILLFEED"), ky, 0x50ffffff);
-                drawRect(kx - MC.fontRendererObj.getStringWidth("KILLFEED"), ky, kx, ky + 100, 0x50ffffff);
+                MC.fontRendererObj.drawStringWithShadow("Click to move", kx - MC.fontRendererObj.getStringWidth("Click to move"), ky+10, 0x50ffffff);
+                drawRect(kx - MC.fontRendererObj.getStringWidth("Click to move"), ky, kx, ky + 100, 0x50ffffff);
             } else {
                 MC.fontRendererObj.drawStringWithShadow("KILLFEED", kx - MC.fontRendererObj.getStringWidth("KILLFEED"), ky, 0x50ffffff);
-                drawRect(kx - MC.fontRendererObj.getStringWidth("KILLFEED"), ky+10, kx, ky - 100, 0x50ffffff);
+                MC.fontRendererObj.drawStringWithShadow("Click to move", kx - MC.fontRendererObj.getStringWidth("Click to move"), ky-10, 0x50ffffff);
+                drawRect(kx - MC.fontRendererObj.getStringWidth("Click to move"), ky+10, kx, ky - 100, 0x50ffffff);
             }
         } else {
             if (ky < height / 2) {
                 MC.fontRendererObj.drawStringWithShadow("KILLFEED", kx - MC.fontRendererObj.getStringWidth("KILLFEED")/2, ky, 0x50ffffff);
-                drawRect(kx - MC.fontRendererObj.getStringWidth("KILLFEED")/2, ky, kx + MC.fontRendererObj.getStringWidth("KILLFEED")/2, ky + 100, 0x50ffffff);
+                MC.fontRendererObj.drawStringWithShadow("Click to move", kx - MC.fontRendererObj.getStringWidth("Click to move")/2, ky+10, 0x50ffffff);
+                drawRect(kx - MC.fontRendererObj.getStringWidth("Click to move")/2, ky, kx + MC.fontRendererObj.getStringWidth("Click to move")/2, ky + 100, 0x50ffffff);
             } else {
                 MC.fontRendererObj.drawStringWithShadow("KILLFEED", kx - MC.fontRendererObj.getStringWidth("KILLFEED")/2, ky, 0x50ffffff);
-                drawRect(kx - MC.fontRendererObj.getStringWidth("KILLFEED")/2, ky+10, kx + MC.fontRendererObj.getStringWidth("KILLFEED")/2, ky - 100, 0x50ffffff);
+                MC.fontRendererObj.drawStringWithShadow("Click to move", kx - MC.fontRendererObj.getStringWidth("Click to move")/2, ky-10, 0x50ffffff);
+                drawRect(kx - MC.fontRendererObj.getStringWidth("Click to move")/2, ky+10, kx + MC.fontRendererObj.getStringWidth("Click to move")/2, ky - 100, 0x50ffffff);
             }
         }
 

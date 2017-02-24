@@ -104,11 +104,12 @@ public class EventsHandler {
 			
 		//non-logic events
 			if (TMP_c.equalsIgnoreCase("TRIGGER")) {doTrigger(TMP_e, chatEvent);}
-			TMP_e = TMP_e.replace(stringCommaReplace, ",");
-			if (TMP_c.equalsIgnoreCase("SAY")) {if (!global.hasWatermark) {global.chatQueue.add(TMP_e);}}
-			if (TMP_c.equalsIgnoreCase("CHAT")) {
+            if (TMP_c.equalsIgnoreCase("CHAT")) {
                 ChatHandler.warn(TMP_e);
             }
+			TMP_e = TMP_e.replace(stringCommaReplace, ",");
+			if (TMP_c.equalsIgnoreCase("SAY")) {if (!global.hasWatermark) {global.chatQueue.add(TMP_e);}}
+
             if (TMP_c.equalsIgnoreCase("DEBUG") || TMP_c.equalsIgnoreCase("DO")) {if (global.debug) {ChatHandler.warn(TMP_e);}}
             if (TMP_c.equalsIgnoreCase("LOG")) {System.out.println(TMP_e
                     .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")

@@ -52,7 +52,6 @@ public class ChatHandler {
         while (cht.contains("{link[") && cht.contains("],[") && cht.contains("]}")) {
             String prev_color = "";
             if (cht.indexOf("{link[")!=0) {
-                System.out.println(cht);
                 String testfor = cht.substring(0, cht.indexOf("{link["));
                 while (testfor.contains("&0") || testfor.contains("&1") || testfor.contains("&2")
                         || testfor.contains("&3") || testfor.contains("&4") || testfor.contains("&5")
@@ -60,7 +59,6 @@ public class ChatHandler {
                         || testfor.contains("&9") || testfor.contains("&a") || testfor.contains("&b")
                         || testfor.contains("&c") || testfor.contains("&d") || testfor.contains("&e")
                         || testfor.contains("&f")) {
-                    System.out.println(testfor);
                     testfor = testfor.substring(testfor.indexOf("&"));
                     if (testfor.startsWith("&0")) {prev_color+="&0";}
                     if (testfor.startsWith("&1")) {prev_color+="&1";}
@@ -162,6 +160,7 @@ public class ChatHandler {
                     .replace("stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement", "(")
                     .replace("stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement", ")")
                     .replace("AmpF6cyUQp9Amp","&")
+                    .replace("TripleDotF6cyUQp9TripleDot","...")
                     .replace("\\n","NewLineF6cyUQp9NewLine")
                     .replace("\\'","SingleQuoteF6cyUQp9SingleQuote")
                     .replace("\\","\\\\")

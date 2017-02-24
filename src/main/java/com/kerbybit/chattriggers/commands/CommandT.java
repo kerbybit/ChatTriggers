@@ -1,11 +1,9 @@
 package com.kerbybit.chattriggers.commands;
 
-import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.references.BugTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 
 public class CommandT extends CommandBase{
