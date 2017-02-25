@@ -49,7 +49,7 @@ public class ChatHandler {
 	public static void warn(String cht) {
         //fix link
         cht = removeFormatting(cht);
-        while (cht.contains("{link[") && cht.contains("],[") && cht.contains("]}")) {
+        while (cht.contains("{link[") && cht.contains("]stringCommaReplacementF6cyUQp9stringCommaReplacement[") && cht.contains("]}")) {
             String prev_color = "";
             if (cht.indexOf("{link[")!=0) {
                 String testfor = cht.substring(0, cht.indexOf("{link["));
@@ -80,9 +80,9 @@ public class ChatHandler {
                 }
             }
             String tmp_string = cht.substring(cht.indexOf("{link[")+6, cht.indexOf("]}", cht.indexOf("{link[")));
-            String first = tmp_string.substring(0, tmp_string.indexOf("],["));
-            String second = tmp_string.substring(tmp_string.indexOf("],[")+3);
-            cht = cht.replace("{link[" + first + "],[" + second + "]}", "clickable("+prev_color+first+",open_url,"+deleteFormatting(second)+",open link)"+prev_color);
+            String first = tmp_string.substring(0, tmp_string.indexOf("]stringCommaReplacementF6cyUQp9stringCommaReplacement["));
+            String second = tmp_string.substring(tmp_string.indexOf("]stringCommaReplacementF6cyUQp9stringCommaReplacement[")+54);
+            cht = cht.replace("{link[" + first + "]stringCommaReplacementF6cyUQp9stringCommaReplacement[" + second + "]}", "clickable("+prev_color+first+",open_url,"+deleteFormatting(second)+",open link)"+prev_color);
         }
 
 		cht = cht.replace("'('", "LeftParF6cyUQp9LeftPar")

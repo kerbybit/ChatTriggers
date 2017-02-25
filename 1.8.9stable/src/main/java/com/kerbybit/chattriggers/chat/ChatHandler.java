@@ -26,7 +26,8 @@ public class ChatHandler {
 	}
 	
 	public static void warnUnformatted(String cht) {
-		cht = cht.replace("'", "\\'");
+		cht = cht.replace("'", "\\'")
+                .replace("\\", "\\\\");
 		String TMP_o = "['',";
 		TMP_o += "{text:'" + cht +  "'}";
 		TMP_o += "]";
@@ -48,10 +49,9 @@ public class ChatHandler {
 	public static void warn(String cht) {
         //fix link
         cht = removeFormatting(cht);
-        while (cht.contains("{link[") && cht.contains("],[") && cht.contains("]}")) {
+        while (cht.contains("{link[") && cht.contains("]stringCommaReplacementF6cyUQp9stringCommaReplacement[") && cht.contains("]}")) {
             String prev_color = "";
             if (cht.indexOf("{link[")!=0) {
-                System.out.println(cht);
                 String testfor = cht.substring(0, cht.indexOf("{link["));
                 while (testfor.contains("&0") || testfor.contains("&1") || testfor.contains("&2")
                         || testfor.contains("&3") || testfor.contains("&4") || testfor.contains("&5")
@@ -59,7 +59,6 @@ public class ChatHandler {
                         || testfor.contains("&9") || testfor.contains("&a") || testfor.contains("&b")
                         || testfor.contains("&c") || testfor.contains("&d") || testfor.contains("&e")
                         || testfor.contains("&f")) {
-                    System.out.println(testfor);
                     testfor = testfor.substring(testfor.indexOf("&"));
                     if (testfor.startsWith("&0")) {prev_color+="&0";}
                     if (testfor.startsWith("&1")) {prev_color+="&1";}
@@ -81,18 +80,19 @@ public class ChatHandler {
                 }
             }
             String tmp_string = cht.substring(cht.indexOf("{link[")+6, cht.indexOf("]}", cht.indexOf("{link[")));
-            String first = tmp_string.substring(0, tmp_string.indexOf("],["));
-            String second = tmp_string.substring(tmp_string.indexOf("],[")+3);
-            cht = cht.replace("{link[" + first + "],[" + second + "]}", "clickable("+prev_color+first+",open_url,"+deleteFormatting(second)+",open link)"+prev_color);
+            String first = tmp_string.substring(0, tmp_string.indexOf("]stringCommaReplacementF6cyUQp9stringCommaReplacement["));
+            String second = tmp_string.substring(tmp_string.indexOf("]stringCommaReplacementF6cyUQp9stringCommaReplacement[")+54);
+            cht = cht.replace("{link[" + first + "]stringCommaReplacementF6cyUQp9stringCommaReplacement[" + second + "]}", "clickable("+prev_color+first+",open_url,"+deleteFormatting(second)+",open link)"+prev_color);
         }
 
-		cht = cht.replace("'('", "LeftParF6cyUQp9LeftPar");
-		cht = cht.replace("')'", "RightParF6cyUQp9RightPar");
-		cht = cht.replace("'", "\\'");
-		cht = cht.replace("[", "\u005B");
-		cht = cht.replace("]", "\u005D");
-		cht = cht.replace("{", "\u007B");
-		cht = cht.replace("}", "\u007D");
+		cht = cht.replace("'('", "LeftParF6cyUQp9LeftPar")
+                .replace("')'", "RightParF6cyUQp9RightPar")
+                .replace("','", "CommaReplacementF6cyUQp9CommaReplacement")
+                .replace("'", "\\'")
+                .replace("[", "\u005B")
+                .replace("]", "\u005D")
+                .replace("{", "\u007B")
+                .replace("}", "\u007D");
 
 		
 		
@@ -144,8 +144,9 @@ public class ChatHandler {
 			}
 		}
 		
-		cht = cht.replace("LeftParF6cyUQp9LeftPar", "(");
-		cht = cht.replace("RightParF6cyUQp9RightPar", ")");
+		cht = cht.replace("LeftParF6cyUQp9LeftPar", "(")
+                .replace("RightParF6cyUQp9RightPar", ")")
+                .replace("CommaReplacementF6cyUQp9CommaReplacement", ",");
 		
 		cht = addFormatting(cht);
 		
@@ -156,6 +157,18 @@ public class ChatHandler {
 				cht.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
 					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
 					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")
+                    .replace("stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement", "(")
+                    .replace("stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement", ")")
+                    .replace("AmpF6cyUQp9Amp","&")
+                    .replace("TripleDotF6cyUQp9TripleDot","...")
+                    .replace("\\n","NewLineF6cyUQp9NewLine")
+                    .replace("\\'","SingleQuoteF6cyUQp9SingleQuote")
+                    .replace("\\","\\\\")
+                    .replace("BackslashF6cyUQp9Backslash","\\\\")
+                    .replace("NewLineF6cyUQp9NewLine","\\n")
+                    .replace("SingleQuoteF6cyUQp9SingleQuote","\\'")
+                    .replace("'", "\'")
+                    .replace("\0","")
 				+  "'}";
 		TMP_o += "]";
 		IChatComponent TMP_out = IChatComponent.Serializer.jsonToComponent(TMP_o);
@@ -212,16 +225,18 @@ public class ChatHandler {
 				if (global.debug) {CommandTrigger.doCommand(args, false);}
 				else {CommandTrigger.doCommand(args, true);}
 			} else {
-				Minecraft.getMinecraft().thePlayer.sendChatMessage("/" + 
-						cht.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
-							.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-							.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"));
+                if (!global.hasWatermark) {
+                    Minecraft.getMinecraft().thePlayer.sendChatMessage("/" +
+                            cht.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                                    .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+                                    .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"));
+                }
 			}
 		}
 	}
 	
 	public static String removeFormatting(String msg) {
-		msg = msg.replace(EnumChatFormatting.BLACK.toString(), "&0")
+		return msg.replace(EnumChatFormatting.BLACK.toString(), "&0")
 			.replace(EnumChatFormatting.DARK_BLUE.toString(), "&1")
 			.replace(EnumChatFormatting.DARK_GREEN.toString(), "&2")
 			.replace(EnumChatFormatting.DARK_AQUA.toString(), "&3")
@@ -243,11 +258,35 @@ public class ChatHandler {
 			.replace(EnumChatFormatting.UNDERLINE.toString(), "&n")
 			.replace(EnumChatFormatting.ITALIC.toString(), "&o")
 			.replace(EnumChatFormatting.RESET.toString(), "&r");
-		return msg;
 	}
+
+    public static String ignoreFormatting(String msg) {
+        return msg.replace(EnumChatFormatting.BLACK.toString(), "AmpF6cyUQp9Amp0")
+                .replace(EnumChatFormatting.DARK_BLUE.toString(), "AmpF6cyUQp9Amp1")
+                .replace(EnumChatFormatting.DARK_GREEN.toString(), "AmpF6cyUQp9Amp2")
+                .replace(EnumChatFormatting.DARK_AQUA.toString(), "AmpF6cyUQp9Amp3")
+                .replace(EnumChatFormatting.DARK_RED.toString(), "AmpF6cyUQp9Amp4")
+                .replace(EnumChatFormatting.DARK_PURPLE.toString(), "AmpF6cyUQp9Amp5")
+                .replace(EnumChatFormatting.GOLD.toString(), "AmpF6cyUQp9Amp6")
+                .replace(EnumChatFormatting.GRAY.toString(), "AmpF6cyUQp9Amp7")
+                .replace(EnumChatFormatting.DARK_GRAY.toString(), "AmpF6cyUQp9Amp8")
+                .replace(EnumChatFormatting.BLUE.toString(), "AmpF6cyUQp9Amp9")
+                .replace(EnumChatFormatting.GREEN.toString(), "AmpF6cyUQp9Ampa")
+                .replace(EnumChatFormatting.AQUA.toString(), "AmpF6cyUQp9Ampb")
+                .replace(EnumChatFormatting.RED.toString(), "AmpF6cyUQp9Ampc")
+                .replace(EnumChatFormatting.LIGHT_PURPLE.toString(), "AmpF6cyUQp9Ampd")
+                .replace(EnumChatFormatting.YELLOW.toString(), "AmpF6cyUQp9Ampe")
+                .replace(EnumChatFormatting.WHITE.toString(), "AmpF6cyUQp9Ampf")
+                .replace(EnumChatFormatting.OBFUSCATED.toString(), "AmpF6cyUQp9Ampk")
+                .replace(EnumChatFormatting.BOLD.toString(), "AmpF6cyUQp9Ampl")
+                .replace(EnumChatFormatting.STRIKETHROUGH.toString(), "AmpF6cyUQp9Ampm")
+                .replace(EnumChatFormatting.UNDERLINE.toString(), "AmpF6cyUQp9Ampn")
+                .replace(EnumChatFormatting.ITALIC.toString(), "AmpF6cyUQp9Ampo")
+                .replace(EnumChatFormatting.RESET.toString(), "AmpF6cyUQp9Ampr");
+    }
 	
 	public static String addFormatting(String msg) {
-		msg = msg.replace("&0", EnumChatFormatting.BLACK.toString())
+		return msg.replace("&0", EnumChatFormatting.BLACK.toString())
 			.replace("&1", EnumChatFormatting.DARK_BLUE.toString())
 			.replace("&2", EnumChatFormatting.DARK_GREEN.toString())
 			.replace("&3", EnumChatFormatting.DARK_AQUA.toString())
@@ -269,11 +308,10 @@ public class ChatHandler {
 			.replace("&n", EnumChatFormatting.UNDERLINE.toString())
 			.replace("&o", EnumChatFormatting.ITALIC.toString())
 			.replace("&r", EnumChatFormatting.RESET.toString());
-		return msg;
 	}
 
     public static String deleteFormatting(String msg) {
-        msg = msg.replace(EnumChatFormatting.BLACK.toString(), "")
+        return msg.replace(EnumChatFormatting.BLACK.toString(), "")
                 .replace(EnumChatFormatting.DARK_BLUE.toString(), "")
                 .replace(EnumChatFormatting.DARK_GREEN.toString(), "")
                 .replace(EnumChatFormatting.DARK_AQUA.toString(), "")
@@ -317,6 +355,5 @@ public class ChatHandler {
                 .replace("&n", "")
                 .replace("&o", "")
                 .replace("&r", "");
-        return msg;
     }
 }

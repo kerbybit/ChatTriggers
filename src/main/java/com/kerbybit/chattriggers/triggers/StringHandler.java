@@ -288,6 +288,8 @@ public class StringHandler {
                                 returnString = line.substring(line.indexOf("Minimum = ")+10, line.indexOf("ms"));
                             }
                         }
+                    } else {
+                        returnString = Minecraft.getMinecraft().getCurrentServerData().pingToServer+"";
                     }
                 } catch (Exception e) {
                     returnString = "-1";

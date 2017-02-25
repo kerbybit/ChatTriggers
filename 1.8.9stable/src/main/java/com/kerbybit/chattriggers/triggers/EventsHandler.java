@@ -19,21 +19,24 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import static com.kerbybit.chattriggers.triggers.TriggerHandler.onChat;
 
 public class EventsHandler {
-	public static void doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent) {
+	public static String doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent) {
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
-		doEvents(tmp_event, chatEvent, null, null);
+		return doEvents(tmp_event, chatEvent, null, null);
 	}
 	
-	public static void doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, String[] toreplace, String[] replacement) {
+	public static String doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, String[] toreplace, String[] replacement) {
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
 		String stringCommaReplace = "stringCommaReplacementF6cyUQp9stringCommaReplacement";
+        String ret = "null";
 		
 		if (toreplace != null) {
 			for (int i=0; i<toreplace.length; i++) {
 				List<String> temporary = new ArrayList<String>();
 				temporary.add("TriggerArgument"+i+"-"+global.TMP_string.size());
 				temporary.add(replacement[i]);
-				for (int j=0; j<tmp_event.size(); j++) {tmp_event.set(j, tmp_event.get(j).replace(toreplace[i],"{string[TriggerArgument"+i+"-"+global.TMP_string.size()+"]}"));}
+				for (int j=0; j<tmp_event.size(); j++) {
+                    tmp_event.set(j, tmp_event.get(j).replace(toreplace[i],"{string[TriggerArgument"+i+"-"+global.TMP_string.size()+"]}"));
+                }
 				global.TMP_string.add(temporary);
 			}
 		}
@@ -41,12 +44,13 @@ public class EventsHandler {
 		for (int i=0; i<tmp_event.size(); i++) {
         //SETUP
 			String TMP_e = tmp_event.get(i);
+            global.lastEvent = TMP_e;
 			String TMP_c;
 			if (!TMP_e.contains(" ")) {TMP_c = TMP_e; TMP_e="";}
 			else {TMP_c = TMP_e.substring(0, TMP_e.indexOf(" ")); TMP_e = TMP_e.substring(TMP_e.indexOf(" ")+1, TMP_e.length());}
 			int TMP_t = 50;
 			int TMP_p = global.notifySize;
-			int TMP_v = 10000;
+			int TMP_v = 100;
 			int TMP_pi = 1;
 			
 		//setup backup for functions so strings don't get overwritten
@@ -58,9 +62,9 @@ public class EventsHandler {
 		//user strings and functions
 			TMP_e = TMP_e.replace("{string<", "{string[").replace("{array<", "{array[").replace(">}", "]}");
 			
-			TMP_e = StringHandler.stringFunctions(TMP_e);
-			TMP_e = ArrayHandler.arrayFunctions(TMP_e);
-			TMP_e = StringHandler.stringFunctions(TMP_e);
+			TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent);
+			TMP_e = ArrayHandler.arrayFunctions(TMP_e, chatEvent);
+			TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent);
 			
 		//tags
 			try {
@@ -85,9 +89,9 @@ public class EventsHandler {
 			} catch (NumberFormatException e1) {ChatHandler.warn(ChatHandler.color("red", "<vol=v> v must be an integer!"));}
 			
 			try {
-				if (TMP_e.contains("<pitch") && TMP_e.contains(">")) {
+				if (TMP_e.contains("<pitch=") && TMP_e.contains(">")) {
 					TMP_pi = Integer.parseInt(TagHandler.eventTags(4, TMP_e));
-					TMP_e = TMP_e.replace("<pitch"+TMP_pi+">", "");
+					TMP_e = TMP_e.replace("<pitch="+TMP_pi+">", "");
 				}
 			} catch (NumberFormatException e1) {ChatHandler.warn(ChatHandler.color("red", "<pitch=p> p must be an integer!"));}
 			
@@ -100,10 +104,13 @@ public class EventsHandler {
 			
 		//non-logic events
 			if (TMP_c.equalsIgnoreCase("TRIGGER")) {doTrigger(TMP_e, chatEvent);}
+            if (TMP_c.equalsIgnoreCase("CHAT")) {
+                ChatHandler.warn(TMP_e);
+            }
 			TMP_e = TMP_e.replace(stringCommaReplace, ",");
-			if (TMP_c.equalsIgnoreCase("SAY")) {global.chatQueue.add(TMP_e);}
-			if (TMP_c.equalsIgnoreCase("CHAT")) {ChatHandler.warn(TMP_e);}
-            if (TMP_c.equalsIgnoreCase("DEBUG")) {if (global.debug) {ChatHandler.warn(TMP_e);}}
+			if (TMP_c.equalsIgnoreCase("SAY")) {if (!global.hasWatermark) {global.chatQueue.add(TMP_e);}}
+
+            if (TMP_c.equalsIgnoreCase("DEBUG") || TMP_c.equalsIgnoreCase("DO")) {if (global.debug) {ChatHandler.warn(TMP_e);}}
             if (TMP_c.equalsIgnoreCase("LOG")) {System.out.println(TMP_e
                     .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
                     .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
@@ -112,11 +119,12 @@ public class EventsHandler {
                 ChatHandler.warn(TMP_e);
                 onChat(TMP_e, ChatHandler.deleteFormatting(TMP_e), null);
             }
-			if (TMP_c.equalsIgnoreCase("DO") && global.debug) {ChatHandler.warn(TMP_e);}
-			if (TMP_c.equalsIgnoreCase("SOUND")) {Minecraft.getMinecraft().thePlayer.playSound(TMP_e
+			if (TMP_c.equalsIgnoreCase("SOUND")) {
+                float real_v = ((float)TMP_v) / 100;
+                Minecraft.getMinecraft().thePlayer.playSound(TMP_e
 					.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
 					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"), TMP_v, TMP_pi);}
+					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"), real_v, TMP_pi);}
 			if (TMP_c.equalsIgnoreCase("CANCEL") && chatEvent!=null) {chatEvent.setCanceled(true);}
 			if (TMP_c.equalsIgnoreCase("KILLFEED")) {
                 if (global.settings.get(10).equalsIgnoreCase("FALSE")) {
@@ -156,7 +164,12 @@ public class EventsHandler {
 						.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")));}
 				catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Unable to open URL! IOExeption"));}
 			}
-            if (TMP_e.equalsIgnoreCase("BREAK")) {/*i = tmp_event.size(); DISABLED*/}
+            if (TMP_c.equalsIgnoreCase("RETURN")) {
+                ret = TMP_e
+                        .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                        .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+                        .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
+            }
 			
 			
 		//logic events
@@ -240,13 +253,61 @@ public class EventsHandler {
 						int TMP_time = Integer.parseInt(TMP_e);
 						if (TMP_time>0) {
 							global.waitEvents.add(eventsToWait);
-							global.waitTime.add(Integer.parseInt(TMP_e));
+							global.waitTime.add(TMP_time);
 						} else {
 							ChatHandler.warn(ChatHandler.color("red", "Malformed WAIT event - skipping"));
 						}
 					} catch (NumberFormatException e) {
-						e.printStackTrace();
-						ChatHandler.warn(ChatHandler.color("red", "Malformed WAIT event - skipping"));
+                        String get_time = TMP_e.toUpperCase();
+						if (get_time.contains("H") || get_time.contains("M") || get_time.contains("S")) {
+                            try {
+                                if (get_time.startsWith("H") || get_time.startsWith("M") || get_time.startsWith("S")) {
+                                    ChatHandler.warn(ChatHandler.color("red", "Malformed WAIT event - skipping"));
+                                } else {
+                                    String hours = "0";
+                                    if (get_time.contains("H")) {
+                                        hours = get_time.substring(0, get_time.indexOf("H"));
+                                        if (hours.contains("M")) {
+                                            hours = hours.substring(hours.indexOf("M")+1);
+                                        }
+                                        if (hours.contains("S")) {
+                                            hours = hours.substring(hours.indexOf("S")+1);
+                                        }
+                                    }
+                                    String minutes = "0";
+                                    if (get_time.contains("M")) {
+                                        minutes = get_time.substring(0, get_time.indexOf("M"));
+                                        if (minutes.contains("H")) {
+                                            minutes = minutes.substring(minutes.indexOf("H")+1);
+                                        }
+                                        if (minutes.contains("S")) {
+                                            minutes = minutes.substring(minutes.indexOf("S")+1);
+                                        }
+                                    }
+                                    String seconds = "0";
+                                    if (get_time.contains("S")) {
+                                        seconds = get_time.substring(0, get_time.indexOf("S"));
+                                        if (seconds.contains("H")) {
+                                            seconds = seconds.substring(seconds.indexOf("H")+1);
+                                        }
+                                        if (seconds.contains("M")) {
+                                            seconds = seconds.substring(seconds.indexOf("M")+1);
+                                        }
+                                    }
+                                    int TMP_time = Integer.parseInt(hours)*72000 + Integer.parseInt(minutes)*1200 + Integer.parseInt(seconds)*20;
+                                    if (TMP_time>0) {
+                                        global.waitEvents.add(eventsToWait);
+                                        global.waitTime.add(TMP_time);
+                                    } else {
+                                        ChatHandler.warn(ChatHandler.color("red", "Malformed WAIT event - skipping"));
+                                    }
+                                }
+                            } catch (NumberFormatException e2) {
+                                ChatHandler.warn(ChatHandler.color("red", "Malformed WAIT event - skipping"));
+                            }
+                        } else {
+                            ChatHandler.warn(ChatHandler.color("red", "Malformed WAIT event - skipping"));
+                        }
 					}
 				}
 				
@@ -320,7 +381,7 @@ public class EventsHandler {
                             for (int j=1; j<arrayto.size(); j++) {
                                 String[] first = {valin};
                                 String[] second = {arrayto.get(j)};
-                                doEvents(eventsToFor, chatEvent, first, second);
+                                ret = doEvents(eventsToFor, chatEvent, first, second);
                             }
                         } else {
                             try {
@@ -356,7 +417,7 @@ public class EventsHandler {
                                 for (int j=int_from; j<int_to+1; j++) {
                                     String[] first = {args[0].trim()};
                                     String[] second = {j + ""};
-                                    doEvents(eventsToFor, chatEvent, first, second);
+                                    ret = doEvents(eventsToFor, chatEvent, first, second);
                                 }
                             } else {
                                 try {
@@ -457,16 +518,16 @@ public class EventsHandler {
 					if (TMP_e.equalsIgnoreCase("TRUE") || TMP_e.equalsIgnoreCase("NOT FALSE")) {
 						if (eventsToIf.size()>0) {
 							eventsToIf.remove(0);
-							doEvents(eventsToIf, chatEvent);
+							ret = doEvents(eventsToIf, chatEvent);
 						}
 					} else {
 						if (eventsToElse.size()>0) {
 							if (eventsToElse.get(0).toUpperCase().startsWith("ELSEIF")) {
 								eventsToElse.set(0, eventsToElse.get(0).substring(4));
-								doEvents(eventsToElse, chatEvent);
+								ret = doEvents(eventsToElse, chatEvent);
 							} else {
 								eventsToElse.remove(0);
-								doEvents(eventsToElse, chatEvent);
+								ret = doEvents(eventsToElse, chatEvent);
 							}
 						}
 					}
@@ -533,7 +594,7 @@ public class EventsHandler {
 					int rand = randInt(1,eventsToChoose.size()-2);
 					
 					//do events
-					doEvents(eventsToChoose.get(rand), chatEvent);
+					ret = doEvents(eventsToChoose.get(rand), chatEvent);
 					
 					//move i to closing end
 					int moveEvents = 0;
@@ -542,6 +603,7 @@ public class EventsHandler {
 				}
 			}
 		}
+        return ret;
 	}
 	
 	private static void doTrigger(String triggerName, ClientChatReceivedEvent chatEvent) {
@@ -663,17 +725,15 @@ public class EventsHandler {
 					}
 				}
 			} else {
-				ChatHandler.warn(ChatHandler.color("red","SOMETHING WENT WRONG!!! (wait event/time unsynced)"));
+				ChatHandler.warn(ChatHandler.color("red","ERR: wait events and wait time unsynced"));
 				global.waitEvents.clear();
 				global.waitTime.clear();
 			}
 		}
 	}
 	
-	private static int randInt(int min, int max) {
+	public static int randInt(int min, int max) {
 	    Random rand = new Random();
 	    return rand.nextInt((max - min) + 1) + min;
 	}
-	
-	
 }

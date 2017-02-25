@@ -17,6 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import org.apache.commons.io.FileUtils;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
@@ -422,7 +424,27 @@ public class FileHandler {
 			if (l.startsWith("color:")) {tmp_settings.add(l.substring(l.indexOf("color:") + 6));}
 			if (l.startsWith("colorName:")) {tmp_settings.add(l.substring(l.indexOf("colorName:") + 10));}
 			if (l.startsWith("version:")) {tmp_settings.add(l.substring(l.indexOf("version:") + 8));}
-			if (l.startsWith("killfeed pos:")) {tmp_settings.add(l.substring(l.indexOf("killfeed pos:")+13));}
+			if (l.startsWith("killfeed pos:")) {
+                String temp = l.substring(l.indexOf("killfeed pos:")+13);
+                tmp_settings.add(temp);
+                try {
+
+                    String[] xy = temp.split(" ");
+                    global.killfeed_x = Double.parseDouble(xy[0]);
+                    global.killfeed_y = Double.parseDouble(xy[1]);
+                } catch (Exception e) {
+                    ScaledResolution var5 = new ScaledResolution(Minecraft.getMinecraft());
+                    float width = var5.getScaledWidth();
+                    float height = var5.getScaledHeight();
+                    if (temp.equalsIgnoreCase("TR") || temp.equalsIgnoreCase("TOP-RIGHT")) {
+                        global.killfeed_x = 5/width;
+                        global.killfeed_y = 5/height;
+                    } else {
+                        global.killfeed_x = (width - 5)/width;
+                        global.killfeed_y = 5/height;
+                    }
+                }
+            }
 			if (l.startsWith("isBeta:")) {tmp_settings.add(l.substring(l.indexOf("isBeta:")+7));}
 			if (l.startsWith("lastOpened:")) {global.currentDate = l.substring(l.indexOf("lastOpened:")+11); tmp_settings.add(global.currentDate);}
             if (l.startsWith("t:")) {tmp_settings.add(l.substring(l.indexOf("t:")+2));}
@@ -437,7 +459,7 @@ public class FileHandler {
                     }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
-                    ChatHandler.warn(ChatHandler.color("red","You need to set the killfeed speed to an integer greater than 0!"));
+                    ChatHandler.warn(ChatHandler.color("red","You need to set the notification speed to an integer greater than 0!"));
                 }
             }
             if (l.startsWith("killfeed fade:")) {tmp_settings.add(l.substring(l.indexOf("killfeed fade:")+14));}
@@ -530,7 +552,7 @@ public class FileHandler {
 	    	if (global.settings.get(4).equals("false")) {UpdateHandler.loadVersion("http://chattriggers.kerbybit.com/download/version.txt");} 
 	    	else {UpdateHandler.loadVersion("http://chattriggers.kerbybit.com/download/betaversion.txt");}
 	    	
-	    	UpdateHandler.getCanUse("http://www.kerbybit.com/blacklist/", "http://www.kerbybit.com/enabledmods/");
+	    	UpdateHandler.getCanUse("http://www.kerbybit.com/blacklist/", "http://www.kerbybit.com/enabledmods/", "http://ct.kerbybit.com/creators/");
 		}
 	}
 	

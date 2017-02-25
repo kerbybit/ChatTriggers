@@ -11,7 +11,7 @@ import com.kerbybit.chattriggers.globalvars.global;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
-//import net.minecraftforge.event.entity.player.EntityInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class TriggerHandler {
     public static void onChat(String fmsg, String msg, ClientChatReceivedEvent e) {
@@ -22,9 +22,7 @@ public class TriggerHandler {
             String tmp_out = ChatHandler.removeFormatting(fmsg);
             global.copyText.add(tmp_out);
             tmp_out = tmp_out.replace("'", "\\'");
-            List<String> TMP_eventout = new ArrayList<String>();
-            TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size()-1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
-            ChatHandler.sendJson(TMP_eventout);
+            ChatHandler.warn("clickable("+ChatHandler.ignoreFormatting(tmp_out)+",run_command,/trigger copy CopyFromDebugChat " + (global.copyText.size()-1) + ",Click to copy)");
         }
 
         for (int i=0; i<global.chatTrigger.size(); i++) {
@@ -81,11 +79,16 @@ public class TriggerHandler {
             if (Minecraft.getMinecraft().isSingleplayer()) {
                 current_server = "SinglePlayer";
             } else {
-                current_server = Minecraft.getMinecraft().getCurrentServerData().serverIP;
+                try {
+                    current_server = Minecraft.getMinecraft().getCurrentServerData().serverIP;
+                } catch (Exception exception) {
+                    current_server = "SinglePlayer";
+                    //Catch for ReplayMod//
+                }
             }
 
             for (String value : TMP_server) {
-                if (current_server.contains(value)) {
+                if (current_server.contains(value.replace("99.198.123.2","hypixel"))) {
                     correct_server = true;
                 }
             }
@@ -242,9 +245,13 @@ public class TriggerHandler {
         //chat
 		String msg = e.getMessage().getUnformattedText();
 		String fmsg = e.getMessage().getFormattedText();
-        global.chatEventHistory.add(e);
-        if (global.chatEventHistory.size()>100) {global.chatEventHistory.remove(0);}
-		global.chatHistory.add(ChatHandler.removeFormatting(fmsg));
+        if (global.chatHistory.size() >= 1) {
+            if (!global.chatHistory.get(global.chatHistory.size()-1).equals(ChatHandler.removeFormatting(fmsg))) {
+                global.chatHistory.add(ChatHandler.removeFormatting(fmsg));
+            }
+        } else {
+            global.chatHistory.add(ChatHandler.removeFormatting(fmsg));
+        }
 		if (global.chatHistory.size()>100) {global.chatHistory.remove(0);}
 
         onChat(fmsg, msg, e);
@@ -265,16 +272,16 @@ public class TriggerHandler {
 		}
 	}
 	
-	/*public static void onRightClickPlayer(EntityInteractEvent e) {
+	public static void onRightClickPlayer(PlayerInteractEvent.EntityInteract e) {
 		for (int i=0; i<global.onRightClickPlayerTrigger.size(); i++) {
 			//add all events to temp list
 			List<String> TMP_events = new ArrayList<String>();
-			for (int j=2; j<global.onRightClickPlayerTrigger.get(i).size(); j++) {TMP_events.add(global.onRightClickPlayerTrigger.get(i).get(j).replace("{player}", e.target.getName()));}
+			for (int j=2; j<global.onRightClickPlayerTrigger.get(i).size(); j++) {TMP_events.add(global.onRightClickPlayerTrigger.get(i).get(j).replace("{player}", e.getTarget().getName()));}
 			
 			//do events
 			EventsHandler.doEvents(TMP_events, null);
 		}
-	}*/
+	}
 	
 	public static void worldLoadTriggers() {
 		if (global.worldLoaded) {
@@ -300,8 +307,8 @@ public class TriggerHandler {
 			
 			for (int i=0; i<global.onServerChangeTrigger.size(); i++) {
 				String currentServer;
-				if (Minecraft.getMinecraft().isSingleplayer()) {currentServer = "SinglePlayer";} 
-				else {currentServer = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
+				if (Minecraft.getMinecraft().isSingleplayer()) {currentServer = "SinglePlayer";}
+                else {currentServer = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
 				
 				if (!currentServer.equals(global.connectedToServer)) {
 					//add all events to temp list

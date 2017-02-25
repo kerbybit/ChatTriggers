@@ -9,22 +9,9 @@ import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
 public class CommandReference {
-	public static void resetAll() {
-		ChatHandler.warn(ChatHandler.color("red", "Resetting everything in attempt to fix things"));
-		global.waitEvents.clear();
-		global.asyncEvents.clear();
-		global.backupTMP_strings.clear();
-		global.backupUSR_strings.clear();
-		global.killfeed.clear();
-		global.killfeedDelay.clear();
-		global.notify.clear();
-		global.notifyAnimation.clear();
-		try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
-		ChatHandler.warn(ChatHandler.color("green", "Reset completed"));
-	}
-
-    public static void silentResetAll() {
+    public static void clearAll() {
         global.waitEvents.clear();
+        global.waitTime.clear();
         global.asyncEvents.clear();
         global.backupTMP_strings.clear();
         global.backupUSR_strings.clear();
@@ -32,6 +19,17 @@ public class CommandReference {
         global.killfeedDelay.clear();
         global.notify.clear();
         global.notifyAnimation.clear();
+    }
+
+	public static void resetAll() {
+		ChatHandler.warn(ChatHandler.color("red", "Resetting everything in attempt to fix things"));
+		clearAll();
+		try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+		ChatHandler.warn(ChatHandler.color("green", "Reset completed"));
+	}
+
+    public static void silentResetAll() {
+        clearAll();
         try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
     }
 	
@@ -65,6 +63,9 @@ public class CommandReference {
             r.add("");
             r.add("onClientTick");
             r.add("onRightClickPlayer");
+            r.add("");
+            r.add("function");
+            r.add("onUnknownError");
 
         return r;
     }
@@ -78,6 +79,8 @@ public class CommandReference {
 		global.onServerChangeTrigger.clear();
 		global.onNewDayTrigger.clear();
 		global.onRightClickPlayerTrigger.clear();
+        global.function.clear();
+        global.onUnknownError.clear();
 	}
 	
 	public static void addToTriggerList(List<String> tmp_list) {
@@ -107,7 +110,11 @@ public class CommandReference {
 			global.onNewDayTrigger.add(tmp_list);
 		} else if (tmp_list.get(0).equalsIgnoreCase("ONRIGHTCLICKPLAYER")) {
 			global.onRightClickPlayerTrigger.add(tmp_list);
-		}
+		} else if (tmp_list.get(0).equalsIgnoreCase("FUNCTION")) {
+            global.function.add(tmp_list);
+        } else if (tmp_list.get(0).equalsIgnoreCase("ONUNKNOWNERROR")) {
+            global.onUnknownError.add(tmp_list);
+        }
 	}
 	
 	static Boolean isEventType(String TMP_etype) {
@@ -145,6 +152,7 @@ public class CommandReference {
             r.add("choose");
             r.add("async");
             r.add("end");
+            r.add("return");
             r.add("");
             r.add("debug");
             r.add("log");
@@ -191,7 +199,7 @@ public class CommandReference {
             r.add(".divideGetPercentage($n) .divPercent($n) ./%($n)");
             r.add(".power($n) .pow($n) .^($n)");
             r.add(".modulus($n) .mod($n) .%($n)");
-            r.add(".absolute($n) .abs($n)");
+            r.add(".absolute() .abs()");
             r.add("");
             r.add(".greaterThan($n) .>($n)");
             r.add(".greaterThanOrEqualTo($n) .>=($n)");
@@ -207,11 +215,11 @@ public class CommandReference {
             r.add(".substring($v1,$v2)");
             r.add(".trim()");
             r.add(".prefix($v) .suffix($v)");
-            r.add(".toUpper($v) .toUpperCase($v)");
-            r.add(".toLower($v) .toLowerCase($v)");
+            r.add(".toUpper() .toUpperCase()");
+            r.add(".toLower() .toLowerCase()");
             r.add(".removeFormatting() .remForm()");
-            r.add(".capitalizeFirstWord($v) .capFirst($v)");
-            r.add(".capitalizeAllWords($v) .capAll($v)");
+            r.add(".capitalizeFirstWord() .capFirst()");
+            r.add(".capitalizeAllWords() .capAll()");
             r.add(".ignoreEscape()");
             r.add("");
             r.add(".importJsonFile($file,$node)");

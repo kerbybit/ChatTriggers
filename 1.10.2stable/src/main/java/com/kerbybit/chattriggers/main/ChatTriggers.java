@@ -2,6 +2,9 @@ package com.kerbybit.chattriggers.main;
 
 import java.io.IOException;
 
+import com.kerbybit.chattriggers.gui.DisplayOverlay;
+import com.kerbybit.chattriggers.references.BugTracker;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.lwjgl.input.Keyboard;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
@@ -23,7 +26,6 @@ import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
-//import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -36,7 +38,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION)
 public class ChatTriggers {
-	public static KeyBinding altGuiKey;
+	private static KeyBinding altGuiKey;
+    private static KeyBinding displayKey;
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event) throws ClassNotFoundException, IOException {
@@ -47,8 +50,11 @@ public class ChatTriggers {
         ClientCommandHandler.instance.registerCommand(new CommandT());
         ClientCommandHandler.instance.registerCommand(new CommandTR());
         
-        altGuiKey = new KeyBinding("Trigger GUI", Keyboard.KEY_GRAVE, "ChatTriggers");
+        altGuiKey = new KeyBinding("Trigger GUI", Keyboard.KEY_L, "ChatTriggers");
+        displayKey = new KeyBinding("Killfeed position", Keyboard.KEY_K, "ChatTriggers");
+
         ClientRegistry.registerKeyBinding(altGuiKey);
+        ClientRegistry.registerKeyBinding(displayKey);
 	}
 	
 	@SubscribeEvent
@@ -58,26 +64,26 @@ public class ChatTriggers {
 				GuiTriggerList.inMenu = -1;
 				global.showAltInputGui = true;
 			}
+            if (displayKey.isPressed()) {
+                global.showDisplayGui = true;
+            }
 		}
 	}
-
-    /*
+	
 	@SubscribeEvent
-	public void onRightClickPlayer(EntityInteractEvent e) {
+	public void onRightClickPlayer(PlayerInteractEvent.EntityInteract e) {
         try {
             if (global.canUse) {
-                if (e.entity.equals(Minecraft.getMinecraft().thePlayer)) {
-                    if (e.target instanceof EntityPlayer) {
+                if (e.getEntity().equals(Minecraft.getMinecraft().thePlayer)) {
+                    if (e.getTarget() instanceof EntityPlayer) {
                         TriggerHandler.onRightClickPlayer(e);
                     }
                 }
             }
         } catch (Exception exception) {
-            ChatHandler.warn("&4An unknown error has occured while executing \"&conRightClickPlayer&4\"!");
-            ChatHandler.warn("&4Check logs for details.");
-            exception.printStackTrace();
+            BugTracker.show(exception, "onRightClickPlayer");
         }
-	}*/
+	}
 	
 	@SubscribeEvent
 	public void onChat(ClientChatReceivedEvent e) throws IOException, ClassNotFoundException {
@@ -86,9 +92,7 @@ public class ChatTriggers {
                 TriggerHandler.onChat(e);
             }
         } catch (Exception exception) {
-            ChatHandler.warn("&4An unknown error has occured while executing \"&cchat&4\"!");
-            ChatHandler.warn("&4Check logs for details.");
-            exception.printStackTrace();
+            BugTracker.show(exception, "chat");
         }
 	}
 	
@@ -100,9 +104,7 @@ public class ChatTriggers {
                 global.worldIsLoaded=true;
             }
         } catch (Exception exception) {
-            ChatHandler.warn("&4An unknown error has occured while executing \"&conWorldLoad&4\"!");
-            ChatHandler.warn("&4Check logs for details.");
-            exception.printStackTrace();
+            BugTracker.show(exception, "onWorldLoad");
         }
 	}
 	
@@ -120,10 +122,16 @@ public class ChatTriggers {
 			OverlayHandler.drawNotify(event);
 			
 			GuiTriggerList.openGui();
+            DisplayOverlay.openGui();
 			
 			FileHandler.firstFileLoad();
-			
-			TriggerHandler.worldLoadTriggers();
+
+            try {
+                TriggerHandler.worldLoadTriggers();
+            } catch (NullPointerException e) {
+                //do nothing
+            }
+
 			TriggerHandler.newDayTriggers();
 			global.worldLoaded=false;
 		}
@@ -141,9 +149,7 @@ public class ChatTriggers {
             try {
 			    TriggerHandler.onClientTickTriggers();
             } catch (Exception exception) {
-                ChatHandler.warn("&4An unknown error has occured while executing \"&conClientTick&4\"!");
-                ChatHandler.warn("&4Check logs for details.");
-                exception.printStackTrace();
+                BugTracker.show(exception, "onClientTick");
             }
 			
 			ChatHandler.onClientTick();

@@ -1,8 +1,7 @@
 package com.kerbybit.chattriggers.globalvars;
 
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,6 +17,8 @@ public class global {
 	public static String canUseURL1 = "";
 	public static String canUseURL2 = "";
 	public static Boolean canUse = true;
+    public static Boolean hasWatermark = true;
+    public static String hasWatermarkURL = "";
 	
 	public static int playerHealth = -1;
 	
@@ -25,12 +26,17 @@ public class global {
 	public static Boolean canImport = true;
 	public static List<String> neededImports = new ArrayList<String>();
 
+    public static List<String> bugReport = new ArrayList<String>();
+    public static String lastCommand = "";
+    public static String bugLastCommand = "";
+    public static String lastEvent = "";
+    public static String bugLastEvent = "";
+
     //key - URL
     //value - json string
     public static HashMap<String, String> jsonURL = new HashMap<String, String>();
 	
 	public static List<String> chatHistory = new ArrayList<String>();
-    public static List<ClientChatReceivedEvent> chatEventHistory = new ArrayList<ClientChatReceivedEvent>();
 	public static int tick = 0;
 	public static int ticksElapsed = 0;
 	public static List<String> chatQueue = new ArrayList<String>();
@@ -39,6 +45,8 @@ public class global {
 	
 	public static List<String> killfeed = new ArrayList<String>();
 	public static List<Integer> killfeedDelay = new ArrayList<Integer>();
+    public static double killfeed_x = 0;
+    public static double killfeed_y = 0;
 	
 	public static List<List<String>> waitEvents = new ArrayList<List<String>>();
 	public static List<Integer> waitTime = new ArrayList<Integer>();
@@ -54,6 +62,7 @@ public class global {
 	
 	public static boolean showGUI = false;
 	public static boolean showAltInputGui = false;
+    public static boolean showDisplayGui = false;
 	
 	//////////////////Trigger matrix////////////////////
 	// layout
@@ -71,7 +80,8 @@ public class global {
 	public static List<List<String>> onNewDayTrigger = new ArrayList<List<String>>();
 	public static List<List<String>> onRightClickPlayerTrigger = new ArrayList<List<String>>();
     public static List<List<String>> onChatTrigger = new ArrayList<List<String>>();
-	
+    public static List<List<String>> function = new ArrayList<List<String>>();
+    public static List<List<String>> onUnknownError = new ArrayList<List<String>>();
 	
 	///////////////////String matrix/////////////////////
 	// layout
@@ -93,8 +103,17 @@ public class global {
 	// get(1+) = array values
 	////////////////////////////////////////////////////
 	public static List<List<String>> USR_array = new ArrayList<List<String>>();
-	
-	
+
+
+
+    ////////////////Display matrix//////////////////////
+    // layout
+    // get(0) = display name
+    // get(1) = display x
+    // get(2) = display y
+    // get(3+) = display values
+    ////////////////////////////////////////////////////
+	public static List<List<String>> displays = new ArrayList<List<String>>();
 	
 	//////////////////Settings matrix///////////////////
 	// layout
@@ -112,4 +131,10 @@ public class global {
     ////////////////////////////////////////////////////
 	public static List<String> settings = new ArrayList<String>();
     public static int settingsNotificationSpeed = 10;
+
+    public static String[] append(String[] array, String value) {
+        String[] result = Arrays.copyOf(array, array.length+1);
+        result[result.length-1] = value;
+        return result;
+    }
 }

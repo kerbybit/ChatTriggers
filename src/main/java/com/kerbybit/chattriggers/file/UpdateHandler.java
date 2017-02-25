@@ -122,15 +122,11 @@ public class UpdateHandler {
 		 					ChatHandler.warnBreak(0);
 		 					if (global.settings.get(4).equals("false")) {
 		 						ChatHandler.warn(ChatHandler.color("red", "You are running on an outdated version of ChatTriggers!"));
-		 						List<String> TMP_out = new ArrayList<String>();
-		 						TMP_out.add("text:'http://ChatTriggers.kerbybit.com/download',color:red,hoverEvent:{action:'show_text',value:'Click to download update'},clickEvent:{action:'open_url',value:'http://chattrigger.kerbybit.com/download'}");
-		 						ChatHandler.sendJson(TMP_out);
+                                ChatHandler.warn("clickable(&cct.kerbybit.com/download,open_url,http://ct.kerbybit.com/download,Open download page)");
 		 						ChatHandler.warn(ChatHandler.color("red", "Current stable version: " + lines.get(0)));
 		 					} else {
 		 						ChatHandler.warn(ChatHandler.color("red", "You are running on an outdated version of ChatTriggers!"));
-		 						List<String> TMP_out = new ArrayList<String>();
-		 						TMP_out.add("text:'http://ChatTriggers.kerbybit.com/download',color:red,hoverEvent:{action:'show_text',value:'Click to download update'},clickEvent:{action:'open_url',value:'http://chattriggers.kerbybit.com/download'}");
-		 						ChatHandler.sendJson(TMP_out);
+                                ChatHandler.warn("clickable(&cct.kerbybit.com/download/#beta,open_url,http://ct.kerbybit.com/download/#beta,Open download page)");
 		 						ChatHandler.warn(ChatHandler.color("red", "Current beta version: " + lines.get(0)));
 		 					}
 		 					ChatHandler.warn(ChatHandler.color("red", "Your version: " + global.settings.get(2)));
@@ -147,7 +143,7 @@ public class UpdateHandler {
 		 			ChatHandler.warn(ChatHandler.color("red", "Can't grab update! Update services must be down"));
 		 			e.printStackTrace();
 		 		} catch (IOException e) {
-		 			ChatHandler.warn(ChatHandler.color("red", "Can't grab update! Report this to kerbybit ASAP"));
+		 			ChatHandler.warn(ChatHandler.color("red", "Can't grab update! Update services must be down"));
 		 			e.printStackTrace();
 		 		}
 		     }

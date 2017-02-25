@@ -1,6 +1,6 @@
 package com.kerbybit.chattriggers.triggers;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +18,63 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class StringHandler {
 	static String builtInStrings(String TMP_e, ClientChatReceivedEvent chatEvent) {
+        while (TMP_e.contains("{imported(") && TMP_e.contains(")}")) {
+            List<String> temporary = new ArrayList<String>();
+            String imp = TMP_e.substring(TMP_e.indexOf("{imported(")+10, TMP_e.indexOf(")}", TMP_e.indexOf("{imported(")));
+            temporary.add("DefaultString->IMPORTED"+imp+"-"+(global.TMP_string.size()+1));
+            Boolean isImported = false;
+
+            File dir = new File("./mods/ChatTriggers/Imports/");
+            if (!dir.exists()) {
+                if (!dir.mkdir()) {ChatHandler.warn(ChatHandler.color("red", "Unable to create file!"));}
+            }
+            File[] files = dir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        if (file.getName().equals(imp+".txt")) {
+                            isImported = true;
+                        }
+                    }
+                }
+            }
+
+            if (isImported) {
+                temporary.add("true");
+            } else {
+                temporary.add("false");
+            }
+
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+
+            TMP_e = TMP_e.replace("{imported("+imp+")}", "{string[DefaultString->IMPORTED"+imp+"-"+global.TMP_string.size()+"]}");
+        }
+        while (TMP_e.contains("{random(") && TMP_e.contains(")}")) {
+            List<String> temporary = new ArrayList<String>();
+            String lowhigh = TMP_e.substring(TMP_e.indexOf("{random(")+8, TMP_e.indexOf(")}", TMP_e.indexOf("{random(")));
+            temporary.add("DefaultString->RANDOM"+lowhigh+"-"+(global.TMP_string.size()+1));
+            try {
+                int low = 0;
+                int high;
+                if (lowhigh.contains(",")) {
+                    String[] tmp_lowhigh = lowhigh.split(",");
+                    low = Integer.parseInt(tmp_lowhigh[0].trim());
+                    high = Integer.parseInt(tmp_lowhigh[1].trim());
+                } else {
+                    high = Integer.parseInt(lowhigh);
+                }
+
+                temporary.add(EventsHandler.randInt(low,high) + "");
+            } catch (NumberFormatException e) {
+                temporary.add("Not a number!");
+            }
+
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+
+            TMP_e = TMP_e.replace("{random("+lowhigh+")}", "{string[DefaultString->RANDOM"+lowhigh+"-"+global.TMP_string.size()+"]}");
+        }
 		while (TMP_e.contains("{msg[") && TMP_e.contains("]}")) {
 			String strnum = TMP_e.substring(TMP_e.indexOf("{msg[")+5, TMP_e.indexOf("]}", TMP_e.indexOf("{msg[")));
 			List<String> temporary = new ArrayList<String>();
@@ -35,6 +92,118 @@ public class StringHandler {
 			TMP_e = TMP_e.replace("{msg["+strnum+"]}", "{string[DefaultString->MSGHISTORY"+strnum+"-"+global.TMP_string.size()+"]}");
 		}
 		if (chatEvent!=null) {
+            if (TMP_e.contains("{msg}.meta().clickEvent().action()")) {
+                String tmp = chatEvent.message.getChatStyle().toString();
+                if (tmp.contains("clickEvent=ClickEvent{") && tmp.contains("}")) {
+                    tmp = tmp.substring(tmp.indexOf("clickEvent=ClickEvent{")+22, tmp.indexOf("}", tmp.indexOf("clickEvent=ClickEvent{")));
+                    if (tmp.contains("action=")) {
+                        tmp = tmp.substring(tmp.indexOf("action=")+7, tmp.indexOf(", value", tmp.indexOf("action=")+7));
+                    } else {
+                        tmp = "null";
+                    }
+                } else {
+                    tmp = "null";
+                }
+                List<String> temporary = new ArrayList<String>();
+                temporary.add("DefaultString->MSGMETACLICKACTION-"+(global.TMP_string.size()+1));
+                temporary.add(tmp);
+                global.TMP_string.add(temporary);
+                global.backupTMP_strings.add(temporary);
+                TMP_e = TMP_e.replace("{msg}.meta().clickEvent().action()", "{string[DefaultString->MSGMETACLICKACTION-"+global.TMP_string.size()+"]}");
+            }
+            if (TMP_e.contains("{msg}.meta().clickEvent().value()")) {
+                String tmp = chatEvent.message.getChatStyle().toString();
+                if (tmp.contains("clickEvent=ClickEvent{") && tmp.contains("}")) {
+                    tmp = tmp.substring(tmp.indexOf("clickEvent=ClickEvent{")+22, tmp.indexOf("}", tmp.indexOf("clickEvent=ClickEvent{")));
+                    if (tmp.contains("value='")) {
+                        tmp = tmp.substring(tmp.indexOf("value='")+7, tmp.indexOf("'", tmp.indexOf("value='")+7));
+                    } else {
+                        tmp = "null";
+                    }
+                } else {
+                    tmp = "null";
+                }
+                List<String> temporary = new ArrayList<String>();
+                temporary.add("DefaultString->MSGMETACLICKVALUE-"+(global.TMP_string.size()+1));
+                temporary.add(tmp);
+                global.TMP_string.add(temporary);
+                global.backupTMP_strings.add(temporary);
+                TMP_e = TMP_e.replace("{msg}.meta().clickEvent().value()", "{string[DefaultString->MSGMETACLICKVALUE-"+global.TMP_string.size()+"]}");
+            }
+            if (TMP_e.contains("{msg}.meta().hoverEvent().action()")) {
+                String tmp = chatEvent.message.getChatStyle().toString();
+                if (tmp.contains("hoverEvent=HoverEvent{") && tmp.contains("}")) {
+                    tmp = tmp.substring(tmp.indexOf("hoverEvent=HoverEvent{")+22, tmp.indexOf("}", tmp.indexOf("hoverEvent=HoverEvent{")));
+                    if (tmp.contains("action=")) {
+                        tmp = tmp.substring(tmp.indexOf("action=")+7, tmp.indexOf(", value", tmp.indexOf("action=")+7));
+                    } else {
+                        tmp = "null";
+                    }
+                } else {
+                    tmp = "null";
+                }
+                List<String> temporary = new ArrayList<String>();
+                temporary.add("DefaultString->MSGMETAHOVERACTION-"+(global.TMP_string.size()+1));
+                temporary.add(tmp);
+                global.TMP_string.add(temporary);
+                global.backupTMP_strings.add(temporary);
+                TMP_e = TMP_e.replace("{msg}.meta().hoverEvent().action()", "{string[DefaultString->MSGMETAHOVERACTION-"+global.TMP_string.size()+"]}");
+            }
+            if (TMP_e.contains("{msg}.meta().hoverEvent().value()")) {
+                String tmp = chatEvent.message.getChatStyle().toString();
+                if (tmp.contains("hoverEvent=HoverEvent{") && tmp.contains("}")) {
+                    tmp = tmp.substring(tmp.indexOf("hoverEvent=HoverEvent{")+22, tmp.indexOf("}", tmp.indexOf("hoverEvent=HoverEvent{")));
+                    if (tmp.contains("action=")) {
+                        tmp = tmp.substring(tmp.indexOf("value='TextComponent{text='")+27, tmp.indexOf("',", tmp.indexOf("value='TextComponent{text='")+27));
+                    } else {
+                        tmp = "null";
+                    }
+                } else {
+                    tmp = "null";
+                }
+                List<String> temporary = new ArrayList<String>();
+                temporary.add("DefaultString->MSGMETAHOVERVALUE-"+(global.TMP_string.size()+1));
+                temporary.add(tmp);
+                global.TMP_string.add(temporary);
+                global.backupTMP_strings.add(temporary);
+                TMP_e = TMP_e.replace("{msg}.meta().hoverEvent().value()", "{string[DefaultString->MSGMETAHOVERVALUE-"+global.TMP_string.size()+"]}");
+            }
+            if (TMP_e.contains("{msg}.meta().clickEvent()")) {
+                String tmp = chatEvent.message.getChatStyle().toString();
+                if (tmp.contains("clickEvent=") && tmp.contains(", hoverEvent")) {
+                    tmp = tmp.substring(tmp.indexOf("clickEvent=")+11, tmp.indexOf(", hoverEvent=", tmp.indexOf("clickEvent=")));
+                } else {
+                    tmp = "An unknown error has occured";
+                }
+                List<String> temporary = new ArrayList<String>();
+                temporary.add("DefaultString->MSGMETACLICK-"+(global.TMP_string.size()+1));
+                temporary.add(tmp);
+                global.TMP_string.add(temporary);
+                global.backupTMP_strings.add(temporary);
+                TMP_e = TMP_e.replace("{msg}.meta().clickEvent()", "{string[DefaultString->MSGMETACLICK-"+global.TMP_string.size()+"]}");
+            }
+            if (TMP_e.contains("{msg}.meta().hoverEvent()")) {
+                String tmp = chatEvent.message.getChatStyle().toString();
+                if (tmp.contains("hoverEvent=") && tmp.contains(", insertion=")) {
+                    tmp = tmp.substring(tmp.indexOf("hoverEvent=")+11, tmp.indexOf(", insertion=", tmp.indexOf("hoverEvent=")));
+                } else {
+                    tmp = "An unknown error has occured";
+                }
+                List<String> temporary = new ArrayList<String>();
+                temporary.add("DefaultString->MSGMETAHOVER-"+(global.TMP_string.size()+1));
+                temporary.add(tmp);
+                global.TMP_string.add(temporary);
+                global.backupTMP_strings.add(temporary);
+                TMP_e = TMP_e.replace("{msg}.meta().hoverEvent()", "{string[DefaultString->MSGMETAHOVER-"+global.TMP_string.size()+"]}");
+            }
+            if (TMP_e.contains("{msg}.meta()")) {
+                List<String> temporary = new ArrayList<String>();
+                temporary.add("DefaultString->MSGMETA-"+(global.TMP_string.size()+1));
+                temporary.add(ChatHandler.removeFormatting(chatEvent.message.getChatStyle().toString()));
+                global.TMP_string.add(temporary);
+                global.backupTMP_strings.add(temporary);
+                TMP_e = TMP_e.replace("{msg}.meta()", "{string[DefaultString->MSGMETA-"+global.TMP_string.size()+"]}");
+            }
 			if (TMP_e.contains("{msg}")) {
 				List<String> temporary = new ArrayList<String>();
 				temporary.add("DefaultString->MSG-"+(global.TMP_string.size()+1));
@@ -104,10 +273,28 @@ public class StringHandler {
 			global.backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{serverIP}", "{string[DefaultString->SERVERIP-"+global.TMP_string.size()+"]}");
 		}
-		if (TMP_e.contains("{ping}")) {
-			String returnString;
+		if (TMP_e.contains("{ping}")) {///TODO
+			String returnString = "-1";
 			if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "5";}
-			else {returnString = Minecraft.getMinecraft().getCurrentServerData().pingToServer+"";}
+			else {
+                try {
+                    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")) {
+                        String command = "ping -n 1 " + Minecraft.getMinecraft().getCurrentServerData().serverIP;
+                        Process process = Runtime.getRuntime().exec(command);
+                        BufferedReader is = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                        String line;
+                        while ((line = is.readLine()) != null) {
+                            if (line.contains("Minimum = ") && line.contains("ms")) {
+                                returnString = line.substring(line.indexOf("Minimum = ")+10, line.indexOf("ms"));
+                            }
+                        }
+                    } else {
+                        returnString = Minecraft.getMinecraft().getCurrentServerData().pingToServer+"";
+                    }
+                } catch (Exception e) {
+                    returnString = "-1";
+                }
+            }
 			
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("DefaultString->SERVERPING-"+(global.TMP_string.size()+1));
@@ -169,11 +356,16 @@ public class StringHandler {
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("DefaultString->SCOREBOARDTITLE-"+(global.TMP_string.size()+1));
 			String boardTitle = "null";
-			if (Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(0) != null) {
-				boardTitle = Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(0).getDisplayName();
-	        } else if (Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(1) != null) {
-	        	boardTitle = Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(1).getDisplayName();
-	        }
+            try {
+                if (Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(0) != null) {
+                    boardTitle = Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(0).getDisplayName();
+                } else if (Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(1) != null) {
+                    boardTitle = Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(1).getDisplayName();
+                }
+            } catch (Exception e) {
+                //Do nothing//
+                //catch for ReplayMod//
+            }
 			temporary.add(ChatHandler.removeFormatting(boardTitle));
 			global.TMP_string.add(temporary);
 			global.backupTMP_strings.add(temporary);
@@ -273,20 +465,20 @@ public class StringHandler {
 		return -1;
 	}
 	
-	private static String doStringFunctions(String sn, String func, String args) {
+	private static String doStringFunctions(String sn, String func, String args, ClientChatReceivedEvent chatEvent) {
 		int stringnum;
 		int tmpstringnum = -1;
 		
-		args = stringFunctions(args);
+		args = stringFunctions(args, chatEvent);
 		while (args.contains("{array[") && args.contains("]}")) {
-			args = ArrayHandler.arrayFunctions(args);
-			args = stringFunctions(args);
+			args = ArrayHandler.arrayFunctions(args, chatEvent);
+			args = stringFunctions(args, chatEvent);
 		}
 		while (args.contains("{string[") && args.contains("]}")) {
-			args = stringFunctions(args);
+			args = stringFunctions(args, chatEvent);
 		}
 		
-		sn = stringFunctions(sn);
+		sn = stringFunctions(sn, chatEvent);
 		
 		stringnum = getStringNum(sn);
 		
@@ -572,39 +764,123 @@ public class StringHandler {
 					.replace("','", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
             String[] subargs = args.split(",");
             if (subargs.length == 2) {
+                int first = -1;
+                int last = -1;
+                Boolean getStart = false;
+                Boolean startContain = false;
+                Boolean getEnd = false;
+                Boolean endContain = false;
+                if (subargs[0].toUpperCase().contains("<START>") || subargs[0].toUpperCase().contains("<S>")) {
+                    getStart = true;
+                    subargs[0] = subargs[0].replaceAll("(?i)<start>","").replaceAll("(?i)<s>","");
+                }
+                if (subargs[0].toUpperCase().contains("<INCLUDE>") || subargs[0].toUpperCase().contains("<I>")) {
+                    startContain = true;
+                    subargs[0] = subargs[0].replaceAll("(?i)<include>","").replaceAll("(?i)<i>","");
+                }
+                if (subargs[1].toUpperCase().contains("<END>") || subargs[1].toUpperCase().contains("<E>")) {
+                    getEnd = true;
+                    subargs[1] = subargs[1].replaceAll("(?i)<end>","").replaceAll("(?i)<e>","");
+                }
+                if (subargs[1].toUpperCase().contains("<INCLUDE>") || subargs[1].toUpperCase().contains("<I>")) {
+                    endContain = true;
+                    subargs[1] = subargs[1].replaceAll("(?i)<include>","").replaceAll("(?i)<i>","");
+                }
+
                 if (stringnum!=-1) {
                     String temp = global.USR_string.get(stringnum).get(1)
-							.replace("(","stringOpenBracketF6cyUQp9stringOpenBracket")
-							.replace(")","stringCloseBracketF6cyUQp9stringCloseBracket")
+                            .replace("(","stringOpenBracketF6cyUQp9stringOpenBracket")
+                            .replace(")","stringCloseBracketF6cyUQp9stringCloseBracket")
                             .replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
-                    if (temp.contains(subargs[0])) {
-                        temp = temp.substring(temp.indexOf(subargs[0]) + subargs[0].length());
+                    if (getStart) {first = 0;}
+                    if (getEnd) {last = temp.length();}
+                    if (first == -1) {
+                        if (temp.contains(subargs[0])) {
+                            if (startContain) {
+                                first = temp.indexOf(subargs[0]);
+                            } else {
+                                first = temp.indexOf(subargs[0]) + subargs[0].length();
+                            }
+                        } else {
+                            try {
+                                first = Integer.parseInt(subargs[0]);
+                            } catch (NumberFormatException e) {
+                                global.USR_string.get(stringnum).set(1,"false");
+                                if (global.debug) {ChatHandler.warn(ChatHandler.color("gray","Did not find " + subargs[0] + " in string"));}
+                            }
+                        }
+                    }
+                    if (last == -1) {
                         if (temp.contains(subargs[1])) {
-                            temp = temp.substring(0, temp.indexOf(subargs[1]));
-                            global.USR_string.get(stringnum).set(1, temp
-									.replace("stringOpenBracketF6cyUQp9stringOpenBracket","(")
-									.replace("stringCloseBracketF6cyUQp9stringCloseBracket",")")
-                                    .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
-                        } else {global.USR_string.get(stringnum).set(1, "false");}
-                    } else {
-						global.USR_string.get(stringnum).set(1, "false");
-						if (global.debug) {ChatHandler.warn(ChatHandler.color("gray","Missing args in .SUBSTRING! expected 2 args, got " + subargs.length));}
-					}
+                            if (endContain) {
+                                last = temp.indexOf(subargs[1]) + subargs[1].length();
+                            } else {
+                                last = temp.indexOf(subargs[1]);
+                            }
+                        } else {
+                            try {
+                                last = Integer.parseInt(subargs[1]);
+                            } catch (NumberFormatException e) {
+                                global.USR_string.get(stringnum).set(1,"false");
+                                if (global.debug) {ChatHandler.warn(ChatHandler.color("gray","Did not find " + subargs[1] + " in string"));}
+                            }
+                        }
+                    }
+
+                    if (first!=-1 && last!=-1) {
+                        temp = temp.substring(first, last);
+                        global.USR_string.get(stringnum).set(1, temp
+                                .replace("stringOpenBracketF6cyUQp9stringOpenBracket","(")
+                                .replace("stringCloseBracketF6cyUQp9stringCloseBracket",")")
+                                .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
+                    }
                 } else {
                     String temp = global.TMP_string.get(tmpstringnum).get(1)
-							.replace("(","stringOpenBracketF6cyUQp9stringOpenBracket")
-							.replace(")","stringCloseBracketF6cyUQp9stringCloseBracket")
+                            .replace("(","stringOpenBracketF6cyUQp9stringOpenBracket")
+                            .replace(")","stringCloseBracketF6cyUQp9stringCloseBracket")
                             .replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
-                    if (temp.contains(subargs[0])) {
-                        temp = temp.substring(temp.indexOf(subargs[0]) + subargs[0].length());
+                    if (getStart) {first = 0;}
+                    if (getEnd) {last = temp.length();}
+                    if (first == -1) {
+                        if (temp.contains(subargs[0])) {
+                            if (startContain) {
+                                first = temp.indexOf(subargs[0]);
+                            } else {
+                                first = temp.indexOf(subargs[0]) + subargs[0].length();
+                            }
+                        } else {
+                            try {
+                                last = Integer.parseInt(subargs[0]);
+                            } catch (NumberFormatException e) {
+                                global.TMP_string.get(tmpstringnum).set(1, "false");
+                                if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Did not find " + subargs[0] + " in string"));}
+                            }
+                        }
+                    }
+                    if (last == -1) {
                         if (temp.contains(subargs[1])) {
-                            temp = temp.substring(0, temp.indexOf(subargs[1]));
-                            global.TMP_string.get(tmpstringnum).set(1, temp
-									.replace("stringOpenBracketF6cyUQp9stringOpenBracket","(")
-									.replace("stringCloseBracketF6cyUQp9stringCloseBracket",")")
-                                    .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
-                        } else {global.TMP_string.get(tmpstringnum).set(1, "false");}
-                    } else {global.TMP_string.get(tmpstringnum).set(1, "false");}
+                            if (endContain) {
+                                last = temp.indexOf(subargs[1]) + subargs[1].length();
+                            } else {
+                                last = temp.indexOf(subargs[1]);
+                            }
+                        } else {
+                            try {
+                                last = Integer.parseInt(subargs[1]);
+                            } catch (NumberFormatException e) {
+                                global.TMP_string.get(tmpstringnum).set(1, "false");
+                                if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Did not find " + subargs[1] + " in string"));}
+                            }
+                        }
+                    }
+
+                    if (first!=-1 && last!=-1) {
+                        temp = temp.substring(first, last);
+                        global.TMP_string.get(tmpstringnum).set(1, temp
+                                .replace("stringOpenBracketF6cyUQp9stringOpenBracket","(")
+                                .replace("stringCloseBracketF6cyUQp9stringCloseBracket",")")
+                                .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
+                    }
                 }
                 return "{string["+sn+"]}";
             } else {
@@ -899,12 +1175,13 @@ public class StringHandler {
 
             String[] split_tmp_string = tmp_string.split(" ");
             for (String value : split_tmp_string) {
-                String newvalue = value;
+                String newvalue = ChatHandler.deleteFormatting(value);
+                value = value.replace("...","TripleDotF6cyUQp9TripleDot");
                 if (value.contains(".")) {
-                    if (!(value.toUpperCase().startsWith("HTTP://") || value.toUpperCase().startsWith("HTTPS://"))) {
+                    if (!(newvalue.toUpperCase().startsWith("HTTP://") || newvalue.toUpperCase().startsWith("HTTPS://"))) {
                         newvalue = "http://"+value;
                     }
-                    tmp_string = tmp_string.replace(value, "{link[" + value + "],[" + newvalue + "]}");
+                    tmp_string = tmp_string.replace(value.replace("...","TripleDotF6cyUQp9TripleDot"), "{link[" + value + "],[" + newvalue + "]}");
                 }
             }
 
@@ -914,15 +1191,58 @@ public class StringHandler {
                 global.TMP_string.get(tmpstringnum).set(1,tmp_string);
             }
             return "{string["+sn+"]}";
-        }
-			
-		else {
-			if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", func+" is not a function!"));}
-			return "{string["+sn+"]}";
+        } else {
+            for (List<String> function : global.function) {
+                if (function.size() > 2) {
+                    String func_define = function.get(1);
+                    if (func_define.contains(".") && func_define.contains("(") && func_define.contains(")")) {
+                        String func_name = func_define.substring(func_define.indexOf(".")+1, func_define.indexOf("(", func_define.indexOf(".")));
+                        if (func_name.equals(func)) {
+                            String func_to = TagHandler.removeTags(func_define.substring(0, func_define.indexOf(".")));
+                            String func_arg = func_define.substring(func_define.indexOf("(")+1, func_define.indexOf(")", func_define.indexOf(")")));
+                            if (!func_arg.equals("")) {
+                                String[] func_args = func_arg.split(",");
+                                String[] func_args_to = args.split(",");
+                                if (func_args.length == func_args_to.length) {
+                                    List<String> TMP_events = new ArrayList<String>();
+                                    for (int j = 2; j < function.size(); j++) {
+                                        TMP_events.add(function.get(j));
+                                    }
+                                    if (stringnum != -1) {
+                                        String ret = EventsHandler.doEvents(TMP_events, chatEvent, global.append(func_args, func_to), global.append(func_args_to, global.USR_string.get(stringnum).get(1)));
+                                        global.USR_string.get(stringnum).set(1, ret);
+                                    } else {
+                                        String ret = EventsHandler.doEvents(TMP_events, chatEvent, global.append(func_args, func_to), global.append(func_args_to, global.TMP_string.get(tmpstringnum).get(1)));
+                                        global.TMP_string.get(tmpstringnum).set(1, ret);
+                                    }
+                                    return "{string[" + sn + "]}";
+                                }
+                            } else {
+                                List<String> TMP_events = new ArrayList<String>();
+                                for (int j = 2; j < function.size(); j++) {
+                                    TMP_events.add(function.get(j));
+                                }
+                                if (stringnum != -1) {
+                                    String ret = EventsHandler.doEvents(TMP_events, chatEvent, new String[] {func_to}, new String[] {global.USR_string.get(stringnum).get(1)});
+                                    global.USR_string.get(stringnum).set(1, ret);
+                                } else {
+                                    String ret = EventsHandler.doEvents(TMP_events, chatEvent, new String[] {func_to}, new String[] {global.TMP_string.get(tmpstringnum).get(1)});
+                                    global.TMP_string.get(tmpstringnum).set(1, ret);
+                                }
+                                return "{string[" + sn + "]}";
+                            }
+                        }
+                    }
+                }
+            }
+            if (global.debug) {
+                ChatHandler.warn(ChatHandler.color("gray", func + " is not a function!"));
+            }
+            return "{string[" + sn + "]}";
 		}
 	}
 	
-	static String stringFunctions(String TMP_e) {
+	static String stringFunctions(String TMP_e, ClientChatReceivedEvent chatEvent) {
 		TMP_e = TMP_e.replace("'('", "stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement")
 				.replace("')'", "stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement");
 		while (TMP_e.contains("{string[") && TMP_e.contains("]}")) {
@@ -952,7 +1272,7 @@ public class StringHandler {
 				
 				String efirst = TMP_e.substring(0, TMP_e.indexOf(sn));
 				String esecond = TMP_e.substring(TMP_e.indexOf(sn)+sn.length());
-				sn = stringFunctions(sn);
+				sn = stringFunctions(sn, chatEvent);
 				
 				TMP_e = efirst + sn + esecond;
 				sn = sn.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
@@ -986,7 +1306,7 @@ public class StringHandler {
 				String firstpart = TMP_e.substring(0, TMP_e.indexOf(fullreplace));
 				String secondpart = TMP_e.substring(TMP_e.indexOf(fullreplace)+fullreplace.length());
 				
-				TMP_e = firstpart + StringHandler.doStringFunctions(sn,func,args) + secondpart;
+				TMP_e = firstpart + StringHandler.doStringFunctions(sn,func,args, chatEvent) + secondpart;
 			} else {
 				String sn = TMP_e.substring(TMP_e.indexOf("{string[")+8, TMP_e.indexOf("]}", TMP_e.indexOf("{string[")));
 				while (sn.contains("{string[")) {
@@ -1007,7 +1327,7 @@ public class StringHandler {
 				
 				String efirst = TMP_e.substring(0, TMP_e.indexOf(sn));
 				String esecond = TMP_e.substring(TMP_e.indexOf(sn)+sn.length());
-				sn = stringFunctions(sn);
+				sn = stringFunctions(sn, chatEvent);
 				
 				TMP_e = efirst + sn + esecond;
 				

@@ -9,9 +9,10 @@ import java.util.List;
 
 import com.kerbybit.chattriggers.file.JsonHandler;
 import com.kerbybit.chattriggers.globalvars.global;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 class ArrayHandler {
-	static String arrayFunctions(String TMP_e) {
+	static String arrayFunctions(String TMP_e, ClientChatReceivedEvent chatEvent) {
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.setSplit(") && TMP_e.contains(",") && TMP_e.contains(")")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.setSplit(", TMP_e.indexOf("{array[")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.setSplit(")+12, TMP_e.indexOf(")", TMP_e.indexOf("]}.setSplit(")));
@@ -19,7 +20,7 @@ class ArrayHandler {
 			Boolean isArray = false;
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
 			}
 			
 			String[] args = checkTo.split(",");
@@ -61,15 +62,30 @@ class ArrayHandler {
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.add(") && TMP_e.contains(")")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.add(", TMP_e.indexOf("{array[")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.add(")+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.add(")));
+            String fin_checkTo = checkTo;
 			Boolean isArray = false;
-			
+            int where = -1;
+
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
 			}
-			
+
+            if (checkTo.contains(",")) {
+                try {
+                    where = Integer.parseInt(checkTo.split(",")[0]);
+                    fin_checkTo = checkTo.substring(checkTo.indexOf(",") + 1);
+                } catch (NumberFormatException e) {
+                    where = -1;
+                }
+            }
+
 			for (int j=0; j<global.USR_array.size(); j++) {
 				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
-					global.USR_array.get(j).add(checkTo);
+                    if (where == -1) {
+                        global.USR_array.get(j).add(fin_checkTo);
+                    } else {
+                        global.USR_array.get(j).add(where, fin_checkTo);
+                    }
 					isArray = true;
 				}
 			}
@@ -77,8 +93,8 @@ class ArrayHandler {
 			if (!isArray) {
 				List<String> prearray = new ArrayList<String>();
 				prearray.add(checkFrom);
-				prearray.add(checkTo);
-				global.USR_array.add(prearray);
+				prearray.add(fin_checkTo);
+                global.USR_array.add(prearray);
 			}
 			
 			List<String> temporary = new ArrayList<String>();
@@ -88,13 +104,44 @@ class ArrayHandler {
 			global.backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.add(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"ADD"+checkTo+"-"+global.TMP_string.size()+"]}");
 		}
+
+        while (TMP_e.contains("{array[") && TMP_e.contains("]}.prepend(") && TMP_e.contains(")")) {
+            String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.prepend(", TMP_e.indexOf("{array[")));
+            String checkTo = TMP_e.substring(TMP_e.indexOf("]}.prepend(")+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.prepend(")));
+            Boolean isArray = false;
+
+            if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
+                checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+            }
+
+            for (int j=0; j<global.USR_array.size(); j++) {
+                if (global.USR_array.get(j).get(0).equals(checkFrom)) {
+                    global.USR_array.get(j).add(1, checkTo);
+                    isArray = true;
+                }
+            }
+
+            if (!isArray) {
+                List<String> prearray = new ArrayList<String>();
+                prearray.add(checkFrom);
+                prearray.add(checkTo);
+                global.USR_array.add(prearray);
+            }
+
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("ArrayToString->"+checkFrom+"PREPEND"+checkTo+"-"+(global.TMP_string.size()+1));
+            temporary.add(checkTo);
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+            TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.prepend(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"PREPEND"+checkTo+"-"+global.TMP_string.size()+"]}");
+        }
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.clear()")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.clear()", TMP_e.indexOf("{array[")));
 			String returnString = checkFrom + " is not an array!";
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
 			}
 			
 			for (int j=0; j<global.USR_array.size(); j++) {
@@ -118,7 +165,7 @@ class ArrayHandler {
 			String checkThis = "false";
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
 			}
 			
 			for (int j=0; j<global.USR_array.size(); j++) {
@@ -143,7 +190,7 @@ class ArrayHandler {
 			String checkThis = "false";
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
 			}
 			
 			for (int j=0; j<global.USR_array.size(); j++) {
@@ -171,7 +218,7 @@ class ArrayHandler {
 			String returnString = checkFrom + " is not an array!";
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
 			}
 			
 			try {
@@ -219,7 +266,7 @@ class ArrayHandler {
 			String returnString = checkFrom + " is not an array!";
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
 			}
 			
 			try {
@@ -260,7 +307,7 @@ class ArrayHandler {
 			int arraysize = 0;
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
 			}
 			
 			for (int j=0; j<global.USR_array.size(); j++) {
@@ -281,7 +328,7 @@ class ArrayHandler {
 			String checkTo = TMP_e.substring(TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile("))+1, TMP_e.indexOf(")", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile("+checkFile+",")));
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
 			}
 			
 			String checkJson = JsonHandler.importJsonFile("array",checkFile, checkFrom+"=>"+checkTo);
@@ -300,7 +347,7 @@ class ArrayHandler {
 			String checkTo = TMP_e.substring(TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL("))+1, TMP_e.indexOf(")", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL("+checkFile+",")));
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
 			}
 			
 			String checkJson = JsonHandler.importJsonURL("array",checkFile, checkFrom + "=>" + checkTo);
@@ -319,7 +366,7 @@ class ArrayHandler {
 			String returnString;
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
 			}
 			
 			if (checkTo.contains(",")) {
