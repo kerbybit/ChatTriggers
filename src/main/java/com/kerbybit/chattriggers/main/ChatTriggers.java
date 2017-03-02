@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.kerbybit.chattriggers.gui.DisplayOverlay;
 import com.kerbybit.chattriggers.references.BugTracker;
+import com.kerbybit.chattriggers.triggers.DisplayHandler;
 import org.lwjgl.input.Keyboard;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
@@ -101,7 +102,6 @@ public class ChatTriggers {
         try {
             if (global.canUse) {
                 global.worldLoaded=true;
-                global.worldIsLoaded=true;
             }
         } catch (Exception exception) {
             BugTracker.show(exception, "onWorldLoad");
@@ -112,14 +112,23 @@ public class ChatTriggers {
 	public void onWorldUnload(WorldEvent.Unload e) {
 		if (global.canUse) {
 			global.worldIsLoaded=false;
+            DisplayHandler.clearDisplays();
 		}
 	}
 		
 	@SubscribeEvent
 	public void RenderGameOverlayEvent(RenderGameOverlayEvent event) {
 		if (global.canUse) {
+            ++global.fpscounter;
+
+            while (Minecraft.getSystemTime() >= global.fpsSysTime + 1000L) {
+                global.fps = global.fpscounter / 20;
+                global.fpscounter = 0;
+                global.fpsSysTime += 1000L;
+            }
 			OverlayHandler.drawKillfeed(event);
 			OverlayHandler.drawNotify(event);
+            DisplayHandler.drawDisplays(event);
 			
 			GuiTriggerList.openGui();
             DisplayOverlay.openGui();
@@ -142,7 +151,7 @@ public class ChatTriggers {
 	public void onClientTick(ClientTickEvent e) throws ClassNotFoundException {
 		if (global.canUse) {
 			OverlayHandler.tickKillfeed();
-			OverlayHandler.tickNotify();
+			//OverlayHandler.tickNotify();
 			
 			FileHandler.tickImports();
 

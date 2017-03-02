@@ -395,7 +395,7 @@ public class StringHandler {
 			global.TMP_string.add(temporary);
 			global.backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{coordx}", "{string[DefaultString->COORDX-"+global.TMP_string.size()+"]}")
-					.replace("{y}", "{string[DefaultString->COORDX-"+global.TMP_string.size()+"]}");
+					.replace("{x}", "{string[DefaultString->COORDX-"+global.TMP_string.size()+"]}");
 		}
 		if (TMP_e.contains("{coordy}") || TMP_e.contains("{y}")) {
 			List<String> temporary = new ArrayList<String>();
@@ -413,8 +413,35 @@ public class StringHandler {
 			global.TMP_string.add(temporary);
 			global.backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{coordz}", "{string[DefaultString->COORDZ-"+global.TMP_string.size()+"]}")
-					.replace("{y}", "{string[DefaultString->COORDZ-"+global.TMP_string.size()+"]}");
+					.replace("{z}", "{string[DefaultString->COORDZ-"+global.TMP_string.size()+"]}");
 		}
+        if (TMP_e.contains("{fps}")) {
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("DefaultString->FPS-"+(global.TMP_string.size()+1));
+            temporary.add(Math.round(global.fps)+"");
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+            TMP_e = TMP_e.replace("{fps}", "{string[DefaultString->FPS-"+global.TMP_string.size()+"]}");
+        }
+        if (TMP_e.contains("{facing}")) {
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("DefaultString->FACING-"+(global.TMP_string.size()+1));
+            //float direction;
+            String facing = Minecraft.getMinecraft().thePlayer.getHorizontalFacing().toString();
+            /*if (direction >= 135 && direction <= -135) {
+                facing = "north";
+            } else if (direction > -135 && direction <= -45) {
+                facing = "east";
+            } else if (direction > -45 && direction < 45) {
+                facing = "south";
+            } else {
+                facing = "west";
+            }*/
+            temporary.add(facing);
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+            TMP_e = TMP_e.replace("{facing}", "{string[DefaultString->FACING-"+global.TMP_string.size()+"]}");
+        }
 		return TMP_e;
 	}
 	
@@ -474,6 +501,10 @@ public class StringHandler {
 			args = ArrayHandler.arrayFunctions(args, chatEvent);
 			args = stringFunctions(args, chatEvent);
 		}
+        while (args.contains("{display[") && args.contains("]}")) {
+            args = DisplayHandler.displayFunctions(args);
+            args = stringFunctions(args, chatEvent);
+        }
 		while (args.contains("{string[") && args.contains("]}")) {
 			args = stringFunctions(args, chatEvent);
 		}
@@ -1040,11 +1071,11 @@ public class StringHandler {
 			return "{string["+sn+"]}";
 		} else if (func.equalsIgnoreCase("GREATERTHAN") || func.equalsIgnoreCase("GT") || func.equalsIgnoreCase(">")) {
 			try {
-				int strnmbr;
-				if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));}
-				else {strnmbr = Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1));}
+				Double strnmbr;
+				if (stringnum!=-1) {strnmbr = Double.parseDouble(global.USR_string.get(stringnum).get(1));}
+				else {strnmbr = Double.parseDouble(global.TMP_string.get(tmpstringnum).get(1));}
 				try {
-					int argnmbr = Integer.parseInt(args);
+                    Double argnmbr = Double.parseDouble(args);
 					if (stringnum!=-1) {
 						if (strnmbr>argnmbr) {global.USR_string.get(stringnum).set(1, "true");}
 						else {global.USR_string.get(stringnum).set(1, "false");}
@@ -1130,12 +1161,22 @@ public class StringHandler {
 				if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", sn+" is not a number!"));}
 				return "{string["+sn+"]}";
 			}
-		} else if (func.equalsIgnoreCase("CAPITALIZEFIRSTWORD") || func.equalsIgnoreCase("CAPFIRT")) {
+		} else if (func.equalsIgnoreCase("CAPITALIZEFIRSTWORD") || func.equalsIgnoreCase("CAPFIRST")) {
 			if (stringnum!=-1) {
-				global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).substring(0, 1).toUpperCase() + global.USR_string.get(stringnum).get(1).substring(1));
-			} else {
-				global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).substring(0, 1).toUpperCase() + global.TMP_string.get(tmpstringnum).get(1).substring(1));
-			}
+                try {
+                    global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).substring(0, 1).toUpperCase() + global.USR_string.get(stringnum).get(1).substring(1));
+                } catch (Exception e) {
+                    //do nothing
+                    //string is empty
+                }
+            } else {
+                try {
+                    global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1).substring(0, 1).toUpperCase() + global.TMP_string.get(tmpstringnum).get(1).substring(1));
+                } catch (Exception e) {
+                    //do nothing
+                    //string is empty
+                }
+            }
 			return "{string["+sn+"]}";
 		} else if (func.equalsIgnoreCase("CAPITALIZEALLWORDS") || func.equalsIgnoreCase("CAPALL")) {
 			if (stringnum!=-1) {

@@ -90,7 +90,7 @@ public class TriggerHandler {
             }
 
             for (String value : TMP_server) {
-                if (current_server.contains(value.replace("99.198.123.2","hypixel"))) {
+                if (current_server.toUpperCase().contains(value.toUpperCase())) {
                     correct_server = true;
                 }
             }

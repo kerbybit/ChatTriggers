@@ -153,7 +153,7 @@ public class ChatHandler {
 		
 		
 		String TMP_o = "['',";
-		TMP_o += "{text:'" + 
+		TMP_o += "{text:'" +
 				cht.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
 					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
 					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")
@@ -172,7 +172,12 @@ public class ChatHandler {
 				+  "'}";
 		TMP_o += "]";
 		IChatComponent TMP_out = IChatComponent.Serializer.jsonToComponent(TMP_o);
-		Minecraft.getMinecraft().thePlayer.addChatMessage(TMP_out); 
+        try {
+            Minecraft.getMinecraft().thePlayer.addChatMessage(TMP_out);
+        } catch (NullPointerException e) {
+            //do nothing
+            //world probably isnt loaded
+        }
 	}
 	
 	public static String color(String clr, String msg) {
@@ -282,7 +287,29 @@ public class ChatHandler {
                 .replace(EnumChatFormatting.STRIKETHROUGH.toString(), "AmpF6cyUQp9Ampm")
                 .replace(EnumChatFormatting.UNDERLINE.toString(), "AmpF6cyUQp9Ampn")
                 .replace(EnumChatFormatting.ITALIC.toString(), "AmpF6cyUQp9Ampo")
-                .replace(EnumChatFormatting.RESET.toString(), "AmpF6cyUQp9Ampr");
+                .replace(EnumChatFormatting.RESET.toString(), "AmpF6cyUQp9Ampr")
+                .replace("&0", "AmpF6cyUQp9Amp0")
+                .replace("&1", "AmpF6cyUQp9Amp1")
+                .replace("&2", "AmpF6cyUQp9Amp2")
+                .replace("&3", "AmpF6cyUQp9Amp3")
+                .replace("&4", "AmpF6cyUQp9Amp4")
+                .replace("&5", "AmpF6cyUQp9Amp5")
+                .replace("&6", "AmpF6cyUQp9Amp6")
+                .replace("&7", "AmpF6cyUQp9Amp7")
+                .replace("&8", "AmpF6cyUQp9Amp8")
+                .replace("&9", "AmpF6cyUQp9Amp9")
+                .replace("&a", "AmpF6cyUQp9Ampa")
+                .replace("&b", "AmpF6cyUQp9Ampb")
+                .replace("&c", "AmpF6cyUQp9Ampc")
+                .replace("&d", "AmpF6cyUQp9Ampd")
+                .replace("&e", "AmpF6cyUQp9Ampe")
+                .replace("&f", "AmpF6cyUQp9Ampf")
+                .replace("&k", "AmpF6cyUQp9Ampk")
+                .replace("&l", "AmpF6cyUQp9Ampl")
+                .replace("&m", "AmpF6cyUQp9Ampm")
+                .replace("&n", "AmpF6cyUQp9Ampn")
+                .replace("&o", "AmpF6cyUQp9Ampo")
+                .replace("&r", "AmpF6cyUQp9Ampr");
     }
 	
 	public static String addFormatting(String msg) {

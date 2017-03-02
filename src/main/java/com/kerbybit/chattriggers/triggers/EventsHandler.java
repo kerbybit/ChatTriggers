@@ -55,13 +55,17 @@ public class EventsHandler {
 			
 		//setup backup for functions so strings don't get overwritten
 			StringHandler.resetBackupStrings();
-			
+
+        //Do displays first
+            TMP_e = DisplayHandler.displayFunctions(TMP_e);
+
 		//built in strings
 			TMP_e = StringHandler.builtInStrings(TMP_e, chatEvent);
 			
 		//user strings and functions
 			TMP_e = TMP_e.replace("{string<", "{string[").replace("{array<", "{array[").replace(">}", "]}");
-			
+
+
 			TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent);
 			TMP_e = ArrayHandler.arrayFunctions(TMP_e, chatEvent);
 			TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent);

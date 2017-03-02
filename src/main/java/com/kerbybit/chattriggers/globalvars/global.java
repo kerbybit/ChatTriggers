@@ -1,5 +1,7 @@
 package com.kerbybit.chattriggers.globalvars;
 
+import net.minecraft.client.Minecraft;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,7 +9,7 @@ import java.util.List;
 
 public class global {
 	public static List<String> asyncEvents = new ArrayList<String>();
-	
+
 	public static Boolean worldLoaded = false;
 	public static Boolean worldFirstLoad = true;
 	public static Boolean worldIsLoaded = false;
@@ -21,6 +23,10 @@ public class global {
     public static String hasWatermarkURL = "";
 	
 	public static int playerHealth = -1;
+    public static int fps = 0;
+    public static int fpscounter = 0;
+    public static long fpsSysTime = Minecraft.getSystemTime();
+    public static long sysTime = Minecraft.getSystemTime();
 	
 	public static String importURL = "";
 	public static Boolean canImport = true;
@@ -106,14 +112,19 @@ public class global {
 
 
 
-    ////////////////Display matrix//////////////////////
+    ////////////////Display map//////////////////////
     // layout
-    // get(0) = display name
-    // get(1) = display x
-    // get(2) = display y
-    // get(3+) = display values
-    ////////////////////////////////////////////////////
-	public static List<List<String>> displays = new ArrayList<List<String>>();
+    // key = display name
+    // value = list of values
+    /////////////////////////////////////////////////
+    ////////////////Display xy///////////////////////
+    // layout
+    // key = display name
+    // value = x y array
+    /////////////////////////////////////////////////
+	public static HashMap<String,List<String>> displays = new HashMap<String,List<String>>();
+    public static HashMap<String,List<String>> shown_displays = new HashMap<String,List<String>>();
+    public static HashMap<String,Double[]> displays_xy = new HashMap<String,Double[]>();
 	
 	//////////////////Settings matrix///////////////////
 	// layout

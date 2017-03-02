@@ -175,6 +175,8 @@ public class CommandReference {
             r.add("{hp}");
             r.add("{sneak}");
             r.add("{x} {y} {z}");
+            r.add("{facing}");
+            r.add("{fps}");
             r.add("");
             r.add("{server}");
             r.add("{serverIP}");
@@ -244,6 +246,18 @@ public class CommandReference {
             r.add(".importJsonFile($file,$node)");
             r.add(".improtJsonURL($URL,$node)");
             r.add(".exportJson($file,$node)");
+
+        return r;
+    }
+
+    static List<String> getDisplayFunctions() {
+        List<String> r = new ArrayList<String>();
+
+            r.add(".add($v)");
+            r.add(".clear()");
+            r.add(".getX() .getY()");
+            r.add(".setX($v) .setY($v)");
+            r.add(".update()");
 
         return r;
     }

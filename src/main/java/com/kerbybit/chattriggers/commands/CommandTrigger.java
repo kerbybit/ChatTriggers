@@ -40,6 +40,7 @@ public class CommandTrigger extends CommandBase {
 
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (global.canUse) {doCommand(args, false);}
+
     }
 
     public static void doCommand(String args[], Boolean silent) {
@@ -50,9 +51,25 @@ public class CommandTrigger extends CommandBase {
         global.lastCommand = temp_command;
         if (args.length == 0) {
             ChatHandler.warn("&c/trigger &c[clickable(&ccreate,suggest_command,/trigger create ,&7Suggest &7/trigger &7create)&c/clickable(&cadd,suggest_command,/trigger add ,&7Suggest &7/trigger &7add)&c/clickable(&clist,run_command,/trigger list,&7Run &7/trigger &7list)&c] &c<...>");
-            ChatHandler.warn("&c/trigger &c[clickable(&cstring,suggest_command,/trigger string ,&7Suggest &7/trigger &7string)&c/clickable(&carray,run_command,/trigger array,&7Run &7/trigger &7array)&c] &c<...>");
+            ChatHandler.warn("&c/trigger &c[clickable(&cstring,suggest_command,/trigger string ,&7Suggest &7/trigger &7string)&c/clickable(&carray,run_command,/trigger array,&7Run &7/trigger &7array)&c/clickable(&cdisplay,run_command,/trigger display,&7Run &7/trigger &7display)&c] &c<...>");
             ChatHandler.warn("&c/trigger &c[clickable(&csave,run_command,/trigger save,&7Run &7/trigger &7save)&c/clickable(&cload,run_command,/trigger load,&7Run &7/trigger 77load)&c]");
             ChatHandler.warn("&c/trigger &c[clickable(&crun,suggest_command,/trigger run ,&7Suggest &7/trigger &7run)&c/clickable(&cimport,suggest_command,/trigger import ,&7Suggest &7/trigger &7import)&c/clickable(&cimports,run_command,/trigger imports,&7Run &7/trigger &7imports)&c] &c<...>");
+        } else if (args[0].equalsIgnoreCase("DISPLAYS") || args[0].equalsIgnoreCase("DISPLAY")) {
+            ChatHandler.warnBreak(0);
+            if (global.displays.size() > 0) {
+                if (args.length==1) {
+                    for (String display_name : global.displays.keySet()) {
+                        ChatHandler.warn(display_name);
+                        ChatHandler.warn(" " + global.displays_xy.get(display_name)[0] + " " + global.displays_xy.get(display_name)[1]);
+                        for (String display_value : global.displays.get(display_name)) {
+                            ChatHandler.warn(" " + ChatHandler.ignoreFormatting(display_value));
+                        }
+                    }
+                }
+            } else {
+                ChatHandler.warn(ChatHandler.color("red","There are currently no displays"));
+            }
+            ChatHandler.warnBreak(1);
         } else if (args[0].equalsIgnoreCase("ARRAYS") || args[0].equalsIgnoreCase("ARRAY")) {
             ChatHandler.warnBreak(0);
             if (global.USR_array.size() > 0) {
@@ -104,6 +121,7 @@ public class CommandTrigger extends CommandBase {
                 ChatHandler.warn(" &f>> clickable(" + global.settings.get(0) + "Built in strings,run_command,/trigger help strings,&7Built in string list)");
                 ChatHandler.warn(" &f>> clickable(" + global.settings.get(0) + "String functions,run_command,/trigger help stringfunctions,&7String function list)");
                 ChatHandler.warn(" &f>> clickable(" + global.settings.get(0) + "Array functions,run_command,/trigger help arrayfunctions,&7Array function list)");
+                ChatHandler.warn(" &f>> clickable(" + global.settings.get(0) + "Display functions,run_command,/trigger help displayfunctions,&7Display function list)");
                 ChatHandler.warnBreak(1);
             } else {
                 if (args[1].equalsIgnoreCase("GETSTARTED")) {
@@ -119,9 +137,8 @@ public class CommandTrigger extends CommandBase {
                 } else if (args[1].equalsIgnoreCase("TRIGGERS")) {
                     ChatHandler.warnBreak(0);
                     ChatHandler.warn("&fTrigger types");
-                    List<String> trigs = new ArrayList<String>(CommandReference.getTriggerTypes());
-                    for (String trig : trigs) {
-                        ChatHandler.warn(global.settings.get(0) + " " + trig);
+                    for (String value : CommandReference.getTriggerTypes()) {
+                        ChatHandler.warn(global.settings.get(0) + " " + value);
                     }
                     ChatHandler.warn("");
                     ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
@@ -129,9 +146,8 @@ public class CommandTrigger extends CommandBase {
                 } else if (args[1].equalsIgnoreCase("EVENTS")) {
                     ChatHandler.warnBreak(0);
                     ChatHandler.warn("&fEvent types");
-                    List<String> events = new ArrayList<String>(CommandReference.getEventTypes());
-                    for (String event : events) {
-                        ChatHandler.warn(global.settings.get(0) + " " + event);
+                    for (String value : CommandReference.getEventTypes()) {
+                        ChatHandler.warn(global.settings.get(0) + " " + value);
                     }
                     ChatHandler.warn("");
                     ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
@@ -139,9 +155,8 @@ public class CommandTrigger extends CommandBase {
                 } else if (args[1].equalsIgnoreCase("STRINGS")) {
                     ChatHandler.warnBreak(0);
                     ChatHandler.warn("&fBuilt in strings");
-                    List<String> strs = new ArrayList<String>(CommandReference.getStrings());
-                    for (String str : strs) {
-                        ChatHandler.warn(global.settings.get(0) + " " + str);
+                    for (String value : CommandReference.getStrings()) {
+                        ChatHandler.warn(global.settings.get(0) + " " + value);
                     }
                     ChatHandler.warn("");
                     ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
@@ -149,9 +164,8 @@ public class CommandTrigger extends CommandBase {
                 } else if (args[1].equalsIgnoreCase("STRINGFUNCTIONS")) {
                     ChatHandler.warnBreak(0);
                     ChatHandler.warn("&fString functions");
-                    List<String> strfuncs = new ArrayList<String>(CommandReference.getStringFunctions());
-                    for (String strfunc : strfuncs) {
-                        ChatHandler.warn(global.settings.get(0) + " " + strfunc);
+                    for (String value : CommandReference.getStringFunctions()) {
+                        ChatHandler.warn(global.settings.get(0) + " " + value);
                     }
                     ChatHandler.warn("");
                     ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
@@ -159,9 +173,17 @@ public class CommandTrigger extends CommandBase {
                 } else if (args[1].equalsIgnoreCase("ARRAYFUNCTIONS")) {
                     ChatHandler.warnBreak(0);
                     ChatHandler.warn("&fArray functions");
-                    List<String> arrfuncs = new ArrayList<String>(CommandReference.getArrayFunctions());
-                    for (String arrfunc : arrfuncs) {
-                        ChatHandler.warn(global.settings.get(0) + " " + arrfunc);
+                    for (String value : CommandReference.getArrayFunctions()) {
+                        ChatHandler.warn(global.settings.get(0) + " " + value);
+                    }
+                    ChatHandler.warn("");
+                    ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
+                    ChatHandler.warnBreak(1);
+                } else if (args[1].equalsIgnoreCase("DISPLAYFUNCTIONS")) {
+                    ChatHandler.warnBreak(0);
+                    ChatHandler.warn("&fDisplay functions");
+                    for (String value : CommandReference.getDisplayFunctions()) {
+                        ChatHandler.warn(global.settings.get(0) + " " + value);
                     }
                     ChatHandler.warn("");
                     ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
