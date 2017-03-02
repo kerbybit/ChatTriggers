@@ -263,7 +263,6 @@ public class DisplayHandler {
                 String temp_search = TMP_e.substring(TMP_e.indexOf("]}.add(", TMP_e.indexOf("{display["))+7);
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_value = temp_search.substring(0, temp_search.indexOf(")"));
-                System.out.println(get_value);
             }
             get_value = get_value.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
 

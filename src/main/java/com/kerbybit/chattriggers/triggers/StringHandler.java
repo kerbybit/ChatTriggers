@@ -3,6 +3,7 @@ package com.kerbybit.chattriggers.triggers;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.commons.lang3.text.WordUtils;
@@ -423,24 +424,53 @@ public class StringHandler {
             global.backupTMP_strings.add(temporary);
             TMP_e = TMP_e.replace("{fps}", "{string[DefaultString->FPS-"+global.TMP_string.size()+"]}");
         }
+        if (TMP_e.contains("{fpscol}")) {
+            String col;
+            if (global.fps >= 60) {
+                col = "&a";
+            } else if (global.fps >= 50) {
+                col = "&e";
+            } else {
+                col = "&c";
+            }
+
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("DefaultString->FPSCOL-"+(global.TMP_string.size()+1));
+            temporary.add(col);
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+            TMP_e = TMP_e.replace("{fpscol}", "{string[DefaultString->FPSCOL-"+global.TMP_string.size()+"]}");
+        }
         if (TMP_e.contains("{facing}")) {
             List<String> temporary = new ArrayList<String>();
             temporary.add("DefaultString->FACING-"+(global.TMP_string.size()+1));
-            //float direction;
-            String facing = Minecraft.getMinecraft().thePlayer.getHorizontalFacing().toString();
-            /*if (direction >= 135 && direction <= -135) {
-                facing = "north";
-            } else if (direction > -135 && direction <= -45) {
-                facing = "east";
-            } else if (direction > -45 && direction < 45) {
-                facing = "south";
-            } else {
-                facing = "west";
-            }*/
-            temporary.add(facing);
+            temporary.add(Minecraft.getMinecraft().thePlayer.getHorizontalFacing().toString());
             global.TMP_string.add(temporary);
             global.backupTMP_strings.add(temporary);
             TMP_e = TMP_e.replace("{facing}", "{string[DefaultString->FACING-"+global.TMP_string.size()+"]}");
+        }
+        if (TMP_e.contains("{time}")) {
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("DefaultString->TIME-"+(global.TMP_string.size()+1));
+            Calendar cal = Calendar.getInstance();
+            int hour = cal.get(Calendar.HOUR_OF_DAY);
+            int minute = cal.get(Calendar.MINUTE);
+            String minute_string;
+            if (minute < 10) {
+                minute_string = "0" + minute;
+            } else {
+                minute_string = "" + minute;
+            }
+            if (hour > 12) {
+                minute_string = minute_string + "pm";
+                hour = hour - 12;
+            } else {
+                minute_string = minute_string + "am";
+            }
+            temporary.add(hour + ":" + minute_string);
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+            TMP_e = TMP_e.replace("{time}", "{string[DefaultString->TIME-"+global.TMP_string.size()+"]}");
         }
 		return TMP_e;
 	}
@@ -1094,11 +1124,11 @@ public class StringHandler {
 			}
 		} else if (func.equalsIgnoreCase("LESSTHAN") || func.equalsIgnoreCase("LT") || func.equalsIgnoreCase("<")) {
 			try {
-				int strnmbr;
-				if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));}
-				else {strnmbr = Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1));}
+                Double strnmbr;
+				if (stringnum!=-1) {strnmbr = Double.parseDouble(global.USR_string.get(stringnum).get(1));}
+				else {strnmbr = Double.parseDouble(global.TMP_string.get(tmpstringnum).get(1));}
 				try {
-					int argnmbr = Integer.parseInt(args);
+                    Double argnmbr = Double.parseDouble(args);
 					if (stringnum!=-1) {
 						if (strnmbr<argnmbr) {global.USR_string.get(stringnum).set(1, "true");}
 						else {global.USR_string.get(stringnum).set(1, "false");}
@@ -1117,11 +1147,11 @@ public class StringHandler {
 			}
 		} else if (func.equalsIgnoreCase("GREATERTHANOREQUALTO") || func.equalsIgnoreCase("GTE") || func.equalsIgnoreCase(">=")) {
 			try {
-				int strnmbr;
-				if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));}
-				else {strnmbr = Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1));}
+                Double strnmbr;
+				if (stringnum!=-1) {strnmbr = Double.parseDouble(global.USR_string.get(stringnum).get(1));}
+				else {strnmbr = Double.parseDouble(global.TMP_string.get(tmpstringnum).get(1));}
 				try {
-					int argnmbr = Integer.parseInt(args);
+                    Double argnmbr = Double.parseDouble(args);
 					if (stringnum!=-1) {
 						if (strnmbr>=argnmbr) {global.USR_string.get(stringnum).set(1, "true");}
 						else {global.USR_string.get(stringnum).set(1, "false");}
@@ -1140,11 +1170,11 @@ public class StringHandler {
 			}
 		} else if (func.equalsIgnoreCase("LESSTHANOREQUALTO") || func.equalsIgnoreCase("LTE") || func.equalsIgnoreCase("<=")) {
 			try {
-				int strnmbr;
-				if (stringnum!=-1) {strnmbr = Integer.parseInt(global.USR_string.get(stringnum).get(1));}
-				else {strnmbr = Integer.parseInt(global.TMP_string.get(tmpstringnum).get(1));}
+                Double strnmbr;
+				if (stringnum!=-1) {strnmbr = Double.parseDouble(global.USR_string.get(stringnum).get(1));}
+				else {strnmbr = Double.parseDouble(global.TMP_string.get(tmpstringnum).get(1));}
 				try {
-					int argnmbr = Integer.parseInt(args);
+                    Double argnmbr = Double.parseDouble(args);
 					if (stringnum!=-1) {
 						if (strnmbr<=argnmbr) {global.USR_string.get(stringnum).set(1, "true");}
 						else {global.USR_string.get(stringnum).set(1, "false");}
