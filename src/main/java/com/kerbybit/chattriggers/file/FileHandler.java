@@ -216,6 +216,9 @@ public class FileHandler {
         writer.println("notification speed:"+global.settings.get(8));
         writer.println("killfeed fade:"+global.settings.get(9));
         writer.println("show killfeed in notifications:"+global.settings.get(10));
+        writer.println("fpslow:"+global.fpslowcol + " " + global.fpslow);
+        writer.println("fpsmed:"+global.fpsmedcol);
+        writer.println("fpshigh:"+global.fpshighcol + " " + global.fpshigh);
 		writer.close();
 	}
 	
@@ -464,6 +467,37 @@ public class FileHandler {
             }
             if (l.startsWith("killfeed fade:")) {tmp_settings.add(l.substring(l.indexOf("killfeed fade:")+14));}
             if (l.startsWith("show killfeed in notifications:")) {tmp_settings.add(l.substring(l.indexOf("show killfeed in notifications:")+31));}
+            if (l.startsWith("fpslow:")) {
+                String[] get = l.substring(l.indexOf("fpslow:")+7).split(" ");
+                if (get.length == 2) {
+                    global.fpslowcol = get[0];
+                    global.fpslow = Integer.parseInt(get[1]);
+                } else {
+                    global.fpslowcol = "&c";
+                    global.fpslow = 50;
+                    throw new NumberFormatException();
+                }
+            }
+            if (l.startsWith("fpsmed:")) {
+                String[] get = l.substring(l.indexOf("fpsmed:")+7).split(" ");
+                if (get.length == 1) {
+                    global.fpsmedcol = get[0];
+                } else {
+                    global.fpsmedcol = "&e";
+                    throw new NumberFormatException();
+                }
+            }
+            if (l.startsWith("fpshigh:")) {
+                String[] get = l.substring(l.indexOf("fpshigh:")+8).split(" ");
+                if (get.length == 2) {
+                    global.fpshighcol = get[0];
+                    global.fpshigh = Integer.parseInt(get[1]);
+                } else {
+                    global.fpshighcol = "&a";
+                    global.fpshigh = 60;
+                    throw new NumberFormatException();
+                }
+            }
 		}
 		
 		return tmp_settings;

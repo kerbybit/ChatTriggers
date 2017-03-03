@@ -1136,20 +1136,24 @@ public class CommandTrigger extends CommandBase {
                             global.settings.set(9, "false");
                             CommandReference.silentResetAll();
                             ChatHandler.warn(ChatHandler.color("gray", "Toggled killfeed fade") + " " + ChatHandler.color("red", "off"));
+                            try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         } else {
                             global.settings.set(9, "true");
                             CommandReference.silentResetAll();
                             ChatHandler.warn(ChatHandler.color("gray", "Toggled killfeed fade") + " " + ChatHandler.color("green", "on"));
+                            try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         }
                     } else if (args[2].equalsIgnoreCase("SHOWINNOTIFICATION") || args[2].equalsIgnoreCase("SHOWINNOTIFICATIONS") || args[2].equalsIgnoreCase("SHOWINNOTIFY")) {
                         if (global.settings.get(10).equalsIgnoreCase("FALSE")) {
                             global.settings.set(10, "true");
                             CommandReference.silentResetAll();
                             ChatHandler.warn(ChatHandler.color("gray", "Toggled showing killfeed as notifications") + " " + ChatHandler.color("green", "on"));
+                            try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         } else {
                             global.settings.set(10, "false");
                             CommandReference.silentResetAll();
                             ChatHandler.warn(ChatHandler.color("gray", "Toggled showing killfeed as notifications") + " " + ChatHandler.color("red", "off"));
+                            try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         }
                     } else {
                         ChatHandler.warn(ChatHandler.color("red", "/trigger settings killfeed [position/fade/showInNotify] <...>"));
@@ -1169,6 +1173,7 @@ public class CommandTrigger extends CommandBase {
                                     global.settings.set(8, get+"");
                                     global.settingsNotificationSpeed = get;
                                     ChatHandler.warn(ChatHandler.color("gray", "Notification speed set to") + " " + ChatHandler.color(global.settings.get(0), get+""));
+                                    try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                                 }
                             } catch(NumberFormatException e) {
                                 e.printStackTrace();
@@ -1192,11 +1197,13 @@ public class CommandTrigger extends CommandBase {
                             ChatHandler.warn(ChatHandler.color("red", "You have turned nightly notifications")+" "+ChatHandler.color("green","on!"));
                             ChatHandler.warn(ChatHandler.color("red", "For more info, do </trigger settings beta>"));
                             UpdateHandler.loadVersion("http://kerbybit.github.io/ChatTriggers/download/betaversion.txt");
+                            try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         } else {
                             global.settings.set(4, "false");
                             ChatHandler.warn(ChatHandler.color("red", "You have turned nightly notifications off!"));
                             ChatHandler.warn(ChatHandler.color("red", "For more info, do </trigger settings beta>"));
                             UpdateHandler.loadVersion("http://kerbybit.github.io/ChatTriggers/download/version.txt");
+                            try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         }
                     } else {
                         ChatHandler.warn(ChatHandler.color("red", "/trigger settings beta [toggle]"));
@@ -1277,8 +1284,62 @@ public class CommandTrigger extends CommandBase {
                             }
                         }
                     } catch (Exception e) {
-                        ChatHandler.warn("&c/trigger settings dump [number]");
-                        ChatHandler.warn("&c" + args[2] + " is not a number!");
+                        ChatHandler.warn(ChatHandler.color("red", "/trigger settings dump [number]"));
+                        ChatHandler.warn(ChatHandler.color("red", args[2] + " is not a number!"));
+                    }
+                }
+            } else if (args[1].equalsIgnoreCase("FPS")) {
+                if (args.length == 2) {
+                    ChatHandler.warn(ChatHandler.color("red", "/trigger settings fps [low/medium/high] <...>"));
+                } else {
+                    if (args[2].equalsIgnoreCase("LOW") || args[2].equalsIgnoreCase("L")) {
+                        if (args.length == 3) {
+                            ChatHandler.warn(ChatHandler.color("red","/trigger settings fps low [color] [number]"));
+                        } else {
+                            if (args.length == 4) {
+                                global.fpslowcol = args[3];
+                                ChatHandler.warn(global.settings.get(0) +"Changed fps low to " + global.fpslowcol + global.fpslow);
+                                try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                            } else {
+                                try {
+                                    global.fpslowcol = args[3];
+                                    global.fpslow = Integer.parseInt(args[4]);
+                                    ChatHandler.warn(global.settings.get(0) + "Changed fps low to " + global.fpslowcol + global.fpslow);
+                                    try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                                } catch (NumberFormatException e) {
+                                    ChatHandler.warn(ChatHandler.color("red", "/trigger settings fps low [color] [number]"));
+                                    ChatHandler.warn(ChatHandler.color("red", args[4] + " is not a number!"));
+                                }
+                            }
+                        }
+                    } else if (args[2].equalsIgnoreCase("MED") || args[2].equalsIgnoreCase("MEDIUM") || args[2].equalsIgnoreCase("M")) {
+                        if (args.length == 3) {
+                            ChatHandler.warn(ChatHandler.color("red","/trigger settings fps medium [color]"));
+                        } else {
+                            global.fpsmedcol = args[3];
+                            ChatHandler.warn(global.settings.get(0) + "Changed fps medium to " + global.fpsmedcol + global.fpslow + "-" + global.fpshigh);
+                            try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                        }
+                    } else if (args[2].equalsIgnoreCase("HIGH") || args[2].equalsIgnoreCase("H")) {
+                        if (args.length == 3) {
+                            ChatHandler.warn(ChatHandler.color("red","/trigger settings fps high [color] [number]"));
+                        } else {
+                            if (args.length == 4) {
+                                global.fpshighcol = args[3];
+                                ChatHandler.warn(global.settings.get(0) + "Changed fps high to " + global.fpshighcol + global.fpshigh);
+                                try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                            } else {
+                                try {
+                                    global.fpshighcol = args[3];
+                                    global.fpshigh = Integer.parseInt(args[4]);
+                                    ChatHandler.warn(global.settings.get(0) + "Changed fps high to " + global.fpshighcol + global.fpshigh);
+                                    try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                                } catch (NumberFormatException e) {
+                                    ChatHandler.warn(ChatHandler.color("red", "/trigger settings fps high [color] [number]"));
+                                    ChatHandler.warn(ChatHandler.color("red", args[4] + " is not a number!"));
+                                }
+                            }
+                        }
                     }
                 }
             } else {

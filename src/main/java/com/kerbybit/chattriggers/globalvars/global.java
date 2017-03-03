@@ -25,6 +25,12 @@ public class global {
 	public static int playerHealth = -1;
     public static int fps = 0;
     public static int fpscounter = 0;
+    public static int fpslow = 50;
+    public static int fpshigh = 60;
+    public static String fpslowcol = "&c";
+    public static String fpsmedcol = "&e";
+    public static String fpshighcol = "&a";
+
     public static long fpsSysTime = Minecraft.getSystemTime();
     public static long sysTime = Minecraft.getSystemTime();
 	

@@ -426,12 +426,12 @@ public class StringHandler {
         }
         if (TMP_e.contains("{fpscol}")) {
             String col;
-            if (global.fps >= 60) {
-                col = "&a";
-            } else if (global.fps >= 50) {
-                col = "&e";
+            if (global.fps >= global.fpshigh) {
+                col = global.fpshighcol;
+            } else if (global.fps >= global.fpslow) {
+                col = global.fpsmedcol;
             } else {
-                col = "&c";
+                col = global.fpslowcol;
             }
 
             List<String> temporary = new ArrayList<String>();
