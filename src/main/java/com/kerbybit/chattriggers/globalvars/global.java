@@ -1,5 +1,6 @@
 package com.kerbybit.chattriggers.globalvars;
 
+import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 
 import java.util.ArrayList;
@@ -131,6 +132,14 @@ public class global {
 	public static HashMap<String,List<String>> displays = new HashMap<String,List<String>>();
     public static HashMap<String,List<String>> shown_displays = new HashMap<String,List<String>>();
     public static HashMap<String,Double[]> displays_xy = new HashMap<String,Double[]>();
+
+
+    /////////////////////Json map///////////////////////
+    // layout
+    // key = json name
+    // value = json object
+    ////////////////////////////////////////////////////
+    public static HashMap<String, JsonObject> jsons = new HashMap<String, JsonObject>();
 	
 	//////////////////Settings matrix///////////////////
 	// layout

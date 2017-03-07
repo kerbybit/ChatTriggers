@@ -7,6 +7,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,7 +58,7 @@ public class DisplayHandler {
             return "Added " + value + " to " + display_name;
         } else {
             global.displays.put(display_name, Arrays.asList(value));
-            global.displays_xy.put(display_name, new Double[]{0.0,0.0});
+            global.displays_xy.put(display_name, new Double[]{0.0,0.0,1.0});
             global.shown_displays.put(display_name, new ArrayList<String>());
             return "Created and added " + value + " to " + display_name;
         }
@@ -79,12 +80,21 @@ public class DisplayHandler {
         }
     }
 
+    private static String getDisplayA(String display_name) {
+        if (global.displays_xy.containsKey(display_name)) {
+            return global.displays_xy.get(display_name)[2] + "";
+        } else {
+            return "Display " + display_name + " has no alpha to get";
+        }
+    }
+
     private static String setDisplayX(String display_name, String value) {
         if (global.displays_xy.containsKey(display_name)) {
             try {
                 Double x = Double.parseDouble(value);
                 Double y = global.displays_xy.get(display_name)[1];
-                global.displays_xy.put(display_name, new Double[]{x, y});
+                Double a = global.displays_xy.get(display_name)[2];
+                global.displays_xy.put(display_name, new Double[]{x, y, a});
                 return value + "";
             } catch (NumberFormatException e) {
                 return "ERR: setDisplayX -> " + value + " is not a valid number";
@@ -99,7 +109,8 @@ public class DisplayHandler {
             try {
                 Double x = global.displays_xy.get(display_name)[0];
                 Double y = Double.parseDouble(value);
-                global.displays_xy.put(display_name, new Double[]{x, y});
+                Double a = global.displays_xy.get(display_name)[2];
+                global.displays_xy.put(display_name, new Double[]{x, y, a});
                 return value + "";
             } catch (NumberFormatException e) {
                 return "ERR: setDisplayY -> " + value + " is not a valid number";
@@ -107,6 +118,22 @@ public class DisplayHandler {
         } else {
             return "Display " + display_name + " has no y to set";
         }
+    }
+
+    private static String setDisplayA(String display_name, String value) {
+        /*if (global.displays_xy.containsKey(display_name)) {
+            try {
+                Double x = global.displays_xy.get(display_name)[0];
+                Double y = global.displays_xy.get(display_name)[1];
+                Double a = Double.parseDouble(value);
+                global.displays_xy.put(display_name, new Double[]{x, y, a});
+                return value + "";
+            } catch (NumberFormatException e) {
+                return "ERR: setDisplayY -> " + value + " is not a valid number";
+            }
+        } else {*/
+            return "Display " + display_name + " has no alpha to set";
+        /*}*/
     }
 
     private static String deleteDisplay(String display_name) {
@@ -132,6 +159,9 @@ public class DisplayHandler {
                 String display_name = display_map.getKey();
                 List<String> display = display_map.getValue();
                 Double[] display_xy;
+                int color = 0x00ffffff;
+                /*color = color + (global.displays_xy.get(display_name)[2].intValue() * 0x01000000);
+                System.out.println(color);*/
 
                 if (global.displays_xy.containsKey(display_name)) {
                     display_xy = global.displays_xy.get(display_name);
@@ -140,14 +170,14 @@ public class DisplayHandler {
                 }
 
                 for (int i=0; i<display.size(); i++) {
-                    ren.drawStringWithShadow(ChatHandler.addFormatting(display.get(i)), (display_xy[0].floatValue()*width)/100, ((display_xy[1].floatValue()*height)/100)+i*10, 0xffffff);
+                    ren.drawStringWithShadow(ChatHandler.addFormatting(display.get(i)), (display_xy[0].floatValue()*width)/100, ((display_xy[1].floatValue()*height)/100)+i*10, color);
                 }
             }
         }
     }
 
     static String displayFunctions(String TMP_e) {
-        if (TMP_e.contains("{display[") && TMP_e.contains("]}.update()")) {
+        while (TMP_e.contains("{display[") && TMP_e.contains("]}.update()")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{display[")+9, TMP_e.indexOf("]}.update()", TMP_e.indexOf("{display[")));
             while (get_name.contains("{display[")) {
                 get_name = get_name.substring(get_name.indexOf("{display[")+9);
@@ -162,7 +192,7 @@ public class DisplayHandler {
             TMP_e = TMP_e.replace("{display["+get_name+"]}.update()","{string[DisplayToString->"+get_name+"UPDATE"+"-"+global.TMP_string.size()+"]}");
         }
 
-        if (TMP_e.contains("{display[") && TMP_e.contains("]}.clear()")) {
+        while (TMP_e.contains("{display[") && TMP_e.contains("]}.clear()")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{display[")+9, TMP_e.indexOf("]}.clear()", TMP_e.indexOf("{display[")));
             while (get_name.contains("{display[")) {
                 get_name = get_name.substring(get_name.indexOf("{display[")+9);
@@ -177,7 +207,7 @@ public class DisplayHandler {
             TMP_e = TMP_e.replace("{display["+get_name+"]}.clear()","{string[DisplayToString->"+get_name+"CLEAR"+"-"+global.TMP_string.size()+"]}");
         }
 
-        if (TMP_e.contains("{display[") && TMP_e.contains("]}.getX()")) {
+        while (TMP_e.contains("{display[") && TMP_e.contains("]}.getX()")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{display[")+9, TMP_e.indexOf("]}.getX()", TMP_e.indexOf("{display[")));
             while (get_name.contains("{display[")) {
                 get_name = get_name.substring(get_name.indexOf("{display[")+9);
@@ -192,7 +222,7 @@ public class DisplayHandler {
             TMP_e = TMP_e.replace("{display["+get_name+"]}.getX()","{string[DisplayToString->"+get_name+"GETX"+"-"+global.TMP_string.size()+"]}");
         }
 
-        if (TMP_e.contains("{display[") && TMP_e.contains("]}.getY()")) {
+        while (TMP_e.contains("{display[") && TMP_e.contains("]}.getY()")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{display[")+9, TMP_e.indexOf("]}.getY()", TMP_e.indexOf("{display[")));
             while (get_name.contains("{display[")) {
                 get_name = get_name.substring(get_name.indexOf("{display[")+9);
@@ -205,6 +235,21 @@ public class DisplayHandler {
             global.backupTMP_strings.add(temporary);
 
             TMP_e = TMP_e.replace("{display["+get_name+"]}.getY()","{string[DisplayToString->"+get_name+"GETY"+"-"+global.TMP_string.size()+"]}");
+        }
+
+        while (TMP_e.contains("{display[") && TMP_e.contains("]}.getA()")) {
+            String get_name = TMP_e.substring(TMP_e.indexOf("{display[")+9, TMP_e.indexOf("]}.getA()", TMP_e.indexOf("{display[")));
+            while (get_name.contains("{display[")) {
+                get_name = get_name.substring(get_name.indexOf("{display[")+9);
+            }
+
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("DisplayToString->"+get_name+"GETA"+"-"+(global.TMP_string.size()+1));
+            temporary.add(getDisplayA(get_name));
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+
+            TMP_e = TMP_e.replace("{display["+get_name+"]}.getA()","{string[DisplayToString->"+get_name+"GETA"+"-"+global.TMP_string.size()+"]}");
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.setX(") && TMP_e.contains(")")) {
@@ -251,6 +296,29 @@ public class DisplayHandler {
             global.backupTMP_strings.add(temporary);
 
             TMP_e = TMP_e.replace("{display["+get_name+"]}.setY("+get_prevalue+")","{string[DisplayToString->"+get_name+"SETY"+"-"+global.TMP_string.size()+"]}");
+        }
+
+        while (TMP_e.contains("{display[") && TMP_e.contains("]}.setA(") && TMP_e.contains(")")) {
+            String get_name = TMP_e.substring(TMP_e.indexOf("{display[")+9, TMP_e.indexOf("]}.setA(", TMP_e.indexOf("{display[")));
+            String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.setA(", TMP_e.indexOf("{display["))+8, TMP_e.indexOf(")", TMP_e.indexOf("]}.setA(", TMP_e.indexOf("{display["))));
+            while (get_name.contains("{display[")) {
+                get_name = get_name.substring(get_name.indexOf("{display[")+9);
+            }
+            while (get_prevalue.contains("(")) {
+                String temp_search = TMP_e.substring(TMP_e.indexOf("]}.setA(", TMP_e.indexOf("{display["))+8);
+                temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
+                get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
+            }
+            get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
+            String get_value = StringHandler.stringFunctions(get_prevalue, null);
+
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("DisplayToString->"+get_name+"SETA"+"-"+(global.TMP_string.size()+1));
+            temporary.add(setDisplayA(get_name, get_value));
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+
+            TMP_e = TMP_e.replace("{display["+get_name+"]}.setA("+get_prevalue+")","{string[DisplayToString->"+get_name+"SETA"+"-"+global.TMP_string.size()+"]}");
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.add(") && TMP_e.contains(")")) {

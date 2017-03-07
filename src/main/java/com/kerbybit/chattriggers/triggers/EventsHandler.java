@@ -11,9 +11,11 @@ import java.util.List;
 import java.util.Random;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
+import com.kerbybit.chattriggers.file.NewJsonHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 import static com.kerbybit.chattriggers.triggers.TriggerHandler.onChat;
@@ -67,6 +69,7 @@ public class EventsHandler {
 
 
 			TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent);
+            TMP_e = NewJsonHandler.jsonFunctions(TMP_e);
 			TMP_e = ArrayHandler.arrayFunctions(TMP_e, chatEvent);
 			TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent);
 			
@@ -120,8 +123,11 @@ public class EventsHandler {
                     .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
                     .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"));}
             if (TMP_c.equalsIgnoreCase("SIMULATE")) {
-                ChatHandler.warn(TMP_e);
-                onChat(TMP_e, ChatHandler.deleteFormatting(TMP_e), null);
+                ClientChatReceivedEvent ce = new ClientChatReceivedEvent((byte)0, IChatComponent.Serializer.jsonToComponent("{text:'"+TMP_e+"'}"));
+                onChat(TMP_e, ChatHandler.deleteFormatting(TMP_e), ce);
+                if (!ce.isCanceled()) {
+                    ChatHandler.warn(TMP_e);
+                }
             }
 			if (TMP_c.equalsIgnoreCase("SOUND")) {
                 float real_v = ((float)TMP_v) / 100;

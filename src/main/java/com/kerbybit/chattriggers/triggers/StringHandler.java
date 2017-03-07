@@ -818,7 +818,40 @@ public class StringHandler {
                         .replace(args, ""));}
 				return "{string["+sn+"]}";
 			}
-		} else if (func.equalsIgnoreCase("SUBSTRING")) {
+		} else if (func.equalsIgnoreCase("REPLACEIGNORECASE")) {
+            args = args
+                    .replace("'('", "stringOpenBracketF6cyUQp9stringOpenBracket")
+                    .replace("')'", "stringCloseBracketF6cyUQp9stringCloseBracket")
+                    .replace("','", "stringCommaReplacementF6cyUQp9stringCommaReplacement");
+            if (args.contains(",")) {
+                String replaced = args.substring(0, args.indexOf(","));
+                String replacer = args.substring(args.indexOf(",")+1);
+
+                if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1)
+                        .replace("'('", "stringOpenBracketF6cyUQp9stringOpenBracket")
+                        .replace("')'", "stringCloseBracketF6cyUQp9stringCloseBracket")
+                        .replace("','", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
+                        .replaceAll("(?i)"+replaced, replacer));}
+                else {global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1)
+                        .replace("'('", "stringOpenBracketF6cyUQp9stringOpenBracket")
+                        .replace("')'", "stringCloseBracketF6cyUQp9stringCloseBracket")
+                        .replace("','", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
+                        .replaceAll("(?i)"+replaced, replacer));}
+                return "{string["+sn+"]}";
+            } else {
+                if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1)
+                        .replace("(","stringOpenBracketF6cyUQp9stringOpenBracket")
+                        .replace(")","stringCloseBracketF6cyUQp9stringCloseBracket")
+                        .replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
+                        .replaceAll("(?i)"+args, ""));}
+                else {global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1)
+                        .replace("(","stringOpenBracketF6cyUQp9stringOpenBracket")
+                        .replace(")","stringCloseBracketF6cyUQp9stringCloseBracket")
+                        .replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
+                        .replaceAll("(?i)"+args, ""));}
+                return "{string["+sn+"]}";
+            }
+        } else if (func.equalsIgnoreCase("SUBSTRING")) {
             args = args
 					.replace("'('", "stringOpenBracketF6cyUQp9stringOpenBracket")
 					.replace("')'", "stringCloseBracketF6cyUQp9stringCloseBracket")
@@ -1313,7 +1346,7 @@ public class StringHandler {
 		}
 	}
 	
-	static String stringFunctions(String TMP_e, ClientChatReceivedEvent chatEvent) {
+	public static String stringFunctions(String TMP_e, ClientChatReceivedEvent chatEvent) {
 		TMP_e = TMP_e.replace("'('", "stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement")
 				.replace("')'", "stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement");
 		while (TMP_e.contains("{string[") && TMP_e.contains("]}")) {

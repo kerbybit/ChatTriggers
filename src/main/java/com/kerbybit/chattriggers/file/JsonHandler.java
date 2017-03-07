@@ -16,6 +16,7 @@ import java.util.List;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
+///TODO DEPRECATED
 public class JsonHandler {
 	public static String exportJsonFile(String fileName, String arrayName, String nodeName) throws IOException {
 		String returnString;

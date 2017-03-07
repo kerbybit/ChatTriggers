@@ -13,6 +13,38 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 class ArrayHandler {
 	static String arrayFunctions(String TMP_e, ClientChatReceivedEvent chatEvent) {
+	    while (TMP_e.contains("{array[") && TMP_e.contains("]}.getRandom()")) {
+	        String get_name = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.getRandom()", TMP_e.indexOf("{array[")));
+	        while (get_name.contains("{array[")) {
+                get_name = get_name.substring(get_name.indexOf("{array[")+7);
+            }
+	        Boolean isArray = false;
+
+	        for (List<String> value : global.USR_array) {
+	            if (value.get(0).equals(get_name)) {
+                    List<String> temporary = new ArrayList<String>();
+                    temporary.add("ArrayToString->"+get_name+"GETR"+"-"+(global.TMP_string.size()+1));
+                    temporary.add(value.get(EventsHandler.randInt(1, value.size()-1)));
+                    global.TMP_string.add(temporary);
+                    global.backupTMP_strings.add(temporary);
+
+                    TMP_e = TMP_e.replace("{array["+get_name+"]}.getRandom()","{string[ArrayToString->"+get_name+"GETR"+"-"+global.TMP_string.size()+"]}");
+
+	                isArray = true;
+                }
+            }
+
+            if (!isArray) {
+                List<String> temporary = new ArrayList<String>();
+                temporary.add("ArrayToString->"+get_name+"GETR"+"-"+(global.TMP_string.size()+1));
+                temporary.add(get_name + " is not currently an array");
+                global.TMP_string.add(temporary);
+                global.backupTMP_strings.add(temporary);
+
+                TMP_e = TMP_e.replace("{array["+get_name+"]}.getRandom()","{string[ArrayToString->"+get_name+"GETR"+"-"+global.TMP_string.size()+"]}");
+            }
+        }
+
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.setSplit(") && TMP_e.contains(",") && TMP_e.contains(")")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.setSplit(", TMP_e.indexOf("{array[")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.setSplit(")+12, TMP_e.indexOf(")", TMP_e.indexOf("]}.setSplit(")));

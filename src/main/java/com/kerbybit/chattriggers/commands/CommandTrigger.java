@@ -19,6 +19,8 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.IChatComponent;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 import static com.kerbybit.chattriggers.triggers.TriggerHandler.onChat;
 
@@ -108,8 +110,12 @@ public class CommandTrigger extends CommandBase {
                 TMP_e = TMP_e + args[i] + " ";
             }
             TMP_e = TMP_e.trim();
-            ChatHandler.warn(TMP_e);
-            onChat(TMP_e, ChatHandler.deleteFormatting(TMP_e), null);
+            //ChatHandler.warn(TMP_e);
+            ClientChatReceivedEvent chatEvent = new ClientChatReceivedEvent((byte)0, IChatComponent.Serializer.jsonToComponent("{text:'"+TMP_e+"'}"));
+            onChat(TMP_e, ChatHandler.deleteFormatting(TMP_e), chatEvent);
+            if (!chatEvent.isCanceled()) {
+                ChatHandler.warn(TMP_e);
+            }
         } else if (args[0].equalsIgnoreCase("HELP") || (args[0].equalsIgnoreCase("?"))) {
             if (args.length==1) {
                 ChatHandler.warnBreak(0);
