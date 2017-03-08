@@ -6,8 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -150,27 +150,55 @@ public class DisplayHandler {
     }
 
     public static void drawDisplays(RenderGameOverlayEvent event) {
-        if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
-            FontRenderer ren = Minecraft.getMinecraft().fontRendererObj;
-            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
-            float width = res.getScaledWidth();
-            float height = res.getScaledHeight();
-            for (Map.Entry<String, List<String>> display_map : global.shown_displays.entrySet()) {
-                String display_name = display_map.getKey();
-                List<String> display = display_map.getValue();
-                Double[] display_xy;
-                int color = 0x00ffffff;
-                /*color = color + (global.displays_xy.get(display_name)[2].intValue() * 0x01000000);
-                System.out.println(color);*/
+        GL11.glColor4f(1, 1, 1, 1);
 
-                if (global.displays_xy.containsKey(display_name)) {
-                    display_xy = global.displays_xy.get(display_name);
-                } else {
-                    display_xy = new Double[]{0.0,0.0};
-                }
+        FontRenderer ren = Minecraft.getMinecraft().fontRendererObj;
+        ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
+        float width = res.getScaledWidth();
+        float height = res.getScaledHeight();
 
-                for (int i=0; i<display.size(); i++) {
-                    ren.drawStringWithShadow(ChatHandler.addFormatting(display.get(i)), (display_xy[0].floatValue()*width)/100, ((display_xy[1].floatValue()*height)/100)+i*10, color);
+        for (Map.Entry<String, List<String>> display_map : global.shown_displays.entrySet()) {
+            String display_name = display_map.getKey();
+            List<String> display = display_map.getValue();
+            Double[] display_xy;
+            int color = 0x00ffffff;
+            /*color = color + (global.displays_xy.get(display_name)[2].intValue() * 0x01000000);
+            System.out.println(color);*/
+
+            if (global.displays_xy.containsKey(display_name)) {
+                display_xy = global.displays_xy.get(display_name);
+            } else {
+                display_xy = new Double[]{0.0,0.0};
+            }
+
+            for (int i=0; i<display.size(); i++) {
+                if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
+                    String display_text = ChatHandler.addFormatting(display.get(i));
+                    if (display_text.contains("<up>")) {
+                        display_text = display_text.replace("<up>","");
+                        if (display_text.contains("<center>")) {
+                            display_text = display_text.replace("<center>", "");
+                            ren.drawStringWithShadow(display_text, ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(display_text)/2), ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10, color);
+                        } else if (display_text.contains("<right>")) {
+                            display_text = display_text.replace("<right>", "");
+                            ren.drawStringWithShadow(display_text, ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(display_text), ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10, color);
+                        } else {
+                            display_text = display_text.replace("<left>", "");
+                            ren.drawStringWithShadow(display_text, (display_xy[0].floatValue() * width) / 100, ((display_xy[1].floatValue() * height) / 100) + i * 10, color);
+                        }
+                    } else {
+                        display_text = display_text.replace("<down>","");
+                        if (display_text.contains("<center>")) {
+                            display_text = display_text.replace("<center>", "");
+                            ren.drawStringWithShadow(display_text, ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(display_text)/2), ((display_xy[1].floatValue() * height) / 100) + i * 10, color);
+                        } else if (display_text.contains("<right>")) {
+                            display_text = display_text.replace("<right>", "");
+                            ren.drawStringWithShadow(display_text, ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(display_text), ((display_xy[1].floatValue() * height) / 100) + i * 10, color);
+                        } else {
+                            display_text = display_text.replace("<left>", "");
+                            ren.drawStringWithShadow(display_text, (display_xy[0].floatValue() * width) / 100, ((display_xy[1].floatValue() * height) / 100) + i * 10, color);
+                        }
+                    }
                 }
             }
         }
