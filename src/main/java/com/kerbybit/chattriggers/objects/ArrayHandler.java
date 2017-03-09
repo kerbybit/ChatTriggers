@@ -1,4 +1,4 @@
-package com.kerbybit.chattriggers.triggers;
+package com.kerbybit.chattriggers.objects;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,10 +9,12 @@ import java.util.List;
 
 import com.kerbybit.chattriggers.file.JsonHandler;
 import com.kerbybit.chattriggers.globalvars.global;
+import com.kerbybit.chattriggers.triggers.EventsHandler;
+import com.kerbybit.chattriggers.triggers.StringHandler;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
-class ArrayHandler {
-	static String arrayFunctions(String TMP_e, ClientChatReceivedEvent chatEvent) {
+public class ArrayHandler {
+	public static String arrayFunctions(String TMP_e, ClientChatReceivedEvent chatEvent) {
 	    while (TMP_e.contains("{array[") && TMP_e.contains("]}.getRandom()")) {
 	        String get_name = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.getRandom()", TMP_e.indexOf("{array[")));
 	        while (get_name.contains("{array[")) {

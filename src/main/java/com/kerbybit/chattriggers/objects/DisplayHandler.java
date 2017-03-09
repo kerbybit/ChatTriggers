@@ -1,7 +1,10 @@
-package com.kerbybit.chattriggers.triggers;
+package com.kerbybit.chattriggers.objects;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
+import com.kerbybit.chattriggers.objects.ArrayHandler;
+import com.kerbybit.chattriggers.triggers.StringHandler;
+import com.kerbybit.chattriggers.triggers.TagHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -204,7 +207,7 @@ public class DisplayHandler {
         }
     }
 
-    static String displayFunctions(String TMP_e) {
+    public static String displayFunctions(String TMP_e) {
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.update()")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{display[")+9, TMP_e.indexOf("]}.update()", TMP_e.indexOf("{display[")));
             while (get_name.contains("{display[")) {

@@ -117,6 +117,13 @@ public class global {
 	////////////////////////////////////////////////////
 	public static List<List<String>> USR_array = new ArrayList<List<String>>();
 
+	////////////////////List Map////////////////////////
+    // layout
+    // key = name
+    // value = list
+    ////////////////////////////////////////////////////
+    public static HashMap<String, List<String>> lists = new HashMap<String, List<String>>();
+
 
 
     ////////////////Display map//////////////////////

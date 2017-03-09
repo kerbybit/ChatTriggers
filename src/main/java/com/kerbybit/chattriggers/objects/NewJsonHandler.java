@@ -1,4 +1,4 @@
-package com.kerbybit.chattriggers.file;
+package com.kerbybit.chattriggers.objects;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -27,7 +27,7 @@ public class NewJsonHandler {
             return new JsonParser().parse(jsonString).getAsJsonObject();
         } catch (MalformedURLException e1) {
             return null;
-        } catch (IOException e2) {
+        } catch (Exception e2) {
             return null;
         }
     }
@@ -42,7 +42,15 @@ public class NewJsonHandler {
                 jsonString += line;
             }
             return new JsonParser().parse(jsonString).getAsJsonObject();
-        } catch (IOException e1) {
+        } catch (Exception e1) {
+            return null;
+        }
+    }
+
+    private static JsonObject getJsonFromValue(String value) {
+        try {
+            return new JsonParser().parse(value).getAsJsonObject();
+        } catch (Exception e1) {
             return null;
         }
     }
@@ -51,6 +59,8 @@ public class NewJsonHandler {
         JsonObject json_object;
         if (json_from.toUpperCase().startsWith("HTTP")) {
             json_object = getJsonFromURL(json_from);
+        } else if (json_from.contains("{")) {
+            json_object = getJsonFromValue(json_from);
         } else {
             json_object = getJsonFromFile(json_from);
         }
@@ -58,6 +68,7 @@ public class NewJsonHandler {
         if (json_object == null) {
             return "Unable to load Json!";
         } else {
+            clearJson(json_name);
             global.jsons.put(json_name, json_object);
             return json_object + "";
         }

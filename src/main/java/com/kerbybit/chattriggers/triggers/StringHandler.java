@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import com.kerbybit.chattriggers.objects.ArrayHandler;
+import com.kerbybit.chattriggers.objects.DisplayHandler;
 import org.apache.commons.lang3.text.WordUtils;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
@@ -18,7 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class StringHandler {
-	static String builtInStrings(String TMP_e, ClientChatReceivedEvent chatEvent) {
+	public static String builtInStrings(String TMP_e, ClientChatReceivedEvent chatEvent) {
         while (TMP_e.contains("{imported(") && TMP_e.contains(")}")) {
             List<String> temporary = new ArrayList<String>();
             String imp = TMP_e.substring(TMP_e.indexOf("{imported(")+10, TMP_e.indexOf(")}", TMP_e.indexOf("{imported(")));
@@ -475,7 +477,7 @@ public class StringHandler {
 		return TMP_e;
 	}
 	
-	static void resetBackupStrings() {
+	public static void resetBackupStrings() {
 		try {
 			global.backupUSR_strings.clear();
 			for (int j=0; j<global.USR_string.size(); j++) {

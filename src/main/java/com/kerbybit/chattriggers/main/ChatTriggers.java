@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import com.kerbybit.chattriggers.gui.DisplayOverlay;
 import com.kerbybit.chattriggers.references.BugTracker;
-import com.kerbybit.chattriggers.triggers.DisplayHandler;
+import com.kerbybit.chattriggers.objects.DisplayHandler;
 import org.lwjgl.input.Keyboard;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;

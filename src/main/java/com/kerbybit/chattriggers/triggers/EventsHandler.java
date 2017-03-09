@@ -7,11 +7,15 @@ import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
-import com.kerbybit.chattriggers.file.NewJsonHandler;
+import com.kerbybit.chattriggers.objects.ArrayHandler;
+import com.kerbybit.chattriggers.objects.DisplayHandler;
+import com.kerbybit.chattriggers.objects.ListHandler;
+import com.kerbybit.chattriggers.objects.NewJsonHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
 import net.minecraft.client.Minecraft;
@@ -70,6 +74,7 @@ public class EventsHandler {
 
 			TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent);
             TMP_e = NewJsonHandler.jsonFunctions(TMP_e);
+            TMP_e = ListHandler.listFunctions(TMP_e);
 			TMP_e = ArrayHandler.arrayFunctions(TMP_e, chatEvent);
 			TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent);
 			
@@ -380,15 +385,21 @@ public class EventsHandler {
                     } else {
                         if (global.debug) {ChatHandler.warn(ChatHandler.color("red", "ERR: for $value in $array -> missing value or array!"));}
                     }
-                    for (int j=0; j<global.USR_array.size(); j++) {
-                        if (global.USR_array.get(j).get(0).equals(valfrom)) {
-                            arrayto.addAll(global.USR_array.get(j));
+
+                    if (valfrom.startsWith("[") && valfrom.endsWith("]")) {
+                        arrayto.addAll(Arrays.asList(valfrom.substring(1, valfrom.length()-1).split(",")));
+                    } else {
+                        for (int j=1; j<global.USR_array.size(); j++) {
+                            if (global.USR_array.get(j).get(0).equals(valfrom)) {
+                                arrayto.addAll(global.USR_array.get(j));
+                            }
                         }
                     }
 
+
                     if (arrayto.size()>0 && eventsToFor.size() > 0) {
                         if (valwait.equals("")) {
-                            for (int j=1; j<arrayto.size(); j++) {
+                            for (int j=0; j<arrayto.size(); j++) {
                                 String[] first = {valin};
                                 String[] second = {arrayto.get(j)};
                                 ret = doEvents(eventsToFor, chatEvent, first, second);
@@ -396,7 +407,7 @@ public class EventsHandler {
                         } else {
                             try {
                                 int intwait = Integer.parseInt(valwait.replace(",",""));
-                                for (int j=1; j<arrayto.size(); j++) {
+                                for (int j=0; j<arrayto.size(); j++) {
                                     List<String> eventsToForFin = new ArrayList<String>(eventsToFor);
                                     List<String> temporary = new ArrayList<String>();
                                     temporary.add("TriggerArgument"+j+"-"+global.TMP_string.size());
