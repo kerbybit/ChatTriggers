@@ -1297,6 +1297,27 @@ public class StringHandler {
                 global.TMP_string.get(tmpstringnum).set(1,tmp_string);
             }
             return "{string["+sn+"]}";
+        } else if (func.equalsIgnoreCase("SPLIT")) {
+		    String tmp_string;
+		    if (stringnum!=-1) {
+		        tmp_string = global.USR_string.get(stringnum).get(1);
+            } else {
+		        tmp_string = global.TMP_string.get(tmpstringnum).get(1);
+            }
+
+            String[] split_tmp_string = tmp_string.split(args);
+		    tmp_string = "[";
+		    for (String value : split_tmp_string) {
+		        tmp_string += value + ",";
+            }
+            tmp_string = tmp_string.substring(0, tmp_string.length()-1) + "]";
+
+            if (stringnum!=-1) {
+		        global.USR_string.get(stringnum).set(1,tmp_string);
+            } else {
+		        global.TMP_string.get(tmpstringnum).set(1,tmp_string);
+            }
+		    return "{string["+sn+"]}";
         } else {
             for (List<String> function : global.function) {
                 if (function.size() > 2) {

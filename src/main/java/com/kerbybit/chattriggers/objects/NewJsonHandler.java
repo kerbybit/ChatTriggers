@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 //TODO bad class name. pls change
 public class NewJsonHandler {
@@ -106,6 +107,44 @@ public class NewJsonHandler {
         }
     }
 
+    private static String getKeys(String key, String value) {
+        String returnString = getValue(key, value);
+        JsonObject obj = new JsonParser().parse(returnString).getAsJsonObject();
+        List<String> keys = new ArrayList<String>();
+        for (Map.Entry<String, JsonElement> ele : obj.entrySet()) {
+            keys.add(ele.getKey());
+        }
+
+        returnString = "[";
+        for (String element : keys) {
+            returnString += element + ",";
+        }
+        returnString = returnString.substring(0, returnString.length()-1) + "]";
+
+        return returnString;
+    }
+
+    private static String getValues(String key, String value) {
+        String returnString = getValue(key, value);
+        JsonObject obj = new JsonParser().parse(returnString).getAsJsonObject();
+        List<String> keys = new ArrayList<String>();
+        for (Map.Entry<String, JsonElement> eles : obj.entrySet()) {
+            String ele = eles.getValue() + "";
+            if (ele.startsWith("\"") && ele.endsWith("\"")) {
+                ele = ele.substring(1, ele.length()-1);
+            }
+            keys.add(ele);
+        }
+
+        returnString = "[";
+        for (String element : keys) {
+            returnString += element + ",";
+        }
+        returnString = returnString.substring(0, returnString.length()-1) + "]";
+
+        return returnString;
+    }
+
     private static void clearJsons() {
         global.jsons.clear();
     }
@@ -156,7 +195,7 @@ public class NewJsonHandler {
             String get_name = TMP_e.substring(TMP_e.indexOf("{json[")+6, TMP_e.indexOf("]}.get(", TMP_e.indexOf("{json[")));
             String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.get(", TMP_e.indexOf("{json["))+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.get(", TMP_e.indexOf("{json["))));
             while (get_prevalue.contains("(")) {
-                String temp_search = TMP_e.substring(TMP_e.indexOf("]}.get(", TMP_e.indexOf("{jaon["))+8);
+                String temp_search = TMP_e.substring(TMP_e.indexOf("]}.get(", TMP_e.indexOf("{jaon["))+7);
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
@@ -170,6 +209,46 @@ public class NewJsonHandler {
             global.backupTMP_strings.add(temporary);
 
             TMP_e = TMP_e.replace("{json["+get_name+"]}.get("+get_prevalue+")","{string[JsonToString->"+get_name+"GET"+get_value+"-"+global.TMP_string.size()+"]}");
+        }
+
+        while (TMP_e.contains("{json[") && TMP_e.contains("]}.getKeys(") && TMP_e.contains(")")) {
+            String get_name = TMP_e.substring(TMP_e.indexOf("{json[")+6, TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{json[")));
+            String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{json["))+11, TMP_e.indexOf(")", TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{json["))));
+            while (get_prevalue.contains("(")) {
+                String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{jaon["))+11);
+                temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
+                get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
+            }
+            get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
+            String get_value = StringHandler.stringFunctions(get_prevalue, null);
+
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("JsonToString->"+get_name+"GETKEYS"+get_value+"-"+(global.TMP_string.size()+1));
+            temporary.add(getKeys(get_name, get_value));
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+
+            TMP_e = TMP_e.replace("{json["+get_name+"]}.getKeys("+get_prevalue+")","{string[JsonToString->"+get_name+"GETKEYS"+get_value+"-"+global.TMP_string.size()+"]}");
+        }
+
+        while (TMP_e.contains("{json[") && TMP_e.contains("]}.getValues(") && TMP_e.contains(")")) {
+            String get_name = TMP_e.substring(TMP_e.indexOf("{json[")+6, TMP_e.indexOf("]}.getValues(", TMP_e.indexOf("{json[")));
+            String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.getValues(", TMP_e.indexOf("{json["))+13, TMP_e.indexOf(")", TMP_e.indexOf("]}.getValues(", TMP_e.indexOf("{json["))));
+            while (get_prevalue.contains("(")) {
+                String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getValues(", TMP_e.indexOf("{jaon["))+13);
+                temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
+                get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
+            }
+            get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
+            String get_value = StringHandler.stringFunctions(get_prevalue, null);
+
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("JsonToString->"+get_name+"GETVALUES"+get_value+"-"+(global.TMP_string.size()+1));
+            temporary.add(getValues(get_name, get_value));
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+
+            TMP_e = TMP_e.replace("{json["+get_name+"]}.getValues("+get_prevalue+")","{string[JsonToString->"+get_name+"GETVALUES"+get_value+"-"+global.TMP_string.size()+"]}");
         }
 
         return TMP_e;
