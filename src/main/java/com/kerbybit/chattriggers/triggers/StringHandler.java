@@ -1345,18 +1345,20 @@ public class StringHandler {
                                     return "{string[" + sn + "]}";
                                 }
                             } else {
-                                List<String> TMP_events = new ArrayList<String>();
-                                for (int j = 2; j < function.size(); j++) {
-                                    TMP_events.add(function.get(j));
+                                if (args.equals("")) {
+                                    List<String> TMP_events = new ArrayList<String>();
+                                    for (int j = 2; j < function.size(); j++) {
+                                        TMP_events.add(function.get(j));
+                                    }
+                                    if (stringnum != -1) {
+                                        String ret = EventsHandler.doEvents(TMP_events, chatEvent, new String[] {func_to}, new String[] {global.USR_string.get(stringnum).get(1)});
+                                        global.USR_string.get(stringnum).set(1, ret);
+                                    } else {
+                                        String ret = EventsHandler.doEvents(TMP_events, chatEvent, new String[] {func_to}, new String[] {global.TMP_string.get(tmpstringnum).get(1)});
+                                        global.TMP_string.get(tmpstringnum).set(1, ret);
+                                    }
+                                    return "{string[" + sn + "]}";
                                 }
-                                if (stringnum != -1) {
-                                    String ret = EventsHandler.doEvents(TMP_events, chatEvent, new String[] {func_to}, new String[] {global.USR_string.get(stringnum).get(1)});
-                                    global.USR_string.get(stringnum).set(1, ret);
-                                } else {
-                                    String ret = EventsHandler.doEvents(TMP_events, chatEvent, new String[] {func_to}, new String[] {global.TMP_string.get(tmpstringnum).get(1)});
-                                    global.TMP_string.get(tmpstringnum).set(1, ret);
-                                }
-                                return "{string[" + sn + "]}";
                             }
                         }
                     }
