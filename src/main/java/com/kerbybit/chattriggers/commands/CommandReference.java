@@ -130,7 +130,7 @@ public class CommandReference {
         return false;
 	}
 
-    static List<String> getEventTypes() {
+    public static List<String> getEventTypes() {
         List<String> r = new ArrayList<String>();
 
             r.add("chat");

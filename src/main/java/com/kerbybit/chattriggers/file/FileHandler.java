@@ -261,6 +261,17 @@ public class FileHandler {
 				String tmp_event = lines.get(i).substring(lines.get(i).indexOf("event:") + 6);
 				tmp_triggers.get(j).add(tmp_event);
 			}
+			if (!lines.get(i).trim().startsWith("//") && !lines.get(i).trim().equals("")) {
+			    for (String event : CommandReference.getEventTypes()) {
+			        if (!event.equals("")) {
+			            if (lines.get(i).trim().startsWith(event + " ") || lines.get(i).trim().equals(event)) {
+                            String tmp_event = lines.get(i).trim();
+                            tmp_triggers.get(j).add(tmp_event);
+                            break;
+                        }
+                    }
+                }
+            }
 			
 			if (lines.get(i).trim().startsWith("!")) {
 				String importFunction = lines.get(i).trim().substring(lines.get(i).trim().indexOf("!")+1);
