@@ -39,6 +39,8 @@ public class global {
 	public static Boolean canImport = true;
 	public static List<String> neededImports = new ArrayList<String>();
 
+	public static HashMap<String, String> imported = new HashMap<String, String>();
+
     public static List<String> bugReport = new ArrayList<String>();
     public static String lastCommand = "";
     public static String bugLastCommand = "";

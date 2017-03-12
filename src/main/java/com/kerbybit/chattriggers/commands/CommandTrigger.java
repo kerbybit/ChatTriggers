@@ -305,7 +305,7 @@ public class CommandTrigger extends CommandBase {
                         try {
                             for (int i=1; i<args.length; i++) {
                                 String dir = "./mods/ChatTriggers/Imports/"+args[i]+".txt";
-                                global.trigger.addAll(FileHandler.loadTriggers(dir, true));
+                                global.trigger.addAll(FileHandler.loadTriggers(dir, true, null));
                             }
                         } catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Unable to load import!")); e.printStackTrace();}
                         global.canSave = false;
@@ -1362,7 +1362,7 @@ public class CommandTrigger extends CommandBase {
     private static void commandLoad() {
         global.canSave = true;
         try {
-            global.trigger = FileHandler.loadTriggers("./mods/ChatTriggers/triggers.txt", false);
+            global.trigger = FileHandler.loadTriggers("./mods/ChatTriggers/triggers.txt", false, null);
             global.USR_string = FileHandler.loadStrings("./mods/ChatTriggers/strings.txt");
             global.settings = FileHandler.loadSettings("./mods/ChatTriggers/settings.txt");
             FileHandler.loadImports("./mods/ChatTriggers/Imports/");

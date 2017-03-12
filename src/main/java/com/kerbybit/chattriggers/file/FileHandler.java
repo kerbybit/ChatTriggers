@@ -36,7 +36,7 @@ public class FileHandler {
 			for (File file : files) {
 				if (file.isFile()) {
 					if (file.getName().endsWith(".txt")) {
-						try {global.trigger.addAll(loadTriggers(dest + file.getName(), true));}
+						try {global.trigger.addAll(loadTriggers(dest + file.getName(), true, file.getName()));}
 						catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Unable to load import!")); e.printStackTrace();}
 					}
 				}
@@ -52,6 +52,9 @@ public class FileHandler {
 			     public void run() {
 			    	ChatHandler.warn(ChatHandler.color("gray", "Getting import..."));
 			 		try {
+			 		    String importName = global.importURL.replace("http://chattriggers.kerbybit.com/exports/","").replace(".txt","");
+			 		    String currentVersion = "null";
+
 			 			String url = global.importURL;
 			 			String file = new File(global.importURL).getName();
 			 			URL web = new URL(url);
@@ -64,7 +67,17 @@ public class FileHandler {
 			 				lines.add(line);
 			 			}
 			 			bufferedReader.close();
-			 			
+
+                        web = new URL("http://ct.kerbybit.com/exports/meta/"+importName+".json");
+                        fis = web.openStream();
+                        bufferedReader = new BufferedReader(new InputStreamReader(fis, "UTF-8"));
+                        String check = "\"packVersion\":\"";
+                        while ((line = bufferedReader.readLine()) != null) {
+                            if (line.contains(check)) {
+                                currentVersion = line.substring(line.indexOf(check)+check.length(), line.length()-2);
+                            }
+                        }
+
 			 			if (global.debug) {ChatHandler.warn(ChatHandler.color("&7", "Setting up files to save"));}
 			 			File dir = new File("./mods/ChatTriggers/Imports/");
 			 			if (!dir.exists()) {if (!dir.mkdir()) {ChatHandler.warn(ChatHandler.color("red", "Unable to create file!"));}}
@@ -74,6 +87,7 @@ public class FileHandler {
 			 			if (global.debug) {ChatHandler.warn(ChatHandler.color("&7", "Saving file to "+fin.getName()));}
 			 			PrintWriter writer = new PrintWriter(fin,"UTF-8");
 			 			for (String value : lines) {writer.println(value);}
+			 			writer.println("!VERSION " + currentVersion);
 			 			writer.close();
 			 			if (global.debug) {ChatHandler.warn(ChatHandler.color("&7", "Loading imports into triggers"));}
 
@@ -222,7 +236,7 @@ public class FileHandler {
 		writer.close();
 	}
 	
-	public static List<List<String>> loadTriggers(String fileName, Boolean isImport) throws IOException {
+	public static List<List<String>> loadTriggers(String fileName, Boolean isImport, String importName) throws IOException {
 		List<List<String>> tmp_triggers = new ArrayList<List<String>>();
 		List<String> lines = new ArrayList<String>();
 		String line;
@@ -373,7 +387,12 @@ public class FileHandler {
 						if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Removing "+global.USR_string.get(toRemove)));}
 						global.USR_string.remove(toRemove);
 					}
-				}
+				} else if (importFunction.toUpperCase().startsWith("VERSION ")) {
+				    String version = importFunction.substring(importFunction.toUpperCase().indexOf("VERSION ")+8);
+                    if (importName != null) {
+                        global.imported.put(importName, version);
+                    }
+                }
 			}
 		}
 
@@ -522,7 +541,7 @@ public class FileHandler {
 			
 			CommandReference.clearTriggerList();
 			
-			global.trigger = FileHandler.loadTriggers("./mods/ChatTriggers/triggers.txt", false);
+			global.trigger = FileHandler.loadTriggers("./mods/ChatTriggers/triggers.txt", false, null);
 			global.USR_string = FileHandler.loadStrings("./mods/ChatTriggers/strings.txt");
 			global.settings = FileHandler.loadSettings("./mods/ChatTriggers/settings.txt");
 			loadImports("./mods/ChatTriggers/Imports/");
@@ -537,7 +556,7 @@ public class FileHandler {
 		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold");}
 		try {
 			CommandReference.clearTriggerList();
-			global.trigger = loadTriggers("./mods/ChatTriggers/triggers.txt", false);
+			global.trigger = loadTriggers("./mods/ChatTriggers/triggers.txt", false, null);
 			global.USR_string = loadStrings("./mods/ChatTriggers/strings.txt");
 			global.settings = loadSettings("./mods/ChatTriggers/settings.txt");
 			loadImports("./mods/ChatTriggers/Imports/");
