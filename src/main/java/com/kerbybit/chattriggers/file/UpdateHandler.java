@@ -107,81 +107,81 @@ public class UpdateHandler {
 	public static void loadVersion(String url) {
 		global.versionURL = url;
 		Thread threadLoadVersion = new Thread(new Runnable() {
-		     public void run() {
-             try {
-                URL web = new URL(global.versionURL);
-                InputStream fis = web.openStream();
-                List<String> lines = new ArrayList<String>();
-                String line;
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
-                while ((line = bufferedReader.readLine()) != null) {
-                    lines.add(line);
-                }
-                bufferedReader.close();
+            public void run() {
+                try {
+                    URL web = new URL(global.versionURL);
+                    InputStream fis = web.openStream();
+                    List<String> lines = new ArrayList<String>();
+                    String line;
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
+                    while ((line = bufferedReader.readLine()) != null) {
+                        lines.add(line);
+                    }
+                    bufferedReader.close();
 
-                if (!global.settings.get(2).equals("null")) {
-                    if (!lines.get(0).equals(global.settings.get(2))) {
-                        ChatHandler.warnBreak(0);
-                        if (global.settings.get(4).equals("false")) {
-                            ChatHandler.warn(ChatHandler.color("red", "You are running on an outdated version of ChatTriggers!"));
-                            ChatHandler.warn("clickable(&cct.kerbybit.com/download,open_url,http://ct.kerbybit.com/download,Open download page)");
-                            ChatHandler.warn(ChatHandler.color("red", "Current stable version: " + lines.get(0)));
-                        } else {
-                            ChatHandler.warn(ChatHandler.color("red", "You are running on an outdated version of ChatTriggers!"));
-                            ChatHandler.warn("clickable(&cct.kerbybit.com/download/#beta,open_url,http://ct.kerbybit.com/download/#beta,Open download page)");
-                            ChatHandler.warn(ChatHandler.color("red", "Current beta version: " + lines.get(0)));
+                    if (!global.settings.get(2).equals("null")) {
+                        if (!lines.get(0).equals(global.settings.get(2))) {
+                            ChatHandler.warnBreak(0);
+                            if (global.settings.get(4).equals("false")) {
+                                ChatHandler.warn(ChatHandler.color("red", "You are running on an outdated version of ChatTriggers!"));
+                                ChatHandler.warn("clickable(&cct.kerbybit.com/download,open_url,http://ct.kerbybit.com/download,Open download page)");
+                                ChatHandler.warn(ChatHandler.color("red", "Current stable version: " + lines.get(0)));
+                            } else {
+                                ChatHandler.warn(ChatHandler.color("red", "You are running on an outdated version of ChatTriggers!"));
+                                ChatHandler.warn("clickable(&cct.kerbybit.com/download/#beta,open_url,http://ct.kerbybit.com/download/#beta,Open download page)");
+                                ChatHandler.warn(ChatHandler.color("red", "Current beta version: " + lines.get(0)));
+                            }
+                            ChatHandler.warn(ChatHandler.color("red", "Your version: " + global.settings.get(2)));
+                            ChatHandler.warn(ChatHandler.color("red", "You will only see this message once until the next update"));
+                            ChatHandler.warnBreak(1);
+                            global.settings.set(2,lines.get(0));
+                            FileHandler.saveAll();
                         }
-                        ChatHandler.warn(ChatHandler.color("red", "Your version: " + global.settings.get(2)));
-                        ChatHandler.warn(ChatHandler.color("red", "You will only see this message once until the next update"));
-                        ChatHandler.warnBreak(1);
-                        global.settings.set(2,lines.get(0));
+                    } else {
+                        global.settings.set(2, lines.get(0));
                         FileHandler.saveAll();
                     }
-                } else {
-                    global.settings.set(2, lines.get(0));
-                    FileHandler.saveAll();
+                } catch (MalformedURLException e) {
+                    ChatHandler.warn(ChatHandler.color("red", "Can't grab update! Update services must be down"));
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    ChatHandler.warn(ChatHandler.color("red", "Can't grab update! Update services must be down"));
+                    e.printStackTrace();
                 }
-            } catch (MalformedURLException e) {
-                ChatHandler.warn(ChatHandler.color("red", "Can't grab update! Update services must be down"));
-                e.printStackTrace();
-            } catch (IOException e) {
-                ChatHandler.warn(ChatHandler.color("red", "Can't grab update! Update services must be down"));
-                e.printStackTrace();
+
+                String updatedImports = "import ";
+                for (Map.Entry<String, String> importMap : global.imported.entrySet()) {
+                    String importName = importMap.getKey();
+                    String importVersion = importMap.getValue();
+                    try {
+                        URL web = new URL("http://ct.kerbybit.com/exports/meta/"+importName.replace(".txt",".json"));
+                        InputStream fis = web.openStream();
+                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis, "UTF-8"));
+                        String line;
+                        String check = "\"packVersion\":\"";
+
+
+
+                        while ((line = bufferedReader.readLine()) != null) {
+                            if (line.contains(check)) {
+                                String currentVersion = line.substring(line.indexOf(check)+check.length(), line.length()-2);
+                                if (!currentVersion.equals(importVersion)) {
+                                    updatedImports += importName.replace(".txt","") + " ";
+                                }
+                            }
+                        }
+                    } catch (MalformedURLException e) {
+                        System.out.println("Did not find import " + importName.replace(".txt","") + " online. skipping update.");
+                    } catch (IOException e) {
+                        System.out.println("Did not find import " + importName.replace(".txt","") + " online. skipping update.");
+                    }
+                }
+                if (!updatedImports.equals("import ")) {
+                    ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Found updates for the following imports:"));
+                    ChatHandler.warn("  " + updatedImports.trim().replace("import ", "").replace(" ", ", "));
+                    CommandTrigger.doCommand(updatedImports.trim().split(" "), false);
+                }
             }
-
-            String updatedImports = "import ";
-            for (Map.Entry<String, String> importMap : global.imported.entrySet()) {
-                 String importName = importMap.getKey();
-                 String importVersion = importMap.getValue();
-                 try {
-                     URL web = new URL("http://ct.kerbybit.com/exports/meta/"+importName.replace(".txt",".json"));
-                     InputStream fis = web.openStream();
-                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis, "UTF-8"));
-                     String line;
-                     String check = "\"packVersion\":\"";
-
-
-
-                     while ((line = bufferedReader.readLine()) != null) {
-                         if (line.contains(check)) {
-                             String currentVersion = line.substring(line.indexOf(check)+check.length(), line.length()-2);
-                             if (!currentVersion.equals(importVersion)) {
-                                 updatedImports += importName.replace(".txt","") + " ";
-                             }
-                         }
-                     }
-                 } catch (MalformedURLException e) {
-                     System.out.println("Did not find import " + importName.replace(".txt","") + " online. skipping update.");
-                 } catch (IOException e) {
-                     System.out.println("Did not find import " + importName.replace(".txt","") + " online. skipping update.");
-                 }
-            }
-            if (!updatedImports.equals("import ")) {
-                ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Found updates for the following imports:"));
-                ChatHandler.warn("  " + updatedImports.trim().replace("import ", "").replace(" ", ", "));
-                CommandTrigger.doCommand(updatedImports.trim().split(" "), false);
-            }
-		     }
 		});
 		threadLoadVersion.start();
 	}

@@ -3,10 +3,13 @@ package com.kerbybit.chattriggers.commands;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.globalvars.global;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class CommandReference {
     public static void clearAll() {
@@ -260,5 +263,16 @@ public class CommandReference {
             r.add(".update()");
 
         return r;
+    }
+
+    public static String getPing() {
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        if (player == null) {
+            return "" + Minecraft.getMinecraft().getCurrentServerData().pingToServer;
+        }
+        if(Minecraft.getMinecraft().getNetHandler().getPlayerInfo(UUID.fromString(Minecraft.getMinecraft().thePlayer.getGameProfile().getId().toString())) != null) {
+            return "" + Minecraft.getMinecraft().getNetHandler().getPlayerInfo(UUID.fromString(Minecraft.getMinecraft().thePlayer.getGameProfile().getId().toString())).getResponseTime();
+        }
+        return "" + Minecraft.getMinecraft().getCurrentServerData().pingToServer;
     }
 }

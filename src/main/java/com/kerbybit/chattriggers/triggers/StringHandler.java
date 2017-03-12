@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.kerbybit.chattriggers.objects.ArrayHandler;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
+import net.minecraft.stats.StatBase;
 import org.apache.commons.lang3.text.WordUtils;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
@@ -21,7 +22,7 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class StringHandler {
 	public static String builtInStrings(String TMP_e, ClientChatReceivedEvent chatEvent) {
-        while (TMP_e.contains("{imported(") && TMP_e.contains(")}")) {
+	    while (TMP_e.contains("{imported(") && TMP_e.contains(")}")) {
             List<String> temporary = new ArrayList<String>();
             String imp = TMP_e.substring(TMP_e.indexOf("{imported(")+10, TMP_e.indexOf(")}", TMP_e.indexOf("{imported(")));
             temporary.add("DefaultString->IMPORTED"+imp+"-"+(global.TMP_string.size()+1));
@@ -276,27 +277,11 @@ public class StringHandler {
 			global.backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{serverIP}", "{string[DefaultString->SERVERIP-"+global.TMP_string.size()+"]}");
 		}
-		if (TMP_e.contains("{ping}")) {///TODO
-			String returnString = "-1";
+		if (TMP_e.contains("{ping}")) {
+			String returnString;
 			if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "5";}
 			else {
-                try {
-                    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")) {
-                        String command = "ping -n 1 " + Minecraft.getMinecraft().getCurrentServerData().serverIP;
-                        Process process = Runtime.getRuntime().exec(command);
-                        BufferedReader is = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                        String line;
-                        while ((line = is.readLine()) != null) {
-                            if (line.contains("Minimum = ") && line.contains("ms")) {
-                                returnString = line.substring(line.indexOf("Minimum = ")+10, line.indexOf("ms"));
-                            }
-                        }
-                    } else {
-                        returnString = Minecraft.getMinecraft().getCurrentServerData().pingToServer+"";
-                    }
-                } catch (Exception e) {
-                    returnString = "-1";
-                }
+                returnString = CommandReference.getPing();
             }
 			
 			List<String> temporary = new ArrayList<String>();
