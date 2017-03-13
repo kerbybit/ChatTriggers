@@ -5,6 +5,7 @@ import java.util.*;
 
 import com.kerbybit.chattriggers.objects.ArrayHandler;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
+import com.kerbybit.chattriggers.objects.ListHandler;
 import com.kerbybit.chattriggers.objects.NewJsonHandler;
 import com.kerbybit.chattriggers.references.RomanNumber;
 import net.minecraft.potion.Potion;
@@ -1323,12 +1324,8 @@ public class StringHandler {
             }
             tmp_string = tmp_string.substring(0, tmp_string.length()-1) + "]";
 
-            if (stringnum!=-1) {
-		        global.USR_string.get(stringnum).set(1,tmp_string);
-            } else {
-		        global.TMP_string.get(tmpstringnum).set(1,tmp_string);
-            }
-		    return "{string["+sn+"]}";
+            ListHandler.getList("StringToList->"+sn+"SPLIT-"+(global.lists.size()+1), tmp_string);
+		    return "{list[StringToList->"+sn+"SPLIT-"+global.lists.size()+"]}";
         } else {
             for (List<String> function : global.function) {
                 if (function.size() > 2) {

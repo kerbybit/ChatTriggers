@@ -311,7 +311,7 @@ public class CommandReference {
         HashMap<String, List<String>> lists_copy = new HashMap<String, List<String>>(global.lists);
 
         for (String key : lists_copy.keySet()) {
-            if (key.startsWith("JsonToList->")) {
+            if (key.startsWith("JsonToList->") || key.startsWith("StringToList->")) {
                 global.lists.remove(key);
             }
         }
