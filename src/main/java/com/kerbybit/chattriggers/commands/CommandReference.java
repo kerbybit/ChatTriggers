@@ -2,9 +2,11 @@ package com.kerbybit.chattriggers.commands;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import com.google.gson.JsonObject;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.globalvars.global;
@@ -274,5 +276,44 @@ public class CommandReference {
             return "" + Minecraft.getMinecraft().getNetHandler().getPlayerInfo(UUID.fromString(Minecraft.getMinecraft().thePlayer.getGameProfile().getId().toString())).getResponseTime();
         }
         return "" + Minecraft.getMinecraft().getCurrentServerData().pingToServer;
+    }
+
+    public static String simplifyPotionName(String name) {
+        if (name.equals("movementSpeed")) {
+            return "speed";
+        } else if (name.equals("fireResistance")) {
+            return "fire resistance";
+        } else if (name.equals("nightVision")) {
+            return "night vision";
+        } else if (name.equals("moveSlowdown")) {
+            return "slowness";
+        } else if (name.equals("damageBoost")) {
+            return "strength";
+        } else if (name.equals("jump")) {
+            return "jump boost";
+        } else if (name.equals("waterBreathing")) {
+            return "water breathing";
+        }
+        return name;
+    }
+
+    public static void trimJsons() {
+        HashMap<String, JsonObject> jsons_copy = new HashMap<String, JsonObject>(global.jsons);
+
+        for (String key : jsons_copy.keySet()) {
+            if (key.startsWith("DefaultJson")) {
+                global.jsons.remove(key);
+            }
+        }
+    }
+
+    public static void trimLists() {
+        HashMap<String, List<String>> lists_copy = new HashMap<String, List<String>>(global.lists);
+
+        for (String key : lists_copy.keySet()) {
+            if (key.startsWith("JsonToList->")) {
+                global.lists.remove(key);
+            }
+        }
     }
 }

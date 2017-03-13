@@ -85,6 +85,8 @@ public class BugTracker {
         ChatHandler.warn(ChatHandler.color("darkred",getError(type)));
         ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitbugreport,Send a bug report) &4to submit a bug report");
 
+        e.printStackTrace();
+
         for (int i=0; i<global.onUnknownError.size(); i++) {
             //add all events to temp list
             List<String> TMP_events = new ArrayList<String>();

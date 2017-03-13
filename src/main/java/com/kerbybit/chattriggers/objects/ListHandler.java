@@ -50,15 +50,19 @@ public class ListHandler {
 
     private static ArrayList<String> getListFromValue(String value) {
         if (value.startsWith("[") && value.endsWith("]")) {
-            String[] list = value.substring(1, value.length()-1).split(",");
-            return new ArrayList<String>(Arrays.asList(list));
+            if (value.equals("[]")) {
+                return null;
+            } else {
+                String[] list = value.substring(1, value.length()-1).split(",");
+                return new ArrayList<String>(Arrays.asList(list));
+            }
         } else {
             return null;
         }
     }
 
-    private static String getList(String list_name, String list_from) {
-        ArrayList<String> list_object = new ArrayList<String>();
+    public static String getList(String list_name, String list_from) {
+        ArrayList<String> list_object;
         if (list_from.toUpperCase().startsWith("HTTP")) {
             list_object = getListFromURL(list_from);
         } else if (list_from.contains("[")) {
@@ -164,6 +168,14 @@ public class ListHandler {
         }
     }
 
+    private static String getSize(String list_name) {
+        if (global.lists.containsKey(list_name)) {
+            return global.lists.get(list_name).size()+"";
+        } else {
+            return "0";
+        }
+    }
+
     private static String removeValue(String list_name, int position) {
         if (global.lists.containsKey(list_name)) {
             List<String> entries = global.lists.get(list_name);
@@ -222,8 +234,11 @@ public class ListHandler {
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.load(") && TMP_e.contains(")")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{list[")+6, TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list[")));
             String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list["))+8, TMP_e.indexOf(")", TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list["))));
+            while (get_name.contains("{list[")) {
+                get_name = get_name.substring(get_name.indexOf("{list[")+6);
+            }
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list["))+8);
             while (get_prevalue.contains("(")) {
-                String temp_search = TMP_e.substring(TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list["))+8);
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
@@ -240,11 +255,29 @@ public class ListHandler {
             TMP_e = TMP_e.replace("{list["+get_name+"]}.load("+get_prevalue+")","{string[ListToString->"+get_name+"LOAD"+get_value+"-"+global.TMP_string.size()+"]}");
         }
 
+        while(TMP_e.contains("{list[") && TMP_e.contains("]}.size()")) {
+            String get_name = TMP_e.substring(TMP_e.indexOf("{list[") + 6, TMP_e.indexOf("]}.size()", TMP_e.indexOf("{list[")));
+            while (get_name.contains("{list[")) {
+                get_name = get_name.substring(get_name.indexOf("{list[")+6);
+            }
+
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("ListToString->"+get_name+"SIZE-"+(global.TMP_string.size()+1));
+            temporary.add(getSize(get_name));
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+
+            TMP_e = TMP_e.replace("{list["+get_name+"]}.size()", "{string[ListToString->"+get_name+"SIZE-"+global.TMP_string.size()+"]}");
+        }
+
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.add(") && TMP_e.contains(")")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{list[")+6, TMP_e.indexOf("]}.add(", TMP_e.indexOf("{list[")));
             String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.add(", TMP_e.indexOf("{list["))+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.add(", TMP_e.indexOf("{list["))));
+            while (get_name.contains("{list[")) {
+                get_name = get_name.substring(get_name.indexOf("{list[")+6);
+            }
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list["))+8);
             while (get_prevalue.contains("(")) {
-                String temp_search = TMP_e.substring(TMP_e.indexOf("]}.add(", TMP_e.indexOf("{list["))+7);
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
@@ -264,8 +297,11 @@ public class ListHandler {
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{list[")+6, TMP_e.indexOf("]}.get(", TMP_e.indexOf("{list[")));
             String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.get(", TMP_e.indexOf("{list["))+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.get(", TMP_e.indexOf("{list["))));
+            while (get_name.contains("{list[")) {
+                get_name = get_name.substring(get_name.indexOf("{list[")+6);
+            }
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list["))+8);
             while (get_prevalue.contains("(")) {
-                String temp_search = TMP_e.substring(TMP_e.indexOf("]}.get(", TMP_e.indexOf("{list["))+7);
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
@@ -285,8 +321,11 @@ public class ListHandler {
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.remove(") && TMP_e.contains(")")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{list[")+6, TMP_e.indexOf("]}.remove(", TMP_e.indexOf("{list[")));
             String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.remove(", TMP_e.indexOf("{list["))+10, TMP_e.indexOf(")", TMP_e.indexOf("]}.remove(", TMP_e.indexOf("{list["))));
+            while (get_name.contains("{list[")) {
+                get_name = get_name.substring(get_name.indexOf("{list[")+6);
+            }
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list["))+8);
             while (get_prevalue.contains("(")) {
-                String temp_search = TMP_e.substring(TMP_e.indexOf("]}.remove(", TMP_e.indexOf("{list["))+10);
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
@@ -305,7 +344,9 @@ public class ListHandler {
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.clear()")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{list[")+6, TMP_e.indexOf("]}.clear()", TMP_e.indexOf("{list[")));
-
+            while (get_name.contains("{list[")) {
+                get_name = get_name.substring(get_name.indexOf("{list[")+6);
+            }
 
             List<String> temporary = new ArrayList<String>();
             temporary.add("ListToString->"+get_name+"CLEAR"+"-"+(global.TMP_string.size()+1));
@@ -319,6 +360,9 @@ public class ListHandler {
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{list[")+6, TMP_e.indexOf("]}", TMP_e.indexOf("{list[")));
+            while (get_name.contains("{list[")) {
+                get_name = get_name.substring(get_name.indexOf("{list[")+6);
+            }
 
             List<String> temporary = new ArrayList<String>();
             temporary.add("ListToString->"+get_name+"LITERAL"+"-"+(global.TMP_string.size()+1));

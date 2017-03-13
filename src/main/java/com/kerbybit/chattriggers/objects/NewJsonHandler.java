@@ -56,7 +56,7 @@ public class NewJsonHandler {
         }
     }
 
-    private static String getJson(String json_name, String json_from) {
+    public static String getJson(String json_name, String json_from) {
         JsonObject json_object;
         if (json_from.toUpperCase().startsWith("HTTP")) {
             json_object = getJsonFromURL(json_from);
@@ -107,9 +107,24 @@ public class NewJsonHandler {
         }
     }
 
+    private static String getValue(String key) {
+        if (global.jsons.containsKey(key)) {
+            return global.jsons.get(key) + "";
+        } else {
+            return "Not a json";
+        }
+    }
+
     private static String getKeys(String key, String value) {
-        String returnString = getValue(key, value);
-        JsonObject obj = new JsonParser().parse(returnString).getAsJsonObject();
+        String returnString;
+        JsonObject obj;
+        if (value.equals("")) {
+            returnString = getValue(key);
+            obj = new JsonParser().parse(returnString).getAsJsonObject();
+        } else {
+            returnString = getValue(key, value);
+            obj = new JsonParser().parse(returnString).getAsJsonObject();
+        }
         List<String> keys = new ArrayList<String>();
         for (Map.Entry<String, JsonElement> ele : obj.entrySet()) {
             keys.add(ele.getKey());
@@ -119,7 +134,12 @@ public class NewJsonHandler {
         for (String element : keys) {
             returnString += element + ",";
         }
-        returnString = returnString.substring(0, returnString.length()-1) + "]";
+        if (returnString.equals("[")) {
+            returnString += "]";
+        } else {
+            returnString = returnString.substring(0, returnString.length()-1) + "]";
+        }
+
 
         return returnString;
     }
@@ -161,6 +181,9 @@ public class NewJsonHandler {
     public static String jsonFunctions(String TMP_e) {
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.clear()")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{json[")+6, TMP_e.indexOf("]}.clear()", TMP_e.indexOf("{json[")));
+            while (get_name.contains("{json[")) {
+                get_name = get_name.substring(get_name.indexOf("{json[")+6);
+            }
 
             List<String> temporary = new ArrayList<String>();
             temporary.add("JsonToString->"+get_name+"CLEAR-"+(global.TMP_string.size()+1));
@@ -174,8 +197,11 @@ public class NewJsonHandler {
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.load(") && TMP_e.contains(")")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{json[")+6, TMP_e.indexOf("]}.load(", TMP_e.indexOf("{json[")));
             String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.load(", TMP_e.indexOf("{json["))+8, TMP_e.indexOf(")", TMP_e.indexOf("]}.load(", TMP_e.indexOf("{json["))));
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{jaon["))+11);
+            while (get_name.contains("{json[")) {
+                get_name = get_name.substring(get_name.indexOf("{json[")+6);
+            }
             while (get_prevalue.contains("(")) {
-                String temp_search = TMP_e.substring(TMP_e.indexOf("]}.load(", TMP_e.indexOf("{jaon["))+8);
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
@@ -194,8 +220,11 @@ public class NewJsonHandler {
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{json[")+6, TMP_e.indexOf("]}.get(", TMP_e.indexOf("{json[")));
             String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.get(", TMP_e.indexOf("{json["))+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.get(", TMP_e.indexOf("{json["))));
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{jaon["))+11);
+            while (get_name.contains("{json[")) {
+                get_name = get_name.substring(get_name.indexOf("{json[")+6);
+            }
             while (get_prevalue.contains("(")) {
-                String temp_search = TMP_e.substring(TMP_e.indexOf("]}.get(", TMP_e.indexOf("{jaon["))+7);
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
@@ -214,28 +243,30 @@ public class NewJsonHandler {
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.getKeys(") && TMP_e.contains(")")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{json[")+6, TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{json[")));
             String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{json["))+11, TMP_e.indexOf(")", TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{json["))));
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{jaon["))+11);
+            while (get_name.contains("{json[")) {
+                get_name = get_name.substring(get_name.indexOf("{json[")+6);
+            }
             while (get_prevalue.contains("(")) {
-                String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{jaon["))+11);
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
             String get_value = StringHandler.stringFunctions(get_prevalue, null);
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("JsonToString->"+get_name+"GETKEYS"+get_value+"-"+(global.TMP_string.size()+1));
-            temporary.add(getKeys(get_name, get_value));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+            ListHandler.getList("JsonToList->"+get_name+"GETKEYS"+get_value+"-"+(global.lists.size()+1), getKeys(get_name, get_value));
 
-            TMP_e = TMP_e.replace("{json["+get_name+"]}.getKeys("+get_prevalue+")","{string[JsonToString->"+get_name+"GETKEYS"+get_value+"-"+global.TMP_string.size()+"]}");
+            TMP_e = TMP_e.replace("{json["+get_name+"]}.getKeys("+get_prevalue+")","{list[JsonToList->"+get_name+"GETKEYS"+get_value+"-"+global.lists.size()+"]}");
         }
 
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.getValues(") && TMP_e.contains(")")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{json[")+6, TMP_e.indexOf("]}.getValues(", TMP_e.indexOf("{json[")));
             String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.getValues(", TMP_e.indexOf("{json["))+13, TMP_e.indexOf(")", TMP_e.indexOf("]}.getValues(", TMP_e.indexOf("{json["))));
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getValues(", TMP_e.indexOf("{jaon["))+13);
+            while (get_name.contains("{json[")) {
+                get_name = get_name.substring(get_name.indexOf("{json[")+6);
+            }
             while (get_prevalue.contains("(")) {
-                String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getValues(", TMP_e.indexOf("{jaon["))+13);
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
@@ -249,6 +280,24 @@ public class NewJsonHandler {
             global.backupTMP_strings.add(temporary);
 
             TMP_e = TMP_e.replace("{json["+get_name+"]}.getValues("+get_prevalue+")","{string[JsonToString->"+get_name+"GETVALUES"+get_value+"-"+global.TMP_string.size()+"]}");
+        }
+
+
+
+
+        while (TMP_e.contains("{json[") && TMP_e.contains("]}")) {
+            String get_name = TMP_e.substring(TMP_e.indexOf("{json[")+6, TMP_e.indexOf("]}", TMP_e.indexOf("{json[")));
+            while (get_name.contains("{json[")) {
+                get_name = get_name.substring(get_name.indexOf("{json[")+6);
+            }
+
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("JsonToString->"+get_name+"GETVALUE-"+(global.TMP_string.size()+1));
+            temporary.add(getValue(get_name));
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+
+            TMP_e = TMP_e.replace("{json["+get_name+"]}", "{string[JsonToString->"+get_name+"GETVALUE-"+global.TMP_string.size()+"]}");
         }
 
         return TMP_e;

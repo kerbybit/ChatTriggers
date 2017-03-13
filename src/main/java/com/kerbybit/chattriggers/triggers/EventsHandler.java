@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
+import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.objects.ArrayHandler;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
@@ -58,7 +59,11 @@ public class EventsHandler {
 			int TMP_p = global.notifySize;
 			int TMP_v = 100;
 			int TMP_pi = 1;
-			
+
+        //trim jsons and lists to save memory
+            CommandReference.trimJsons();
+            CommandReference.trimLists();
+
 		//setup backup for functions so strings don't get overwritten
 			StringHandler.resetBackupStrings();
 

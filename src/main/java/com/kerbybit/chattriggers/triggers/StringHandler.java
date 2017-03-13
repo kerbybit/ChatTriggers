@@ -1,13 +1,14 @@
 package com.kerbybit.chattriggers.triggers;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 import com.kerbybit.chattriggers.objects.ArrayHandler;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
+import com.kerbybit.chattriggers.objects.NewJsonHandler;
+import com.kerbybit.chattriggers.references.RomanNumber;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.StatBase;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -459,6 +460,31 @@ public class StringHandler {
             global.backupTMP_strings.add(temporary);
             TMP_e = TMP_e.replace("{time}", "{string[DefaultString->TIME-"+global.TMP_string.size()+"]}");
         }
+        if (TMP_e.contains("{potionEffects}")) { //TODO
+	        Collection<PotionEffect> potionEffects = Minecraft.getMinecraft().thePlayer.getActivePotionEffects();
+	        String potionList = "{";
+	        for (PotionEffect potionEffect : potionEffects) {
+	            if (!potionEffect.getIsAmbient()) {
+	                String potionName = CommandReference.simplifyPotionName(Potion.potionTypes[potionEffect.getPotionID()].getName().replace("potion.",""));
+	                String potionAmp = RomanNumber.toRoman(potionEffect.getAmplifier()+1);
+	                String potionDuration = Potion.getDurationString(potionEffect);
+
+	                potionList += "\"" + potionName + "\"";
+	                potionList += ":{";
+	                potionList += "\"potionAmp\":\"" + potionAmp + "\",\"potionDuration\":\"" + potionDuration + "\"},";
+                }
+            }
+            if (potionList.equals("{")) {
+	            potionList += "}";
+            } else {
+                potionList = potionList.substring(0, potionList.length()-1) + "}";
+            }
+
+            NewJsonHandler.getJson("DefaultJson->POTIONEFFECTS-"+(global.jsons.size()+1), potionList);
+
+	        TMP_e = TMP_e.replace("{potionEffects}", "{json[DefaultJson->POTIONEFFECTS-"+global.jsons.size()+"]}");
+        }
+
 		return TMP_e;
 	}
 	

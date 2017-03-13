@@ -38,6 +38,8 @@ public class DisplayHandler {
                 value = value.replace("{string<", "{string[").replace("{array<", "{array[").replace(">}", "]}");
 
                 value = StringHandler.stringFunctions(value, null);
+                value = NewJsonHandler.jsonFunctions(value);
+                value = ListHandler.listFunctions(value);
                 value = ArrayHandler.arrayFunctions(value, null);
                 value = StringHandler.stringFunctions(value, null);
 
@@ -289,8 +291,8 @@ public class DisplayHandler {
             while (get_name.contains("{display[")) {
                 get_name = get_name.substring(get_name.indexOf("{display[")+9);
             }
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{jaon["))+11);
             while (get_prevalue.contains("(")) {
-                String temp_search = TMP_e.substring(TMP_e.indexOf("]}.setX(", TMP_e.indexOf("{display["))+8);
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
@@ -312,8 +314,8 @@ public class DisplayHandler {
             while (get_name.contains("{display[")) {
                 get_name = get_name.substring(get_name.indexOf("{display[")+9);
             }
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{jaon["))+11);
             while (get_prevalue.contains("(")) {
-                String temp_search = TMP_e.substring(TMP_e.indexOf("]}.setY(", TMP_e.indexOf("{display["))+8);
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
@@ -335,8 +337,8 @@ public class DisplayHandler {
             while (get_name.contains("{display[")) {
                 get_name = get_name.substring(get_name.indexOf("{display[")+9);
             }
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{jaon["))+11);
             while (get_prevalue.contains("(")) {
-                String temp_search = TMP_e.substring(TMP_e.indexOf("]}.setA(", TMP_e.indexOf("{display["))+8);
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
@@ -358,8 +360,8 @@ public class DisplayHandler {
             while (get_name.contains("{display[")) {
                 get_name = get_name.substring(get_name.indexOf("{display[")+9);
             }
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.add(", TMP_e.indexOf("{display["))+7);
             while (get_value.contains("(")) {
-                String temp_search = TMP_e.substring(TMP_e.indexOf("]}.add(", TMP_e.indexOf("{display["))+7);
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_value = temp_search.substring(0, temp_search.indexOf(")"));
             }
