@@ -21,10 +21,14 @@ public class RomanNumber {
     }
 
     public final static String toRoman(int number) {
-        int l =  map.floorKey(number);
-        if ( number == l ) {
-            return map.get(number);
+        if (number > 0) {
+            int l =  map.floorKey(number);
+            if ( number == l ) {
+                return map.get(number);
+            }
+            return map.get(l) + toRoman(number-l);
+        } else {
+            return number + "";
         }
-        return map.get(l) + toRoman(number-l);
     }
 }

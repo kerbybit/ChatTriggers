@@ -279,7 +279,7 @@ public class CommandReference {
     }
 
     public static String simplifyPotionName(String name) {
-        if (name.equals("movementSpeed")) {
+        if (name.equals("moveSpeed")) {
             return "speed";
         } else if (name.equals("fireResistance")) {
             return "fire resistance";
