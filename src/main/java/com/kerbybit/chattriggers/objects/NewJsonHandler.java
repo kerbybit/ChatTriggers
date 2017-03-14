@@ -197,7 +197,7 @@ public class NewJsonHandler {
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.load(") && TMP_e.contains(")")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{json[")+6, TMP_e.indexOf("]}.load(", TMP_e.indexOf("{json[")));
             String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.load(", TMP_e.indexOf("{json["))+8, TMP_e.indexOf(")", TMP_e.indexOf("]}.load(", TMP_e.indexOf("{json["))));
-            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{jaon["))+11);
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.load(", TMP_e.indexOf("{json["))+8);
             while (get_name.contains("{json[")) {
                 get_name = get_name.substring(get_name.indexOf("{json[")+6);
             }
@@ -219,12 +219,16 @@ public class NewJsonHandler {
 
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{json[")+6, TMP_e.indexOf("]}.get(", TMP_e.indexOf("{json[")));
-            String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.get(", TMP_e.indexOf("{json["))+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.get(", TMP_e.indexOf("{json["))));
-            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{jaon["))+11);
             while (get_name.contains("{json[")) {
                 get_name = get_name.substring(get_name.indexOf("{json[")+6);
             }
+            String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.get(", TMP_e.indexOf("{json["))+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.get(", TMP_e.indexOf("{json[")+6)+7));
+            //System.out.println(get_prevalue);
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.get(", TMP_e.indexOf("{json["))+7);
             while (get_prevalue.contains("(")) {
+                System.out.println(get_name + "->" + get_prevalue);
+                System.out.println("SEARCH STRING->"+temp_search);
+                System.out.println("TMP_E->"+TMP_e);
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
@@ -243,7 +247,7 @@ public class NewJsonHandler {
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.getKeys(") && TMP_e.contains(")")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{json[")+6, TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{json[")));
             String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{json["))+11, TMP_e.indexOf(")", TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{json["))));
-            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{jaon["))+11);
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{json["))+11);
             while (get_name.contains("{json[")) {
                 get_name = get_name.substring(get_name.indexOf("{json[")+6);
             }
@@ -262,7 +266,7 @@ public class NewJsonHandler {
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.getValues(") && TMP_e.contains(")")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{json[")+6, TMP_e.indexOf("]}.getValues(", TMP_e.indexOf("{json[")));
             String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.getValues(", TMP_e.indexOf("{json["))+13, TMP_e.indexOf(")", TMP_e.indexOf("]}.getValues(", TMP_e.indexOf("{json["))));
-            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getValues(", TMP_e.indexOf("{jaon["))+13);
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getValues(", TMP_e.indexOf("{json["))+13);
             while (get_name.contains("{json[")) {
                 get_name = get_name.substring(get_name.indexOf("{json[")+6);
             }

@@ -37,8 +37,8 @@ public class DisplayHandler {
                 //user strings and functions
                 value = value.replace("{string<", "{string[").replace("{array<", "{array[").replace(">}", "]}");
 
-                value = StringHandler.stringFunctions(value, null);
                 value = NewJsonHandler.jsonFunctions(value);
+                value = StringHandler.stringFunctions(value, null);
                 value = ListHandler.listFunctions(value);
                 value = ArrayHandler.arrayFunctions(value, null);
                 value = StringHandler.stringFunctions(value, null);

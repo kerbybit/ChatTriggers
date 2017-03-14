@@ -2,9 +2,11 @@ package com.kerbybit.chattriggers.main;
 
 import java.io.IOException;
 
+import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.gui.DisplayOverlay;
 import com.kerbybit.chattriggers.references.BugTracker;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
+import net.minecraftforge.client.event.MouseEvent;
 import org.lwjgl.input.Keyboard;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
@@ -126,6 +128,8 @@ public class ChatTriggers {
                 global.fpscounter = 0;
                 global.fpsSysTime += 1000L;
             }
+            CommandReference.clickCalc();
+
 			OverlayHandler.drawKillfeed(event);
 			OverlayHandler.drawNotify(event);
             DisplayHandler.drawDisplays(event);
@@ -166,4 +170,11 @@ public class ChatTriggers {
 			global.ticksElapsed += 1;
 		}
 	}
+
+	@SubscribeEvent
+    public void onMouseClicked(MouseEvent e) {
+	    if (e.button == 0 && e.buttonstate) {
+            global.clicks++;
+        }
+    }
 }

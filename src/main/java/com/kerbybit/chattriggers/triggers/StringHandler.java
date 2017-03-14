@@ -22,6 +22,8 @@ import com.kerbybit.chattriggers.globalvars.global;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
+import static java.lang.Math.floor;
+
 public class StringHandler {
 	public static String builtInStrings(String TMP_e, ClientChatReceivedEvent chatEvent) {
 	    while (TMP_e.contains("{imported(") && TMP_e.contains(")}")) {
@@ -325,7 +327,7 @@ public class StringHandler {
 			String dashes = "";
 			float chatWidth = Minecraft.getMinecraft().gameSettings.chatWidth;
 			float chatScale = Minecraft.getMinecraft().gameSettings.chatScale;
-			int numdash = (int) Math.floor(((((280*(chatWidth))+40)/320) * (1/chatScale))*53);
+			int numdash = (int) floor(((((280*(chatWidth))+40)/320) * (1/chatScale))*53);
 			for (int j=0; j<numdash; j++) {dashes += "-";}
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("DefaultString->BR-"+(global.TMP_string.size()+1));
@@ -461,7 +463,7 @@ public class StringHandler {
             global.backupTMP_strings.add(temporary);
             TMP_e = TMP_e.replace("{time}", "{string[DefaultString->TIME-"+global.TMP_string.size()+"]}");
         }
-        if (TMP_e.contains("{potionEffects}")) { //TODO
+        if (TMP_e.contains("{potionEffects}")) { //TODO testing
 	        Collection<PotionEffect> potionEffects = Minecraft.getMinecraft().thePlayer.getActivePotionEffects();
 	        String potionList = "{";
 	        for (PotionEffect potionEffect : potionEffects) {
@@ -469,10 +471,11 @@ public class StringHandler {
 	                String potionName = CommandReference.simplifyPotionName(Potion.potionTypes[potionEffect.getPotionID()].getName().replace("potion.",""));
 	                String potionAmp = RomanNumber.toRoman(potionEffect.getAmplifier()+1);
 	                String potionDuration = Potion.getDurationString(potionEffect);
+	                String potionColor = CommandReference.getPotionColors(potionName);
 
 	                potionList += "\"" + potionName + "\"";
 	                potionList += ":{";
-	                potionList += "\"potionAmp\":\"" + potionAmp + "\",\"potionDuration\":\"" + potionDuration + "\"},";
+	                potionList += "\"potionAmp\":\"" + potionAmp + "\",\"potionDuration\":\"" + potionDuration + "\",\"potionColor\":\"" + potionColor + "\"},";
                 }
             }
             if (potionList.equals("{")) {
@@ -484,6 +487,52 @@ public class StringHandler {
             NewJsonHandler.getJson("DefaultJson->POTIONEFFECTS-"+(global.jsons.size()+1), potionList);
 
 	        TMP_e = TMP_e.replace("{potionEffects}", "{json[DefaultJson->POTIONEFFECTS-"+global.jsons.size()+"]}");
+        }
+        if (TMP_e.contains("{cps}")) { //TODO testing
+            String returnString;
+
+	        if (global.clicks_ave.size() > 0) {
+	            returnString = floor(global.clicks_ave.get(global.clicks_ave.size()-1)) + "";
+            } else {
+	            returnString = "0";
+            }
+
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("DefaultString->CPS-"+(global.TMP_string.size()+1));
+            temporary.add(returnString.replace(".0",""));
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+            TMP_e = TMP_e.replace("{cps}", "{string[DefaultString->CPS-"+global.TMP_string.size()+"]}");
+        }
+        if (TMP_e.contains("{cpsAve}")) {
+            String returnString;
+
+            if (global.clicks_ave.size() > 0) {
+                Double clicks = 0.0;
+                for (Double click : global.clicks_ave) {
+                    clicks += click;
+                }
+                returnString = clicks/global.clicks_ave.size() + "";
+            } else {
+                returnString = "0";
+            }
+
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("DefaultString->CPSAVE-"+(global.TMP_string.size()+1));
+            temporary.add(returnString.replace(".0",""));
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+            TMP_e = TMP_e.replace("{cpsAve}", "{string[DefaultString->CPSAVE-"+global.TMP_string.size()+"]}");
+        }
+        if (TMP_e.contains("{cpsMax}")) {
+	        String returnString = global.clicks_max + "";
+
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("DefaultString->CPSMAX-"+(global.TMP_string.size()+1));
+            temporary.add(returnString.replace(".0",""));
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+            TMP_e = TMP_e.replace("{cpsMax}", "{string[DefaultString->CPSMAX-"+global.TMP_string.size()+"]}");
         }
 
 		return TMP_e;

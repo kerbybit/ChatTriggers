@@ -77,8 +77,9 @@ public class EventsHandler {
 			TMP_e = TMP_e.replace("{string<", "{string[").replace("{array<", "{array[").replace(">}", "]}");
 
 
-			TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent);
+
             TMP_e = NewJsonHandler.jsonFunctions(TMP_e);
+            TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent);
             TMP_e = ListHandler.listFunctions(TMP_e);
 			TMP_e = ArrayHandler.arrayFunctions(TMP_e, chatEvent);
 			TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent);

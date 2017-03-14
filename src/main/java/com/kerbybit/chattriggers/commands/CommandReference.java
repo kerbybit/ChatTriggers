@@ -297,6 +297,34 @@ public class CommandReference {
         return name;
     }
 
+    public static String getPotionColors(String name) {
+        if (name.equals("speed")) {
+            return "&b";
+        } else if (name.equals("slowness")) {
+            return "&9";
+        } else if (name.equals("strength")) {
+            return "&4";
+        } else if (name.equals("weakness")) {
+            return "&5";
+        } else if (name.equals("jump boost")) {
+            return "&a";
+        } else if (name.equals("poison")) {
+            return "&2";
+        } else if (name.equals("fire resistance")) {
+            return "&6";
+        } else if (name.equals("water breathing")) {
+            return "&3";
+        } else if (name.equals("regeneration")) {
+            return "&d";
+        } else if (name.equals("night vision")) {
+            return "&1";
+        } else if (name.equals("invisibility")) {
+            return "&7";
+        }
+        return "&r";
+    }
+
+
     public static void trimJsons() {
         HashMap<String, JsonObject> jsons_copy = new HashMap<String, JsonObject>(global.jsons);
 
@@ -313,6 +341,22 @@ public class CommandReference {
         for (String key : lists_copy.keySet()) {
             if (key.startsWith("JsonToList->") || key.startsWith("StringToList->")) {
                 global.lists.remove(key);
+            }
+        }
+    }
+
+    private static Long sysTime = Minecraft.getSystemTime();
+    //run on render
+    public static void clickCalc() {
+        while (Minecraft.getSystemTime() > sysTime + 1000L) {
+            sysTime += 1000L;
+            global.clicks_ave.add(global.clicks);
+            if (global.clicks > global.clicks_max) {
+                global.clicks_max = global.clicks;
+            }
+            global.clicks = 0.0;
+            if (global.clicks_ave.size() > 10) {
+                global.clicks_ave.remove(0);
             }
         }
     }

@@ -32,6 +32,10 @@ public class global {
     public static String fpsmedcol = "&e";
     public static String fpshighcol = "&a";
 
+    public static Double clicks = 0.0;
+    public static List<Double> clicks_ave = new ArrayList<Double>();
+    public static Double clicks_max = 0.0;
+
     public static long fpsSysTime = Minecraft.getSystemTime();
     public static long sysTime = Minecraft.getSystemTime();
 	
