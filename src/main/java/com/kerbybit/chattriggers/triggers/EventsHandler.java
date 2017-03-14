@@ -74,7 +74,12 @@ public class EventsHandler {
 			TMP_e = StringHandler.builtInStrings(TMP_e, chatEvent);
 			
 		//user strings and functions
-			TMP_e = TMP_e.replace("{string<", "{string[").replace("{array<", "{array[").replace(">}", "]}");
+            TMP_e = TMP_e.replace("{string<", "{string[")
+                    .replace("{array<", "{array[")
+                    .replace("{display<", "{display[")
+                    .replace("{json<", "{json[")
+                    .replace("{list<", "{list[")
+                    .replace(">}", "]}");
 
 
 

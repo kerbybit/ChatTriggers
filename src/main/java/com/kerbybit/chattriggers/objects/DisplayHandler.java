@@ -1,6 +1,7 @@
 package com.kerbybit.chattriggers.objects;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
+import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.objects.ArrayHandler;
 import com.kerbybit.chattriggers.triggers.StringHandler;
@@ -8,6 +9,11 @@ import com.kerbybit.chattriggers.triggers.TagHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.potion.Potion;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
 
@@ -15,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import static net.minecraft.realms.RealmsMth.floor;
 
 public class DisplayHandler {
     private static String updateDisplay(String display_name) {
@@ -35,7 +43,12 @@ public class DisplayHandler {
                 value = StringHandler.builtInStrings(value, null);
 
                 //user strings and functions
-                value = value.replace("{string<", "{string[").replace("{array<", "{array[").replace(">}", "]}");
+                value = value.replace("{string<", "{string[")
+                        .replace("{array<", "{array[")
+                        .replace("{display<", "{display[")
+                        .replace("{json<", "{json[")
+                        .replace("{list<", "{list[")
+                        .replace(">}", "]}");
 
                 value = NewJsonHandler.jsonFunctions(value);
                 value = StringHandler.stringFunctions(value, null);
@@ -179,31 +192,41 @@ public class DisplayHandler {
             for (int i=0; i<display.size(); i++) {
                 if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
                     String display_text = ChatHandler.addFormatting(display.get(i));
+                    float display_x;
+                    float display_y;
                     if (display_text.contains("<up>")) {
                         display_text = display_text.replace("<up>","");
                         if (display_text.contains("<center>")) {
-                            display_text = display_text.replace("<center>", "");
-                            ren.drawStringWithShadow(display_text, ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(display_text)/2), ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10, color);
+                            display_text = display_text.replace("<center>","");
+                            display_x = ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(CommandReference.removeIconString(display_text))/2);
+                            display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10;
                         } else if (display_text.contains("<right>")) {
-                            display_text = display_text.replace("<right>", "");
-                            ren.drawStringWithShadow(display_text, ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(display_text), ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10, color);
+                            display_text = display_text.replace("<right>","");
+                            display_x = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10;
+                            display_y = ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(CommandReference.removeIconString(display_text));
                         } else {
-                            display_text = display_text.replace("<left>", "");
-                            ren.drawStringWithShadow(display_text, (display_xy[0].floatValue() * width) / 100, ((display_xy[1].floatValue() * height) / 100) + i * 10, color);
+                            display_text = display_text.replace("<left>","");
+                            display_x = (display_xy[0].floatValue() * width) / 100;
+                            display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10;
                         }
                     } else {
                         display_text = display_text.replace("<down>","");
                         if (display_text.contains("<center>")) {
-                            display_text = display_text.replace("<center>", "");
-                            ren.drawStringWithShadow(display_text, ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(display_text)/2), ((display_xy[1].floatValue() * height) / 100) + i * 10, color);
+                            display_text = display_text.replace("<center>","");
+                            display_x = ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(CommandReference.removeIconString(display_text))/2);
+                            display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10;
                         } else if (display_text.contains("<right>")) {
-                            display_text = display_text.replace("<right>", "");
-                            ren.drawStringWithShadow(display_text, ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(display_text), ((display_xy[1].floatValue() * height) / 100) + i * 10, color);
+                            display_text = display_text.replace("<right>","");
+                            display_x = ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(CommandReference.removeIconString(display_text));
+                            display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10;
                         } else {
-                            display_text = display_text.replace("<left>", "");
-                            ren.drawStringWithShadow(display_text, (display_xy[0].floatValue() * width) / 100, ((display_xy[1].floatValue() * height) / 100) + i * 10, color);
+                            display_text = display_text.replace("<left>","");
+                            display_x = (display_xy[0].floatValue() * width) / 100;
+                            display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10;
                         }
                     }
+                    display_text = CommandReference.drawIcons(display_text, floor(display_x), floor(display_y));
+                    ren.drawStringWithShadow(display_text, display_x, display_y, color);
                 }
             }
         }
@@ -291,7 +314,7 @@ public class DisplayHandler {
             while (get_name.contains("{display[")) {
                 get_name = get_name.substring(get_name.indexOf("{display[")+9);
             }
-            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{jaon["))+11);
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.setX(", TMP_e.indexOf("{jaon["))+8);
             while (get_prevalue.contains("(")) {
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
@@ -314,7 +337,7 @@ public class DisplayHandler {
             while (get_name.contains("{display[")) {
                 get_name = get_name.substring(get_name.indexOf("{display[")+9);
             }
-            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{jaon["))+11);
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.setY(", TMP_e.indexOf("{jaon["))+9);
             while (get_prevalue.contains("(")) {
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
@@ -337,7 +360,7 @@ public class DisplayHandler {
             while (get_name.contains("{display[")) {
                 get_name = get_name.substring(get_name.indexOf("{display[")+9);
             }
-            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.getKeys(", TMP_e.indexOf("{jaon["))+11);
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.setA(", TMP_e.indexOf("{jaon["))+8);
             while (get_prevalue.contains("(")) {
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
