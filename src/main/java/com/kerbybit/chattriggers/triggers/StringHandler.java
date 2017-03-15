@@ -1523,9 +1523,16 @@ public class StringHandler {
 					if (global.USR_string.get(i).get(0).equals(sn)) {returnString = global.USR_string.get(i).get(1);}
 				}
 				if (returnString.equals("Not a string!")) {
-					for (int i=0; i<global.TMP_string.size(); i++) {
-						if (global.TMP_string.get(i).get(0).equals(sn)) {returnString = global.TMP_string.get(i).get(1);}
-					}
+				    try {
+                        for (int i=0; i<global.TMP_string.size(); i++) {
+                            if (global.TMP_string.get(i).get(0).equals(sn)) {
+                                returnString = global.TMP_string.get(i).get(1);
+                            }
+                        }
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                        returnString = "Not a string!";
+                    }
 				}
 				
 				String fullreplace = "{string["+sn+"]}";
@@ -1549,12 +1556,12 @@ public class StringHandler {
 				}
 				global.TMP_string.clear();
 				for (int i=0; i<global.backupTMP_strings.size(); i++) {
-					String first = global.backupTMP_strings.get(i).get(0);
-					String second = global.backupTMP_strings.get(i).get(1);
-					List<String> temporary = new ArrayList<String>();
-					temporary.add(first);
-					temporary.add(second);
-					global.TMP_string.add(temporary);
+                    String first = global.backupTMP_strings.get(i).get(0);
+                    String second = global.backupTMP_strings.get(i).get(1);
+                    List<String> temporary = new ArrayList<String>();
+                    temporary.add(first);
+                    temporary.add(second);
+                    global.TMP_string.add(temporary);
 				}
 			}
 		}

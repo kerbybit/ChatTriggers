@@ -246,13 +246,9 @@ public class ListHandler {
             String get_value = StringHandler.stringFunctions(get_prevalue, null);
             get_value = listFunctions(get_value);
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("ListToString->"+get_name+"LOAD"+get_value+"-"+(global.TMP_string.size()+1));
-            temporary.add(getList(get_name, get_value));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+            getList(get_name, get_value);
 
-            TMP_e = TMP_e.replace("{list["+get_name+"]}.load("+get_prevalue+")","{string[ListToString->"+get_name+"LOAD"+get_value+"-"+global.TMP_string.size()+"]}");
+            TMP_e = TMP_e.replace("{list["+get_name+"]}.load("+get_prevalue+")","{list["+get_name+"]}");
         }
 
         while(TMP_e.contains("{list[") && TMP_e.contains("]}.size()")) {

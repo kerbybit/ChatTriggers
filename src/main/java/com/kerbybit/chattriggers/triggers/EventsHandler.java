@@ -47,7 +47,10 @@ public class EventsHandler {
 				global.TMP_string.add(temporary);
 			}
 		}
-		
+        //trim jsons and lists to save memory
+        CommandReference.trimJsons();
+        CommandReference.trimLists();
+
 		for (int i=0; i<tmp_event.size(); i++) {
         //SETUP
 			String TMP_e = tmp_event.get(i);
@@ -60,9 +63,7 @@ public class EventsHandler {
 			int TMP_v = 100;
 			int TMP_pi = 1;
 
-        //trim jsons and lists to save memory
-            CommandReference.trimJsons();
-            CommandReference.trimLists();
+
 
 		//setup backup for functions so strings don't get overwritten
 			StringHandler.resetBackupStrings();
@@ -80,8 +81,6 @@ public class EventsHandler {
                     .replace("{json<", "{json[")
                     .replace("{list<", "{list[")
                     .replace(">}", "]}");
-
-
 
             TMP_e = NewJsonHandler.jsonFunctions(TMP_e);
             TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent);
@@ -376,8 +375,8 @@ public class EventsHandler {
 
                 if (TMP_e.contains(":") || (TMP_e.contains(" in "))) {
                     String[] tmp_valuefor;
-                    if (TMP_e.contains(":")) {tmp_valuefor = TMP_e.split(":");}
-                    else {tmp_valuefor = TMP_e.split(" in ");}
+                    if (TMP_e.contains(":")) {tmp_valuefor = TMP_e.split(":", 2);}
+                    else {tmp_valuefor = TMP_e.split(" in ", 2);}
 
                     String valin = "";
                     String valfrom = "";
@@ -400,9 +399,11 @@ public class EventsHandler {
                     if (valfrom.startsWith("[") && valfrom.endsWith("]")) {
                         arrayto.addAll(Arrays.asList(valfrom.substring(1, valfrom.length()-1).split(",")));
                     } else {
-                        for (int j=1; j<global.USR_array.size(); j++) {
-                            if (global.USR_array.get(j).get(0).equals(valfrom)) {
-                                arrayto.addAll(global.USR_array.get(j));
+                        for (List<String> array : global.USR_array) {
+                            if (array.get(0).equals(valfrom)) {
+                                List<String> copy = new ArrayList<String>(array);
+                                copy.remove(0);
+                                arrayto.addAll(copy);
                             }
                         }
                     }

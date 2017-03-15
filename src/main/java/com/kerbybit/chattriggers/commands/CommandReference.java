@@ -11,8 +11,10 @@ import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -416,6 +418,11 @@ public class CommandReference {
         }
     }
 
+    private static void drawItemIcon(int x, int y, Item item) {
+        RenderItem itemRenderer = Minecraft.getMinecraft().getRenderItem();
+        itemRenderer.renderItemIntoGUI(new ItemStack(item), x, y);
+    }
+
     private static Potion getPotionByName(String name) {
         if (name.equals("speed")) {
             return Potion.moveSpeed;
@@ -457,18 +464,40 @@ public class CommandReference {
         return null;
     }
 
+    private static Boolean isPotion(String name) {
+        return (name.equals("speed") || name.equals("slowness")
+                ||name.equals("stength") || name.equals("weakness")
+                || name.equals("regeneration") || name.equals("fire resistance")
+                || name.equals("poison") || name.equals("night vision")
+                || name.equals("jump boost") || name.equals("water breathing")
+                || name.equals("invisibility") || name.equals("hunger")
+                || name.equals("blindness") || name.equals("saturation")
+                || name.equals("absorption") || name.equals("health boost")
+                || name.equals("mining fatigue") || name.equals("wither"));
+    }
+
     public static String drawIcons(String input, int x, int y) {
         if (input.contains("{icon[") && input.contains("]}")) {
             String get_name = input.substring(input.indexOf("{icon[")+6, input.indexOf("]}", input.indexOf("{icon[")));
             String before_value = input.substring(0, input.indexOf("{icon["+get_name+"]}"));
-            Potion potion = getPotionByName(get_name.toLowerCase());
-            if (potion != null) {
-                if (get_name.equalsIgnoreCase("health boost")) {
-                    drawPotionIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value)+2, y-1, Potion.regeneration);
-                    drawPotionIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value), y-1, Potion.regeneration);
-                    drawPotionIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value)-2, y-1, Potion.regeneration);
-                } else {
-                    drawPotionIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value), y-1, potion);
+            if (isPotion(get_name.toLowerCase())) {
+                Potion potion = getPotionByName(get_name.toLowerCase());
+                if (potion != null) {
+                    if (get_name.equalsIgnoreCase("health boost")) {
+                        drawPotionIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value)+2, y-1, Potion.regeneration);
+                        drawPotionIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value), y-1, Potion.regeneration);
+                        drawPotionIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value)-2, y-1, Potion.regeneration);
+                    } else if (get_name.equalsIgnoreCase("saturation")) {
+                        drawItemIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value), y-1, Item.getItemById(396));
+                    } else {
+                        drawPotionIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value), y-1, potion);
+                    }
+                }
+            } else {
+                Item item = Item.getByNameOrId(get_name);
+                if (item != null) {
+                    drawItemIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value), y-4, item);
+                    return input.replace("{icon["+get_name+"]}", "    ");
                 }
             }
             return input.replace("{icon["+get_name+"]}", "  ");
@@ -480,7 +509,10 @@ public class CommandReference {
     public static String removeIconString(String input) {
         if (input.contains("{icon[") && input.contains("]}")) {
             String get_name = input.substring(input.indexOf("{icon[")+6, input.indexOf("]}", input.indexOf("{icon[")));
-            return input.replace("{icon["+get_name+"]}", "  ");
+            if (isPotion(get_name)) {
+                return input.replace("{icon["+get_name+"]}", "  ");
+            }
+            return input.replace("{icon["+get_name+"]}", "    ");
         } else {
             return input;
         }
