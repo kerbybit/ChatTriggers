@@ -99,7 +99,7 @@ public class NewJsonHandler {
                 }
                 return returnString;
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
                 return "null";
             }
         } else {

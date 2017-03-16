@@ -8,6 +8,7 @@ import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
 import com.kerbybit.chattriggers.objects.NewJsonHandler;
 import com.kerbybit.chattriggers.references.RomanNumber;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.StatBase;
@@ -463,7 +464,7 @@ public class StringHandler {
             global.backupTMP_strings.add(temporary);
             TMP_e = TMP_e.replace("{time}", "{string[DefaultString->TIME-"+global.TMP_string.size()+"]}");
         }
-        if (TMP_e.contains("{potionEffects}")) { //TODO testing
+        if (TMP_e.contains("{potionEffects}")) {
 	        Collection<PotionEffect> potionEffects = Minecraft.getMinecraft().thePlayer.getActivePotionEffects();
 	        String potionList = "{";
 	        for (PotionEffect potionEffect : potionEffects) {
@@ -473,9 +474,8 @@ public class StringHandler {
 	                String potionDuration = Potion.getDurationString(potionEffect);
 	                String potionColor = CommandReference.getPotionColors(potionName);
 
-	                potionList += "\"" + potionName + "\"";
-	                potionList += ":{";
-	                potionList += "\"potionAmp\":\"" + potionAmp + "\",\"potionDuration\":\"" + potionDuration + "\",\"potionColor\":\"" + potionColor + "\"},";
+	                potionList += "\"" + potionName + "\":{";
+	                potionList += "\"amplitude\":\"" + potionAmp + "\",\"duration\":\"" + potionDuration + "\",\"color\":\"" + potionColor + "\"},";
                 }
             }
             if (potionList.equals("{")) {
@@ -488,7 +488,30 @@ public class StringHandler {
 
 	        TMP_e = TMP_e.replace("{potionEffects}", "{json[DefaultJson->POTIONEFFECTS-"+global.jsons.size()+"]}");
         }
-        if (TMP_e.contains("{cps}")) { //TODO testing
+        if (TMP_e.contains("{armor}")) {
+	        ItemStack[] armor_set = Minecraft.getMinecraft().thePlayer.inventory.armorInventory;
+	        String armorList = "{";
+	        for (int i=armor_set.length-1; i>=0; i--) {
+	            ItemStack armor = armor_set[i];
+                if (armor != null) {
+                    float armorMaxDamage = armor.getMaxDamage();
+                    float armorDamage = armorMaxDamage - armor.getItemDamage();
+                    float armorPercent = (armorDamage / armorMaxDamage) * 100;
+                    armorList += "\"" + armor.getItem().getRegistryName().replace("minecraft:","") + "\":{";
+                    armorList += "\"displayName\":\"" + armor.getDisplayName() + "\",\"maxDurability\":" + (int)floor(armorMaxDamage) + ",\"durability\":" + (int)floor(armorDamage) + ",\"durabilityPercent\":" + (int)floor(armorPercent) + "},";
+                }
+            }
+            if (armorList.equals("{")) {
+	            armorList += "}";
+            } else {
+	            armorList = armorList.substring(0, armorList.length()-1) + "}";
+            }
+
+            NewJsonHandler.getJson("DefaultJson->ARMOR-"+(global.jsons.size()+1), armorList);
+
+	        TMP_e = TMP_e.replace("{armor}", "{json[DefaultJson->ARMOR-"+global.jsons.size()+"]}");
+        }
+        if (TMP_e.contains("{cps}")) {
             String returnString;
 
 	        if (global.clicks_ave.size() > 0) {

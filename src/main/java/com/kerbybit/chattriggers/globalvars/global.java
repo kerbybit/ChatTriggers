@@ -145,6 +145,7 @@ public class global {
 	public static HashMap<String,List<String>> displays = new HashMap<String,List<String>>();
     public static HashMap<String,List<String>> shown_displays = new HashMap<String,List<String>>();
     public static HashMap<String,Double[]> displays_xy = new HashMap<String,Double[]>();
+    public static HashMap<String,String> display_settings = new HashMap<String, String>();
 
 
     /////////////////////Json map///////////////////////

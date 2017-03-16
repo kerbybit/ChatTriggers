@@ -484,33 +484,33 @@ public class CommandReference {
                 Potion potion = getPotionByName(get_name.toLowerCase());
                 if (potion != null) {
                     if (get_name.equalsIgnoreCase("health boost")) {
+                        drawPotionIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value)+4, y-1, Potion.regeneration);
                         drawPotionIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value)+2, y-1, Potion.regeneration);
                         drawPotionIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value), y-1, Potion.regeneration);
-                        drawPotionIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value)-2, y-1, Potion.regeneration);
                     } else if (get_name.equalsIgnoreCase("saturation")) {
-                        drawItemIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value), y-1, Item.getItemById(396));
+                        //drawItemIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value), y-1, Item.getItemById(396));
+                        return drawIcons(input.replace("{icon["+get_name+"]}", "{icon[golden_carrot]}"), x, y);
                     } else {
-                        drawPotionIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value), y-1, potion);
+                        drawPotionIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value)+2, y-1, potion);
                     }
                 }
             } else {
                 Item item = Item.getByNameOrId(get_name);
                 if (item != null) {
                     drawItemIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value), y-4, item);
-                    return input.replace("{icon["+get_name+"]}", "    ");
+                    return drawIcons(input.replace("{icon["+get_name+"]}", "    "), x, y);
                 }
             }
-            return input.replace("{icon["+get_name+"]}", "  ");
-        } else {
-            return input;
+            return drawIcons(input.replace("{icon["+get_name+"]}", "   "), x, y);
         }
+        return input;
     }
 
     public static String removeIconString(String input) {
         if (input.contains("{icon[") && input.contains("]}")) {
             String get_name = input.substring(input.indexOf("{icon[")+6, input.indexOf("]}", input.indexOf("{icon[")));
             if (isPotion(get_name)) {
-                return input.replace("{icon["+get_name+"]}", "  ");
+                return input.replace("{icon["+get_name+"]}", "   ");
             }
             return input.replace("{icon["+get_name+"]}", "    ");
         } else {
