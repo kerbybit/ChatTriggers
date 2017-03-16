@@ -1,10 +1,11 @@
 package com.kerbybit.chattriggers.commands;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.file.FileHandler;
@@ -56,6 +57,14 @@ public class CommandTrigger extends CommandBase {
             ChatHandler.warn("&c/trigger &c[clickable(&cstring,suggest_command,/trigger string ,&7Suggest &7/trigger &7string)&c/clickable(&carray,run_command,/trigger array,&7Run &7/trigger &7array)&c/clickable(&cdisplay,run_command,/trigger display,&7Run &7/trigger &7display)&c] &c<...>");
             ChatHandler.warn("&c/trigger &c[clickable(&csave,run_command,/trigger save,&7Run &7/trigger &7save)&c/clickable(&cload,run_command,/trigger load,&7Run &7/trigger 77load)&c]");
             ChatHandler.warn("&c/trigger &c[clickable(&crun,suggest_command,/trigger run ,&7Suggest &7/trigger &7run)&c/clickable(&cimport,suggest_command,/trigger import ,&7Suggest &7/trigger &7import)&c/clickable(&cimports,run_command,/trigger imports,&7Run &7/trigger &7imports)&c] &c<...>");
+        } else if (args[0].equalsIgnoreCase("FILES") || args[0].equalsIgnoreCase("FILE")) {
+            ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Opening ChatTriggers file location..."));
+            try {
+                Desktop.getDesktop().open(new File("./mods/ChatTriggers"));
+            } catch (IOException e) {
+                e.printStackTrace();
+                ChatHandler.warn(ChatHandler.color("red", "Could not find ChatTriggers files!"));
+            }
         } else if (args[0].equalsIgnoreCase("DISPLAYS") || args[0].equalsIgnoreCase("DISPLAY")) {
             ChatHandler.warnBreak(0);
             if (global.displays.size() > 0) {

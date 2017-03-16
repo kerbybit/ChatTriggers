@@ -72,7 +72,7 @@ public class EventsHandler {
             TMP_e = DisplayHandler.displayFunctions(TMP_e);
 
 		//built in strings
-			TMP_e = StringHandler.builtInStrings(TMP_e, chatEvent);
+			TMP_e = BuiltInStrings.builtInStrings(TMP_e, chatEvent);
 			
 		//user strings and functions
             TMP_e = TMP_e.replace("{string<", "{string[")

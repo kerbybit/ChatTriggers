@@ -3,17 +3,12 @@ package com.kerbybit.chattriggers.objects;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.globalvars.global;
-import com.kerbybit.chattriggers.objects.ArrayHandler;
+import com.kerbybit.chattriggers.triggers.BuiltInStrings;
 import com.kerbybit.chattriggers.triggers.StringHandler;
 import com.kerbybit.chattriggers.triggers.TagHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.potion.Potion;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
 
@@ -40,7 +35,7 @@ public class DisplayHandler {
                 StringHandler.resetBackupStrings();
 
                 //built in strings
-                value = StringHandler.builtInStrings(value, null);
+                value = BuiltInStrings.builtInStrings(value, null);
 
                 //user strings and functions
                 value = value.replace("{string<", "{string[")
