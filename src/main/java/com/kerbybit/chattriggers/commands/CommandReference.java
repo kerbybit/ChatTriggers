@@ -172,6 +172,36 @@ public class CommandReference {
         return r;
     }
 
+    public static List<String> getAllEventTypes() {
+        List<String> r = new ArrayList<String>();
+
+        r.add("chat");
+        r.add("cancel");
+        r.add("killfeed");
+        r.add("notify");
+        r.add("sound");
+        r.add("trigger");
+        r.add("copy");
+        r.add("url");
+        r.add("do");
+        r.add("if");
+        r.add("else");
+        r.add("elseif");
+        r.add("for");
+        r.add("wait");
+        r.add("choose");
+        r.add("async");
+        r.add("end");
+        r.add("return");
+        r.add("debug");
+        r.add("log");
+        r.add("simulate");
+        r.add("say");
+        r.add("command");
+
+        return r;
+    }
+
     static List<String> getStrings() {
         List<String> r = new ArrayList<String>();
 

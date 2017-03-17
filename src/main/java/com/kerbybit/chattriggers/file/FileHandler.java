@@ -296,7 +296,7 @@ public class FileHandler {
 			}
 			if (!isTrigger) {
                 if (!lines.get(i).trim().startsWith("//") && !lines.get(i).trim().equals("")) {
-                    for (String event : CommandReference.getEventTypes()) {
+                    for (String event : CommandReference.getAllEventTypes()) {
                         if (!event.equals("")) {
                             if (lines.get(i).trim().startsWith(event + " ") || lines.get(i).trim().equals(event)) {
                                 String tmp_event = lines.get(i).trim();
