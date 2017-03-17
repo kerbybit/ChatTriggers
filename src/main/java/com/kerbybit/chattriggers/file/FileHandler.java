@@ -144,7 +144,7 @@ public class FileHandler {
 							}
 							
 								for (int k=0; k<tabbed_logic; k++) {extraSpaces+= "  ";}
-								writer.println(extraSpaces + "  event:"+trig.get(j));
+								writer.println(extraSpaces + "  "+trig.get(j));
 							
 							if (TMP_c.toUpperCase().startsWith("IF") 
 							|| TMP_c.toUpperCase().startsWith("FOR")
@@ -177,7 +177,7 @@ public class FileHandler {
 					}
 					
 						for (int k=0; k<tabbed_logic; k++) {extraSpaces+= "  ";}
-						writer.println(extraSpaces + "  event:"+trig.get(j));
+						writer.println(extraSpaces + "  "+trig.get(j));
 					
 					if (TMP_c.toUpperCase().startsWith("IF") 
 					|| TMP_c.toUpperCase().startsWith("FOR")
@@ -270,18 +270,39 @@ public class FileHandler {
 				tmp_triggers.add(tmp_list);
 				j++;
 			}
+			Boolean isTrigger = false;
+			if (lines.get(i).startsWith("trigger ") && lines.get(i).contains("(") && lines.get(i).endsWith(") {")) {
+			    List<String> tmp_list = new ArrayList<String>();
+			    String type = lines.get(i).substring(lines.get(i).indexOf("trigger ")+8, lines.get(i).indexOf("("));
+			    String trigger = lines.get(i).substring(lines.get(i).indexOf("(")+1, lines.get(i).length()-3);
+
+			    String importTag = "";
+			    if (isImport) {
+			        importTag="<imported>";
+                }
+
+                tmp_list.add(type);
+			    tmp_list.add(importTag+trigger);
+
+			    tmp_triggers.add(tmp_list);
+
+			    isTrigger = true;
+			    j++;
+            }
 			
 			if (lines.get(i).trim().startsWith("event:") && j>-1) {
 				String tmp_event = lines.get(i).substring(lines.get(i).indexOf("event:") + 6);
 				tmp_triggers.get(j).add(tmp_event);
 			}
-			if (!lines.get(i).trim().startsWith("//") && !lines.get(i).trim().equals("")) {
-			    for (String event : CommandReference.getEventTypes()) {
-			        if (!event.equals("")) {
-			            if (lines.get(i).trim().startsWith(event + " ") || lines.get(i).trim().equals(event)) {
-                            String tmp_event = lines.get(i).trim();
-                            tmp_triggers.get(j).add(tmp_event);
-                            break;
+			if (!isTrigger) {
+                if (!lines.get(i).trim().startsWith("//") && !lines.get(i).trim().equals("")) {
+                    for (String event : CommandReference.getEventTypes()) {
+                        if (!event.equals("")) {
+                            if (lines.get(i).trim().startsWith(event + " ") || lines.get(i).trim().equals(event)) {
+                                String tmp_event = lines.get(i).trim();
+                                tmp_triggers.get(j).add(tmp_event);
+                                break;
+                            }
                         }
                     }
                 }

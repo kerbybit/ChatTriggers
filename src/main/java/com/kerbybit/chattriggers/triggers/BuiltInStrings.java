@@ -19,9 +19,6 @@ import java.util.List;
 
 import static java.lang.Math.floor;
 
-/**
- * Created in ${PACKAGE} by Axiom on 3/16/2017.
- */
 public class BuiltInStrings {
     public static String builtInStrings(String TMP_e, ClientChatReceivedEvent chatEvent) {
         while (TMP_e.contains("{imported(") && TMP_e.contains(")}")) {
@@ -99,110 +96,6 @@ public class BuiltInStrings {
             TMP_e = TMP_e.replace("{msg["+strnum+"]}", "{string[DefaultString->MSGHISTORY"+strnum+"-"+global.TMP_string.size()+"]}");
         }
         if (chatEvent!=null) {
-            if (TMP_e.contains("{msg}.meta().clickEvent().action()")) {
-                String tmp = chatEvent.message.getChatStyle().toString();
-                if (tmp.contains("clickEvent=ClickEvent{") && tmp.contains("}")) {
-                    tmp = tmp.substring(tmp.indexOf("clickEvent=ClickEvent{")+22, tmp.indexOf("}", tmp.indexOf("clickEvent=ClickEvent{")));
-                    if (tmp.contains("action=")) {
-                        tmp = tmp.substring(tmp.indexOf("action=")+7, tmp.indexOf(", value", tmp.indexOf("action=")+7));
-                    } else {
-                        tmp = "null";
-                    }
-                } else {
-                    tmp = "null";
-                }
-                List<String> temporary = new ArrayList<String>();
-                temporary.add("DefaultString->MSGMETACLICKACTION-"+(global.TMP_string.size()+1));
-                temporary.add(tmp);
-                global.TMP_string.add(temporary);
-                global.backupTMP_strings.add(temporary);
-                TMP_e = TMP_e.replace("{msg}.meta().clickEvent().action()", "{string[DefaultString->MSGMETACLICKACTION-"+global.TMP_string.size()+"]}");
-            }
-            if (TMP_e.contains("{msg}.meta().clickEvent().value()")) {
-                String tmp = chatEvent.message.getChatStyle().toString();
-                if (tmp.contains("clickEvent=ClickEvent{") && tmp.contains("}")) {
-                    tmp = tmp.substring(tmp.indexOf("clickEvent=ClickEvent{")+22, tmp.indexOf("}", tmp.indexOf("clickEvent=ClickEvent{")));
-                    if (tmp.contains("value='")) {
-                        tmp = tmp.substring(tmp.indexOf("value='")+7, tmp.indexOf("'", tmp.indexOf("value='")+7));
-                    } else {
-                        tmp = "null";
-                    }
-                } else {
-                    tmp = "null";
-                }
-                List<String> temporary = new ArrayList<String>();
-                temporary.add("DefaultString->MSGMETACLICKVALUE-"+(global.TMP_string.size()+1));
-                temporary.add(tmp);
-                global.TMP_string.add(temporary);
-                global.backupTMP_strings.add(temporary);
-                TMP_e = TMP_e.replace("{msg}.meta().clickEvent().value()", "{string[DefaultString->MSGMETACLICKVALUE-"+global.TMP_string.size()+"]}");
-            }
-            if (TMP_e.contains("{msg}.meta().hoverEvent().action()")) {
-                String tmp = chatEvent.message.getChatStyle().toString();
-                if (tmp.contains("hoverEvent=HoverEvent{") && tmp.contains("}")) {
-                    tmp = tmp.substring(tmp.indexOf("hoverEvent=HoverEvent{")+22, tmp.indexOf("}", tmp.indexOf("hoverEvent=HoverEvent{")));
-                    if (tmp.contains("action=")) {
-                        tmp = tmp.substring(tmp.indexOf("action=")+7, tmp.indexOf(", value", tmp.indexOf("action=")+7));
-                    } else {
-                        tmp = "null";
-                    }
-                } else {
-                    tmp = "null";
-                }
-                List<String> temporary = new ArrayList<String>();
-                temporary.add("DefaultString->MSGMETAHOVERACTION-"+(global.TMP_string.size()+1));
-                temporary.add(tmp);
-                global.TMP_string.add(temporary);
-                global.backupTMP_strings.add(temporary);
-                TMP_e = TMP_e.replace("{msg}.meta().hoverEvent().action()", "{string[DefaultString->MSGMETAHOVERACTION-"+global.TMP_string.size()+"]}");
-            }
-            if (TMP_e.contains("{msg}.meta().hoverEvent().value()")) {
-                String tmp = chatEvent.message.getChatStyle().toString();
-                if (tmp.contains("hoverEvent=HoverEvent{") && tmp.contains("}")) {
-                    tmp = tmp.substring(tmp.indexOf("hoverEvent=HoverEvent{")+22, tmp.indexOf("}", tmp.indexOf("hoverEvent=HoverEvent{")));
-                    if (tmp.contains("action=")) {
-                        tmp = tmp.substring(tmp.indexOf("value='TextComponent{text='")+27, tmp.indexOf("',", tmp.indexOf("value='TextComponent{text='")+27));
-                    } else {
-                        tmp = "null";
-                    }
-                } else {
-                    tmp = "null";
-                }
-                List<String> temporary = new ArrayList<String>();
-                temporary.add("DefaultString->MSGMETAHOVERVALUE-"+(global.TMP_string.size()+1));
-                temporary.add(tmp);
-                global.TMP_string.add(temporary);
-                global.backupTMP_strings.add(temporary);
-                TMP_e = TMP_e.replace("{msg}.meta().hoverEvent().value()", "{string[DefaultString->MSGMETAHOVERVALUE-"+global.TMP_string.size()+"]}");
-            }
-            if (TMP_e.contains("{msg}.meta().clickEvent()")) {
-                String tmp = chatEvent.message.getChatStyle().toString();
-                if (tmp.contains("clickEvent=") && tmp.contains(", hoverEvent")) {
-                    tmp = tmp.substring(tmp.indexOf("clickEvent=")+11, tmp.indexOf(", hoverEvent=", tmp.indexOf("clickEvent=")));
-                } else {
-                    tmp = "An unknown error has occured";
-                }
-                List<String> temporary = new ArrayList<String>();
-                temporary.add("DefaultString->MSGMETACLICK-"+(global.TMP_string.size()+1));
-                temporary.add(tmp);
-                global.TMP_string.add(temporary);
-                global.backupTMP_strings.add(temporary);
-                TMP_e = TMP_e.replace("{msg}.meta().clickEvent()", "{string[DefaultString->MSGMETACLICK-"+global.TMP_string.size()+"]}");
-            }
-            if (TMP_e.contains("{msg}.meta().hoverEvent()")) {
-                String tmp = chatEvent.message.getChatStyle().toString();
-                if (tmp.contains("hoverEvent=") && tmp.contains(", insertion=")) {
-                    tmp = tmp.substring(tmp.indexOf("hoverEvent=")+11, tmp.indexOf(", insertion=", tmp.indexOf("hoverEvent=")));
-                } else {
-                    tmp = "An unknown error has occured";
-                }
-                List<String> temporary = new ArrayList<String>();
-                temporary.add("DefaultString->MSGMETAHOVER-"+(global.TMP_string.size()+1));
-                temporary.add(tmp);
-                global.TMP_string.add(temporary);
-                global.backupTMP_strings.add(temporary);
-                TMP_e = TMP_e.replace("{msg}.meta().hoverEvent()", "{string[DefaultString->MSGMETAHOVER-"+global.TMP_string.size()+"]}");
-            }
             if (TMP_e.contains("{msg}.meta()")) {
                 List<String> temporary = new ArrayList<String>();
                 temporary.add("DefaultString->MSGMETA-"+(global.TMP_string.size()+1));
@@ -212,73 +105,38 @@ public class BuiltInStrings {
                 TMP_e = TMP_e.replace("{msg}.meta()", "{string[DefaultString->MSGMETA-"+global.TMP_string.size()+"]}");
             }
             if (TMP_e.contains("{msg}")) {
-                List<String> temporary = new ArrayList<String>();
-                temporary.add("DefaultString->MSG-"+(global.TMP_string.size()+1));
-                temporary.add(ChatHandler.removeFormatting(chatEvent.message.getFormattedText()));
-                global.TMP_string.add(temporary);
-                global.backupTMP_strings.add(temporary);
-                TMP_e = TMP_e.replace("{msg}", "{string[DefaultString->MSG-"+global.TMP_string.size()+"]}");
+                TMP_e = createDefaultString("msg", ChatHandler.removeFormatting(chatEvent.message.getFormattedText()), TMP_e);
             }
         }
         if (TMP_e.contains("{trigsize}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->TRIGSIZE-"+(global.TMP_string.size()+1));
-            temporary.add(global.trigger.size()+"");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{trigsize}", "{string[DefaultString->TRIGSIZE-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("trigsize", global.trigger.size()+"", TMP_e);
         }
         if (TMP_e.contains("{notifysize}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->NOTIFYSIZE-"+(global.TMP_string.size()+1));
-            temporary.add(global.notifySize+"");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{notifysize}", "{string[DefaultString->NOTIFYSIZE-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("notifysize", global.notifySize+"", TMP_e);
         }
         if (TMP_e.contains("{me}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->ME-"+(global.TMP_string.size()+1));
-            temporary.add(Minecraft.getMinecraft().thePlayer.getDisplayNameString());
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{me}", "{string[DefaultString->ME-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("me", Minecraft.getMinecraft().thePlayer.getDisplayNameString(), TMP_e);
         }
         if (TMP_e.contains("{server}")) {
             String current_server;
             if (Minecraft.getMinecraft().isSingleplayer()) {current_server = "SinglePlayer";}
             else {current_server = Minecraft.getMinecraft().getCurrentServerData().serverName;}
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->SERVER-"+(global.TMP_string.size()+1));
-            temporary.add(current_server);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{server}", "{string[DefaultString->SERVER-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("server", current_server, TMP_e);
         }
         if (TMP_e.contains("{serverMOTD}")) {
             String returnString;
             if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "Single Player world";}
             else {returnString = Minecraft.getMinecraft().getCurrentServerData().serverMOTD;}
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->SERVERMOTD-"+(global.TMP_string.size()+1));
-            temporary.add(returnString);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{serverMOTD}", "{string[DefaultString->SERVERMOTD-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("serverMOTD", returnString, TMP_e);
         }
         if (TMP_e.contains("{serverIP}")) {
             String returnString;
             if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "localhost";}
             else {returnString = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->SERVERIP-"+(global.TMP_string.size()+1));
-            temporary.add(returnString);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{serverIP}", "{string[DefaultString->SERVERIP-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("serverIP", returnString, TMP_e);
         }
         if (TMP_e.contains("{ping}")) {
             String returnString;
@@ -287,40 +145,20 @@ public class BuiltInStrings {
                 returnString = CommandReference.getPing();
             }
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->SERVERPING-"+(global.TMP_string.size()+1));
-            temporary.add(returnString);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{ping}", "{string[DefaultString->SERVERPING-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("ping", returnString, TMP_e);
         }
         if (TMP_e.contains("{serverversion}")) {
             String returnString;
             if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "1.8";}
             else {returnString = Minecraft.getMinecraft().getCurrentServerData().gameVersion;}
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->SERVERVERSION-"+(global.TMP_string.size()+1));
-            temporary.add(returnString);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{serverversion}", "{string[DefaultString->SERVERVERSION-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("serverversion", returnString, TMP_e);
         }
         if (TMP_e.contains("{debug}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->DEBUG-"+(global.TMP_string.size()+1));
-            temporary.add(global.debug+"");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{debug}", "{string[DefaultString->DEBUG-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("debug", global.debug + "", TMP_e);
         }
         if (TMP_e.contains("{setcol}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->SETCOL-"+(global.TMP_string.size()+1));
-            temporary.add(global.settings.get(0));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{setcol}", "{string[DefaultString->SETCOL-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("setcol", global.settings.get(0), TMP_e);
         }
         if (TMP_e.contains("{br}")) {
             String dashes = "";
@@ -328,24 +166,13 @@ public class BuiltInStrings {
             float chatScale = Minecraft.getMinecraft().gameSettings.chatScale;
             int numdash = (int) floor(((((280*(chatWidth))+40)/320) * (1/chatScale))*53);
             for (int j=0; j<numdash; j++) {dashes += "-";}
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->BR-"+(global.TMP_string.size()+1));
-            temporary.add(dashes);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{br}", "{string[DefaultString->BR-"+global.TMP_string.size()+"]}");
+
+            TMP_e = createDefaultString("br", dashes, TMP_e);
         }
         if (TMP_e.contains("{chatwidth}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->CHATWIDTH-"+(global.TMP_string.size()+1));
-            temporary.add(""+(int)((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{chatwidth}", "{string[DefaultString->CHATWIDTH-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("chatwidth", ""+(int)((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40), TMP_e);
         }
         if (TMP_e.contains("{scoreboardtitle}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->SCOREBOARDTITLE-"+(global.TMP_string.size()+1));
             String boardTitle = "null";
             try {
                 if (Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(0) != null) {
@@ -357,62 +184,25 @@ public class BuiltInStrings {
                 //Do nothing//
                 //catch for ReplayMod//
             }
-            temporary.add(ChatHandler.removeFormatting(boardTitle));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{scoreboardtitle}", "{string[DefaultString->SCOREBOARDTITLE-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("scoreboardtitle", ChatHandler.removeFormatting(boardTitle), TMP_e);
         }
         if (TMP_e.contains("{hp}") || TMP_e.contains("{HP}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->HP-"+(global.TMP_string.size()+1));
-            temporary.add(global.playerHealth + "");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{hp}", "{string[DefaultString->HP-"+global.TMP_string.size()+"]}")
-                    .replace("{HP}", "{string[DefaultString->HP-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("hp", global.playerHealth + "", TMP_e);
         }
         if (TMP_e.contains("{sneak}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->SNEAK-"+(global.TMP_string.size()+1));
-            temporary.add(Minecraft.getMinecraft().thePlayer.isSneaking()+"");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{sneak}", "{string[DefaultString->SNEAK-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("sneak", Minecraft.getMinecraft().thePlayer.isSneaking()+"", TMP_e);
         }
         if (TMP_e.contains("{coordx}") || TMP_e.contains("{x}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->COORDX-"+(global.TMP_string.size()+1));
-            temporary.add(Math.round(Minecraft.getMinecraft().thePlayer.posX)+"");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{coordx}", "{string[DefaultString->COORDX-"+global.TMP_string.size()+"]}")
-                    .replace("{x}", "{string[DefaultString->COORDX-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("coordx", "x", Math.round(Minecraft.getMinecraft().thePlayer.posX)+"", TMP_e);
         }
         if (TMP_e.contains("{coordy}") || TMP_e.contains("{y}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->COORDY-"+(global.TMP_string.size()+1));
-            temporary.add(Math.round(Minecraft.getMinecraft().thePlayer.posY)+"");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{coordy}", "{string[DefaultString->COORDY-"+global.TMP_string.size()+"]}")
-                    .replace("{y}", "{string[DefaultString->COORDY-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("coordy", "y", Math.round(Minecraft.getMinecraft().thePlayer.posY)+"", TMP_e);
         }
         if (TMP_e.contains("{coordz}") || TMP_e.contains("{z}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->COORDZ-"+(global.TMP_string.size()+1));
-            temporary.add(Math.round(Minecraft.getMinecraft().thePlayer.posZ)+"");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{coordz}", "{string[DefaultString->COORDZ-"+global.TMP_string.size()+"]}")
-                    .replace("{z}", "{string[DefaultString->COORDZ-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("coordz", "z", Math.round(Minecraft.getMinecraft().thePlayer.posZ)+"", TMP_e);
         }
         if (TMP_e.contains("{fps}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->FPS-"+(global.TMP_string.size()+1));
-            temporary.add(Math.round(global.fps)+"");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{fps}", "{string[DefaultString->FPS-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("fps", Math.round(global.fps)+"", TMP_e);
         }
         if (TMP_e.contains("{fpscol}")) {
             String col;
@@ -424,24 +214,12 @@ public class BuiltInStrings {
                 col = global.fpslowcol;
             }
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->FPSCOL-"+(global.TMP_string.size()+1));
-            temporary.add(col);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{fpscol}", "{string[DefaultString->FPSCOL-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("fpscol", col, TMP_e);
         }
         if (TMP_e.contains("{facing}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->FACING-"+(global.TMP_string.size()+1));
-            temporary.add(Minecraft.getMinecraft().thePlayer.getHorizontalFacing().toString());
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{facing}", "{string[DefaultString->FACING-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("facing", Minecraft.getMinecraft().thePlayer.getHorizontalFacing().toString(), TMP_e);
         }
         if (TMP_e.contains("{time}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->TIME-"+(global.TMP_string.size()+1));
             Calendar cal = Calendar.getInstance();
             int hour = cal.get(Calendar.HOUR_OF_DAY);
             int minute = cal.get(Calendar.MINUTE);
@@ -457,10 +235,8 @@ public class BuiltInStrings {
             } else {
                 minute_string = minute_string + "am";
             }
-            temporary.add(hour + ":" + minute_string);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{time}", "{string[DefaultString->TIME-"+global.TMP_string.size()+"]}");
+
+            TMP_e = createDefaultString("time", hour + ":" + minute_string, TMP_e);
         }
         if (TMP_e.contains("{potionEffects}")) {
             Collection<PotionEffect> potionEffects = Minecraft.getMinecraft().thePlayer.getActivePotionEffects();
@@ -518,221 +294,113 @@ public class BuiltInStrings {
                 returnString = "0";
             }
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->CPS-"+(global.TMP_string.size()+1));
-            temporary.add(returnString.replace(".0",""));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{cps}", "{string[DefaultString->CPS-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("cps", returnString.replace(".0",""), TMP_e);
         }
         if (TMP_e.contains("{cpsAve}")) {
-            String returnString;
+            String clicksAve;
 
             if (global.clicks_ave.size() > 0) {
                 Double clicks = 0.0;
                 for (Double click : global.clicks_ave) {
                     clicks += click;
                 }
-                returnString = clicks/global.clicks_ave.size() + "";
+                clicksAve = clicks/global.clicks_ave.size() + "";
             } else {
-                returnString = "0";
+                clicksAve = "0";
             }
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->CPSAVE-"+(global.TMP_string.size()+1));
-            temporary.add(returnString.replace(".0",""));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{cpsAve}", "{string[DefaultString->CPSAVE-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("cpsAve", clicksAve.replace(".0",""), TMP_e);
         }
         if (TMP_e.contains("{cpsMax}")) {
-            String returnString = global.clicks_max + "";
-
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->CPSMAX-"+(global.TMP_string.size()+1));
-            temporary.add(returnString.replace(".0",""));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{cpsMax}", "{string[DefaultString->CPSMAX-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("cpsMax", global.clicks_max.toString().replace(".0",""), TMP_e);
         }
 
         if (TMP_e.contains("{black}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->BLACK-"+(global.TMP_string.size()+1));
-            temporary.add("&0");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{black}", "{string[DefaultString->BLACK-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("black", "&0", TMP_e);
         }
         if (TMP_e.contains("{darkBlue}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->DARKBLUE-"+(global.TMP_string.size()+1));
-            temporary.add("&1");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{darkBlue}", "{string[DefaultString->DARKBLUE-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("darkBlue", "&1", TMP_e);
         }
         if (TMP_e.contains("{darkGreen}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->DARKGREEN-"+(global.TMP_string.size()+1));
-            temporary.add("&2");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{darkGreen}", "{string[DefaultString->DARKGREEN-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("darkGreen", "&2", TMP_e);
         }
         if (TMP_e.contains("{darkAqua}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->DARKAQUA-"+(global.TMP_string.size()+1));
-            temporary.add("&3");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{darkAqua}", "{string[DefaultString->DARKAQUA-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("darkAqua", "&3", TMP_e);
         }
         if (TMP_e.contains("{darkRed}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->DARKRED-"+(global.TMP_string.size()+1));
-            temporary.add("&4");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{darkRed}", "{string[DefaultString->DARKRED-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("darkRed", "&4", TMP_e);
         }
         if (TMP_e.contains("{darkPurple}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->DARKPURPLE-"+(global.TMP_string.size()+1));
-            temporary.add("&5");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{darkPurple}", "{string[DefaultString->DARKPURPLE-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("darkPurple", "&5", TMP_e);
         }
         if (TMP_e.contains("{gold}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->GOLD-"+(global.TMP_string.size()+1));
-            temporary.add("&6");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{gold}", "{string[DefaultString->GOLD-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("gold", "&6", TMP_e);
         }
         if (TMP_e.contains("{gray}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->GRAY-"+(global.TMP_string.size()+1));
-            temporary.add("&7");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{gray}", "{string[DefaultString->GRAY-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("gray", "&7", TMP_e);
         }
         if (TMP_e.contains("{darkGray}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->DARKGRAY-"+(global.TMP_string.size()+1));
-            temporary.add("&8");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{darkGray}", "{string[DefaultString->DARKGRAY-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("darkGray", "&8", TMP_e);
         }
         if (TMP_e.contains("{blue}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->BLUE-"+(global.TMP_string.size()+1));
-            temporary.add("&9");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{blue}", "{string[DefaultString->BLUE-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("blue", "&9", TMP_e);
         }
         if (TMP_e.contains("{green}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->GREEN-"+(global.TMP_string.size()+1));
-            temporary.add("&a");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{green}", "{string[DefaultString->GREEN-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("green", "&a", TMP_e);
         }
         if (TMP_e.contains("{aqua}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->AQUA-"+(global.TMP_string.size()+1));
-            temporary.add("&b");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{aqua}", "{string[DefaultString->AQUA-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("aqua", "&b", TMP_e);
         }
         if (TMP_e.contains("{red}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->RED-"+(global.TMP_string.size()+1));
-            temporary.add("&c");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{red}", "{string[DefaultString->RED-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("red", "&c", TMP_e);
         }
         if (TMP_e.contains("{lightPurple}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->LIGHTPURPLE-"+(global.TMP_string.size()+1));
-            temporary.add("&d");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{lightPurple}", "{string[DefaultString->LIGHTPURPLE-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("lightPurple", "&d", TMP_e);
         }
         if (TMP_e.contains("{yellow}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->YELLOW-"+(global.TMP_string.size()+1));
-            temporary.add("&e");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{yellow}", "{string[DefaultString->YELLOW-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("yellow", "&e", TMP_e);
         }
         if (TMP_e.contains("{white}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->WHITE-"+(global.TMP_string.size()+1));
-            temporary.add("&f");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{white}", "{string[DefaultString->WHITE-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("white", "&f", TMP_e);
         }
         if (TMP_e.contains("{obfuscated}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->OBFUSCATED-"+(global.TMP_string.size()+1));
-            temporary.add("&k");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{obfuscated}", "{string[DefaultString->OBFUSCATED-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("obfuscated", "&k", TMP_e);
         }
         if (TMP_e.contains("{bold}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->BOLD-"+(global.TMP_string.size()+1));
-            temporary.add("&l");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{bold}", "{string[DefaultString->BOLD-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("bold", "&l", TMP_e);
         }
         if (TMP_e.contains("{strikethrough}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->STRIKETHROUGH-"+(global.TMP_string.size()+1));
-            temporary.add("&m");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{strikethrough}", "{string[DefaultString->STRIKETHROUGH-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("strikethrough", "&m", TMP_e);
         }
         if (TMP_e.contains("{underline}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->UNDERLINE-"+(global.TMP_string.size()+1));
-            temporary.add("&n");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{underline}", "{string[DefaultString->UNDERLINE-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("underline", "&n", TMP_e);
         }
         if (TMP_e.contains("{italic}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->ITALIC-"+(global.TMP_string.size()+1));
-            temporary.add("&o");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{italic}", "{string[DefaultString->ITALIC-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("italic", "&o", TMP_e);
         }
         if (TMP_e.contains("{reset}")) {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->RESET-"+(global.TMP_string.size()+1));
-            temporary.add("&r");
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{reset}", "{string[DefaultString->RESET-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("reset", "&r", TMP_e);
         }
 
         return TMP_e;
+    }
+
+    private static String createDefaultString(String string_name, String string_value, String TMP_e) {
+        List<String> temporary = new ArrayList<String>();
+        temporary.add("DefaultString->"+string_name.toUpperCase()+"-"+(global.TMP_string.size()+1));
+        temporary.add(string_value);
+        global.TMP_string.add(temporary);
+        global.backupTMP_strings.add(temporary);
+        return TMP_e.replace("{"+string_name+"}", "{string[DefaultString->"+string_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
+    }
+
+    private static String createDefaultString(String string_name1, String string_name2, String string_value, String TMP_e) {
+        List<String> temporary = new ArrayList<String>();
+        temporary.add("DefaultString->"+string_name1.toUpperCase()+"-"+(global.TMP_string.size()+1));
+        temporary.add(string_value);
+        global.TMP_string.add(temporary);
+        global.backupTMP_strings.add(temporary);
+        return TMP_e.replace("{"+string_name1+"}", "{string[DefaultString->"+string_name1.toUpperCase()+"-"+global.TMP_string.size()+"]}")
+                .replace("{"+string_name2+"}", "{string[DefaultString->"+string_name1.toUpperCase()+"-"+global.TMP_string.size()+"]}");
     }
 }

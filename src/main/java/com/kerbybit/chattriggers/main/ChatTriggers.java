@@ -117,7 +117,8 @@ public class ChatTriggers {
             DisplayHandler.clearDisplays();
 		}
 	}
-		
+
+	static long sysTime = Minecraft.getSystemTime();
 	@SubscribeEvent
 	public void RenderGameOverlayEvent(RenderGameOverlayEvent event) {
 		if (global.canUse) {
@@ -164,10 +165,11 @@ public class ChatTriggers {
             } catch (Exception exception) {
                 BugTracker.show(exception, "onClientTick");
             }
+
+            EventsHandler.eventTick();
+            global.ticksElapsed += 1;
 			
 			ChatHandler.onClientTick();
-			EventsHandler.eventTick();
-			global.ticksElapsed += 1;
 		}
 	}
 
