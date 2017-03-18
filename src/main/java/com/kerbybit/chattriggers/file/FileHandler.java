@@ -163,7 +163,7 @@ public class FileHandler {
 		writer.println("NO LIST");
         for (List<String> trig : trigger) {
 			if (!trig.get(1).contains("<list=") && !trig.get(1).contains("<imported>")) {
-				writer.println("trigger "+trig.get(0)+"("+trig.get(1)+") {");
+				writer.println("trigger "+trig.get(1)+"("+trig.get(0)+") {");
 				
 				int tabbed_logic = 0;
 				for (int j=2; j<trig.size(); j++) {
