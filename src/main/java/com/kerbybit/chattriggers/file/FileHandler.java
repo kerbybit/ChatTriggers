@@ -272,7 +272,6 @@ public class FileHandler {
 			}
 			Boolean isTrigger = false;
 			if (lines.get(i).startsWith("trigger ") && lines.get(i).contains("(") && lines.get(i).endsWith(") {")) {
-			    List<String> tmp_list = new ArrayList<String>();
 			    String type = lines.get(i).substring(lines.get(i).indexOf("trigger ")+8, lines.get(i).indexOf("("));
 			    String trigger = lines.get(i).substring(lines.get(i).indexOf("(")+1, lines.get(i).length()-3);
 
@@ -281,13 +280,42 @@ public class FileHandler {
 			        importTag="<imported>";
                 }
 
-                tmp_list.add(type);
+                String typeExtra = "";
+                if (lines.get(i+1) != null) {
+			        if (lines.get(i+1).trim().startsWith("///")) {
+			            typeExtra = " " + lines.get(i+1).trim().substring(3);
+                    }
+                }
+
+                List<String> tmp_list = new ArrayList<String>();
+                tmp_list.add(type+typeExtra);
 			    tmp_list.add(importTag+trigger);
 
 			    tmp_triggers.add(tmp_list);
 
 			    isTrigger = true;
 			    j++;
+            }
+
+            if (lines.get(i).startsWith("trigger ") && lines.get(i).contains("(") && lines.get(i).contains(") {") && lines.get(i).endsWith("}")) {
+			    String type = lines.get(i).substring(lines.get(i).indexOf("trigger ")+8, lines.get(i).indexOf("("));
+			    String trigger = lines.get(i).substring(lines.get(i).indexOf("(")+1, lines.get(i).indexOf(") {", lines.get(i).indexOf("(")));
+			    String event = lines.get(i).substring(lines.get(i).indexOf(") {", lines.get(i).indexOf("("))+3, lines.get(i).length()-1);
+
+                String importTag = "";
+                if (isImport) {
+                    importTag="<imported>";
+                }
+
+                List<String> tmp_list = new ArrayList<String>();
+                tmp_list.add(type);
+                tmp_list.add(importTag+trigger);
+                tmp_list.add(event);
+
+                tmp_triggers.add(tmp_list);
+
+                isTrigger = true;
+                j++;
             }
 			
 			if (lines.get(i).trim().startsWith("event:") && j>-1) {
