@@ -130,8 +130,7 @@ public class FileHandler {
 				writer.println(">>" + value);
                 for (List<String> trig : trigger) {
 					if (trig.get(1).contains(value)) {
-						writer.println("trigger:"+trig.get(1));
-						writer.println("type:"+trig.get(0));
+						writer.println("trigger "+trig.get(1)+"("+trig.get(0)+") {");
 						
 						int tabbed_logic=0;
 						for (int j=2; j<trig.size(); j++) {
@@ -155,6 +154,7 @@ public class FileHandler {
 								tabbed_logic++;
 							}
 						}
+						writer.println("}");
 					}
 				}
 				writer.println("<<"); writer.println(""); writer.println("");
@@ -163,8 +163,7 @@ public class FileHandler {
 		writer.println("NO LIST");
         for (List<String> trig : trigger) {
 			if (!trig.get(1).contains("<list=") && !trig.get(1).contains("<imported>")) {
-				writer.println("trigger:"+trig.get(1));
-				writer.println("type:"+trig.get(0));
+				writer.println("trigger "+trig.get(0)+"("+trig.get(1)+") {");
 				
 				int tabbed_logic = 0;
 				for (int j=2; j<trig.size(); j++) {
@@ -185,14 +184,13 @@ public class FileHandler {
 					|| TMP_c.toUpperCase().startsWith("WAIT")
 					|| TMP_c.toUpperCase().startsWith("ELSE")
 					|| TMP_c.toUpperCase().startsWith("ASYNC")) {
-						tabbed_logic++;
-					}
-						
+                        tabbed_logic++;
+                    }
 				}
+				writer.println("}");
 			}
 		}
-		writer.println(""); writer.println(""); writer.println("");
-		writer.println("donut delete this line");
+		writer.println("");
 		writer.close();
 	}
 	
