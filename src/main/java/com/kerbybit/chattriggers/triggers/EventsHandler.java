@@ -152,27 +152,11 @@ public class EventsHandler {
 					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"), real_v, TMP_pi);}
 			if (TMP_c.equalsIgnoreCase("CANCEL") && chatEvent!=null) {chatEvent.setCanceled(true);}
 			if (TMP_c.equalsIgnoreCase("KILLFEED")) {
-                if (global.settings.get(10).equalsIgnoreCase("FALSE")) {
-                    global.killfeed.add(TMP_e
-                            .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
-                            .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-                            .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")); global.killfeedDelay.add(TMP_t);
-                } else {
-                    TMP_c = "notify";
-                }
+                TMP_c = KillfeedHandler.addToKillfeed(TMP_e, TMP_t);
             }
 
 			if (TMP_c.equalsIgnoreCase("NOTIFY")) {
-				global.notify.add(TMP_e
-					.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
-					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"));
-				List<Float> temp_list = new ArrayList<Float>();
-				temp_list.add((float) 0);temp_list.add((float) -1000);
-				temp_list.add((float) TMP_p);temp_list.add((float) TMP_t);
-				temp_list.add((float) 0);temp_list.add((float) -1000);
-				global.notifyAnimation.add(temp_list);
-				global.notifySize++;
+				NotifyHandler.addToNotify(TMP_e, TMP_t, TMP_p);
 			}
 			if (TMP_c.equalsIgnoreCase("COMMAND")) {global.commandQueue.add(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("COPY")) {

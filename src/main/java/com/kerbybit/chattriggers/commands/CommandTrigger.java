@@ -12,9 +12,7 @@ import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.file.UpdateHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.references.BugTracker;
-import com.kerbybit.chattriggers.triggers.EventsHandler;
-import com.kerbybit.chattriggers.triggers.StringHandler;
-import com.kerbybit.chattriggers.triggers.TagHandler;
+import com.kerbybit.chattriggers.triggers.*;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -239,13 +237,7 @@ public class CommandTrigger extends CommandBase {
             if (args.length != 1) {
                 String TMP_e = "";
                 for (int i=1; i<args.length; i++) {TMP_e += args[i] + " ";}
-                global.notify.add(TMP_e.trim());
-                List<Float> temp_list = new ArrayList<Float>();
-                temp_list.add((float) 0);temp_list.add((float) -1000);
-                temp_list.add((float) global.notifySize);temp_list.add((float) 50);
-                temp_list.add((float) 0);temp_list.add((float) -1000);
-                global.notifyAnimation.add(temp_list);
-                global.notifySize++;
+                NotifyHandler.addToNotify(ChatHandler.addFormatting(TMP_e.trim()), 0, global.notifySize);
             } else {
                 ChatHandler.warn(ChatHandler.color("red", "/trigger notify <text>"));
             }
@@ -253,8 +245,7 @@ public class CommandTrigger extends CommandBase {
             if (args.length != 1) {
                 String TMP_e = "";
                 for (int i=1; i<args.length; i++) {TMP_e += args[i] + " ";}
-                global.killfeed.add(TMP_e);
-                global.killfeedDelay.add(100);
+                KillfeedHandler.addToKillfeed(ChatHandler.addFormatting(TMP_e.trim()), 100);
             } else {
                 ChatHandler.warn(ChatHandler.color("red", "/trigger killfeed <text>"));
             }
@@ -1299,8 +1290,30 @@ public class CommandTrigger extends CommandBase {
                             }
                         }
                     } catch (Exception e) {
-                        ChatHandler.warn(ChatHandler.color("red", "/trigger settings dump [number]"));
-                        ChatHandler.warn(ChatHandler.color("red", args[2] + " is not a number!"));
+                        if (args[2].equalsIgnoreCase("killfeed")) {
+                            if (args.length == 4) {
+                                if (args[3].equalsIgnoreCase("formatted")) {
+                                    KillfeedHandler.showKillfeedHistory(true);
+                                } else {
+                                    KillfeedHandler.showKillfeedHistory();
+                                }
+                            } else {
+                                KillfeedHandler.showKillfeedHistory();
+                            }
+                        } else if (args[2].equalsIgnoreCase("notify")) {
+                            if (args.length == 4) {
+                                if (args[3].equalsIgnoreCase("formatted")) {
+                                    NotifyHandler.showNotifyHistory(true);
+                                } else {
+                                    NotifyHandler.showNotifyHistory();
+                                }
+                            } else {
+                                NotifyHandler.showNotifyHistory();
+                            }
+                        } else {
+                            ChatHandler.warn(ChatHandler.color("red", "/trigger settings dump [number]"));
+                            ChatHandler.warn(ChatHandler.color("red", args[2] + " is not a number!"));
+                        }
                     }
                 }
             } else if (args[1].equalsIgnoreCase("FPS")) {

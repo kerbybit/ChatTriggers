@@ -66,6 +66,7 @@ public class global {
 	public static List<Integer> killfeedDelay = new ArrayList<Integer>();
     public static double killfeed_x = 0;
     public static double killfeed_y = 0;
+    public static List<String> killfeed_history = new ArrayList<String>();
 	
 	public static List<List<String>> waitEvents = new ArrayList<List<String>>();
 	public static List<Integer> waitTime = new ArrayList<Integer>();
@@ -73,6 +74,7 @@ public class global {
 	public static List<String> notify = new ArrayList<String>();
 	public static List<List<Float>> notifyAnimation = new ArrayList<List<Float>>();
 	public static int notifySize = 0;
+    public static List<String> notify_history = new ArrayList<String>();
 	
 	public static boolean debug = false;
 	public static boolean debugChat = false;
