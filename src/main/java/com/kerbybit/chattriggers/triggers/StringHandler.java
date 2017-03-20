@@ -978,6 +978,7 @@ public class StringHandler {
 			} else {
 				String sn = TMP_e.substring(TMP_e.indexOf("{string[")+8, TMP_e.indexOf("]}", TMP_e.indexOf("{string[")));
 				while (sn.contains("{string[")) {
+				    System.out.println(TMP_e);
 					sn = TMP_e.substring(TMP_e.indexOf("{string[")+8, TMP_e.indexOf("]}", TMP_e.indexOf(sn)+sn.length()+2));
 					
 					String first = sn.substring(0, sn.indexOf("{string["));
