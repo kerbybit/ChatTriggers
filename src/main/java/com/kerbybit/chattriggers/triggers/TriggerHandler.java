@@ -233,30 +233,31 @@ public class TriggerHandler {
     }
 
 	public static void onChat(ClientChatReceivedEvent e) {
+        if (e.type != 2) {
+            //onChat
+            for (int i=0; i<global.onChatTrigger.size(); i++) {
+                //add all events to temp list
+                List<String> TMP_events = new ArrayList<String>();
+                for (int j=2; j<global.onChatTrigger.get(i).size(); j++) {TMP_events.add(global.onChatTrigger.get(i).get(j));}
 
-        //onChat
-        for (int i=0; i<global.onChatTrigger.size(); i++) {
-            //add all events to temp list
-            List<String> TMP_events = new ArrayList<String>();
-            for (int j=2; j<global.onChatTrigger.get(i).size(); j++) {TMP_events.add(global.onChatTrigger.get(i).get(j));}
+                //do events
+                EventsHandler.doEvents(TMP_events, e);
+            }
 
-            //do events
-            EventsHandler.doEvents(TMP_events, e);
-        }
-
-        //chat
-		String msg = e.message.getUnformattedText();
-		String fmsg = e.message.getFormattedText();
-        if (global.chatHistory.size() >= 1) {
-            if (!global.chatHistory.get(global.chatHistory.size()-1).equals(ChatHandler.removeFormatting(fmsg))) {
+            //chat
+            String msg = e.message.getUnformattedText();
+            String fmsg = e.message.getFormattedText();
+            if (global.chatHistory.size() >= 1) {
+                if (!global.chatHistory.get(global.chatHistory.size()-1).equals(ChatHandler.removeFormatting(fmsg))) {
+                    global.chatHistory.add(ChatHandler.removeFormatting(fmsg));
+                }
+            } else {
                 global.chatHistory.add(ChatHandler.removeFormatting(fmsg));
             }
-        } else {
-            global.chatHistory.add(ChatHandler.removeFormatting(fmsg));
-        }
-		if (global.chatHistory.size()>100) {global.chatHistory.remove(0);}
+            if (global.chatHistory.size()>100) {global.chatHistory.remove(0);}
 
-        onChat(fmsg, msg, e);
+            onChat(fmsg, msg, e);
+        }
 	}
 	
 	public static void onClientTickTriggers() {

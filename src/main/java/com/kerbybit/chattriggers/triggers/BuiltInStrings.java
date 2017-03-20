@@ -3,9 +3,12 @@ package com.kerbybit.chattriggers.triggers;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.globalvars.global;
+import com.kerbybit.chattriggers.gui.IconHandler;
 import com.kerbybit.chattriggers.objects.NewJsonHandler;
 import com.kerbybit.chattriggers.references.RomanNumber;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiIngame;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -243,10 +246,10 @@ public class BuiltInStrings {
             String potionList = "{";
             for (PotionEffect potionEffect : potionEffects) {
                 if (!potionEffect.getIsAmbient()) {
-                    String potionName = CommandReference.simplifyPotionName(Potion.potionTypes[potionEffect.getPotionID()].getName().replace("potion.",""));
+                    String potionName = IconHandler.simplifyPotionName(Potion.potionTypes[potionEffect.getPotionID()].getName().replace("potion.",""));
                     String potionAmp = RomanNumber.toRoman(potionEffect.getAmplifier()+1);
                     String potionDuration = Potion.getDurationString(potionEffect);
-                    String potionColor = CommandReference.getPotionColors(potionName);
+                    String potionColor = IconHandler.getPotionColors(potionName);
 
                     potionList += "\"" + potionName + "\":{";
                     potionList += "\"amplitude\":\"" + potionAmp + "\",\"duration\":\"" + potionDuration + "\",\"color\":\"" + potionColor + "\"},";

@@ -6,6 +6,8 @@ import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.gui.DisplayOverlay;
 import com.kerbybit.chattriggers.references.BugTracker;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
+import com.kerbybit.chattriggers.overlay.KillfeedHandler;
+import com.kerbybit.chattriggers.overlay.NotifyHandler;
 import net.minecraftforge.client.event.MouseEvent;
 import org.lwjgl.input.Keyboard;
 
@@ -16,7 +18,6 @@ import com.kerbybit.chattriggers.commands.CommandTrigger;
 import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.gui.GuiTriggerList;
-import com.kerbybit.chattriggers.gui.OverlayHandler;
 import com.kerbybit.chattriggers.references.Reference;
 import com.kerbybit.chattriggers.triggers.EventsHandler;
 import com.kerbybit.chattriggers.triggers.TriggerHandler;
@@ -131,8 +132,8 @@ public class ChatTriggers {
             }
             CommandReference.clickCalc();
 
-			OverlayHandler.drawKillfeed(event);
-			OverlayHandler.drawNotify(event);
+			KillfeedHandler.drawKillfeed(event);
+			NotifyHandler.drawNotify(event);
             DisplayHandler.drawDisplays(event);
 			
 			GuiTriggerList.openGui();
@@ -155,7 +156,7 @@ public class ChatTriggers {
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent e) throws ClassNotFoundException {
 		if (global.canUse) {
-			OverlayHandler.tickKillfeed();
+			KillfeedHandler.tickKillfeed();
 			//OverlayHandler.tickNotify();
 			
 			FileHandler.tickImports();

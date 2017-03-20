@@ -1,8 +1,8 @@
 package com.kerbybit.chattriggers.objects;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
-import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.globalvars.global;
+import com.kerbybit.chattriggers.gui.IconHandler;
 import com.kerbybit.chattriggers.triggers.BuiltInStrings;
 import com.kerbybit.chattriggers.triggers.StringHandler;
 import com.kerbybit.chattriggers.triggers.TagHandler;
@@ -224,12 +224,12 @@ public class DisplayHandler {
                         display_text = display_text.replace("<up>","");
                         if (display_text.contains("<center>")) {
                             display_text = display_text.replace("<center>","");
-                            display_x = ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(CommandReference.removeIconString(display_text))/2);
+                            display_x = ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(IconHandler.removeIconString(display_text))/2);
                             display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
                         } else if (display_text.contains("<right>")) {
                             display_text = display_text.replace("<right>","");
-                            display_x = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
-                            display_y = ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(CommandReference.removeIconString(display_text));
+                            display_x = ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(IconHandler.removeIconString(display_text));
+                            display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
                         } else {
                             display_text = display_text.replace("<left>","");
                             display_x = (display_xy[0].floatValue() * width) / 100;
@@ -239,11 +239,11 @@ public class DisplayHandler {
                         display_text = display_text.replace("<down>","");
                         if (display_text.contains("<center>")) {
                             display_text = display_text.replace("<center>","");
-                            display_x = ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(CommandReference.removeIconString(display_text))/2);
+                            display_x = ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(IconHandler.removeIconString(display_text))/2);
                             display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
                         } else if (display_text.contains("<right>")) {
                             display_text = display_text.replace("<right>","");
-                            display_x = ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(CommandReference.removeIconString(display_text));
+                            display_x = ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(IconHandler.removeIconString(display_text));
                             display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
                         } else {
                             display_text = display_text.replace("<left>","");
@@ -251,7 +251,7 @@ public class DisplayHandler {
                             display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
                         }
                     }
-                    display_text = CommandReference.drawIcons(display_text, floor(display_x), floor(display_y));
+                    display_text = IconHandler.drawIcons(display_text, floor(display_x), floor(display_y));
                     ren.drawStringWithShadow(display_text, display_x, display_y, color);
                 }
             }

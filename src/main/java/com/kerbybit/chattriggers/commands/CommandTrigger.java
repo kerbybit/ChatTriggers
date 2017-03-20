@@ -11,6 +11,8 @@ import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.file.UpdateHandler;
 import com.kerbybit.chattriggers.globalvars.global;
+import com.kerbybit.chattriggers.overlay.KillfeedHandler;
+import com.kerbybit.chattriggers.overlay.NotifyHandler;
 import com.kerbybit.chattriggers.references.BugTracker;
 import com.kerbybit.chattriggers.triggers.*;
 

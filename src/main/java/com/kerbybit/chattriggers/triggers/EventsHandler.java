@@ -19,6 +19,9 @@ import com.kerbybit.chattriggers.objects.ListHandler;
 import com.kerbybit.chattriggers.objects.NewJsonHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
+import com.kerbybit.chattriggers.overlay.ActionBar;
+import com.kerbybit.chattriggers.overlay.KillfeedHandler;
+import com.kerbybit.chattriggers.overlay.NotifyHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -154,10 +157,13 @@ public class EventsHandler {
 			if (TMP_c.equalsIgnoreCase("KILLFEED")) {
                 TMP_c = KillfeedHandler.addToKillfeed(TMP_e, TMP_t);
             }
-
 			if (TMP_c.equalsIgnoreCase("NOTIFY")) {
 				NotifyHandler.addToNotify(TMP_e, TMP_t, TMP_p);
 			}
+            if (TMP_c.equalsIgnoreCase("ACTIONBAR")) {
+			    System.out.println("actionbar-"+TMP_e);
+			    ActionBar.showActionBar(TMP_e);
+            }
 			if (TMP_c.equalsIgnoreCase("COMMAND")) {global.commandQueue.add(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("COPY")) {
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
