@@ -12,6 +12,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ListHandler {
@@ -115,18 +116,28 @@ public class ListHandler {
                 list_object.addAll(Arrays.asList(values));
                 global.lists.put(list_name, list_object);
                 return getList(list_name);
+            } else if (value.contains(",")) {
+                String position_string = value.substring(0, value.indexOf(","));
+                String new_value = value.substring(value.indexOf(","));
+
+                try {
+                    list_object.add(Integer.parseInt(position_string), new_value);
+                    global.lists.put(list_name, list_object);
+                    return getList(list_name);
+                } catch(NumberFormatException e) {
+                    list_object.add(value);
+                    global.lists.put(list_name, list_object);
+                    return getList(list_name);
+                }
             } else {
                 list_object.add(value);
                 global.lists.put(list_name, list_object);
                 return getList(list_name);
             }
         } else {
-            return "Not a list";
+            global.lists.put(list_name, Collections.singletonList(value));
+            return getList(list_name);
         }
-    }
-
-    private static String addToList(String list_name, String value, int position) {
-        return null;
     }
 
     private static String getValue(String list_name, int position) {
@@ -257,13 +268,7 @@ public class ListHandler {
                 get_name = get_name.substring(get_name.indexOf("{list[")+6);
             }
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("ListToString->"+get_name+"SIZE-"+(global.TMP_string.size()+1));
-            temporary.add(getSize(get_name));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{list["+get_name+"]}.size()", "{string[ListToString->"+get_name+"SIZE-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("size", get_name, getSize(get_name), TMP_e);
         }
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.add(") && TMP_e.contains(")")) {
@@ -281,13 +286,7 @@ public class ListHandler {
             String get_value = StringHandler.stringFunctions(get_prevalue, null);
             get_value = listFunctions(get_value);
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("ListToString->"+get_name+"ADD"+get_value+"-"+(global.TMP_string.size()+1));
-            temporary.add(addToList(get_name, get_value));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{list["+get_name+"]}.add("+get_prevalue+")","{string[ListToString->"+get_name+"ADD"+get_value+"-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("add", get_name, get_prevalue, addToList(get_name, get_value), TMP_e);
         }
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) {
@@ -305,13 +304,7 @@ public class ListHandler {
             String get_value = StringHandler.stringFunctions(get_prevalue, null);
             get_value = listFunctions(get_value);
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("ListToString->"+get_name+"GET"+get_value+"-"+(global.TMP_string.size()+1));
-            temporary.add(getValue(get_name, get_value));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{list["+get_name+"]}.get("+get_prevalue+")","{string[ListToString->"+get_name+"GET"+get_value+"-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("get", get_name, get_prevalue, getValue(get_name, get_value), TMP_e);
         }
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.remove(") && TMP_e.contains(")")) {
@@ -329,13 +322,7 @@ public class ListHandler {
             String get_value = StringHandler.stringFunctions(get_prevalue, null);
             get_value = listFunctions(get_value);
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("ListToString->"+get_name+"REMOVE"+get_value+"-"+(global.TMP_string.size()+1));
-            temporary.add(removeValue(get_name, get_value));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{list["+get_name+"]}.remove("+get_prevalue+")","{string[ListToString->"+get_name+"REMOVE"+get_value+"-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("remove", get_name, get_prevalue, removeValue(get_name, get_value), TMP_e);
         }
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.clear()")) {
@@ -344,13 +331,7 @@ public class ListHandler {
                 get_name = get_name.substring(get_name.indexOf("{list[")+6);
             }
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("ListToString->"+get_name+"CLEAR"+"-"+(global.TMP_string.size()+1));
-            temporary.add(clearList(get_name));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{list["+get_name+"]}.clear()","{string[ListToString->"+get_name+"CLEAR"+"-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("clear", get_name, clearList(get_name), TMP_e);
         }
 
 
@@ -360,15 +341,33 @@ public class ListHandler {
                 get_name = get_name.substring(get_name.indexOf("{list[")+6);
             }
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("ListToString->"+get_name+"LITERAL"+"-"+(global.TMP_string.size()+1));
-            temporary.add(getList(get_name));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{list["+get_name+"]}", "{string[ListToString->"+get_name+"LITERAL"+"-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString(get_name, TMP_e);
         }
 
         return TMP_e;
+    }
+
+    private static String createDefaultString(String function_name, String list_name, String arguments, String value, String TMP_e) {
+        List<String> temporary = new ArrayList<String>();
+        temporary.add("ListToString->"+list_name+function_name.toUpperCase()+"-"+(global.TMP_string.size()+1));
+        temporary.add(value);
+        global.TMP_string.add(temporary);
+        global.backupTMP_strings.add(temporary);
+
+        return TMP_e.replace("{list["+list_name+"]}", "{string[ListToString->"+list_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
+    }
+
+    private static String createDefaultString(String function_name, String list_name, String value, String TMP_e) {
+        return createDefaultString(function_name, list_name, "", value, TMP_e);
+    }
+
+    private static String createDefaultString(String list_name, String TMP_e) {
+        List<String> temporary = new ArrayList<String>();
+        temporary.add("ListToString->"+list_name+"LITERAL"+"-"+(global.TMP_string.size()+1));
+        temporary.add(getList(list_name));
+        global.TMP_string.add(temporary);
+        global.backupTMP_strings.add(temporary);
+
+        return TMP_e.replace("{list["+list_name+"]}", "{string[ListToString->"+list_name+"LITERAL"+"-"+global.TMP_string.size()+"]}");
     }
 }

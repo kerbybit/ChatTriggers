@@ -165,10 +165,6 @@ public class NewJsonHandler {
         return returnString;
     }
 
-    private static void clearJsons() {
-        global.jsons.clear();
-    }
-
     private static String clearJson(String name) {
         if (global.jsons.containsKey(name)) {
             global.jsons.remove(name);
@@ -185,13 +181,7 @@ public class NewJsonHandler {
                 get_name = get_name.substring(get_name.indexOf("{json[")+6);
             }
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("JsonToString->"+get_name+"CLEAR-"+(global.TMP_string.size()+1));
-            temporary.add(clearJson(get_name));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{json["+get_name+"]}.clear()","{string[JsonToString->"+get_name+"CLEAR-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("clear", get_name, clearJson(get_name), TMP_e);
         }
 
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.load(") && TMP_e.contains(")")) {
@@ -208,13 +198,7 @@ public class NewJsonHandler {
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
             String get_value = StringHandler.stringFunctions(get_prevalue, null);
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("JsonToString->"+get_name+"LOAD"+get_value+"-"+(global.TMP_string.size()+1));
-            temporary.add(getJson(get_name, get_value));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{json["+get_name+"]}.load("+get_prevalue+")","{string[JsonToString->"+get_name+"LOAD"+get_value+"-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("load", get_name, get_prevalue, getJson(get_name, get_value), TMP_e);
         }
 
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) {
@@ -223,7 +207,6 @@ public class NewJsonHandler {
                 get_name = get_name.substring(get_name.indexOf("{json[")+6);
             }
             String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.get(", TMP_e.indexOf("{json["))+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.get(", TMP_e.indexOf("{json[")+6)+7));
-            //System.out.println(get_prevalue);
             String temp_search = TMP_e.substring(TMP_e.indexOf("]}.get(", TMP_e.indexOf("{json["))+7);
             while (get_prevalue.contains("(")) {
                 System.out.println(get_name + "->" + get_prevalue);
@@ -235,13 +218,7 @@ public class NewJsonHandler {
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
             String get_value = StringHandler.stringFunctions(get_prevalue, null);
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("JsonToString->"+get_name+"GET"+get_value+"-"+(global.TMP_string.size()+1));
-            temporary.add(getValue(get_name, get_value));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{json["+get_name+"]}.get("+get_prevalue+")","{string[JsonToString->"+get_name+"GET"+get_value+"-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("get", get_name, get_prevalue, getValue(get_name, get_value), TMP_e);
         }
 
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.getKeys(") && TMP_e.contains(")")) {
@@ -277,13 +254,7 @@ public class NewJsonHandler {
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
             String get_value = StringHandler.stringFunctions(get_prevalue, null);
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("JsonToString->"+get_name+"GETVALUES"+get_value+"-"+(global.TMP_string.size()+1));
-            temporary.add(getValues(get_name, get_value));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{json["+get_name+"]}.getValues("+get_prevalue+")","{string[JsonToString->"+get_name+"GETVALUES"+get_value+"-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("getValues", get_name, get_prevalue, getValues(get_name, get_value), TMP_e);
         }
 
 
@@ -305,5 +276,19 @@ public class NewJsonHandler {
         }
 
         return TMP_e;
+    }
+
+    private static String createDefaultString(String function, String json_name, String arguments, String value, String TMP_e) {
+        List<String> temporary = new ArrayList<String>();
+        temporary.add("JsonToString->"+json_name+function.toUpperCase()+arguments+"-"+(global.TMP_string.size()+1));
+        temporary.add(value);
+        global.TMP_string.add(temporary);
+        global.backupTMP_strings.add(temporary);
+
+        return TMP_e.replace("{json["+json_name+"]}."+function+"("+arguments+")","{string[JsonToString->"+json_name+function.toUpperCase()+arguments+"-"+global.TMP_string.size()+"]}");
+    }
+
+    private static String createDefaultString(String function, String json_name, String value, String TMP_e) {
+        return createDefaultString(function, json_name, "", value, TMP_e);
     }
 }

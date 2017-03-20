@@ -388,7 +388,7 @@ public class BuiltInStrings {
         return TMP_e;
     }
 
-    private static String createDefaultString(String string_name, String string_value, String TMP_e) {
+    public static String createDefaultString(String string_name, String string_value, String TMP_e) {
         List<String> temporary = new ArrayList<String>();
         temporary.add("DefaultString->"+string_name.toUpperCase()+"-"+(global.TMP_string.size()+1));
         temporary.add(string_value);

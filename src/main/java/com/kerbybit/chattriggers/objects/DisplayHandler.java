@@ -93,14 +93,6 @@ public class DisplayHandler {
         }
     }
 
-    private static String getDisplayA(String display_name) {
-        if (global.displays_xy.containsKey(display_name)) {
-            return global.displays_xy.get(display_name)[2] + "";
-        } else {
-            return "Display " + display_name + " has no alpha to get";
-        }
-    }
-
     private static String setDisplayX(String display_name, String value) {
         if (global.displays_xy.containsKey(display_name)) {
             try {
@@ -131,22 +123,6 @@ public class DisplayHandler {
         } else {
             return "Display " + display_name + " has no y to set";
         }
-    }
-
-    private static String setDisplayA(String display_name, String value) {
-        /*if (global.displays_xy.containsKey(display_name)) {
-            try {
-                Double x = global.displays_xy.get(display_name)[0];
-                Double y = global.displays_xy.get(display_name)[1];
-                Double a = Double.parseDouble(value);
-                global.displays_xy.put(display_name, new Double[]{x, y, a});
-                return value + "";
-            } catch (NumberFormatException e) {
-                return "ERR: setDisplayY -> " + value + " is not a valid number";
-            }
-        } else {*/
-            return "Display " + display_name + " has no alpha to set";
-        /*}*/
     }
 
     private static String setDisplaySettings(String display_name, String settings) {
@@ -194,8 +170,6 @@ public class DisplayHandler {
             Double[] display_xy;
             String settings = getDisplaySettings(display_name);
             int color = 0x00ffffff;
-            /*color = color + (global.displays_xy.get(display_name)[2].intValue() * 0x01000000);
-            System.out.println(color);*/
 
             if (global.displays_xy.containsKey(display_name)) {
                 display_xy = global.displays_xy.get(display_name);
@@ -260,193 +234,121 @@ public class DisplayHandler {
 
     public static String displayFunctions(String TMP_e) {
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.update()")) {
-            String get_name = TMP_e.substring(TMP_e.indexOf("{display[")+9, TMP_e.indexOf("]}.update()", TMP_e.indexOf("{display[")));
+            String get_name = TMP_e.substring(TMP_e.indexOf("{display[") + 9, TMP_e.indexOf("]}.update()", TMP_e.indexOf("{display[")));
             while (get_name.contains("{display[")) {
-                get_name = get_name.substring(get_name.indexOf("{display[")+9);
+                get_name = get_name.substring(get_name.indexOf("{display[") + 9);
             }
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DisplayToString->"+get_name+"UPDATE"+"-"+(global.TMP_string.size()+1));
-            temporary.add(updateDisplay(get_name));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{display["+get_name+"]}.update()","{string[DisplayToString->"+get_name+"UPDATE"+"-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("update", get_name, updateDisplay(get_name), TMP_e);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.clear()")) {
-            String get_name = TMP_e.substring(TMP_e.indexOf("{display[")+9, TMP_e.indexOf("]}.clear()", TMP_e.indexOf("{display[")));
+            String get_name = TMP_e.substring(TMP_e.indexOf("{display[") + 9, TMP_e.indexOf("]}.clear()", TMP_e.indexOf("{display[")));
             while (get_name.contains("{display[")) {
-                get_name = get_name.substring(get_name.indexOf("{display[")+9);
+                get_name = get_name.substring(get_name.indexOf("{display[") + 9);
             }
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DisplayToString->"+get_name+"CLEAR"+"-"+(global.TMP_string.size()+1));
-            temporary.add(deleteDisplay(get_name));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{display["+get_name+"]}.clear()","{string[DisplayToString->"+get_name+"CLEAR"+"-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("clear", get_name, deleteDisplay(get_name), TMP_e);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.getX()")) {
-            String get_name = TMP_e.substring(TMP_e.indexOf("{display[")+9, TMP_e.indexOf("]}.getX()", TMP_e.indexOf("{display[")));
+            String get_name = TMP_e.substring(TMP_e.indexOf("{display[") + 9, TMP_e.indexOf("]}.getX()", TMP_e.indexOf("{display[")));
             while (get_name.contains("{display[")) {
-                get_name = get_name.substring(get_name.indexOf("{display[")+9);
+                get_name = get_name.substring(get_name.indexOf("{display[") + 9);
             }
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DisplayToString->"+get_name+"GETX"+"-"+(global.TMP_string.size()+1));
-            temporary.add(getDisplayX(get_name));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{display["+get_name+"]}.getX()","{string[DisplayToString->"+get_name+"GETX"+"-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("getX", get_name, getDisplayX(get_name), TMP_e);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.getY()")) {
-            String get_name = TMP_e.substring(TMP_e.indexOf("{display[")+9, TMP_e.indexOf("]}.getY()", TMP_e.indexOf("{display[")));
+            String get_name = TMP_e.substring(TMP_e.indexOf("{display[") + 9, TMP_e.indexOf("]}.getY()", TMP_e.indexOf("{display[")));
             while (get_name.contains("{display[")) {
-                get_name = get_name.substring(get_name.indexOf("{display[")+9);
+                get_name = get_name.substring(get_name.indexOf("{display[") + 9);
             }
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DisplayToString->"+get_name+"GETY"+"-"+(global.TMP_string.size()+1));
-            temporary.add(getDisplayY(get_name));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{display["+get_name+"]}.getY()","{string[DisplayToString->"+get_name+"GETY"+"-"+global.TMP_string.size()+"]}");
-        }
-
-        while (TMP_e.contains("{display[") && TMP_e.contains("]}.getA()")) {
-            String get_name = TMP_e.substring(TMP_e.indexOf("{display[")+9, TMP_e.indexOf("]}.getA()", TMP_e.indexOf("{display[")));
-            while (get_name.contains("{display[")) {
-                get_name = get_name.substring(get_name.indexOf("{display[")+9);
-            }
-
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DisplayToString->"+get_name+"GETA"+"-"+(global.TMP_string.size()+1));
-            temporary.add(getDisplayA(get_name));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{display["+get_name+"]}.getA()","{string[DisplayToString->"+get_name+"GETA"+"-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("getY", get_name, getDisplayY(get_name), TMP_e);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.setX(") && TMP_e.contains(")")) {
-            String get_name = TMP_e.substring(TMP_e.indexOf("{display[")+9, TMP_e.indexOf("]}.setX(", TMP_e.indexOf("{display[")));
-            String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.setX(", TMP_e.indexOf("{display["))+8, TMP_e.indexOf(")", TMP_e.indexOf("]}.setX(", TMP_e.indexOf("{display["))));
+            String get_name = TMP_e.substring(TMP_e.indexOf("{display[") + 9, TMP_e.indexOf("]}.setX(", TMP_e.indexOf("{display[")));
+            String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.setX(", TMP_e.indexOf("{display[")) + 8, TMP_e.indexOf(")", TMP_e.indexOf("]}.setX(", TMP_e.indexOf("{display["))));
             while (get_name.contains("{display[")) {
-                get_name = get_name.substring(get_name.indexOf("{display[")+9);
+                get_name = get_name.substring(get_name.indexOf("{display[") + 9);
             }
-            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.setX(", TMP_e.indexOf("{jaon["))+8);
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.setX(", TMP_e.indexOf("{jaon[")) + 8);
             while (get_prevalue.contains("(")) {
-                temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
+                temp_search = temp_search.replaceFirst("\\(", "tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)", "tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
-            get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
+            get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
             String get_value = StringHandler.stringFunctions(get_prevalue, null);
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DisplayToString->"+get_name+"SETX"+"-"+(global.TMP_string.size()+1));
-            temporary.add(setDisplayX(get_name, get_value));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{display["+get_name+"]}.setX("+get_prevalue+")","{string[DisplayToString->"+get_name+"SETX"+"-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("setX", get_name, get_prevalue, setDisplayX(get_name, get_value), TMP_e);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.setY(") && TMP_e.contains(")")) {
-            String get_name = TMP_e.substring(TMP_e.indexOf("{display[")+9, TMP_e.indexOf("]}.setY(", TMP_e.indexOf("{display[")));
-            String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.setY(", TMP_e.indexOf("{display["))+8, TMP_e.indexOf(")", TMP_e.indexOf("]}.setY(", TMP_e.indexOf("{display["))));
+            String get_name = TMP_e.substring(TMP_e.indexOf("{display[") + 9, TMP_e.indexOf("]}.setY(", TMP_e.indexOf("{display[")));
+            String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.setY(", TMP_e.indexOf("{display[")) + 8, TMP_e.indexOf(")", TMP_e.indexOf("]}.setY(", TMP_e.indexOf("{display["))));
             while (get_name.contains("{display[")) {
-                get_name = get_name.substring(get_name.indexOf("{display[")+9);
+                get_name = get_name.substring(get_name.indexOf("{display[") + 9);
             }
-            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.setY(", TMP_e.indexOf("{jaon["))+9);
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.setY(", TMP_e.indexOf("{jaon[")) + 9);
             while (get_prevalue.contains("(")) {
-                temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
+                temp_search = temp_search.replaceFirst("\\(", "tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)", "tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
-            get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
+            get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
             String get_value = StringHandler.stringFunctions(get_prevalue, null);
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DisplayToString->"+get_name+"SETY"+"-"+(global.TMP_string.size()+1));
-            temporary.add(setDisplayY(get_name, get_value));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{display["+get_name+"]}.setY("+get_prevalue+")","{string[DisplayToString->"+get_name+"SETY"+"-"+global.TMP_string.size()+"]}");
-        }
-
-        while (TMP_e.contains("{display[") && TMP_e.contains("]}.setA(") && TMP_e.contains(")")) {
-            String get_name = TMP_e.substring(TMP_e.indexOf("{display[")+9, TMP_e.indexOf("]}.setA(", TMP_e.indexOf("{display[")));
-            String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.setA(", TMP_e.indexOf("{display["))+8, TMP_e.indexOf(")", TMP_e.indexOf("]}.setA(", TMP_e.indexOf("{display["))));
-            while (get_name.contains("{display[")) {
-                get_name = get_name.substring(get_name.indexOf("{display[")+9);
-            }
-            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.setA(", TMP_e.indexOf("{jaon["))+8);
-            while (get_prevalue.contains("(")) {
-                temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
-                get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
-            }
-            get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
-
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DisplayToString->"+get_name+"SETA"+"-"+(global.TMP_string.size()+1));
-            temporary.add(setDisplayA(get_name, get_value));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{display["+get_name+"]}.setA("+get_prevalue+")","{string[DisplayToString->"+get_name+"SETA"+"-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("setY", get_name, get_prevalue, setDisplayY(get_name, get_value), TMP_e);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.add(") && TMP_e.contains(")")) {
-            String get_name = TMP_e.substring(TMP_e.indexOf("{display[")+9, TMP_e.indexOf("]}.add(", TMP_e.indexOf("{display[")));
-            String get_value = TMP_e.substring(TMP_e.indexOf("]}.add(", TMP_e.indexOf("{display["))+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.add(", TMP_e.indexOf("{display["))));
+            String get_name = TMP_e.substring(TMP_e.indexOf("{display[") + 9, TMP_e.indexOf("]}.add(", TMP_e.indexOf("{display[")));
+            String get_value = TMP_e.substring(TMP_e.indexOf("]}.add(", TMP_e.indexOf("{display[")) + 7, TMP_e.indexOf(")", TMP_e.indexOf("]}.add(", TMP_e.indexOf("{display["))));
             while (get_name.contains("{display[")) {
-                get_name = get_name.substring(get_name.indexOf("{display[")+9);
+                get_name = get_name.substring(get_name.indexOf("{display[") + 9);
             }
-            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.add(", TMP_e.indexOf("{display["))+7);
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.add(", TMP_e.indexOf("{display[")) + 7);
             while (get_value.contains("(")) {
-                temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
+                temp_search = temp_search.replaceFirst("\\(", "tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)", "tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_value = temp_search.substring(0, temp_search.indexOf(")"));
             }
-            get_value = get_value.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
+            get_value = get_value.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DisplayToString->"+get_name+"ADD"+get_value+"-"+(global.TMP_string.size()+1));
-            temporary.add(addToDisplay(get_name, get_value));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{display["+get_name+"]}.add("+get_value+")","{string[DisplayToString->"+get_name+"ADD"+get_value+"-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("add", get_name, get_value, addToDisplay(get_name, get_value), TMP_e);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.settings(") && TMP_e.contains(")")) {
-            String get_name = TMP_e.substring(TMP_e.indexOf("{display[")+9, TMP_e.indexOf("]}.settings(", TMP_e.indexOf("{display[")));
-            String get_value = TMP_e.substring(TMP_e.indexOf("]}.settings(", TMP_e.indexOf("{display["))+12, TMP_e.indexOf(")", TMP_e.indexOf("]}.settings(", TMP_e.indexOf("{display["))));
+            String get_name = TMP_e.substring(TMP_e.indexOf("{display[") + 9, TMP_e.indexOf("]}.settings(", TMP_e.indexOf("{display[")));
+            String get_value = TMP_e.substring(TMP_e.indexOf("]}.settings(", TMP_e.indexOf("{display[")) + 12, TMP_e.indexOf(")", TMP_e.indexOf("]}.settings(", TMP_e.indexOf("{display["))));
             while (get_name.contains("{display[")) {
-                get_name = get_name.substring(get_name.indexOf("{display[")+9);
+                get_name = get_name.substring(get_name.indexOf("{display[") + 9);
             }
-            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.settings(", TMP_e.indexOf("{display["))+12);
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.settings(", TMP_e.indexOf("{display[")) + 12);
             while (get_value.contains("(")) {
-                temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
+                temp_search = temp_search.replaceFirst("\\(", "tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)", "tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_value = temp_search.substring(0, temp_search.indexOf(")"));
             }
-            get_value = get_value.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
+            get_value = get_value.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DisplayToString->"+get_name+"SETTINGS"+get_value+"-"+(global.TMP_string.size()+1));
-            temporary.add(setDisplaySettings(get_name, get_value));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{display["+get_name+"]}.settings("+get_value+")","{string[DisplayToString->"+get_name+"SETTINGS"+get_value+"-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("settings", get_name, get_value, setDisplaySettings(get_name, get_value), TMP_e);
         }
 
         return TMP_e;
+    }
+
+    private static String createDefaultString(String function_name, String display_name, String arguments, String value, String TMP_e) {
+        List<String> temporary = new ArrayList<String>();
+        temporary.add("DisplayToString->"+display_name+function_name.toUpperCase()+"-"+(global.TMP_string.size()+1));
+        temporary.add(value);
+        global.TMP_string.add(temporary);
+        global.backupTMP_strings.add(temporary);
+
+        return TMP_e.replace("{display["+display_name+"]}."+function_name+"("+arguments+")","{string[DisplayToString->"+display_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
+    }
+
+    private static String createDefaultString(String function_name, String display_name, String value, String TMP_e) {
+        return createDefaultString(function_name, display_name, "", value, TMP_e);
     }
 }
