@@ -1,6 +1,8 @@
 package com.kerbybit.chattriggers.gui;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -44,9 +46,14 @@ public class IconHandler {
         GL11.glPopMatrix();
     }
 
-    private static void drawItemIcon(int x, int y, Item item) {
+    private static void drawItemIcon(int x, int y, ItemStack itemStack) {
         RenderItem itemRenderer = Minecraft.getMinecraft().getRenderItem();
-        itemRenderer.renderItemIntoGUI(new ItemStack(item), x, y);
+
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        RenderHelper.enableStandardItemLighting();
+        itemRenderer.zLevel = 200.0F;
+
+        itemRenderer.renderItemIntoGUI(itemStack, x, y);
     }
 
     public static String drawIcons(String input, int x, int y) {
@@ -61,16 +68,26 @@ public class IconHandler {
                         drawPotionIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value)+2, y-1, Potion.regeneration);
                         drawPotionIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value), y-1, Potion.regeneration);
                     } else if (get_name.equalsIgnoreCase("saturation")) {
-                        //drawItemIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value), y-1, Item.getItemById(396));
                         return drawIcons(input.replace("{icon["+get_name+"]}", "{icon[golden_carrot]}"), x, y);
                     } else {
                         drawPotionIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value)+2, y-1, potion);
                     }
                 }
             } else {
-                Item item = Item.getByNameOrId(get_name);
+                String get_final_name = get_name;
+                int meta = 0;
+                if (get_name.contains(":")) {
+                    get_final_name = get_name.substring(0, get_name.indexOf(":"));
+                    try {
+                        meta = Integer.parseInt(get_name.substring(get_name.indexOf(":")+1));
+                    } catch (NumberFormatException e) {
+                        meta = 0;
+                    }
+                }
+                Item item = Item.getByNameOrId(get_final_name);
+                ItemStack itemStack = new ItemStack(item,1,meta);
                 if (item != null) {
-                    drawItemIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value), y-4, item);
+                    drawItemIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value), y-4, itemStack);
                     return drawIcons(input.replace("{icon["+get_name+"]}", "    "), x, y);
                 }
             }

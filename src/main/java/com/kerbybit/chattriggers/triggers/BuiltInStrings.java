@@ -275,7 +275,7 @@ public class BuiltInStrings {
                     float armorDamage = armorMaxDamage - armor.getItemDamage();
                     float armorPercent = (armorDamage / armorMaxDamage) * 100;
                     armorList += "\"" + armor.getItem().getRegistryName().replace("minecraft:","") + "\":{";
-                    armorList += "\"displayName\":\"" + armor.getDisplayName() + "\",\"maxDurability\":" + (int)floor(armorMaxDamage) + ",\"durability\":" + (int)floor(armorDamage) + ",\"durabilityPercent\":" + (int)floor(armorPercent) + "},";
+                    armorList += "\"displayName\":\"" + armor.getDisplayName() + "\",\"maxDurability\":" + (int)floor(armorMaxDamage) + ",\"durability\":" + (int)floor(armorDamage) + ",\"durabilityPercent\":" + (int)floor(armorPercent) + ",\"data\":"+armor.getMetadata()+"},";
                 }
             }
             if (armorList.equals("{")) {
