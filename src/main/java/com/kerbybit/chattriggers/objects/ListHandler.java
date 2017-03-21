@@ -1,8 +1,7 @@
 package com.kerbybit.chattriggers.objects;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.kerbybit.chattriggers.globalvars.global;
+import com.kerbybit.chattriggers.triggers.EventsHandler;
 import com.kerbybit.chattriggers.triggers.StringHandler;
 
 import java.io.BufferedReader;
@@ -179,6 +178,16 @@ public class ListHandler {
         }
     }
 
+    private static String getRandomValue(String list_name) {
+        if (global.lists.containsKey(list_name)) {
+            List<String> list = global.lists.get(list_name);
+            int randInt = EventsHandler.randInt(0, list.size()-1);
+            return list.get(randInt);
+        } else {
+            return "Not a list";
+        }
+    }
+
     private static String getSize(String list_name) {
         if (global.lists.containsKey(list_name)) {
             return global.lists.get(list_name).size()+"";
@@ -277,7 +286,7 @@ public class ListHandler {
             while (get_name.contains("{list[")) {
                 get_name = get_name.substring(get_name.indexOf("{list[")+6);
             }
-            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list["))+8);
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.add(", TMP_e.indexOf("{list["))+7);
             while (get_prevalue.contains("(")) {
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
@@ -295,7 +304,7 @@ public class ListHandler {
             while (get_name.contains("{list[")) {
                 get_name = get_name.substring(get_name.indexOf("{list[")+6);
             }
-            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list["))+8);
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.get(", TMP_e.indexOf("{list["))+7);
             while (get_prevalue.contains("(")) {
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
@@ -307,13 +316,22 @@ public class ListHandler {
             TMP_e = createDefaultString("get", get_name, get_prevalue, getValue(get_name, get_value), TMP_e);
         }
 
+        while (TMP_e.contains("{list[") && TMP_e.contains("]}.getRandom()")) {
+            String get_name = TMP_e.substring(TMP_e.indexOf("{list[")+6, TMP_e.indexOf("]}.getRandom()", TMP_e.indexOf("{list[")));
+            while (get_name.contains("{list[")) {
+                get_name = get_name.substring(get_name.indexOf("{list[")+6);
+            }
+
+            TMP_e = createDefaultString("getRandom", get_name, getRandomValue(get_name), TMP_e);
+        }
+
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.remove(") && TMP_e.contains(")")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{list[")+6, TMP_e.indexOf("]}.remove(", TMP_e.indexOf("{list[")));
             String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.remove(", TMP_e.indexOf("{list["))+10, TMP_e.indexOf(")", TMP_e.indexOf("]}.remove(", TMP_e.indexOf("{list["))));
             while (get_name.contains("{list[")) {
                 get_name = get_name.substring(get_name.indexOf("{list[")+6);
             }
-            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list["))+8);
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.remove(", TMP_e.indexOf("{list["))+10);
             while (get_prevalue.contains("(")) {
                 temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
