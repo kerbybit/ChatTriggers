@@ -283,6 +283,9 @@ public class BuiltInStrings {
                         String armorColor = null;
                         if (armorNBTbase.startsWith("{color:")) {
                             armorColor = armorNBTbase.substring(7, armorNBTbase.indexOf("}"));
+                            if (armorColor.contains(",")) {
+                                armorColor = armorColor.substring(0, armorColor.indexOf(","));
+                            }
                         }
 
                         if (armorData.equals("0") && armorColor!=null) {
