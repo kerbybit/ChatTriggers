@@ -10,15 +10,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagByte;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.Math.floor;
 
@@ -252,7 +252,9 @@ public class BuiltInStrings {
                     String potionColor = IconHandler.getPotionColors(potionName);
 
                     potionList += "\"" + potionName + "\":{";
-                    potionList += "\"amplitude\":\"" + potionAmp + "\",\"duration\":\"" + potionDuration + "\",\"color\":\"" + potionColor + "\"},";
+                    potionList += "\"amplitude\":\"" + potionAmp
+                            + "\",\"duration\":\"" + potionDuration
+                            + "\",\"color\":\"" + potionColor + "\"},";
                 }
             }
             if (potionList.equals("{")) {
@@ -274,8 +276,25 @@ public class BuiltInStrings {
                     float armorMaxDamage = armor.getMaxDamage();
                     float armorDamage = armorMaxDamage - armor.getItemDamage();
                     float armorPercent = (armorDamage / armorMaxDamage) * 100;
+                    String armorData = armor.getMetadata()+"";
+                    NBTTagCompound armorNBT = armor.getTagCompound();
+                    if (armorNBT!=null) {
+                        String armorNBTbase = armorNBT.getTag("display").toString();
+                        String armorColor = null;
+                        if (armorNBTbase.startsWith("{color:")) {
+                            armorColor = armorNBTbase.substring(7, armorNBTbase.indexOf("}"));
+                        }
+
+                        if (armorData.equals("0") && armorColor!=null) {
+                            armorData = "#"+armorColor;
+                        }
+                    }
                     armorList += "\"" + armor.getItem().getRegistryName().replace("minecraft:","") + "\":{";
-                    armorList += "\"displayName\":\"" + armor.getDisplayName() + "\",\"maxDurability\":" + (int)floor(armorMaxDamage) + ",\"durability\":" + (int)floor(armorDamage) + ",\"durabilityPercent\":" + (int)floor(armorPercent) + ",\"data\":"+armor.getMetadata()+"},";
+                    armorList += "\"displayName\":\"" + armor.getDisplayName()
+                            + "\",\"maxDurability\":" + (int)floor(armorMaxDamage)
+                            + ",\"durability\":" + (int)floor(armorDamage)
+                            + ",\"durabilityPercent\":" + (int)floor(armorPercent)
+                            + ",\"data\":\""+armorData+"\"},";
                 }
             }
             if (armorList.equals("{")) {

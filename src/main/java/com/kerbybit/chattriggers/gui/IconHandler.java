@@ -6,6 +6,9 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -76,16 +79,32 @@ public class IconHandler {
             } else {
                 String get_final_name = get_name;
                 int meta = 0;
+                String color = null;
                 if (get_name.contains(":")) {
                     get_final_name = get_name.substring(0, get_name.indexOf(":"));
                     try {
                         meta = Integer.parseInt(get_name.substring(get_name.indexOf(":")+1));
                     } catch (NumberFormatException e) {
                         meta = 0;
+                        color = get_name.substring(get_name.indexOf(":")+1);
                     }
                 }
                 Item item = Item.getByNameOrId(get_final_name);
-                ItemStack itemStack = new ItemStack(item,1,meta);
+                ItemStack itemStack = new ItemStack(item,1, meta);
+                NBTTagCompound nbt = itemStack.getTagCompound();
+                if (nbt==null) {
+                    nbt = new NBTTagCompound();
+                    itemStack.setTagCompound(nbt);
+                }
+                if (color!=null) {
+                    try {
+                        NBTTagCompound colorCompound = new NBTTagCompound();
+                        colorCompound.setInteger("color", Integer.parseInt(color.substring(1)));
+                        nbt.setTag("display", colorCompound);
+                    } catch (NumberFormatException e) {
+                        //do nothing
+                    }
+                }
                 if (item != null) {
                     drawItemIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value), y-4, itemStack);
                     return drawIcons(input.replace("{icon["+get_name+"]}", "    "), x, y);
