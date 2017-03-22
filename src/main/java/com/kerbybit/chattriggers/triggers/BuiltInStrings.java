@@ -279,17 +279,19 @@ public class BuiltInStrings {
                     String armorData = armor.getMetadata()+"";
                     NBTTagCompound armorNBT = armor.getTagCompound();
                     if (armorNBT!=null) {
-                        String armorNBTbase = armorNBT.getTag("display").toString();
-                        String armorColor = null;
-                        if (armorNBTbase.startsWith("{color:")) {
-                            armorColor = armorNBTbase.substring(7, armorNBTbase.indexOf("}"));
-                            if (armorColor.contains(",")) {
-                                armorColor = armorColor.substring(0, armorColor.indexOf(","));
+                        if (armorNBT.hasKey("display")) {
+                            String armorNBTbase = armorNBT.getTag("display").toString();
+                            String armorColor = null;
+                            if (armorNBTbase.startsWith("{color:")) {
+                                armorColor = armorNBTbase.substring(7, armorNBTbase.indexOf("}"));
+                                if (armorColor.contains(",")) {
+                                    armorColor = armorColor.substring(0, armorColor.indexOf(","));
+                                }
                             }
-                        }
 
-                        if (armorData.equals("0") && armorColor!=null) {
-                            armorData = "#"+armorColor;
+                            if (armorData.equals("0") && armorColor!=null) {
+                                armorData = "#"+armorColor;
+                            }
                         }
                     }
                     armorList += "\"" + armor.getItem().getRegistryName().replace("minecraft:","") + "\":{";
