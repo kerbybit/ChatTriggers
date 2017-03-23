@@ -123,13 +123,6 @@ public class ChatTriggers {
 	@SubscribeEvent
 	public void RenderGameOverlayEvent(RenderGameOverlayEvent event) {
 		if (global.canUse) {
-            ++global.fpscounter;
-
-            while (Minecraft.getSystemTime() >= global.fpsSysTime + 1000L) {
-                global.fps = global.fpscounter / 20;
-                global.fpscounter = 0;
-                global.fpsSysTime += 1000L;
-            }
             CommandReference.clickCalc();
 
 			KillfeedHandler.drawKillfeed(event);
@@ -171,7 +164,9 @@ public class ChatTriggers {
             global.ticksElapsed += 1;
 			
 			ChatHandler.onClientTick();
-		}
+		} else {
+            Minecraft.getMinecraft().gameSettings.invertMouse = true;
+        }
 	}
 
 	@SubscribeEvent

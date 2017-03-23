@@ -35,4 +35,37 @@ public class TagHandler {
 
 		return TMP_trig;
 	}
+
+	static String getChatPosition(String TMP_trig) {
+        if (TMP_trig.contains("<s>")) {
+            return "s";
+        }
+        if (TMP_trig.contains("<c>")) {
+            return "c";
+        }
+        if (TMP_trig.contains("<e>")) {
+            return "e";
+        }
+        if (TMP_trig.contains("<start>")) {
+            return "s";
+        }
+        if (TMP_trig.contains("<contain>")) {
+            return "c";
+        }
+        if (TMP_trig.contains("<end>")) {
+            return "e";
+        }
+        return "";
+    }
+
+    static Boolean getIsFormatted(String TMP_trig) {
+        return TMP_trig.contains("<formatted>");
+    }
+
+    static String[] getServer(String TMP_trig) {
+        if (TMP_trig.contains("<server=") && TMP_trig.contains(">")) {
+            return TMP_trig.substring(TMP_trig.indexOf("<server=") + 8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))).split(",");
+        }
+        return new String[]{};
+    }
 }

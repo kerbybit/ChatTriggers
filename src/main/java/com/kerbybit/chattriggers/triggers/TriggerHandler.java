@@ -30,54 +30,20 @@ public class TriggerHandler {
         for (int i=0; i<global.chatTrigger.size(); i++) {
             //setup
             String TMP_trig = global.chatTrigger.get(i).get(1);
-            String TMP_w = "";
-            String[] TMP_server = {};
+            String TMP_w;
+            String[] TMP_server;
             String current_server;
             Boolean correct_server = false;
-            Boolean TMP_formatted = false;
+            Boolean TMP_formatted;
 
             //tags
-            if (TMP_trig.contains("<s>")) {
-                TMP_w = "s";
-                TMP_trig = TMP_trig.replace("<s>", "");
-            }
-            if (TMP_trig.contains("<c>")) {
-                TMP_w = "c";
-                TMP_trig = TMP_trig.replace("<c>", "");
-            }
-            if (TMP_trig.contains("<e>")) {
-                TMP_w = "e";
-                TMP_trig = TMP_trig.replace("<e>", "");
-            }
-            if (TMP_trig.contains("<start>")) {
-                TMP_w = "s";
-                TMP_trig = TMP_trig.replace("<start>", "");
-            }
-            if (TMP_trig.contains("<contain>")) {
-                TMP_w = "c";
-                TMP_trig = TMP_trig.replace("<contain>", "");
-            }
-            if (TMP_trig.contains("<end>")) {
-                TMP_w = "e";
-                TMP_trig = TMP_trig.replace("<end>", "");
-            }
-            if (TMP_trig.contains("<list=") && TMP_trig.contains(">")) {
-                TMP_trig = TMP_trig.replace(TMP_trig.substring(TMP_trig.indexOf("<list="), TMP_trig.indexOf(">", TMP_trig.indexOf("<list=")) + 1), "");
-            }
-            if (TMP_trig.contains("<imported>")) {
-                TMP_trig = TMP_trig.replace("<imported>", "");
-            }
-            if (TMP_trig.contains("<formatted>")) {
-                TMP_trig = TMP_trig.replace("<formatted>", "");
-                TMP_formatted = true;
-            }
+            TMP_w = TagHandler.getChatPosition(TMP_trig);
+            TMP_formatted = TagHandler.getIsFormatted(TMP_trig);
+            TMP_server = TagHandler.getServer(TMP_trig);
+            TMP_trig = TagHandler.removeTags(TMP_trig);
+
 
             //check server stuff
-            if (TMP_trig.contains("<server=") && TMP_trig.contains(">")) {
-                TMP_server = TMP_trig.substring(TMP_trig.indexOf("<server=") + 8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))).split(",");
-                TMP_trig = TMP_trig.replace(TMP_trig.substring(TMP_trig.indexOf("<server="), TMP_trig.indexOf(">", TMP_trig.indexOf("<server=")) + 1), "");
-            }
-
             if (Minecraft.getMinecraft().isSingleplayer()) {
                 current_server = "SinglePlayer";
             } else {

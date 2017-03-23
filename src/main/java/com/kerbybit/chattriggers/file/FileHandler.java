@@ -26,6 +26,18 @@ import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.globalvars.global;
 
 public class FileHandler {
+    public static List<String> loadFile(String fileName) throws IOException {
+        List<String> lines = new ArrayList<String>();
+        String line;
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName),"UTF-8"));
+        while ((line = bufferedReader.readLine()) != null) {
+            lines.add(line);
+        }
+        bufferedReader.close();
+
+        return lines;
+    }
+
 	public static void loadImports(String dest) {
 		File dir = new File(dest);
 		if (!dir.exists()) {
@@ -236,13 +248,7 @@ public class FileHandler {
 	
 	public static List<List<String>> loadTriggers(String fileName, Boolean isImport, String importName) throws IOException {
 		List<List<String>> tmp_triggers = new ArrayList<List<String>>();
-		List<String> lines = new ArrayList<String>();
-		String line;
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName),"UTF-8"));
-		while ((line = bufferedReader.readLine()) != null) {
-			lines.add(line);
-		}
-		bufferedReader.close();
+		List<String> lines = loadFile(fileName);
 
 		int j=-1;
 		for (int i=0; i<lines.size(); i++) {
@@ -453,13 +459,7 @@ public class FileHandler {
 	
 	public static List<List<String>> loadStrings(String fileName) throws IOException {
 		List<List<String>> tmp_strings = new ArrayList<List<String>>();
-		List<String> lines = new ArrayList<String>();
-		String line;
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName),"UTF-8"));
-		while ((line = bufferedReader.readLine()) != null) {
-			lines.add(line);
-		}
-		bufferedReader.close();
+		List<String> lines = loadFile(fileName);
 		
 		for (int i=0; i<lines.size(); i++) {
 			try {
@@ -492,13 +492,7 @@ public class FileHandler {
 	
 	public static List<String> loadSettings(String fileName) throws IOException {
 		List<String> tmp_settings = new ArrayList<String>();
-		List<String> lines = new ArrayList<String>();
-		String line;
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName),"UTF-8"));
-		while ((line = bufferedReader.readLine()) != null) {
-			lines.add(line);
-		}
-		bufferedReader.close();
+		List<String> lines = loadFile(fileName);
 
         for (String l : lines) {
 			if (l.startsWith("color:")) {tmp_settings.add(l.substring(l.indexOf("color:") + 6));}

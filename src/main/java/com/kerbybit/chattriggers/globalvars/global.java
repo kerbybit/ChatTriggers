@@ -24,8 +24,6 @@ public class global {
     public static String hasWatermarkURL = "";
 	
 	public static int playerHealth = -1;
-    public static int fps = 0;
-    public static int fpscounter = 0;
     public static int fpslow = 50;
     public static int fpshigh = 60;
     public static String fpslowcol = "&c";
@@ -35,9 +33,6 @@ public class global {
     public static Double clicks = 0.0;
     public static List<Double> clicks_ave = new ArrayList<Double>();
     public static Double clicks_max = 0.0;
-
-    public static long fpsSysTime = Minecraft.getSystemTime();
-    public static long sysTime = Minecraft.getSystemTime();
 	
 	public static String importURL = "";
 	public static Boolean canImport = true;

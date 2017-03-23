@@ -7,11 +7,7 @@ import com.kerbybit.chattriggers.gui.IconHandler;
 import com.kerbybit.chattriggers.objects.NewJsonHandler;
 import com.kerbybit.chattriggers.references.RomanNumber;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiIngame;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -205,13 +201,13 @@ public class BuiltInStrings {
             TMP_e = createDefaultString("coordz", "z", Math.round(Minecraft.getMinecraft().thePlayer.posZ)+"", TMP_e);
         }
         if (TMP_e.contains("{fps}")) {
-            TMP_e = createDefaultString("fps", Math.round(global.fps)+"", TMP_e);
+            TMP_e = createDefaultString("fps", Minecraft.getDebugFPS()+"", TMP_e);
         }
         if (TMP_e.contains("{fpscol}")) {
             String col;
-            if (global.fps >= global.fpshigh) {
+            if (Minecraft.getDebugFPS() >= global.fpshigh) {
                 col = global.fpshighcol;
-            } else if (global.fps >= global.fpslow) {
+            } else if (Minecraft.getDebugFPS() >= global.fpslow) {
                 col = global.fpsmedcol;
             } else {
                 col = global.fpslowcol;
