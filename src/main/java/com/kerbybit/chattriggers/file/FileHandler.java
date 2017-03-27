@@ -593,7 +593,7 @@ public class FileHandler {
 	}
 	
 	private static void startup() throws ClassNotFoundException {
-		ChatHandler.warn(ChatHandler.color("gray", "Loading chat triggers..."));
+		ChatHandler.warn(ChatHandler.color("gray", "Loading ChatTriggers..."));
 		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold");}
 		try {
 			CommandReference.clearTriggerList();
@@ -601,51 +601,24 @@ public class FileHandler {
 			global.USR_string = loadStrings("./mods/ChatTriggers/strings.txt");
 			global.settings = loadSettings("./mods/ChatTriggers/settings.txt");
 			loadImports("./mods/ChatTriggers/Imports/");
-			if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
-			if (global.settings.size() < 3) {global.settings.add("null");}
-			if (global.settings.size() < 4) {global.settings.add("top-left");}
-			if (global.settings.size() < 5) {global.settings.add("false");}
-			if (global.settings.size() < 6) {global.settings.add("null");}
-			if (global.settings.size() < 7) {global.settings.add("true");}
-			if (global.settings.size() < 8) {global.settings.add("true");}
-            if (global.settings.size() < 9) {global.settings.add("10");}
-            if (global.settings.size() < 10) {global.settings.add("true");}
-            if (global.settings.size() < 11) {global.settings.add("false");}
-			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Chat triggers loaded"));
+			populateSettings();
+			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "ChatTriggers loaded"));
 		} catch (IOException e1) {
-			ChatHandler.warn(ChatHandler.color("red", "Error loading files!"));
-			ChatHandler.warn(ChatHandler.color("gold", "Setting up new files"));
+			ChatHandler.warn(ChatHandler.color("gold", "Setting up missing files..."));
 			File checkFile = new File("./mods/ChatTriggers");
-			if (checkFile.exists()) {
-				try {FileUtils.deleteDirectory(checkFile);} 
-				catch (IOException e11) {ChatHandler.warn(ChatHandler.color("red","Error deleting old files!")); e11.printStackTrace();}
-				if (!checkFile.mkdir()) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while creating the files!"));}
-			} else {if (!checkFile.mkdir()) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while creating the files!"));}}
+			if (!checkFile.exists()) {
+			    if (!checkFile.mkdir()) {
+			        ChatHandler.warn(ChatHandler.color("red", "Something went wrong while creating the files!"));
+			    }
+			}
 			
-			if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
-			if (global.settings.size() < 3) {global.settings.add("null");}
-			if (global.settings.size() < 4) {global.settings.add("top-left");}
-			if (global.settings.size() < 5) {global.settings.add("false");}
-			if (global.settings.size() < 6) {global.settings.add("null");}
-            if (global.settings.size() < 7) {global.settings.add("true");}
-            if (global.settings.size() < 8) {global.settings.add("true");}
-            if (global.settings.size() < 9) {global.settings.add("10");}
-            if (global.settings.size() < 10) {global.settings.add("true");}
-            if (global.settings.size() < 11) {global.settings.add("false");}
+			populateSettings();
 			
 			try {saveAll(); ChatHandler.warn(ChatHandler.color("green", "New files created!"));} 
-			catch (IOException e111) {ChatHandler.warn(ChatHandler.color("red", "Error saving files! report this to kerbybit ASAP!")); e111.printStackTrace();}
+			catch (IOException e111) {ChatHandler.warn(ChatHandler.color("red", "Error saving files!")); e111.printStackTrace();}
+            ChatHandler.warn(ChatHandler.color(global.settings.get(0), "ChatTriggers loaded"));
 		}
-		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
-		if (global.settings.size() < 3) {global.settings.add("null");}
-		if (global.settings.size() < 4) {global.settings.add("top-left");}
-		if (global.settings.size() < 5) {global.settings.add("false");}
-		if (global.settings.size() < 6) {global.settings.add("null");}
-        if (global.settings.size() < 7) {global.settings.add("true");}
-        if (global.settings.size() < 8) {global.settings.add("true");}
-        if (global.settings.size() < 9) {global.settings.add("10");}
-        if (global.settings.size() < 10) {global.settings.add("true");}
-        if (global.settings.size() < 11) {global.settings.add("false");}
+		populateSettings();
 		try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 	}
 	
@@ -672,4 +645,17 @@ public class FileHandler {
 			}
 		}
 	}
+
+	private static void populateSettings() {
+        if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
+        if (global.settings.size() < 3) {global.settings.add("null");}
+        if (global.settings.size() < 4) {global.settings.add("top-left");}
+        if (global.settings.size() < 5) {global.settings.add("false");}
+        if (global.settings.size() < 6) {global.settings.add("null");}
+        if (global.settings.size() < 7) {global.settings.add("true");}
+        if (global.settings.size() < 8) {global.settings.add("true");}
+        if (global.settings.size() < 9) {global.settings.add("10");}
+        if (global.settings.size() < 10) {global.settings.add("true");}
+        if (global.settings.size() < 11) {global.settings.add("false");}
+    }
 }

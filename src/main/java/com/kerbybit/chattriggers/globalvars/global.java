@@ -22,6 +22,7 @@ public class global {
 	public static Boolean canUse = true;
     public static Boolean hasWatermark = true;
     public static String hasWatermarkURL = "";
+    public static Boolean inverted = false;
 	
 	public static int playerHealth = -1;
     public static int fpslow = 50;
@@ -45,10 +46,6 @@ public class global {
     public static String bugLastCommand = "";
     public static String lastEvent = "";
     public static String bugLastEvent = "";
-
-    //key - URL
-    //value - json string
-    public static HashMap<String, String> jsonURL = new HashMap<String, String>();
 	
 	public static List<String> chatHistory = new ArrayList<String>();
 	public static int tick = 0;
@@ -111,46 +108,6 @@ public class global {
 	public static List<List<String>> backupTMP_strings = new ArrayList<List<String>>();
 	public static List<String> temporary_replace = new ArrayList<String>();
 	public static List<String> temporary_replacement = new ArrayList<String>();
-	
-	
-	/////////////////Array matrix///////////////////////
-	// layout
-	// get(0) = array name
-	// get(1+) = array values
-	////////////////////////////////////////////////////
-	public static List<List<String>> USR_array = new ArrayList<List<String>>();
-
-	////////////////////List Map////////////////////////
-    // layout
-    // key = name
-    // value = list
-    ////////////////////////////////////////////////////
-    public static HashMap<String, List<String>> lists = new HashMap<String, List<String>>();
-
-
-
-    ////////////////Display map//////////////////////
-    // layout
-    // key = display name
-    // value = list of values
-    /////////////////////////////////////////////////
-    ////////////////Display xy///////////////////////
-    // layout
-    // key = display name
-    // value = x y array
-    /////////////////////////////////////////////////
-	public static HashMap<String,List<String>> displays = new HashMap<String,List<String>>();
-    public static HashMap<String,List<String>> shown_displays = new HashMap<String,List<String>>();
-    public static HashMap<String,Double[]> displays_xy = new HashMap<String,Double[]>();
-    public static HashMap<String,String> display_settings = new HashMap<String, String>();
-
-
-    /////////////////////Json map///////////////////////
-    // layout
-    // key = json name
-    // value = json object
-    ////////////////////////////////////////////////////
-    public static HashMap<String, JsonObject> jsons = new HashMap<String, JsonObject>();
 	
 	//////////////////Settings matrix///////////////////
 	// layout

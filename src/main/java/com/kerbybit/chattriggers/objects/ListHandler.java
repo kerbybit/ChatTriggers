@@ -9,12 +9,11 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class ListHandler {
+    private static HashMap<String, List<String>> lists = new HashMap<String, List<String>>();
+
     private static ArrayList<String> getListFromURL(String url) {
         try {
             String listString = "";
@@ -75,7 +74,7 @@ public class ListHandler {
             return "Unable to load list!";
         } else {
             clearList(list_name);
-            global.lists.put(list_name, list_object);
+            lists.put(list_name, list_object);
             String return_string = "[";
             for (String value : list_object) {
                 return_string += value + ",";
@@ -86,9 +85,9 @@ public class ListHandler {
     }
 
     private static String getList(String list_name) {
-        if (global.lists.containsKey(list_name)) {
+        if (lists.containsKey(list_name)) {
             String return_string = "[";
-            for (String value : global.lists.get(list_name)) {
+            for (String value : lists.get(list_name)) {
                 return_string += value + ",";
             }
             return_string = return_string.substring(0, return_string.length()-1) + "]";
@@ -99,8 +98,8 @@ public class ListHandler {
     }
 
     private static ArrayList<String> getListObject(String list_name) {
-        if (global.lists.containsKey(list_name)) {
-            return new ArrayList<String>(global.lists.get(list_name));
+        if (lists.containsKey(list_name)) {
+            return new ArrayList<String>(lists.get(list_name));
         } else {
             return null;
         }
@@ -113,7 +112,7 @@ public class ListHandler {
             if (value.startsWith("[") && value.endsWith("]")) {
                 String[] values = value.substring(1, value.length()-1).split(",");
                 list_object.addAll(Arrays.asList(values));
-                global.lists.put(list_name, list_object);
+                lists.put(list_name, list_object);
                 return getList(list_name);
             } else if (value.contains(",")) {
                 String position_string = value.substring(0, value.indexOf(","));
@@ -121,27 +120,27 @@ public class ListHandler {
 
                 try {
                     list_object.add(Integer.parseInt(position_string), new_value);
-                    global.lists.put(list_name, list_object);
+                    lists.put(list_name, list_object);
                     return getList(list_name);
                 } catch(NumberFormatException e) {
                     list_object.add(value);
-                    global.lists.put(list_name, list_object);
+                    lists.put(list_name, list_object);
                     return getList(list_name);
                 }
             } else {
                 list_object.add(value);
-                global.lists.put(list_name, list_object);
+                lists.put(list_name, list_object);
                 return getList(list_name);
             }
         } else {
-            global.lists.put(list_name, Collections.singletonList(value));
+            lists.put(list_name, Collections.singletonList(value));
             return getList(list_name);
         }
     }
 
     private static String getValue(String list_name, int position) {
-        if (global.lists.containsKey(list_name)) {
-            List<String> entries = global.lists.get(list_name);
+        if (lists.containsKey(list_name)) {
+            List<String> entries = lists.get(list_name);
             if (position < entries.size() && position >= 0) {
                 return entries.get(position);
             } else {
@@ -153,14 +152,14 @@ public class ListHandler {
     }
 
     private static String getValue(String list_name, String value) {
-        if (global.lists.containsKey(list_name)) {
+        if (lists.containsKey(list_name)) {
             try {
                 int position = Integer.parseInt(value);
                 return getValue(list_name, position);
             } catch (NumberFormatException e) {
                 int position = -1;
                 int i = 0;
-                for (String entry : global.lists.get(list_name)) {
+                for (String entry : lists.get(list_name)) {
                     if (value.equals(entry)) {
                         position = i;
                         break;
@@ -179,8 +178,8 @@ public class ListHandler {
     }
 
     private static String getRandomValue(String list_name) {
-        if (global.lists.containsKey(list_name)) {
-            List<String> list = global.lists.get(list_name);
+        if (lists.containsKey(list_name)) {
+            List<String> list = lists.get(list_name);
             int randInt = EventsHandler.randInt(0, list.size()-1);
             return list.get(randInt);
         } else {
@@ -189,19 +188,19 @@ public class ListHandler {
     }
 
     private static String getSize(String list_name) {
-        if (global.lists.containsKey(list_name)) {
-            return global.lists.get(list_name).size()+"";
+        if (lists.containsKey(list_name)) {
+            return lists.get(list_name).size()+"";
         } else {
             return "0";
         }
     }
 
     private static String removeValue(String list_name, int position) {
-        if (global.lists.containsKey(list_name)) {
-            List<String> entries = global.lists.get(list_name);
+        if (lists.containsKey(list_name)) {
+            List<String> entries = lists.get(list_name);
             if (position < entries.size() && position >= 0) {
                 String removed = entries.remove(position);
-                global.lists.put(list_name, entries);
+                lists.put(list_name, entries);
                 return removed;
             } else {
                 return "Index out of bounds";
@@ -212,14 +211,14 @@ public class ListHandler {
     }
 
     private static String removeValue(String list_name, String value) {
-        if (global.lists.containsKey(list_name)) {
+        if (lists.containsKey(list_name)) {
             try {
                 int position = Integer.parseInt(value);
                 return removeValue(list_name, position);
             } catch (NumberFormatException e) {
                 int position = -1;
                 int i = 0;
-                List<String> entries = global.lists.get(list_name);
+                List<String> entries = lists.get(list_name);
                 for (String entry : entries) {
                     if (value.equals(entry)) {
                         position = i;
@@ -231,7 +230,7 @@ public class ListHandler {
                     return "Not in list";
                 } else {
                     entries.remove(position);
-                    global.lists.put(list_name, entries);
+                    lists.put(list_name, entries);
                     return position+"";
                 }
             }
@@ -241,9 +240,9 @@ public class ListHandler {
     }
 
     private static String clearList(String list_name) {
-        if (global.lists.containsKey(list_name)) {
+        if (lists.containsKey(list_name)) {
             String return_string = getList(list_name);
-            global.lists.remove(list_name);
+            lists.remove(list_name);
             return return_string;
         } else {
             return "Not a list";
@@ -387,5 +386,19 @@ public class ListHandler {
         global.backupTMP_strings.add(temporary);
 
         return TMP_e.replace("{list["+list_name+"]}", "{string[ListToString->"+list_name+"LITERAL"+"-"+global.TMP_string.size()+"]}");
+    }
+
+    public static int getListsSize() {
+        return lists.size();
+    }
+
+    public static void trimLists() {
+        HashMap<String, List<String>> lists_copy = new HashMap<String, List<String>>(lists);
+
+        for (String key : lists_copy.keySet()) {
+            if (key.startsWith("JsonToList->") || key.startsWith("StringToList->")) {
+               lists.remove(key);
+            }
+        }
     }
 }

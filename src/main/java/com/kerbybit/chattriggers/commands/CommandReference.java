@@ -316,26 +316,6 @@ public class CommandReference {
         return "" + Minecraft.getMinecraft().getCurrentServerData().pingToServer;
     }
 
-    public static void trimJsons() {
-        HashMap<String, JsonObject> jsons_copy = new HashMap<String, JsonObject>(global.jsons);
-
-        for (String key : jsons_copy.keySet()) {
-            if (key.startsWith("DefaultJson")) {
-                global.jsons.remove(key);
-            }
-        }
-    }
-
-    public static void trimLists() {
-        HashMap<String, List<String>> lists_copy = new HashMap<String, List<String>>(global.lists);
-
-        for (String key : lists_copy.keySet()) {
-            if (key.startsWith("JsonToList->") || key.startsWith("StringToList->")) {
-                global.lists.remove(key);
-            }
-        }
-    }
-
     private static Long sysTime = Minecraft.getSystemTime();
     //run on render
     public static void clickCalc() {

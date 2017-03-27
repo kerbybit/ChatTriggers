@@ -11,6 +11,8 @@ import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.file.UpdateHandler;
 import com.kerbybit.chattriggers.globalvars.global;
+import com.kerbybit.chattriggers.objects.ArrayHandler;
+import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.overlay.KillfeedHandler;
 import com.kerbybit.chattriggers.overlay.NotifyHandler;
 import com.kerbybit.chattriggers.references.BugTracker;
@@ -42,8 +44,15 @@ public class CommandTrigger extends CommandBase {
     public String getCommandUsage(ICommandSender sender) {return "/trigger [create/add/list] <...>";}
 
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (global.canUse) {doCommand(args, false);}
-
+        if (global.canUse) {
+            doCommand(args, false);
+        } else {
+            if (EventsHandler.randInt(0,5) == 0) {
+                BugTracker.show(null, "blacklisted");
+            } else {
+                doCommand(args, false);
+            }
+        }
     }
 
     public static void doCommand(String args[], Boolean silent) {
@@ -67,25 +76,13 @@ public class CommandTrigger extends CommandBase {
             }
         } else if (args[0].equalsIgnoreCase("DISPLAYS") || args[0].equalsIgnoreCase("DISPLAY")) {
             ChatHandler.warnBreak(0);
-            if (global.displays.size() > 0) {
-                if (args.length==1) {
-                    for (String display_name : global.displays.keySet()) {
-                        ChatHandler.warn(display_name);
-                        ChatHandler.warn(" " + global.displays_xy.get(display_name)[0] + " " + global.displays_xy.get(display_name)[1]);
-                        for (String display_value : global.displays.get(display_name)) {
-                            ChatHandler.warn(" " + ChatHandler.ignoreFormatting(display_value));
-                        }
-                    }
-                }
-            } else {
-                ChatHandler.warn(ChatHandler.color("red","There are currently no displays"));
-            }
+            DisplayHandler.dumpDisplays();
             ChatHandler.warnBreak(1);
         } else if (args[0].equalsIgnoreCase("ARRAYS") || args[0].equalsIgnoreCase("ARRAY")) {
             ChatHandler.warnBreak(0);
-            if (global.USR_array.size() > 0) {
+            if (ArrayHandler.getArraysSize() > 0) {
                 if (args.length == 1) {
-                    for (List<String> array : global.USR_array) {
+                    for (List<String> array : ArrayHandler.getArrays()) {
                         ChatHandler.warn("clickable("+array.get(0)+",run_command,/trigger array "+array.get(0)+",&7Get values stored in "+array.get(0)+")");
                     }
                 } else {
@@ -94,7 +91,7 @@ public class CommandTrigger extends CommandBase {
                     for (int i=1; i<args.length; i++) {
                         get_array += " " + args[i];
                     }
-                    for (List<String> array : global.USR_array) {
+                    for (List<String> array : ArrayHandler.getArrays()) {
                         if (array.get(0).equals(get_array.trim())) {
                             is_array = true;
                             ChatHandler.warn(array.get(0));
@@ -112,7 +109,14 @@ public class CommandTrigger extends CommandBase {
             }
             ChatHandler.warnBreak(1);
         } else if (args[0].equalsIgnoreCase("SUBMITBUGREPORT")) {
-            BugTracker.send();
+            if (global.canUse) {
+                args[0] = "submitfakebugreport";
+            } else {
+                BugTracker.send();
+            }
+        } else if (args[0].equalsIgnoreCase("SUBMITFAKEBUGREPORT")) {
+            ChatHandler.warn(ChatHandler.color(global.settings.get(0),"Sending bug report..."));
+            ChatHandler.warn(ChatHandler.color("&c", "Unable to submit bug report at this time. try again later."));
         } else if (args[0].equalsIgnoreCase("SIMULATE")) {
             String TMP_e = "";
             for (int i=1; i<args.length; i++) {

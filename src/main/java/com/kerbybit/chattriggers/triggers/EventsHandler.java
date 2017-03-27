@@ -13,6 +13,7 @@ import java.util.Random;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.commands.CommandReference;
+import com.kerbybit.chattriggers.file.JsonHandler;
 import com.kerbybit.chattriggers.objects.ArrayHandler;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
@@ -51,8 +52,8 @@ public class EventsHandler {
 			}
 		}
         //trim jsons and lists to save memory
-        CommandReference.trimJsons();
-        CommandReference.trimLists();
+        NewJsonHandler.trimJsons();
+        ListHandler.trimLists();
 
 		for (int i=0; i<tmp_event.size(); i++) {
         //SETUP
@@ -71,13 +72,13 @@ public class EventsHandler {
 		//setup backup for functions so strings don't get overwritten
 			StringHandler.resetBackupStrings();
 
-        //Do displays first
+        //displays
             TMP_e = DisplayHandler.displayFunctions(TMP_e);
 
 		//built in strings
 			TMP_e = BuiltInStrings.builtInStrings(TMP_e, chatEvent);
 			
-		//user strings and functions
+		//strings and functions
             TMP_e = TMP_e.replace("{string<", "{string[")
                     .replace("{array<", "{array[")
                     .replace("{display<", "{display[")
@@ -389,7 +390,7 @@ public class EventsHandler {
                     if (valfrom.startsWith("[") && valfrom.endsWith("]")) {
                         arrayto.addAll(Arrays.asList(valfrom.substring(1, valfrom.length()-1).split(",")));
                     } else {
-                        for (List<String> array : global.USR_array) {
+                        for (List<String> array : ArrayHandler.getArrays()) {
                             if (array.get(0).equals(valfrom)) {
                                 List<String> copy = new ArrayList<String>(array);
                                 copy.remove(0);
@@ -733,7 +734,7 @@ public class EventsHandler {
 		
 		if (global.waitEvents.size()==0 && global.asyncEvents.size()==0 && global.TMP_string.size()>0) {
 			global.TMP_string.clear();
-			global.jsonURL.clear();
+			JsonHandler.jsonURL.clear();
 		}
 		
 		if (global.waitEvents.size()>0) {

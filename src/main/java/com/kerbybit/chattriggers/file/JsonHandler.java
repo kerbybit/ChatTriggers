@@ -11,19 +11,23 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
+import com.kerbybit.chattriggers.objects.ArrayHandler;
 
 ///TODO DEPRECATED
 public class JsonHandler {
+    public static HashMap<String, String> jsonURL = new HashMap<String, String>();
+
 	public static String exportJsonFile(String fileName, String arrayName, String nodeName) throws IOException {
 		String returnString;
 		int arrayNum = -1;
 		
-		for (int i=0; i<global.USR_array.size(); i++) {
-			if (arrayName.equals(global.USR_array.get(i).get(0))) {
+		for (int i = 0; i< ArrayHandler.getArraysSize(); i++) {
+			if (arrayName.equals(ArrayHandler.USR_array.get(i).get(0))) {
 				arrayNum = i;
 			}
 		}
@@ -40,13 +44,13 @@ public class JsonHandler {
 		} else {
 			writer.println("{");
 			returnString = ("{");
-			for (int i=1; i<global.USR_array.get(arrayNum).size(); i++) {
+			for (int i=1; i<ArrayHandler.USR_array.get(arrayNum).size(); i++) {
 				String hasComma = "";
-				if (i!=global.USR_array.get(arrayNum).size()-1) {hasComma = ",";}
+				if (i!=ArrayHandler.USR_array.get(arrayNum).size()-1) {hasComma = ",";}
 				nodeName = nodeName.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
 						.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
 						.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
-				String nodeValue = global.USR_array.get(arrayNum).get(i).replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+				String nodeValue = ArrayHandler.USR_array.get(arrayNum).get(i).replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
 						.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
 						.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
 				writer.println("     \""+nodeName+"\":\""+nodeValue+"\""+hasComma);
@@ -82,8 +86,8 @@ public class JsonHandler {
 					String arrayToSave = toImport.substring(0,toImport.indexOf("=>"));
 					
 					int whatArray = -1;
-					for (int i=0; i<global.USR_array.size(); i++) {
-						if (arrayToSave.equals(global.USR_array.get(i).get(0))) {
+					for (int i=0; i<ArrayHandler.USR_array.size(); i++) {
+						if (arrayToSave.equals(ArrayHandler.USR_array.get(i).get(0))) {
 							whatArray = i;
 						}
 					}
@@ -91,8 +95,8 @@ public class JsonHandler {
 					if (whatArray == -1) {
 						List<String> temporary = new ArrayList<String>();
 						temporary.add(arrayToSave);
-						global.USR_array.add(temporary);
-						whatArray = global.USR_array.size()-1;
+                        ArrayHandler.USR_array.add(temporary);
+						whatArray = ArrayHandler.USR_array.size()-1;
 					}
 					
 					String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
@@ -102,7 +106,7 @@ public class JsonHandler {
 						returnString = "[";
 						while (jsonString.contains(check)) {
 							String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
-							global.USR_array.get(whatArray).add(jsonGot.replace("openSquareF6cyUQp9openSquare","[").replace("closeSquareF6cyUQp9closeSquare","]")
+                            ArrayHandler.USR_array.get(whatArray).add(jsonGot.replace("openSquareF6cyUQp9openSquare","[").replace("closeSquareF6cyUQp9closeSquare","]")
 									.replace("plusF6cyUQp9plus", "+").replace("minusF6cyUQp9minus", "-").replace("timesF6cyUQp9times", "*"));
 							jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
 							returnString += jsonGot+",";
@@ -159,8 +163,8 @@ public class JsonHandler {
 		String returnString = "Something went wrong!";
         String jsonString = "";
 
-		if (global.jsonURL.containsKey(url)) {
-            jsonString = global.jsonURL.get(url);
+		if (jsonURL.containsKey(url)) {
+            jsonString = jsonURL.get(url);
         } else {
             try {
                 URL web = new URL(url);
@@ -177,7 +181,7 @@ public class JsonHandler {
                 for (String value : lines) {jsonString += value;}
                 jsonString = jsonString.replace("[", "openSquareF6cyUQp9openSquare").replace("]", "closeSquareF6cyUQp9closeSquare")
                         .replace("+", "plusF6cyUQp9plus").replace("-", "minusF6cyUQp9minus");
-                global.jsonURL.put(url, jsonString);
+                jsonURL.put(url, jsonString);
 
             } catch (UnsupportedEncodingException e) {
                 returnString = "Unsupported encoding!";
@@ -196,8 +200,8 @@ public class JsonHandler {
                 String arrayToSave = toImport.substring(0,toImport.indexOf("=>"));
 
                 int whatArray = -1;
-                for (int i=0; i<global.USR_array.size(); i++) {
-                    if (arrayToSave.equals(global.USR_array.get(i).get(0))) {
+                for (int i=0; i<ArrayHandler.USR_array.size(); i++) {
+                    if (arrayToSave.equals(ArrayHandler.USR_array.get(i).get(0))) {
                         whatArray = i;
                     }
                 }
@@ -205,8 +209,8 @@ public class JsonHandler {
                 if (whatArray == -1) {
                     List<String> temporary = new ArrayList<String>();
                     temporary.add(arrayToSave);
-                    global.USR_array.add(temporary);
-                    whatArray = global.USR_array.size()-1;
+                    ArrayHandler.USR_array.add(temporary);
+                    whatArray = ArrayHandler.USR_array.size()-1;
                 }
 
                 String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
@@ -216,7 +220,7 @@ public class JsonHandler {
                     returnString = "[";
                     while (jsonString.contains(check)) {
                         String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
-                        global.USR_array.get(whatArray).add(jsonGot.replace("openSquareF6cyUQp9openSquare","[").replace("closeSquareF6cyUQp9closeSquare","]")
+                        ArrayHandler.USR_array.get(whatArray).add(jsonGot.replace("openSquareF6cyUQp9openSquare","[").replace("closeSquareF6cyUQp9closeSquare","]")
                                 .replace("plusF6cyUQp9plus", "+").replace("minusF6cyUQp9minus", "-"));
                         jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
                         returnString += jsonGot+",";

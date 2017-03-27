@@ -259,9 +259,9 @@ public class BuiltInStrings {
                 potionList = potionList.substring(0, potionList.length()-1) + "}";
             }
 
-            NewJsonHandler.getJson("DefaultJson->POTIONEFFECTS-"+(global.jsons.size()+1), potionList);
+            NewJsonHandler.getJson("DefaultJson->POTIONEFFECTS-"+(NewJsonHandler.getJsonsSize()+1), potionList);
 
-            TMP_e = TMP_e.replace("{potionEffects}", "{json[DefaultJson->POTIONEFFECTS-"+global.jsons.size()+"]}");
+            TMP_e = TMP_e.replace("{potionEffects}", "{json[DefaultJson->POTIONEFFECTS-"+NewJsonHandler.getJsonsSize()+"]}");
         }
         if (TMP_e.contains("{armor}")) {
             ItemStack[] armor_set = Minecraft.getMinecraft().thePlayer.inventory.armorInventory;
@@ -304,9 +304,9 @@ public class BuiltInStrings {
                 armorList = armorList.substring(0, armorList.length()-1) + "}";
             }
 
-            NewJsonHandler.getJson("DefaultJson->ARMOR-"+(global.jsons.size()+1), armorList);
+            NewJsonHandler.getJson("DefaultJson->ARMOR-"+(NewJsonHandler.getJsonsSize()+1), armorList);
 
-            TMP_e = TMP_e.replace("{armor}", "{json[DefaultJson->ARMOR-"+global.jsons.size()+"]}");
+            TMP_e = TMP_e.replace("{armor}", "{json[DefaultJson->ARMOR-"+NewJsonHandler.getJsonsSize()+"]}");
         }
         if (TMP_e.contains("{cps}")) {
             String returnString;

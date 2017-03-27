@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.references.BugTracker;
+import com.kerbybit.chattriggers.triggers.EventsHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -30,6 +31,21 @@ public class CommandTR extends CommandBase {
                     String send = "";
                     for (String arg : args) {send += arg + " ";}
                     Minecraft.getMinecraft().thePlayer.sendChatMessage("/tr " + send.trim());
+                }
+            } else {
+                if (EventsHandler.randInt(0,5) == 0) {
+                    BugTracker.show(null, "blacklisted");
+                } else {
+                    if (global.settings.get(7).equalsIgnoreCase("true")) {
+                        ArrayList<String> temporary = new ArrayList<String>();
+                        temporary.add("run");
+                        temporary.addAll(Arrays.asList(args));
+                        CommandTrigger.doCommand(temporary.toArray(new String[temporary.size()]), false);
+                    } else {
+                        String send = "";
+                        for (String arg : args) {send += arg + " ";}
+                        Minecraft.getMinecraft().thePlayer.sendChatMessage("/tr " + send.trim());
+                    }
                 }
             }
         } catch (Exception e) {

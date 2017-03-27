@@ -10,11 +10,14 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 //TODO bad class name. pls change
 public class NewJsonHandler {
+    private static HashMap<String, JsonObject> jsons = new HashMap<String, JsonObject>();
+
     private static JsonObject getJsonFromURL(String url) {
         try {
             String jsonString = "";
@@ -70,15 +73,15 @@ public class NewJsonHandler {
             return "Unable to load Json!";
         } else {
             clearJson(json_name);
-            global.jsons.put(json_name, json_object);
+            jsons.put(json_name, json_object);
             return json_object + "";
         }
     }
 
     private static String getValue(String key, String value) {
-        if (global.jsons.containsKey(key)) {
+        if (jsons.containsKey(key)) {
             try {
-                JsonObject obj = global.jsons.get(key);
+                JsonObject obj = jsons.get(key);
                 String[] seg = value.split("\\.");
                 String returnString = "null";
                 for (String element : seg) {
@@ -108,8 +111,8 @@ public class NewJsonHandler {
     }
 
     private static String getValue(String key) {
-        if (global.jsons.containsKey(key)) {
-            return global.jsons.get(key) + "";
+        if (jsons.containsKey(key)) {
+            return jsons.get(key) + "";
         } else {
             return "Not a json";
         }
@@ -166,8 +169,8 @@ public class NewJsonHandler {
     }
 
     private static String clearJson(String name) {
-        if (global.jsons.containsKey(name)) {
-            global.jsons.remove(name);
+        if (jsons.containsKey(name)) {
+            jsons.remove(name);
             return "Cleared json " + name;
         } else {
             return "No json by the name of " + name + " to clear";
@@ -232,9 +235,9 @@ public class NewJsonHandler {
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
             String get_value = StringHandler.stringFunctions(get_prevalue, null);
 
-            ListHandler.getList("JsonToList->"+get_name+"GETKEYS"+get_value+"-"+(global.lists.size()+1), getKeys(get_name, get_value));
+            ListHandler.getList("JsonToList->"+get_name+"GETKEYS"+get_value+"-"+(ListHandler.getListsSize()+1), getKeys(get_name, get_value));
 
-            TMP_e = TMP_e.replace("{json["+get_name+"]}.getKeys("+get_prevalue+")","{list[JsonToList->"+get_name+"GETKEYS"+get_value+"-"+global.lists.size()+"]}");
+            TMP_e = TMP_e.replace("{json["+get_name+"]}.getKeys("+get_prevalue+")","{list[JsonToList->"+get_name+"GETKEYS"+get_value+"-"+ListHandler.getListsSize()+"]}");
         }
 
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.getValues(") && TMP_e.contains(")")) {
@@ -287,5 +290,19 @@ public class NewJsonHandler {
 
     private static String createDefaultString(String function, String json_name, String value, String TMP_e) {
         return createDefaultString(function, json_name, "", value, TMP_e);
+    }
+
+    public static int getJsonsSize() {
+        return jsons.size();
+    }
+
+    public static void trimJsons() {
+        HashMap<String, JsonObject> jsons_copy = new HashMap<String, JsonObject>(jsons);
+
+        for (String key : jsons_copy.keySet()) {
+            if (key.startsWith("DefaultJson")) {
+                jsons.remove(key);
+            }
+        }
     }
 }

@@ -12,21 +12,23 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static net.minecraft.realms.RealmsMth.floor;
 
 public class DisplayHandler {
+    private static HashMap<String,List<String>> displays = new HashMap<String,List<String>>();
+    private static HashMap<String,List<String>> shown_displays = new HashMap<String,List<String>>();
+    private static HashMap<String,Double[]> displays_xy = new HashMap<String,Double[]>();
+    private static HashMap<String,String> display_settings = new HashMap<String, String>();
+
     private static String updateDisplay(String display_name) {
         List<String> display;
 
-        if (global.displays.containsKey(display_name)
-                && global.displays_xy.containsKey(display_name)
-                && global.shown_displays.containsKey(display_name)) {
-            display = global.displays.get(display_name);
+        if (displays.containsKey(display_name)
+                && displays_xy.containsKey(display_name)
+                && shown_displays.containsKey(display_name)) {
+            display = displays.get(display_name);
 
             List<String> display_return = new ArrayList<String>();
 
@@ -54,7 +56,7 @@ public class DisplayHandler {
                 display_return.add(TagHandler.removeTags(value));
             }
 
-            global.shown_displays.put(display_name, display_return);
+            shown_displays.put(display_name, display_return);
             return "Updated " + display_name + "'s values";
         } else {
             return "Display " + display_name + " has no values";
@@ -62,44 +64,44 @@ public class DisplayHandler {
     }
 
     private static String addToDisplay(String display_name, String value) {
-        if (global.displays.containsKey(display_name)
-                && global.displays_xy.containsKey(display_name)
-                && global.shown_displays.containsKey(display_name)) {
-            ArrayList<String> display = new ArrayList<String>(global.displays.get(display_name));
+        if (displays.containsKey(display_name)
+                && displays_xy.containsKey(display_name)
+                && shown_displays.containsKey(display_name)) {
+            ArrayList<String> display = new ArrayList<String>(displays.get(display_name));
             display.add(value);
-            global.displays.put(display_name, display);
+            displays.put(display_name, display);
             return "Added " + value + " to " + display_name;
         } else {
-            global.displays.put(display_name, Arrays.asList(value));
-            global.displays_xy.put(display_name, new Double[]{0.0,0.0,1.0});
-            global.shown_displays.put(display_name, new ArrayList<String>());
+            displays.put(display_name, Collections.singletonList(value));
+            displays_xy.put(display_name, new Double[]{0.0,0.0,1.0});
+            shown_displays.put(display_name, new ArrayList<String>());
             return "Created and added " + value + " to " + display_name;
         }
     }
 
     private static String getDisplayX(String display_name) {
-        if (global.displays_xy.containsKey(display_name)) {
-            return global.displays_xy.get(display_name)[0] + "";
+        if (displays_xy.containsKey(display_name)) {
+            return displays_xy.get(display_name)[0] + "";
         } else {
             return "Display " + display_name + " has no x to get";
         }
     }
 
     private static String getDisplayY(String display_name) {
-        if (global.displays_xy.containsKey(display_name)) {
-            return global.displays_xy.get(display_name)[1] + "";
+        if (displays_xy.containsKey(display_name)) {
+            return displays_xy.get(display_name)[1] + "";
         } else {
             return "Display " + display_name + " has no y to get";
         }
     }
 
     private static String setDisplayX(String display_name, String value) {
-        if (global.displays_xy.containsKey(display_name)) {
+        if (displays_xy.containsKey(display_name)) {
             try {
                 Double x = Double.parseDouble(value);
-                Double y = global.displays_xy.get(display_name)[1];
-                Double a = global.displays_xy.get(display_name)[2];
-                global.displays_xy.put(display_name, new Double[]{x, y, a});
+                Double y = displays_xy.get(display_name)[1];
+                Double a = displays_xy.get(display_name)[2];
+                displays_xy.put(display_name, new Double[]{x, y, a});
                 return value + "";
             } catch (NumberFormatException e) {
                 return "ERR: setDisplayX -> " + value + " is not a valid number";
@@ -110,12 +112,12 @@ public class DisplayHandler {
     }
 
     private static String setDisplayY(String display_name, String value) {
-        if (global.displays_xy.containsKey(display_name)) {
+        if (displays_xy.containsKey(display_name)) {
             try {
-                Double x = global.displays_xy.get(display_name)[0];
+                Double x = displays_xy.get(display_name)[0];
                 Double y = Double.parseDouble(value);
-                Double a = global.displays_xy.get(display_name)[2];
-                global.displays_xy.put(display_name, new Double[]{x, y, a});
+                Double a = displays_xy.get(display_name)[2];
+                displays_xy.put(display_name, new Double[]{x, y, a});
                 return value + "";
             } catch (NumberFormatException e) {
                 return "ERR: setDisplayY -> " + value + " is not a valid number";
@@ -126,14 +128,14 @@ public class DisplayHandler {
     }
 
     private static String setDisplaySettings(String display_name, String settings) {
-        global.display_settings.put(display_name, settings);
+        display_settings.put(display_name, settings);
         return "Added settings " + settings + " to display " + display_name;
     }
 
     private static String getDisplaySettings(String display_name) {
-        if (global.display_settings.containsKey(display_name)) {
+        if (display_settings.containsKey(display_name)) {
             String return_string = "";
-            for (String value : global.display_settings.get(display_name).split(",")) {
+            for (String value : display_settings.get(display_name).split(",")) {
                 return_string+="<"+value+">";
             }
             return return_string;
@@ -143,17 +145,17 @@ public class DisplayHandler {
     }
 
     private static String deleteDisplay(String display_name) {
-        global.displays.remove(display_name);
-        global.displays_xy.remove(display_name);
-        global.shown_displays.remove(display_name);
-        global.display_settings.remove(display_name);
+        displays.remove(display_name);
+        displays_xy.remove(display_name);
+        shown_displays.remove(display_name);
+        display_settings.remove(display_name);
         return "Cleared " + display_name;
     }
 
     public static void clearDisplays() {
-        global.displays.clear();
-        global.displays_xy.clear();
-        global.shown_displays.clear();
+        displays.clear();
+        displays_xy.clear();
+        shown_displays.clear();
     }
 
     public static void drawDisplays(RenderGameOverlayEvent event) {
@@ -164,15 +166,15 @@ public class DisplayHandler {
         float width = res.getScaledWidth();
         float height = res.getScaledHeight();
 
-        for (Map.Entry<String, List<String>> display_map : global.shown_displays.entrySet()) {
+        for (Map.Entry<String, List<String>> display_map : shown_displays.entrySet()) {
             String display_name = display_map.getKey();
             List<String> display = display_map.getValue();
             Double[] display_xy;
             String settings = getDisplaySettings(display_name);
             int color = 0x00ffffff;
 
-            if (global.displays_xy.containsKey(display_name)) {
-                display_xy = global.displays_xy.get(display_name);
+            if (displays_xy.containsKey(display_name)) {
+                display_xy = displays_xy.get(display_name);
             } else {
                 display_xy = new Double[]{0.0,0.0};
             }
@@ -350,5 +352,19 @@ public class DisplayHandler {
 
     private static String createDefaultString(String function_name, String display_name, String value, String TMP_e) {
         return createDefaultString(function_name, display_name, "", value, TMP_e);
+    }
+
+    public static void dumpDisplays() {
+        if (displays.size() > 0) {
+        for (String display_name : displays.keySet()) {
+            ChatHandler.warn(display_name);
+            ChatHandler.warn(" " + displays_xy.get(display_name)[0] + " " + displays_xy.get(display_name)[1]);
+            for (String display_value : displays.get(display_name)) {
+                ChatHandler.warn(" " + ChatHandler.ignoreFormatting(display_value));
+            }
+        }
+        } else {
+            ChatHandler.warn(ChatHandler.color("red","There are currently no displays"));
+        }
     }
 }

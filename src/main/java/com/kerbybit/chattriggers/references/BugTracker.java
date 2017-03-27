@@ -83,7 +83,12 @@ public class BugTracker {
             global.bugLastEvent = global.lastEvent;
         }
         ChatHandler.warn(ChatHandler.color("darkred",getError(type)));
-        ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitbugreport,Send a bug report) &4to submit a bug report");
+        if (type!="blacklisted") {
+            ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitbugreport,Send a bug report) &4to submit a bug report");
+        } else {
+            ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitfakebugreport,Send a bug report) &4to submit a bug report");
+        }
+
 
         e.printStackTrace();
 

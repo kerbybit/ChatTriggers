@@ -14,6 +14,16 @@ import com.kerbybit.chattriggers.triggers.StringHandler;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class ArrayHandler {
+    public static List<List<String>> USR_array = new ArrayList<List<String>>();
+
+    public static List<List<String>> getArrays() {
+        return USR_array;
+    }
+
+    public static int getArraysSize() {
+        return USR_array.size();
+    }
+
 	public static String arrayFunctions(String TMP_e, ClientChatReceivedEvent chatEvent) {
 	    while (TMP_e.contains("{array[") && TMP_e.contains("]}.getRandom()")) {
 	        String get_name = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.getRandom()", TMP_e.indexOf("{array[")));
@@ -22,7 +32,7 @@ public class ArrayHandler {
             }
 	        Boolean isArray = false;
 
-	        for (List<String> value : global.USR_array) {
+	        for (List<String> value : USR_array) {
 	            if (value.get(0).equals(get_name)) {
                     List<String> temporary = new ArrayList<String>();
                     temporary.add("ArrayToString->"+get_name+"GETR"+"-"+(global.TMP_string.size()+1));
@@ -59,15 +69,15 @@ public class ArrayHandler {
 			
 			String[] args = checkTo.split(",");
 			if (args.length==2) {
-				for (int j=0; j<global.USR_array.size(); j++) {
-					if (global.USR_array.get(j).get(0).equals(checkFrom)) {
+				for (int j=0; j<USR_array.size(); j++) {
+					if (USR_array.get(j).get(0).equals(checkFrom)) {
 						String[] moreargs = args[0].split(args[1]);
 						List<String> temporary = new ArrayList<String>();
 						temporary.addAll(Arrays.asList(moreargs));
 						returnString = "[";
 						for (String value : temporary) {returnString+=value + " ";}
 						returnString = returnString.trim().replace(" ",",")+"]";
-						global.USR_array.get(j).addAll(temporary);
+						USR_array.get(j).addAll(temporary);
 						isArray = true;
 					}
 				}
@@ -81,7 +91,7 @@ public class ArrayHandler {
 					for (String value : temp) {returnString+=value + " ";}
 					returnString = returnString.trim().replace(" ",",")+"]";
 					temporary.addAll(temp);
-					global.USR_array.add(temporary);
+					USR_array.add(temporary);
 				}
 			} else {returnString = "setSplit formatted wrong! use .setSplit(value,split)";}
 			
@@ -113,12 +123,12 @@ public class ArrayHandler {
                 }
             }
 
-			for (int j=0; j<global.USR_array.size(); j++) {
-				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
+			for (int j=0; j<USR_array.size(); j++) {
+				if (USR_array.get(j).get(0).equals(checkFrom)) {
                     if (where == -1) {
-                        global.USR_array.get(j).add(fin_checkTo);
+                        USR_array.get(j).add(fin_checkTo);
                     } else {
-                        global.USR_array.get(j).add(where, fin_checkTo);
+                        USR_array.get(j).add(where, fin_checkTo);
                     }
 					isArray = true;
 				}
@@ -128,7 +138,7 @@ public class ArrayHandler {
 				List<String> prearray = new ArrayList<String>();
 				prearray.add(checkFrom);
 				prearray.add(fin_checkTo);
-                global.USR_array.add(prearray);
+                USR_array.add(prearray);
 			}
 			
 			List<String> temporary = new ArrayList<String>();
@@ -148,9 +158,9 @@ public class ArrayHandler {
                 checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
             }
 
-            for (int j=0; j<global.USR_array.size(); j++) {
-                if (global.USR_array.get(j).get(0).equals(checkFrom)) {
-                    global.USR_array.get(j).add(1, checkTo);
+            for (int j=0; j<USR_array.size(); j++) {
+                if (USR_array.get(j).get(0).equals(checkFrom)) {
+                    USR_array.get(j).add(1, checkTo);
                     isArray = true;
                 }
             }
@@ -159,7 +169,7 @@ public class ArrayHandler {
                 List<String> prearray = new ArrayList<String>();
                 prearray.add(checkFrom);
                 prearray.add(checkTo);
-                global.USR_array.add(prearray);
+                USR_array.add(prearray);
             }
 
             List<String> temporary = new ArrayList<String>();
@@ -178,9 +188,9 @@ public class ArrayHandler {
 				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
 			}
 			
-			for (int j=0; j<global.USR_array.size(); j++) {
-				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
-					global.USR_array.remove(j);
+			for (int j=0; j<USR_array.size(); j++) {
+				if (USR_array.get(j).get(0).equals(checkFrom)) {
+					USR_array.remove(j);
 					returnString = checkFrom + " cleared.";
 				}
 			}
@@ -202,10 +212,10 @@ public class ArrayHandler {
 				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
 			}
 			
-			for (int j=0; j<global.USR_array.size(); j++) {
-				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
-					for (int k=1; k<global.USR_array.get(j).size(); k++) {
-						if (global.USR_array.get(j).get(k).equals(checkTo)) {checkThis = "true";}
+			for (int j=0; j<USR_array.size(); j++) {
+				if (USR_array.get(j).get(0).equals(checkFrom)) {
+					for (int k=1; k<USR_array.get(j).size(); k++) {
+						if (USR_array.get(j).get(k).equals(checkTo)) {checkThis = "true";}
 					}
 				}
 			}
@@ -227,10 +237,10 @@ public class ArrayHandler {
 				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
 			}
 			
-			for (int j=0; j<global.USR_array.size(); j++) {
-				if (global.USR_array.get(j).get(0).equals(checkFrom)) {
-					for (int k=1; k<global.USR_array.get(j).size(); k++) {
-						if (global.USR_array.get(j).get(k).equalsIgnoreCase(checkTo)) {checkThis = "true";}
+			for (int j=0; j<USR_array.size(); j++) {
+				if (USR_array.get(j).get(0).equals(checkFrom)) {
+					for (int k=1; k<USR_array.get(j).size(); k++) {
+						if (USR_array.get(j).get(k).equalsIgnoreCase(checkTo)) {checkThis = "true";}
 					}
 				}
 			}
@@ -258,31 +268,31 @@ public class ArrayHandler {
 			try {
 				toRemove = Integer.parseInt(checkTo);
 				if (toRemove > 0) {
-					for (int j=0; j<global.USR_array.size(); j++) {
-						if (global.USR_array.get(j).get(0).equals(checkFrom)) {
-							if (toRemove < global.USR_array.get(j).size()) {
-								removed = global.USR_array.get(j).remove(toRemove);
+					for (int j=0; j<USR_array.size(); j++) {
+						if (USR_array.get(j).get(0).equals(checkFrom)) {
+							if (toRemove < USR_array.get(j).size()) {
+								removed = USR_array.get(j).remove(toRemove);
 								returnString = removed;
-								if (global.USR_array.get(j).size()==1) {toRemoveArray = j;}
-							} else {returnString = "Value over bounds! (index "+toRemove+" - expecting "+global.USR_array.size()+")";}
+								if (USR_array.get(j).size()==1) {toRemoveArray = j;}
+							} else {returnString = "Value over bounds! (index "+toRemove+" - expecting "+USR_array.size()+")";}
 						}
 					}
 				} else {returnString = "Value under bounds! (index "+toRemove+" - expecting 1)";}
 			} catch (NumberFormatException e) {
-				for (int j=0; j<global.USR_array.size(); j++) {
-					if (global.USR_array.get(j).get(0).equals(checkFrom)) {
-						for (int k=1; k<global.USR_array.get(j).size(); k++) {
-							if (global.USR_array.get(j).get(k).equals(checkTo)) {
-								removed = global.USR_array.get(j).remove(k);
+				for (int j=0; j<USR_array.size(); j++) {
+					if (USR_array.get(j).get(0).equals(checkFrom)) {
+						for (int k=1; k<USR_array.get(j).size(); k++) {
+							if (USR_array.get(j).get(k).equals(checkTo)) {
+								removed = USR_array.get(j).remove(k);
 								returnString = removed;
-								if (global.USR_array.get(j).size()==1) {toRemoveArray = j;}
+								if (USR_array.get(j).size()==1) {toRemoveArray = j;}
 							}
 						}
 					}
 				}
 			}
 			
-			if (toRemoveArray != -1) {global.USR_array.remove(toRemoveArray);}
+			if (toRemoveArray != -1) {USR_array.remove(toRemoveArray);}
 			
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("ArrayToString->"+checkFrom+"REMOVE"+checkTo+"-"+(global.TMP_string.size()+1));
@@ -306,21 +316,21 @@ public class ArrayHandler {
 			try {
 				toGet = Integer.parseInt(checkTo);
 				if (toGet > 0) {
-					for (int j=0; j<global.USR_array.size(); j++) {
-						if (global.USR_array.get(j).get(0).equals(checkFrom)) {
-							if (toGet < global.USR_array.get(j).size()) {
-								got = global.USR_array.get(j).get(toGet);
+					for (int j=0; j<USR_array.size(); j++) {
+						if (USR_array.get(j).get(0).equals(checkFrom)) {
+							if (toGet < USR_array.get(j).size()) {
+								got = USR_array.get(j).get(toGet);
 								returnString = got;
-							} else {returnString = "Value over bounds! (index "+toGet+" - expecting "+global.USR_array.size()+")";}
+							} else {returnString = "Value over bounds! (index "+toGet+" - expecting "+USR_array.size()+")";}
 						}
 					}
 				} else {returnString = "Value under bounds! (index "+toGet+" - expecting 1)";}
 			} catch (NumberFormatException e) {
-				for (int j=0; j<global.USR_array.size(); j++) {
-					if (global.USR_array.get(j).get(0).equals(checkFrom)) {
+				for (int j=0; j<USR_array.size(); j++) {
+					if (USR_array.get(j).get(0).equals(checkFrom)) {
 						returnString = "-1";
-						for (int k=1; k<global.USR_array.get(j).size(); k++) {
-							if (global.USR_array.get(j).get(k).equals(checkTo)) {
+						for (int k=1; k<USR_array.get(j).size(); k++) {
+							if (USR_array.get(j).get(k).equals(checkTo)) {
 								returnString = k +"";
 							}
 						}
@@ -344,8 +354,8 @@ public class ArrayHandler {
 				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
 			}
 			
-			for (int j=0; j<global.USR_array.size(); j++) {
-				if (global.USR_array.get(j).get(0).equals(checkFrom)) {arraysize = global.USR_array.get(j).size()-1;}
+			for (int j=0; j<USR_array.size(); j++) {
+				if (USR_array.get(j).get(0).equals(checkFrom)) {arraysize = USR_array.get(j).size()-1;}
 			}
 			
 			List<String> temporary = new ArrayList<String>();

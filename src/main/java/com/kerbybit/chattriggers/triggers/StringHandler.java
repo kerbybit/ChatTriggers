@@ -855,8 +855,8 @@ public class StringHandler {
             }
             tmp_string = tmp_string.substring(0, tmp_string.length()-1) + "]";
 
-            ListHandler.getList("StringToList->"+sn+"SPLIT-"+(global.lists.size()+1), tmp_string);
-		    return "{list[StringToList->"+sn+"SPLIT-"+global.lists.size()+"]}";
+            ListHandler.getList("StringToList->"+sn+"SPLIT-"+(ListHandler.getListsSize()+1), tmp_string);
+		    return "{list[StringToList->"+sn+"SPLIT-"+ListHandler.getListsSize()+"]}";
         } else {
             for (List<String> function : global.function) {
                 if (function.size() > 2) {

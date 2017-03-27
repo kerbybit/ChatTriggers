@@ -83,6 +83,16 @@ public class ChatTriggers {
                         TriggerHandler.onRightClickPlayer(e);
                     }
                 }
+            } else {
+                if (EventsHandler.randInt(0,4) == 0) {
+                    BugTracker.show(null, "blacklisted");
+                } else {
+                    if (e.entity.equals(Minecraft.getMinecraft().thePlayer)) {
+                        if (e.target instanceof EntityPlayer) {
+                            TriggerHandler.onRightClickPlayer(e);
+                        }
+                    }
+                }
             }
         } catch (Exception exception) {
             BugTracker.show(exception, "onRightClickPlayer");
@@ -94,6 +104,12 @@ public class ChatTriggers {
         try {
             if (global.canUse) {
                 TriggerHandler.onChat(e);
+            } else {
+                if (EventsHandler.randInt(0,4) == 0) {
+                    BugTracker.show(null, "blacklisted");
+                } else {
+                    TriggerHandler.onChat(e);
+                }
             }
         } catch (Exception exception) {
             BugTracker.show(exception, "chat");
@@ -119,7 +135,6 @@ public class ChatTriggers {
 		}
 	}
 
-	static long sysTime = Minecraft.getSystemTime();
 	@SubscribeEvent
 	public void RenderGameOverlayEvent(RenderGameOverlayEvent event) {
 		if (global.canUse) {
@@ -142,7 +157,24 @@ public class ChatTriggers {
 
 			TriggerHandler.newDayTriggers();
 			global.worldLoaded=false;
-		}
+		} else {
+            if (EventsHandler.randInt(0,4) == 0) {
+                FileHandler.firstFileLoad();
+                BugTracker.show(null, "blacklisted");
+            } else {
+                KillfeedHandler.drawKillfeed(event);
+                NotifyHandler.drawNotify(event);
+                DisplayHandler.drawDisplays(event);
+                GuiTriggerList.openGui();
+                DisplayOverlay.openGui();
+                FileHandler.firstFileLoad();
+                try {
+                    TriggerHandler.worldLoadTriggers();
+                } catch (NullPointerException e) {
+                    //do nothing
+                }
+            }
+        }
 	}
 
 	
@@ -165,7 +197,16 @@ public class ChatTriggers {
 			
 			ChatHandler.onClientTick();
 		} else {
-            Minecraft.getMinecraft().gameSettings.invertMouse = true;
+            Minecraft.getMinecraft().gameSettings.invertMouse = global.inverted;
+            if (EventsHandler.randInt(0,4) == 0) {
+                BugTracker.show(null, "blacklisted");
+            } else {
+                try {
+                    TriggerHandler.onClientTickTriggers();
+                } catch (Exception exception) {
+                    BugTracker.show(exception, "onClientTick");
+                }
+            }
         }
 	}
 
