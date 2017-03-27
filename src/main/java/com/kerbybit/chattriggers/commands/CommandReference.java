@@ -10,6 +10,9 @@ import com.google.gson.JsonObject;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.globalvars.global;
+import com.kerbybit.chattriggers.objects.DisplayHandler;
+import com.kerbybit.chattriggers.objects.ListHandler;
+import com.kerbybit.chattriggers.objects.NewJsonHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,7 +23,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 public class CommandReference {
-    public static void clearAll() {
+    static void clearAll() {
         global.waitEvents.clear();
         global.waitTime.clear();
         global.asyncEvents.clear();
@@ -30,16 +33,19 @@ public class CommandReference {
         global.killfeedDelay.clear();
         global.notify.clear();
         global.notifyAnimation.clear();
+        DisplayHandler.clearDisplays();
+        ListHandler.clearLists();
+        NewJsonHandler.clearJsons();
     }
 
 	public static void resetAll() {
 		ChatHandler.warn(ChatHandler.color("red", "Resetting everything in attempt to fix things"));
 		clearAll();
-		try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+		CommandTrigger.commandLoad();
 		ChatHandler.warn(ChatHandler.color("green", "Reset completed"));
 	}
 
-    public static void silentResetAll() {
+    static void silentResetAll() {
         clearAll();
         try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
     }

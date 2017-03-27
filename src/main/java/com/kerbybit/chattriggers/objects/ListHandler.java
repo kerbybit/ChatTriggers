@@ -249,6 +249,10 @@ public class ListHandler {
         }
     }
 
+    public static void clearLists() {
+        lists.clear();
+    }
+
     public static String listFunctions(String TMP_e) {
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.load(") && TMP_e.contains(")")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{list[")+6, TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list[")));

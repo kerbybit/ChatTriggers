@@ -156,6 +156,7 @@ public class DisplayHandler {
         displays.clear();
         displays_xy.clear();
         shown_displays.clear();
+        display_settings.clear();
     }
 
     public static void drawDisplays(RenderGameOverlayEvent event) {

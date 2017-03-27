@@ -177,6 +177,10 @@ public class NewJsonHandler {
         }
     }
 
+    public static void clearJsons() {
+        jsons.clear();
+    }
+
     public static String jsonFunctions(String TMP_e) {
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.clear()")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{json[")+6, TMP_e.indexOf("]}.clear()", TMP_e.indexOf("{json[")));

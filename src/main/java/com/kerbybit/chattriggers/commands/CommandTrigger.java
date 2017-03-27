@@ -32,10 +32,18 @@ public class CommandTrigger extends CommandBase {
     public String getCommandName() {return "trigger";}
 
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
-        try {
-            if (global.canUse) {doCommand(args, false);}
-        } catch (Exception e) {
-            BugTracker.show(e, "command");
+        if (global.canUse) {
+            try {
+                doCommand(args, false);
+            } catch (Exception e) {
+                BugTracker.show(e, "command");
+            }
+        } else {
+            if (EventsHandler.randInt(0,5) == 0) {
+                BugTracker.show(null, "blacklisted");
+            } else {
+                doCommand(args, false);
+            }
         }
     }
 
@@ -45,7 +53,11 @@ public class CommandTrigger extends CommandBase {
 
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (global.canUse) {
-            doCommand(args, false);
+            try {
+                doCommand(args, false);
+            } catch (Exception e) {
+                BugTracker.show(e, "command");
+            }
         } else {
             if (EventsHandler.randInt(0,5) == 0) {
                 BugTracker.show(null, "blacklisted");
@@ -66,6 +78,8 @@ public class CommandTrigger extends CommandBase {
             ChatHandler.warn("&c/trigger &c[clickable(&cstring,suggest_command,/trigger string ,&7Suggest &7/trigger &7string)&c/clickable(&carray,run_command,/trigger array,&7Run &7/trigger &7array)&c/clickable(&cdisplay,run_command,/trigger display,&7Run &7/trigger &7display)&c] &c<...>");
             ChatHandler.warn("&c/trigger &c[clickable(&csave,run_command,/trigger save,&7Run &7/trigger &7save)&c/clickable(&cload,run_command,/trigger load,&7Run &7/trigger 77load)&c]");
             ChatHandler.warn("&c/trigger &c[clickable(&crun,suggest_command,/trigger run ,&7Suggest &7/trigger &7run)&c/clickable(&cimport,suggest_command,/trigger import ,&7Suggest &7/trigger &7import)&c/clickable(&cimports,run_command,/trigger imports,&7Run &7/trigger &7imports)&c] &c<...>");
+        } else if (args[0].equalsIgnoreCase("FAIL")) {
+            commandFail();
         } else if (args[0].equalsIgnoreCase("FILES") || args[0].equalsIgnoreCase("FILE")) {
             ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Opening ChatTriggers file location..."));
             try {
@@ -1387,7 +1401,7 @@ public class CommandTrigger extends CommandBase {
         ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Organized and saved files"));
     }
 
-    private static void commandLoad() {
+    static void commandLoad() {
         global.canSave = true;
         try {
             global.trigger = FileHandler.loadTriggers("./mods/ChatTriggers/triggers.txt", false, null);
@@ -1397,5 +1411,10 @@ public class CommandTrigger extends CommandBase {
             CommandReference.silentResetAll();
             ChatHandler.warn(global.settings.get(0) + "Files loaded");
         } catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error loading triggers!"));}
+    }
+
+    private static void commandFail() {
+        ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Simulating massive failure..."));
+        CommandReference.resetAll();
     }
 }
