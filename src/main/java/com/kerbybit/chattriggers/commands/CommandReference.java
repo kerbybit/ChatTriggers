@@ -2,11 +2,9 @@ package com.kerbybit.chattriggers.commands;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import com.google.gson.JsonObject;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.globalvars.global;
@@ -14,13 +12,7 @@ import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
 import com.kerbybit.chattriggers.objects.NewJsonHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 public class CommandReference {
     static void clearAll() {
@@ -147,7 +139,7 @@ public class CommandReference {
         return false;
 	}
 
-    public static List<String> getEventTypes() {
+    static List<String> getEventTypes() {
         List<String> r = new ArrayList<String>();
 
             r.add("chat");

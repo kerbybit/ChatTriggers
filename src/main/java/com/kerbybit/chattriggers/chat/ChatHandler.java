@@ -3,6 +3,7 @@ package com.kerbybit.chattriggers.chat;
 import java.util.List;
 
 import com.kerbybit.chattriggers.commands.CommandTrigger;
+import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
 
 import net.minecraft.client.Minecraft;
@@ -18,9 +19,9 @@ public class ChatHandler {
 		int numdash = (int) Math.floor(((((280*(chatWidth))+40)/320) * (1/chatScale))*52);
 		for (int j=0; j<numdash; j++) {dashes += "-";}
 		if (type==0) {
-			warn(color(global.settings.get(0), "&m-"+dashes));
+			warn(color(Settings.col[0], "&m-"+dashes));
 		} else if (type==1) {
-			warn(color(global.settings.get(0), "&m"+dashes+"&r" + global.settings.get(0) + "^"));
+			warn(color(Settings.col[0], "&m"+dashes+"&r" + Settings.col[0] + "^"));
 		}
 		
 	}

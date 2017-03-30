@@ -67,8 +67,6 @@ public class EventsHandler {
 			int TMP_v = 100;
 			int TMP_pi = 1;
 
-
-
 		//setup backup for functions so strings don't get overwritten
 			StringHandler.resetBackupStrings();
 

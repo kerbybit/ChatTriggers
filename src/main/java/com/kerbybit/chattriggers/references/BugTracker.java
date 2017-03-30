@@ -1,6 +1,7 @@
 package com.kerbybit.chattriggers.references;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
+import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.triggers.EventsHandler;
 import net.minecraft.client.Minecraft;
@@ -54,7 +55,7 @@ public class BugTracker {
                         conn.setDoOutput(true);
                         conn.getOutputStream().write(postDataBytes);
                         Reader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-                        ChatHandler.warn(global.settings.get(0) + "Bug report submitted successfully!");
+                        ChatHandler.warn(Settings.col[0] + "Bug report submitted successfully!");
                         global.bugReport.clear();
                     } catch (Exception e) {
                         ChatHandler.warn("&4An error occured while submitting a bug report!");

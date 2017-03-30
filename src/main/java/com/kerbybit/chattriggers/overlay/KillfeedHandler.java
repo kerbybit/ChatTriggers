@@ -1,6 +1,7 @@
 package com.kerbybit.chattriggers.overlay;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
+import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -12,7 +13,9 @@ public class KillfeedHandler {
     private static FontRenderer ren = MC.fontRendererObj;
 
     public static String addToKillfeed(String event, int delay) {
-        if (global.settings.get(10).equalsIgnoreCase("FALSE")) {
+        if (Settings.killfeedInNotify) {
+            return "notify";
+        } else {
             global.killfeed.add(event
                     .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
                     .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
@@ -28,8 +31,6 @@ public class KillfeedHandler {
 
             global.killfeedDelay.add(delay);
             return "killfeed";
-        } else {
-            return "notify";
         }
     }
 
@@ -58,8 +59,8 @@ public class KillfeedHandler {
             float width = res.getScaledWidth();
             float height = res.getScaledHeight();
 
-            int x = (int)(global.killfeed_x * width);
-            int y = (int)(global.killfeed_y * height);
+            int x = (int)(Settings.killfeedPosition[0] * width);
+            int y = (int)(Settings.killfeedPosition[1] * height);
             if (x < 0) {
                 x = 0;
             }
@@ -76,7 +77,7 @@ public class KillfeedHandler {
                 if (y < height / 2) {
                     for (int i = 0; i < global.killfeed.size(); i++) {
                         int col = 0xffffffff;
-                        if (global.settings.get(9).equalsIgnoreCase("TRUE")) {
+                        if (Settings.killfeedFade) {
                             if (global.killfeedDelay.get(i) < 50) {
                                 col = col - (50 - global.killfeedDelay.get(i)) * 0x05000000;
                             }
@@ -86,7 +87,7 @@ public class KillfeedHandler {
                 } else {
                     for (int i = 0; i < global.killfeed.size(); i++) {
                         int col = 0xffffffff;
-                        if (global.settings.get(9).equalsIgnoreCase("TRUE")) {
+                        if (Settings.killfeedFade) {
                             if (global.killfeedDelay.get(i) < 50) {
                                 col = col - (50 - global.killfeedDelay.get(i)) * 0x05000000;
                             }
@@ -98,7 +99,7 @@ public class KillfeedHandler {
                 if (y < height / 2) {
                     for (int i = 0; i < global.killfeed.size(); i++) {
                         int col = 0xffffffff;
-                        if (global.settings.get(9).equalsIgnoreCase("TRUE")) {
+                        if (Settings.killfeedFade) {
                             if (global.killfeedDelay.get(i) < 50) {
                                 col = col - (50 - global.killfeedDelay.get(i)) * 0x05000000;
                             }
@@ -108,7 +109,7 @@ public class KillfeedHandler {
                 } else {
                     for (int i = 0; i < global.killfeed.size(); i++) {
                         int col = 0xffffffff;
-                        if (global.settings.get(9).equalsIgnoreCase("TRUE")) {
+                        if (Settings.killfeedFade) {
                             if (global.killfeedDelay.get(i) < 50) {
                                 col = col - (50 - global.killfeedDelay.get(i)) * 0x05000000;
                             }
@@ -120,7 +121,7 @@ public class KillfeedHandler {
                 if (y < height / 2) {
                     for (int i = 0; i < global.killfeed.size(); i++) {
                         int col = 0xffffffff;
-                        if (global.settings.get(9).equalsIgnoreCase("TRUE")) {
+                        if (Settings.killfeedFade) {
                             if (global.killfeedDelay.get(i) < 50) {
                                 col = col - (50 - global.killfeedDelay.get(i)) * 0x05000000;
                             }
@@ -130,7 +131,7 @@ public class KillfeedHandler {
                 } else {
                     for (int i = 0; i < global.killfeed.size(); i++) {
                         int col = 0xffffffff;
-                        if (global.settings.get(9).equalsIgnoreCase("TRUE")) {
+                        if (Settings.killfeedFade) {
                             if (global.killfeedDelay.get(i) < 50) {
                                 col = col - (50 - global.killfeedDelay.get(i)) * 0x05000000;
                             }

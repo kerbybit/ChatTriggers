@@ -152,12 +152,12 @@ public class ChatTriggers {
             try {
                 TriggerHandler.worldLoadTriggers();
             } catch (NullPointerException e) {
-                //do nothing
+                //Catch for replay mod
             }
 
-			TriggerHandler.newDayTriggers();
-			global.worldLoaded=false;
-		} else {
+            TriggerHandler.newDayTriggers();
+            global.worldLoaded=false;
+        } else {
             if (EventsHandler.randInt(0,4) == 0) {
                 FileHandler.firstFileLoad();
                 BugTracker.show(null, "blacklisted");
@@ -171,7 +171,7 @@ public class ChatTriggers {
                 try {
                     TriggerHandler.worldLoadTriggers();
                 } catch (NullPointerException e) {
-                    //do nothing
+                    //Catch for replay mod
                 }
             }
         }

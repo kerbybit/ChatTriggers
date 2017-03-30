@@ -17,16 +17,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.kerbybit.chattriggers.globalvars.Settings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
-import org.apache.commons.io.FileUtils;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.globalvars.global;
 
 public class FileHandler {
-    public static List<String> loadFile(String fileName) throws IOException {
+    private static List<String> loadFile(String fileName) throws IOException {
         List<String> lines = new ArrayList<String>();
         String line;
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName),"UTF-8"));
@@ -38,8 +38,8 @@ public class FileHandler {
         return lines;
     }
 
-	public static void loadImports(String dest) {
-		File dir = new File(dest);
+	public static void loadImports() {
+		File dir = new File("./mods/ChatTriggers/Imports/");
 		if (!dir.exists()) {
 			if (!dir.mkdir()) {ChatHandler.warn(ChatHandler.color("red", "Unable to create file!"));}
 		}
@@ -48,7 +48,7 @@ public class FileHandler {
 			for (File file : files) {
 				if (file.isFile()) {
 					if (file.getName().endsWith(".txt")) {
-						try {global.trigger.addAll(loadTriggers(dest + file.getName(), true, file.getName()));}
+						try {global.trigger.addAll(loadTriggers("./mods/ChatTriggers/Imports/" + file.getName(), true, file.getName()));}
 						catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Unable to load import!")); e.printStackTrace();}
 					}
 				}
@@ -108,7 +108,7 @@ public class FileHandler {
 
 			 			try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while loading the files after an import!"));}
 			 			
-			 			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Got "+file+" successfully!"));
+			 			ChatHandler.warn(ChatHandler.color(Settings.col[0], "Got "+file+" successfully!"));
 			 		} catch (MalformedURLException e) {
 			 			ChatHandler.warn(ChatHandler.color("red", "Not a valid import! bad URL"));
 			 			e.printStackTrace();
@@ -125,8 +125,8 @@ public class FileHandler {
 		}
 	}
 	
-	private static void saveTriggers(List<List<String>> trigger, String fileName) throws IOException {
-		PrintWriter writer = new PrintWriter(fileName,"UTF-8");
+	private static void saveTriggers(List<List<String>> trigger) throws IOException {
+		PrintWriter writer = new PrintWriter("./mods/ChatTriggers/triggers.txt","UTF-8");
 		List<String> lists = new ArrayList<String>();
 
         for (List<String> value : trigger) {
@@ -146,7 +146,7 @@ public class FileHandler {
 						
 						int tabbed_logic=0;
 						for (int j=2; j<trig.size(); j++) {
-							String extraSpaces = "";
+							StringBuilder extraSpaces = new StringBuilder();
 							String TMP_c = trig.get(j);
 							
 							if (TMP_c.equalsIgnoreCase("END")
@@ -154,7 +154,7 @@ public class FileHandler {
 								tabbed_logic--;
 							}
 							
-								for (int k=0; k<tabbed_logic; k++) {extraSpaces+= "  ";}
+								for (int k=0; k<tabbed_logic; k++) {extraSpaces.append("  ");}
 								writer.println(extraSpaces + "  "+trig.get(j));
 							
 							if (TMP_c.toUpperCase().startsWith("IF") 
@@ -179,7 +179,7 @@ public class FileHandler {
 				
 				int tabbed_logic = 0;
 				for (int j=2; j<trig.size(); j++) {
-					String extraSpaces = "";
+					StringBuilder extraSpaces = new StringBuilder();
 					String TMP_c = trig.get(j);
 					
 					if (TMP_c.equalsIgnoreCase("END")
@@ -187,7 +187,7 @@ public class FileHandler {
 						tabbed_logic--;
 					}
 					
-						for (int k=0; k<tabbed_logic; k++) {extraSpaces+= "  ";}
+						for (int k=0; k<tabbed_logic; k++) {extraSpaces.append("  ");}
 						writer.println(extraSpaces + "  "+trig.get(j));
 					
 					if (TMP_c.toUpperCase().startsWith("IF") 
@@ -206,8 +206,8 @@ public class FileHandler {
 		writer.close();
 	}
 	
-	private static void saveStrings(List<List<String>> listName, String fileName) throws IOException {
-		PrintWriter writer = new PrintWriter(fileName,"UTF-8");
+	private static void saveStrings(List<List<String>> listName) throws IOException {
+		PrintWriter writer = new PrintWriter("./mods/ChatTriggers/strings.txt","UTF-8");
         for (List<String> string : listName) {
 			writer.println("string:"+string.get(0));
 			writer.println("  value:"+string.get(1));
@@ -218,31 +218,26 @@ public class FileHandler {
 		writer.close();
 	}
 	
-	private static void saveSettings(List listName, String fileName) throws IOException {
-		PrintWriter writer = new PrintWriter(fileName,"UTF-8");
-		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
-		if (global.settings.size() < 3) {global.settings.add("null");}
-		if (global.settings.size() < 4) {global.settings.add("top-left");}
-		if (global.settings.size() < 5) {global.settings.add("false");}
-        if (global.settings.size() < 6) {global.settings.add("null");}
-        if (global.settings.size() < 7) {global.settings.add("true");}
-        if (global.settings.size() < 8) {global.settings.add("true");}
-		writer.println("color:"+listName.get(0));
-		writer.println("colorName:"+listName.get(1));
-		writer.println("version:"+listName.get(2));
-		writer.println("killfeed pos:"+listName.get(3));
-		writer.println("isBeta:"+listName.get(4));
+	private static void saveSettings() throws IOException {
+		PrintWriter writer = new PrintWriter("./mods/ChatTriggers/settings.txt","UTF-8");
+
+		writer.println("color:"+Settings.col[0]);
+		writer.println("colorName:"+Settings.col[1]);
+		writer.println("version:"+Settings.CTversion);
+		writer.println("killfeed pos:"+Settings.killfeedPosition[0] + " " + Settings.killfeedPosition[1]);
+		writer.println("isBeta:"+Settings.isBeta);
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		Date date = new Date();
 		writer.println("lastOpened:"+dateFormat.format(date));
-        writer.println("t:"+global.settings.get(6));
-        writer.println("tr:"+global.settings.get(7));
-        writer.println("notification speed:"+global.settings.get(8));
-        writer.println("killfeed fade:"+global.settings.get(9));
-        writer.println("show killfeed in notifications:"+global.settings.get(10));
+        writer.println("t:"+Settings.commandT);
+        writer.println("tr:"+Settings.commandTR);
+        writer.println("notification speed:"+Settings.notifySpeed);
+        writer.println("killfeed fade:"+Settings.killfeedFade);
+        writer.println("show killfeed in notifications:"+Settings.killfeedInNotify);
         writer.println("fpslow:"+global.fpslowcol + " " + global.fpslow);
         writer.println("fpsmed:"+global.fpsmedcol);
         writer.println("fpshigh:"+global.fpshighcol + " " + global.fpshigh);
+
 		writer.close();
 	}
 	
@@ -457,9 +452,9 @@ public class FileHandler {
 		return tmp_triggers;
 	}
 	
-	public static List<List<String>> loadStrings(String fileName) throws IOException {
+	public static List<List<String>> loadStrings() throws IOException {
 		List<List<String>> tmp_strings = new ArrayList<List<String>>();
-		List<String> lines = loadFile(fileName);
+		List<String> lines = loadFile("./mods/ChatTriggers/strings.txt");
 		
 		for (int i=0; i<lines.size(); i++) {
 			try {
@@ -490,45 +485,51 @@ public class FileHandler {
 		return tmp_strings;
 	}
 	
-	public static List<String> loadSettings(String fileName) throws IOException {
-		List<String> tmp_settings = new ArrayList<String>();
-		List<String> lines = loadFile(fileName);
+	public static void loadSettings() throws IOException {
+		List<String> lines = loadFile("./mods/ChatTriggers/settings.txt");
 
         for (String l : lines) {
-			if (l.startsWith("color:")) {tmp_settings.add(l.substring(l.indexOf("color:") + 6));}
-			if (l.startsWith("colorName:")) {tmp_settings.add(l.substring(l.indexOf("colorName:") + 10));}
-			if (l.startsWith("version:")) {tmp_settings.add(l.substring(l.indexOf("version:") + 8));}
+			if (l.startsWith("color:")) {Settings.col[0] = l.substring(l.indexOf("color:") + 6);}
+			if (l.startsWith("colorName:")) {Settings.col[1] = l.substring(l.indexOf("colorName:") + 10);}
+			if (l.startsWith("version:")) {Settings.CTversion = l.substring(l.indexOf("version:") + 8);}
 			if (l.startsWith("killfeed pos:")) {
                 String temp = l.substring(l.indexOf("killfeed pos:")+13);
-                tmp_settings.add(temp);
                 try {
-
                     String[] xy = temp.split(" ");
-                    global.killfeed_x = Double.parseDouble(xy[0]);
-                    global.killfeed_y = Double.parseDouble(xy[1]);
+                    Settings.killfeedPosition[0] = Double.parseDouble(xy[0]);
+                    Settings.killfeedPosition[1] = Double.parseDouble(xy[1]);
                 } catch (Exception e) {
                     ScaledResolution var5 = new ScaledResolution(Minecraft.getMinecraft());
                     float width = var5.getScaledWidth();
                     float height = var5.getScaledHeight();
                     if (temp.equalsIgnoreCase("TR") || temp.equalsIgnoreCase("TOP-RIGHT")) {
-                        global.killfeed_x = 5/width;
-                        global.killfeed_y = 5/height;
+                        Settings.killfeedPosition[0] = 5.0/width;
+                        Settings.killfeedPosition[1] = 5.0/height;
                     } else {
-                        global.killfeed_x = (width - 5)/width;
-                        global.killfeed_y = 5/height;
+                        Settings.killfeedPosition[0] = (width - 5.0)/width;
+                        Settings.killfeedPosition[1]= 5.0/height;
                     }
                 }
             }
-			if (l.startsWith("isBeta:")) {tmp_settings.add(l.substring(l.indexOf("isBeta:")+7));}
-			if (l.startsWith("lastOpened:")) {global.currentDate = l.substring(l.indexOf("lastOpened:")+11); tmp_settings.add(global.currentDate);}
-            if (l.startsWith("t:")) {tmp_settings.add(l.substring(l.indexOf("t:")+2));}
-            if (l.startsWith("tr:")) {tmp_settings.add(l.substring(l.indexOf("tr:")+3));}
+			if (l.startsWith("isBeta:")) {
+                Settings.isBeta = l.substring(l.indexOf("isBeta:")+7).trim().equalsIgnoreCase("true");
+            }
+			if (l.startsWith("lastOpened:")) {
+			    global.currentDate = l.substring(l.indexOf("lastOpened:")+11);
+			    Settings.lastOpened = global.currentDate;
+			}
+            if (l.startsWith("t:")) {
+                Settings.commandT = l.substring(l.indexOf("t:")+2).trim().equalsIgnoreCase("true");
+			}
+            if (l.startsWith("tr:")) {
+			    Settings.commandTR = l.substring(l.indexOf("tr:")+3).trim().equalsIgnoreCase("true");
+			}
             if (l.startsWith("notification speed:")) {
-                tmp_settings.add(l.substring(l.indexOf("notification speed:")+19));
+                Settings.notifySpeed = Integer.parseInt(l.substring(l.indexOf("notification speed:")+19));
                 try {
-                    global.settingsNotificationSpeed = Integer.parseInt(l.substring(l.indexOf("notification speed:")+19));
-                    if (global.settingsNotificationSpeed <= 1) {
-                        global.settingsNotificationSpeed = 10;
+                    Settings.notifySpeed = Integer.parseInt(l.substring(l.indexOf("notification speed:")+19));
+                    if (Settings.notifySpeed <= 1) {
+                        Settings.notifySpeed = 10;
                         throw new NumberFormatException();
                     }
                 } catch (NumberFormatException e) {
@@ -536,8 +537,12 @@ public class FileHandler {
                     ChatHandler.warn(ChatHandler.color("red","You need to set the notification speed to an integer greater than 0!"));
                 }
             }
-            if (l.startsWith("killfeed fade:")) {tmp_settings.add(l.substring(l.indexOf("killfeed fade:")+14));}
-            if (l.startsWith("show killfeed in notifications:")) {tmp_settings.add(l.substring(l.indexOf("show killfeed in notifications:")+31));}
+            if (l.startsWith("killfeed fade:")) {
+			    Settings.killfeedFade = l.substring(l.indexOf("killfeed fade:")+14).trim().equalsIgnoreCase("true");
+			}
+            if (l.startsWith("show killfeed in notifications:")) {
+			    Settings.killfeedInNotify = l.substring(l.indexOf("show killfeed in notifications:")+31).trim().equalsIgnoreCase("true");
+			}
             if (l.startsWith("fpslow:")) {
                 String[] get = l.substring(l.indexOf("fpslow:")+7).split(" ");
                 if (get.length == 2) {
@@ -570,22 +575,20 @@ public class FileHandler {
                 }
             }
 		}
-		
-		return tmp_settings;
 	}
 	
 	public static void saveAll() throws IOException {
 		if (global.canSave) {
-			saveTriggers(global.trigger, "./mods/ChatTriggers/triggers.txt");
-			saveStrings(global.USR_string, "./mods/ChatTriggers/strings.txt");
-			saveSettings(global.settings, "./mods/ChatTriggers/settings.txt");
+			saveTriggers(global.trigger);
+			saveStrings(global.USR_string);
+			saveSettings();
 			
 			CommandReference.clearTriggerList();
 			
 			global.trigger = FileHandler.loadTriggers("./mods/ChatTriggers/triggers.txt", false, null);
-			global.USR_string = FileHandler.loadStrings("./mods/ChatTriggers/strings.txt");
-			global.settings = FileHandler.loadSettings("./mods/ChatTriggers/settings.txt");
-			loadImports("./mods/ChatTriggers/Imports/");
+			global.USR_string = FileHandler.loadStrings();
+			FileHandler.loadSettings();
+			loadImports();
 		} else {
 			ChatHandler.warn(ChatHandler.color("red", "These changes are not getting saved!"));
 			ChatHandler.warn(ChatHandler.color("red", "do </trigger load> to leave testing"));
@@ -594,15 +597,13 @@ public class FileHandler {
 	
 	private static void startup() throws ClassNotFoundException {
 		ChatHandler.warn(ChatHandler.color("gray", "Loading ChatTriggers..."));
-		if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold");}
 		try {
 			CommandReference.clearTriggerList();
 			global.trigger = loadTriggers("./mods/ChatTriggers/triggers.txt", false, null);
-			global.USR_string = loadStrings("./mods/ChatTriggers/strings.txt");
-			global.settings = loadSettings("./mods/ChatTriggers/settings.txt");
-			loadImports("./mods/ChatTriggers/Imports/");
-			populateSettings();
-			ChatHandler.warn(ChatHandler.color(global.settings.get(0), "ChatTriggers loaded"));
+			global.USR_string = loadStrings();
+			loadSettings();
+			loadImports();
+			ChatHandler.warn(ChatHandler.color(Settings.col[0], "ChatTriggers loaded"));
 		} catch (IOException e1) {
 			ChatHandler.warn(ChatHandler.color("gold", "Setting up missing files..."));
 			File checkFile = new File("./mods/ChatTriggers");
@@ -611,14 +612,12 @@ public class FileHandler {
 			        ChatHandler.warn(ChatHandler.color("red", "Something went wrong while creating the files!"));
 			    }
 			}
-			
-			populateSettings();
+
 			
 			try {saveAll(); ChatHandler.warn(ChatHandler.color("green", "New files created!"));} 
 			catch (IOException e111) {ChatHandler.warn(ChatHandler.color("red", "Error saving files!")); e111.printStackTrace();}
-            ChatHandler.warn(ChatHandler.color(global.settings.get(0), "ChatTriggers loaded"));
+            ChatHandler.warn(ChatHandler.color(Settings.col[0], "ChatTriggers loaded"));
 		}
-		populateSettings();
 		try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 	}
 	
@@ -627,10 +626,10 @@ public class FileHandler {
 			global.tick=1;
 			try {startup();} catch (ClassNotFoundException e) {e.printStackTrace();}
 
-	    	if (global.settings.get(4).equals("false")) {UpdateHandler.loadVersion("http://chattriggers.kerbybit.com/download/version.txt");} 
-	    	else {UpdateHandler.loadVersion("http://chattriggers.kerbybit.com/download/betaversion.txt");}
-	    	
-	    	UpdateHandler.getCanUse("http://www.kerbybit.com/blacklist/", "http://www.kerbybit.com/enabledmods/", "http://ct.kerbybit.com/creators/");
+	    	if (Settings.isBeta) {UpdateHandler.loadVersion("http://chattriggers.kerbybit.com/download/betaversion.txt");}
+	    	else {UpdateHandler.loadVersion("http://chattriggers.kerbybit.com/download/version.txt");}
+
+            UpdateHandler.getCanUse("http://www.kerbybit.com/blacklist/", "http://www.kerbybit.com/enabledmods/", "http://ct.kerbybit.com/creators/");
 		}
 	}
 	
@@ -645,17 +644,4 @@ public class FileHandler {
 			}
 		}
 	}
-
-	private static void populateSettings() {
-        if (global.settings.size() < 1) {global.settings.add("&6"); global.settings.add("gold"); global.settings.add("null");}
-        if (global.settings.size() < 3) {global.settings.add("null");}
-        if (global.settings.size() < 4) {global.settings.add("top-left");}
-        if (global.settings.size() < 5) {global.settings.add("false");}
-        if (global.settings.size() < 6) {global.settings.add("null");}
-        if (global.settings.size() < 7) {global.settings.add("true");}
-        if (global.settings.size() < 8) {global.settings.add("true");}
-        if (global.settings.size() < 9) {global.settings.add("10");}
-        if (global.settings.size() < 10) {global.settings.add("true");}
-        if (global.settings.size() < 11) {global.settings.add("false");}
-    }
 }

@@ -3,6 +3,7 @@ package com.kerbybit.chattriggers.commands;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.references.BugTracker;
 import com.kerbybit.chattriggers.triggers.EventsHandler;
@@ -22,7 +23,7 @@ public class CommandTR extends CommandBase {
 	public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         try {
             if (global.canUse) {
-                if (global.settings.get(7).equalsIgnoreCase("true")) {
+                if (Settings.commandTR) {
                     ArrayList<String> temporary = new ArrayList<String>();
                     temporary.add("run");
                     temporary.addAll(Arrays.asList(args));
@@ -36,7 +37,7 @@ public class CommandTR extends CommandBase {
                 if (EventsHandler.randInt(0,5) == 0) {
                     BugTracker.show(null, "blacklisted");
                 } else {
-                    if (global.settings.get(7).equalsIgnoreCase("true")) {
+                    if (Settings.commandTR) {
                         ArrayList<String> temporary = new ArrayList<String>();
                         temporary.add("run");
                         temporary.addAll(Arrays.asList(args));

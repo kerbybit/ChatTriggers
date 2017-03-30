@@ -12,6 +12,7 @@ import java.util.Map;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.commands.CommandTrigger;
+import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
 
 import net.minecraft.client.Minecraft;
@@ -119,26 +120,26 @@ public class UpdateHandler {
                     }
                     bufferedReader.close();
 
-                    if (!global.settings.get(2).equals("null")) {
-                        if (!lines.get(0).equals(global.settings.get(2))) {
+                    if (!Settings.CTversion.equals("null")) {
+                        if (!lines.get(0).equals(Settings.CTversion)) {
                             ChatHandler.warnBreak(0);
-                            if (global.settings.get(4).equals("false")) {
-                                ChatHandler.warn(ChatHandler.color("red", "You are running on an outdated version of ChatTriggers!"));
-                                ChatHandler.warn("clickable(&cct.kerbybit.com/download,open_url,http://ct.kerbybit.com/download,Open download page)");
-                                ChatHandler.warn(ChatHandler.color("red", "Current stable version: " + lines.get(0)));
-                            } else {
+                            if (Settings.isBeta) {
                                 ChatHandler.warn(ChatHandler.color("red", "You are running on an outdated version of ChatTriggers!"));
                                 ChatHandler.warn("clickable(&cct.kerbybit.com/download/#beta,open_url,http://ct.kerbybit.com/download/#beta,Open download page)");
                                 ChatHandler.warn(ChatHandler.color("red", "Current beta version: " + lines.get(0)));
+                            } else {
+                                ChatHandler.warn(ChatHandler.color("red", "You are running on an outdated version of ChatTriggers!"));
+                                ChatHandler.warn("clickable(&cct.kerbybit.com/download,open_url,http://ct.kerbybit.com/download,Open download page)");
+                                ChatHandler.warn(ChatHandler.color("red", "Current stable version: " + lines.get(0)));
                             }
-                            ChatHandler.warn(ChatHandler.color("red", "Your version: " + global.settings.get(2)));
+                            ChatHandler.warn(ChatHandler.color("red", "Your version: " + Settings.CTversion));
                             ChatHandler.warn(ChatHandler.color("red", "You will only see this message once until the next update"));
                             ChatHandler.warnBreak(1);
-                            global.settings.set(2,lines.get(0));
+                            Settings.CTversion = lines.get(0);
                             FileHandler.saveAll();
                         }
                     } else {
-                        global.settings.set(2, lines.get(0));
+                        Settings.CTversion = lines.get(0);
                         FileHandler.saveAll();
                     }
                 } catch (MalformedURLException e) {
@@ -177,7 +178,7 @@ public class UpdateHandler {
                     }
                 }
                 if (!updatedImports.equals("import ")) {
-                    ChatHandler.warn(ChatHandler.color(global.settings.get(0), "Found updates for the following imports:"));
+                    ChatHandler.warn(ChatHandler.color(Settings.col[0], "Found updates for the following imports:"));
                     ChatHandler.warn("  " + updatedImports.trim().replace("import ", "").replace(" ", ", "));
                     CommandTrigger.doCommand(updatedImports.trim().split(" "), false);
                 }

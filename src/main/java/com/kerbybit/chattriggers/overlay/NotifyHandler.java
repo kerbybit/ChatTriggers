@@ -1,6 +1,7 @@
 package com.kerbybit.chattriggers.overlay;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
+import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -85,7 +86,7 @@ public class NotifyHandler {
                 global.notifyAnimation.get(i).set(0, (float) 1);
             } else if (global.notifyAnimation.get(i).get(0)==1) {
                 if (Math.floor(global.notifyAnimation.get(i).get(1)) > global.notifyAnimation.get(i).get(4)) {
-                    global.notifyAnimation.get(i).set(1, global.notifyAnimation.get(i).get(1) + (global.notifyAnimation.get(i).get(4)-global.notifyAnimation.get(i).get(1))/(global.settingsNotificationSpeed*3));
+                    global.notifyAnimation.get(i).set(1, global.notifyAnimation.get(i).get(1) + (global.notifyAnimation.get(i).get(4)-global.notifyAnimation.get(i).get(1))/(Settings.notifySpeed*3));
                 } else {global.notifyAnimation.get(i).set(0, (float) 2);}
             } else if (global.notifyAnimation.get(i).get(0)==2) {
                 if (global.notifyAnimation.get(i).get(3)>0) {
@@ -93,7 +94,7 @@ public class NotifyHandler {
                 } else {global.notifyAnimation.get(i).set(0, (float) 3);}
             } else if (global.notifyAnimation.get(i).get(0)==3) {
                 if (global.notifyAnimation.get(i).get(1) < global.notifyAnimation.get(i).get(5)) {
-                    global.notifyAnimation.get(i).set(1, global.notifyAnimation.get(i).get(1) - (global.notifyAnimation.get(i).get(4)-global.notifyAnimation.get(i).get(1))/(global.settingsNotificationSpeed*3));
+                    global.notifyAnimation.get(i).set(1, global.notifyAnimation.get(i).get(1) - (global.notifyAnimation.get(i).get(4)-global.notifyAnimation.get(i).get(1))/(Settings.notifySpeed*3));
                 } else {
                     if (global.notifyAnimation.get(i).get(2) == height-50 || global.notify.size()==1) {global.notifySize = 0;}
                     global.notifyAnimation.remove(i);

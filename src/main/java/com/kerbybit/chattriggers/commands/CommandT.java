@@ -1,5 +1,6 @@
 package com.kerbybit.chattriggers.commands;
 
+import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.references.BugTracker;
 import com.kerbybit.chattriggers.triggers.EventsHandler;
@@ -18,7 +19,7 @@ public class CommandT extends CommandBase{
 	public void processCommand(ICommandSender sender, String[] args) {
         try {
             if (global.canUse) {
-                if (global.settings.get(6).equalsIgnoreCase("true")) {
+                if (Settings.commandT) {
                     CommandTrigger.doCommand(args, false);
                 } else {
                     String send = "";
@@ -29,7 +30,7 @@ public class CommandT extends CommandBase{
                 if (EventsHandler.randInt(0,5) == 0) {
                     BugTracker.show(null, "blacklisted");
                 } else {
-                    if (global.settings.get(6).equalsIgnoreCase("true")) {
+                    if (Settings.commandT) {
                         CommandTrigger.doCommand(args, false);
                     } else {
                         String send = "";

@@ -1,6 +1,7 @@
 package com.kerbybit.chattriggers.gui;
 
 import com.kerbybit.chattriggers.file.FileHandler;
+import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -34,8 +35,8 @@ public class DisplayOverlay extends GuiScreen {
         if (mouseY < 0) {mouseY = 0;}
         if (mouseX > width) {mouseX = width;}
         if (mouseY > height) {mouseY = height;}
-        int kx = (int)(global.killfeed_x*width);
-        int ky = (int)(global.killfeed_y*height);
+        int kx = (int)(Settings.killfeedPosition[0]*width);
+        int ky = (int)(Settings.killfeedPosition[1]*height);
 
         if (kx < 0) {kx = 0;}
         if (ky < 0) {ky = 0;}
@@ -44,7 +45,6 @@ public class DisplayOverlay extends GuiScreen {
 
         if (grabbed) {
             grabbed = false; can_grab = false;
-            global.settings.set(3, global.killfeed_x + " " + global.killfeed_y);
             FileHandler.saveAll();
         }
         if (can_grab) {
@@ -96,28 +96,28 @@ public class DisplayOverlay extends GuiScreen {
         GL11.glColor4f(1, 1, 1, 1);
         drawDefaultBackground();
 
-        int kx = (int)(global.killfeed_x*width);
-        int ky = (int)(global.killfeed_y*height);
+        int kx = (int)(Settings.killfeedPosition[0]*width);
+        int ky = (int)(Settings.killfeedPosition[1]*height);
 
         ScaledResolution var5 = new ScaledResolution(MC);
         float width = var5.getScaledWidth();
         float height = var5.getScaledHeight();
 
         if (grabbed) {
-            global.killfeed_x = x/width;
-            global.killfeed_y = y/height;
+            Settings.killfeedPosition[0] = x/width * 1.0;
+            Settings.killfeedPosition[1] = y/height * 1.0;
             drawVerticalLine(5, 0, (int)height, 0xffff0000);
             drawVerticalLine((int)width - 5, 0, (int)height, 0xffff0000);
             drawVerticalLine((int)width / 2, 0, (int)height, 0xffff0000);
             drawHorizontalLine(0, (int)width, 5, 0xffff0000);
             drawHorizontalLine(0, (int)width, (int)height - 5, 0xffff0000);
-            if (x < 7) {global.killfeed_x = 5/width;}
-            if (y < 7) {global.killfeed_y = 5/height;}
-            if (x > (int)width - 7) {global.killfeed_x = ((int)width - 5)/width;}
-            if (y > (int)height - 7) {global.killfeed_y = ((int)height - 5)/height;}
-            if ((x > ((int)width / 2) - 3) && (x < ((int)width / 2) + 3)) {global.killfeed_x = ((int)width / 2)/width;}
+            if (x < 7) {Settings.killfeedPosition[0] = 5/width * 1.0;}
+            if (y < 7) {Settings.killfeedPosition[1] = 5/height * 1.0;}
+            if (x > (int)width - 7) {Settings.killfeedPosition[0] = ((int)width - 5)/width * 1.0;}
+            if (y > (int)height - 7) {Settings.killfeedPosition[1] = ((int)height - 5)/height * 1.0;}
+            if ((x > ((int)width / 2) - 3) && (x < ((int)width / 2) + 3)) {Settings.killfeedPosition[0] = (width / 2)/width * 1.0;}
             if (global.debug) {
-                MC.fontRendererObj.drawStringWithShadow(global.killfeed_x + ", " + global.killfeed_y,0, 0,  0xffffffff);
+                MC.fontRendererObj.drawStringWithShadow(Settings.killfeedPosition[0] + ", " + Settings.killfeedPosition[1],0, 0,  0xffffffff);
             }
         }
 

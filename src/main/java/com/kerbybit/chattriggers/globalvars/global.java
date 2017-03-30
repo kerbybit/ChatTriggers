@@ -56,8 +56,6 @@ public class global {
 	
 	public static List<String> killfeed = new ArrayList<String>();
 	public static List<Integer> killfeedDelay = new ArrayList<Integer>();
-    public static double killfeed_x = 0;
-    public static double killfeed_y = 0;
     public static List<String> killfeed_history = new ArrayList<String>();
 	
 	public static List<List<String>> waitEvents = new ArrayList<List<String>>();
@@ -108,23 +106,6 @@ public class global {
 	public static List<List<String>> backupTMP_strings = new ArrayList<List<String>>();
 	public static List<String> temporary_replace = new ArrayList<String>();
 	public static List<String> temporary_replacement = new ArrayList<String>();
-	
-	//////////////////Settings matrix///////////////////
-	// layout
-	// get(0) = color
-	// get(1) = color name
-    // get(2) = version
-    // get(3) = killfeed pos
-    // get(4) = isBeta
-    // get(5) = lastOpened
-    // get(6) = t
-    // get(7) = tr
-    // get(8) = notification speed
-    // get(9) = killfeed fade
-    // get(10) = show killfeed in notifications
-    ////////////////////////////////////////////////////
-	public static List<String> settings = new ArrayList<String>();
-    public static int settingsNotificationSpeed = 10;
 
     public static String[] append(String[] array, String value) {
         String[] result = Arrays.copyOf(array, array.length+1);

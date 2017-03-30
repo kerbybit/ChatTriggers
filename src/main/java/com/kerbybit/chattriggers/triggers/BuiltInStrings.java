@@ -2,6 +2,7 @@ package com.kerbybit.chattriggers.triggers;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.commands.CommandReference;
+import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.gui.IconHandler;
 import com.kerbybit.chattriggers.objects.NewJsonHandler;
@@ -157,7 +158,7 @@ public class BuiltInStrings {
             TMP_e = createDefaultString("debug", global.debug + "", TMP_e);
         }
         if (TMP_e.contains("{setcol}")) {
-            TMP_e = createDefaultString("setcol", global.settings.get(0), TMP_e);
+            TMP_e = createDefaultString("setcol", Settings.col[0], TMP_e);
         }
         if (TMP_e.contains("{br}")) {
             String dashes = "";

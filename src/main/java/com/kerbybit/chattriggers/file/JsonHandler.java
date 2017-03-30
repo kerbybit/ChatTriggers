@@ -23,7 +23,7 @@ public class JsonHandler {
     public static HashMap<String, String> jsonURL = new HashMap<String, String>();
 
 	public static String exportJsonFile(String fileName, String arrayName, String nodeName) throws IOException {
-		String returnString;
+		StringBuilder returnString = new StringBuilder();
 		int arrayNum = -1;
 		
 		for (int i = 0; i< ArrayHandler.getArraysSize(); i++) {
@@ -40,10 +40,10 @@ public class JsonHandler {
 		if (arrayNum==-1) {
 			writer.println("{");
 			writer.println("}");
-			returnString = "{}";
+			returnString.append("{}");
 		} else {
 			writer.println("{");
-			returnString = ("{");
+			returnString.append("{");
 			for (int i=1; i<ArrayHandler.USR_array.get(arrayNum).size(); i++) {
 				String hasComma = "";
 				if (i!=ArrayHandler.USR_array.get(arrayNum).size()-1) {hasComma = ",";}
@@ -54,14 +54,14 @@ public class JsonHandler {
 						.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
 						.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
 				writer.println("     \""+nodeName+"\":\""+nodeValue+"\""+hasComma);
-				returnString += ("\""+nodeName+"\":\""+nodeValue+"\""+hasComma);
+				returnString.append("\""+nodeName+"\":\""+nodeValue+"\""+hasComma);
 			}
 			writer.println("}");
-			returnString += ("}");
+			returnString.append("}");
 		}
 		writer.close();
 		
-		return returnString;
+		return returnString.toString();
 	}
 	
 	public static String importJsonFile(String type, String fileName, String toImport) {
