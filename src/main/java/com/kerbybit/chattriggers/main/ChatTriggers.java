@@ -42,6 +42,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION)
 public class ChatTriggers {
+    
 	private static KeyBinding altGuiKey;
     private static KeyBinding displayKey;
 	
