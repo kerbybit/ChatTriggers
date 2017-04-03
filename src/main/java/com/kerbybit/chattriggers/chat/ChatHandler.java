@@ -23,7 +23,6 @@ public class ChatHandler {
 		} else if (type==1) {
 			warn(color(Settings.col[0], "&m"+dashes+"&r" + Settings.col[0] + "^"));
 		}
-		
 	}
 	
 	public static void warnUnformatted(String cht) {

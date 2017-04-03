@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Random;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
-import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.file.JsonHandler;
 import com.kerbybit.chattriggers.objects.ArrayHandler;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
@@ -30,6 +29,13 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import static com.kerbybit.chattriggers.triggers.TriggerHandler.onChat;
 
 public class EventsHandler {
+    private static String removeStringReplacements(String string) {
+        return string
+                .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+                .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
+    }
+
 	public static String doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent) {
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
 		return doEvents(tmp_event, chatEvent, null, null);
@@ -37,7 +43,6 @@ public class EventsHandler {
 	
 	public static String doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, String[] toreplace, String[] replacement) {
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
-		String stringCommaReplace = "stringCommaReplacementF6cyUQp9stringCommaReplacement";
         String ret = "null";
 		
 		if (toreplace != null) {
@@ -131,14 +136,11 @@ public class EventsHandler {
             if (TMP_c.equalsIgnoreCase("CHAT")) {
                 ChatHandler.warn(TMP_e);
             }
-			TMP_e = TMP_e.replace(stringCommaReplace, ",");
+			TMP_e = TMP_e.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",");
 			if (TMP_c.equalsIgnoreCase("SAY")) {if (!global.hasWatermark) {global.chatQueue.add(TMP_e);}}
 
             if (TMP_c.equalsIgnoreCase("DEBUG") || TMP_c.equalsIgnoreCase("DO")) {if (global.debug) {ChatHandler.warn(TMP_e);}}
-            if (TMP_c.equalsIgnoreCase("LOG")) {System.out.println(TMP_e
-                    .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
-                    .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-                    .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"));}
+            if (TMP_c.equalsIgnoreCase("LOG")) {System.out.println(removeStringReplacements(TMP_e));}
             if (TMP_c.equalsIgnoreCase("SIMULATE")) {
                 ClientChatReceivedEvent ce = new ClientChatReceivedEvent((byte)0, IChatComponent.Serializer.jsonToComponent("{text:'"+TMP_e+"'}"));
                 onChat(TMP_e, ChatHandler.deleteFormatting(TMP_e), ce);
@@ -148,10 +150,7 @@ public class EventsHandler {
             }
 			if (TMP_c.equalsIgnoreCase("SOUND")) {
                 float real_v = ((float)TMP_v) / 100;
-                Minecraft.getMinecraft().thePlayer.playSound(TMP_e
-					.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
-					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"), real_v, TMP_pi);}
+                Minecraft.getMinecraft().thePlayer.playSound(removeStringReplacements(TMP_e), real_v, TMP_pi);}
 			if (TMP_c.equalsIgnoreCase("CANCEL") && chatEvent!=null) {chatEvent.setCanceled(true);}
 			if (TMP_c.equalsIgnoreCase("KILLFEED")) {
                 TMP_c = KillfeedHandler.addToKillfeed(TMP_e, TMP_t);
@@ -166,23 +165,14 @@ public class EventsHandler {
 			if (TMP_c.equalsIgnoreCase("COMMAND")) {global.commandQueue.add(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("COPY")) {
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-				clipboard.setContents(new StringSelection(TMP_e
-					.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
-					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")), null);
+				clipboard.setContents(new StringSelection(removeStringReplacements(TMP_e)), null);
 			}
 			if (TMP_c.equalsIgnoreCase("URL")) {
-				try {Desktop.getDesktop().browse(URI.create(TMP_e
-						.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
-						.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-						.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")));}
+				try {Desktop.getDesktop().browse(URI.create(removeStringReplacements(TMP_e)));}
 				catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Unable to open URL! IOExeption"));}
 			}
             if (TMP_c.equalsIgnoreCase("RETURN")) {
-                ret = TMP_e
-                        .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
-                        .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-                        .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
+                ret = removeStringReplacements(TMP_e);
             }
 			
 			

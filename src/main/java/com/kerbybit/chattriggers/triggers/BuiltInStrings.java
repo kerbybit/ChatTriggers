@@ -5,13 +5,18 @@ import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.gui.IconHandler;
+import com.kerbybit.chattriggers.objects.ListHandler;
 import com.kerbybit.chattriggers.objects.NewJsonHandler;
 import com.kerbybit.chattriggers.references.RomanNumber;
+import com.kerbybit.chattriggers.references.ValueComparator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.scoreboard.Score;
+import net.minecraft.scoreboard.ScoreObjective;
+import net.minecraft.scoreboard.Scoreboard;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 import java.io.File;
@@ -185,6 +190,48 @@ public class BuiltInStrings {
                 //catch for ReplayMod//
             }
             TMP_e = createDefaultString("scoreboardtitle", ChatHandler.removeFormatting(boardTitle), TMP_e);
+        }
+        if (TMP_e.contains("{scoreboard}")) {
+            String board = "[";
+            HashMap<String, Integer> board_hash = new HashMap<String, Integer>();
+            ValueComparator bvc = new ValueComparator(board_hash);
+            TreeMap<String, Integer> board_tree = new TreeMap<String, Integer>(bvc);
+
+            ScoreObjective scoreObjective = null;
+
+            if (Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(0) != null) {
+                scoreObjective = Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(0);
+            } else if (Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(1) != null) {
+                scoreObjective = Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(1);
+            }
+
+            if (scoreObjective != null) {
+                try {
+                    for (Score value : Minecraft.getMinecraft().theWorld.getScoreboard().getScores()) {
+                        //ChatHandler.warn(value.getPlayerName());
+                        //board_hash.put(ChatHandler.removeFormatting(value.getObjective().getDisplayName()), value.getScorePoints());
+                    }
+                } catch (Exception e) {
+                    //Do nothing//
+                    //catch for ReplayMod//
+                }
+            }
+
+            board_tree.putAll(board_hash);
+
+            for (String key : board_tree.keySet()) {
+                board += ChatHandler.deleteFormatting(key.replace(",", "")) + ",";
+            }
+
+            if (board.equals("[")) {
+                board += "]";
+            } else {
+                board = board.substring(0, board.length()-1) + "]";
+            }
+
+            ListHandler.getList("DefaultList->SCOREBOARD-"+(ListHandler.getListsSize()+1), board);
+
+            TMP_e = TMP_e.replace("{scoreboard}", "{list[DefaultList->SCOREBOARD-"+ListHandler.getListsSize()+"]}");
         }
         if (TMP_e.contains("{hp}") || TMP_e.contains("{HP}")) {
             TMP_e = createDefaultString("hp", global.playerHealth + "", TMP_e);

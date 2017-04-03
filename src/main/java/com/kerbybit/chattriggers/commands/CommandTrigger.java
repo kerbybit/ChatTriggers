@@ -1286,7 +1286,7 @@ public class CommandTrigger extends CommandBase {
                 if (args.length == 2) {
                     for (String fmsg : global.chatHistory) {
                         String tmp_out = ChatHandler.removeFormatting(fmsg);
-                        global.copyText.add(tmp_out);
+                        global.copyText.add(tmp_out.replace("\n", "\\n"));
                         /*String tmp_outfin = tmp_out.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
                                 .replace("(", "stringOpenBracketF6cyUQp9stringOpenBracket")
                                 .replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket");
@@ -1305,7 +1305,7 @@ public class CommandTrigger extends CommandBase {
                         } else {
                             for (int i=global.chatHistory.size() - get; i < global.chatHistory.size(); i++) {
                                 String tmp_out = ChatHandler.removeFormatting(global.chatHistory.get(i));
-                                global.copyText.add(tmp_out);
+                                global.copyText.add(tmp_out.replace("\n", "\\n"));
                                 /*String tmp_outfin = tmp_out.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
                                         .replace("(", "stringOpenBracketF6cyUQp9stringOpenBracket")
                                         .replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket");

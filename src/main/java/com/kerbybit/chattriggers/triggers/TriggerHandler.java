@@ -15,6 +15,8 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 
 public class TriggerHandler {
     public static void onChat(String fmsg, String msg, ClientChatReceivedEvent e) {
+        msg = msg.replace("\n", "\\n");
+        fmsg = fmsg.replace("\n", "\\n");
         String msgNOEDIT = msg;
 
         //debug chat
@@ -27,7 +29,7 @@ public class TriggerHandler {
             ChatHandler.sendJson(TMP_eventout);
         }
 
-        for (int i=0; i<global.chatTrigger.size(); i++) {
+        for (int i = 0; i < global.chatTrigger.size(); i++) {
             //setup
             String TMP_trig = global.chatTrigger.get(i).get(1);
             String TMP_w;
