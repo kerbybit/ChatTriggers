@@ -356,44 +356,6 @@ public class BuiltInStrings {
 
             TMP_e = TMP_e.replace("{armor}", "{json[DefaultJson->ARMOR-"+NewJsonHandler.getJsonsSize()+"]}");
         }
-        if (TMP_e.contains("{heldItem}")) {
-            ItemStack item = Minecraft.getMinecraft().thePlayer.getHeldItem();
-            String held;
-            try {
-                float itemMaxDamage = item.getMaxDamage();
-                float itemDamage = itemMaxDamage - item.getItemDamage();
-                float itemPercent = (itemDamage / itemMaxDamage) * 100;
-                String itemData = item.getMetadata() + "";
-                NBTTagCompound armorNBT = item.getTagCompound();
-                if (armorNBT != null) {
-                    if (armorNBT.hasKey("display")) {
-                        String armorNBTbase = armorNBT.getTag("display").toString();
-                        String armorColor = null;
-                        if (armorNBTbase.startsWith("{color:")) {
-                            armorColor = armorNBTbase.substring(7, armorNBTbase.indexOf("}"));
-                            if (armorColor.contains(",")) {
-                                armorColor = armorColor.substring(0, armorColor.indexOf(","));
-                            }
-                        }
-
-                        if (itemData.equals("0") && armorColor != null) {
-                            itemData = "#" + armorColor;
-                        }
-                    }
-                }
-                held = "{\"" + item.getItem().getRegistryName().replace("minecraft:", "")
-                        + "\":{\"displayName\":\"" + item.getDisplayName()
-                        + "\",\"maxDurability\":" + (int) floor(itemMaxDamage)
-                        + ",\"durability\":" + (int) floor(itemDamage)
-                        + ",\"durabilityPercent\":" + (int) floor(itemPercent)
-                        + ",\"data\":" + itemData + "}}";
-            } catch (Exception e) {
-                held = "{}";
-            }
-            NewJsonHandler.getJson("DefaultJson->HELDITEM-"+(NewJsonHandler.getJsonsSize()+1), held);
-
-            TMP_e = TMP_e.replace("{heldItem}", "{json[DefaultJson->HELDITEM-"+NewJsonHandler.getJsonsSize()+"]}");
-        }
         if (TMP_e.contains("{cps}")) {
             String returnString;
 
