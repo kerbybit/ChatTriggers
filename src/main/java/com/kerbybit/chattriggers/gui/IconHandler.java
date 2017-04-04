@@ -1,14 +1,11 @@
 package com.kerbybit.chattriggers.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -18,8 +15,7 @@ public class IconHandler {
     private static void drawPotionIcon(int x, int y, Potion potion) {
         Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
 
-        if(potion.hasStatusIcon())
-        {
+        if(potion.hasStatusIcon()) {
             int iconIndex = potion.getStatusIconIndex();
             int u = iconIndex % 8 * 18;
             int v = 198 + iconIndex / 8 * 18;
@@ -29,20 +25,16 @@ public class IconHandler {
 
             GL11.glColor4f(1f, 1f, 1f, 1f);
 
-            renderCustomTexture(x, y, u, v, width, height, null, scaler);
+            renderCustomTexture(x, y, u, v, width, height, scaler);
         }
     }
 
-    private static void renderCustomTexture(int x, int y, int u, int v, int width, int height, ResourceLocation resourceLocation, float scale) {
+    private static void renderCustomTexture(int x, int y, int u, int v, int width, int height, float scale) {
         x /= scale;
         y /= scale;
 
         GL11.glPushMatrix();
         GL11.glScalef(scale, scale, scale);
-
-        if(resourceLocation != null) {
-            Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-        }
 
         Minecraft.getMinecraft().ingameGUI.drawTexturedModalRect(x, y, u, v, width, height);
 
@@ -54,6 +46,7 @@ public class IconHandler {
 
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         RenderHelper.enableStandardItemLighting();
+        RenderHelper.enableGUIStandardItemLighting();
         itemRenderer.zLevel = 200.0F;
 
         itemRenderer.renderItemIntoGUI(itemStack, x, y);
