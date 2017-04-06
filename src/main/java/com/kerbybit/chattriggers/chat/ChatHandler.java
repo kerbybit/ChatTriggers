@@ -45,7 +45,10 @@ public class ChatHandler {
 		IChatComponent TMP_out = IChatComponent.Serializer.jsonToComponent(TMP_o);
 		Minecraft.getMinecraft().thePlayer.addChatMessage(TMP_out);
 	}
-	
+
+	public static void warn(String color, String chat) {
+	    warn(color(color, chat));
+    }
 	public static void warn(String cht) {
         //fix link
         cht = removeFormatting(cht);

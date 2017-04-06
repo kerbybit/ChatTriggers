@@ -502,29 +502,36 @@ public class EventsHandler {
 					
 					//move i to end of if
 					i += eventsToIf.size()+eventsToElse.size()-2;
-					
-					//&& || ^
-					String[] checkSplit = TMP_e.split(" ");
-					for (int j=1; j<checkSplit.length; j++) {
-						if (checkSplit[j].equals("&&")) {
-							if (checkSplit[j-1].equalsIgnoreCase("TRUE") && checkSplit[j+1].equalsIgnoreCase("TRUE")) {
-								checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "TRUE";
-							} else {checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "FALSE";}
-						}
-						if (checkSplit[j].equals("||")) {
-							if (checkSplit[j-1].equalsIgnoreCase("TRUE") || checkSplit[j+1].equalsIgnoreCase("TRUE")) {
-								checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "TRUE";
-							} else {checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "FALSE";}
-						}
-						if (checkSplit[j].equals("^")) {
-							if (checkSplit[j-1].equalsIgnoreCase("TRUE") ^ checkSplit[j+1].equalsIgnoreCase("TRUE")) {
-								checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "TRUE";
-							} else {checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "FALSE";}
-						}
-					}
-					TMP_e = "";
-					for (String value : checkSplit) {TMP_e += value + " ";}
-					TMP_e = TMP_e.trim();
+
+					if (TMP_e.trim().startsWith("(") && TMP_e.trim().endsWith(")")) {
+					    String logic = TMP_e.trim().substring(1, TMP_e.length()-1);
+					    TMP_e = EventsReference.calculateLogic(logic);
+                    } else {
+					    //old logic
+                        String[] checkSplit = TMP_e.split(" ");
+                        for (int j=1; j<checkSplit.length; j++) {
+                            if (checkSplit[j].equals("&&")) {
+                                if (checkSplit[j-1].equalsIgnoreCase("TRUE") && checkSplit[j+1].equalsIgnoreCase("TRUE")) {
+                                    checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "TRUE";
+                                } else {checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "FALSE";}
+                            }
+                            if (checkSplit[j].equals("||")) {
+                                if (checkSplit[j-1].equalsIgnoreCase("TRUE") || checkSplit[j+1].equalsIgnoreCase("TRUE")) {
+                                    checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "TRUE";
+                                } else {checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "FALSE";}
+                            }
+                            if (checkSplit[j].equals("^")) {
+                                if (checkSplit[j-1].equalsIgnoreCase("TRUE") ^ checkSplit[j+1].equalsIgnoreCase("TRUE")) {
+                                    checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "TRUE";
+                                } else {checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "FALSE";}
+                            }
+                        }
+                        TMP_e = "";
+                        for (String value : checkSplit) {TMP_e += value + " ";}
+                        TMP_e = TMP_e.trim();
+                    }
+
+
 					
 					//check condition and do events
 					if (TMP_e.equalsIgnoreCase("TRUE") || TMP_e.equalsIgnoreCase("NOT FALSE")) {
