@@ -4,8 +4,60 @@ import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
 class EventsReference {
-    static String calculateLogic(String logic) {
-        //nested logic
+    private static Double before;
+    private static String beforeString;
+    private static String beforeBefore;
+    private static Double after;
+    private static String afterString;
+    private static String afterAfter;
+
+    private static void getBeforeAndAfter(String last, String next) {
+        try {
+            beforeBefore = "";
+            afterAfter = "";
+            if (last.trim().contains("logicF6cyUQp9logic")) {
+                before = Double.parseDouble(last.trim().substring(last.trim().lastIndexOf("logicF6cyUQp9logic") + 18).trim());
+                beforeBefore = last.trim().substring(0, last.trim().lastIndexOf("logicF6cyUQp9logic") + 18);
+            } else {
+                before = Double.parseDouble(last.trim());
+            }
+            if (next.trim().contains("logicF6cyUQp9logic")) {
+                after = Double.parseDouble(next.trim().substring(0, next.trim().indexOf("logicF6cyUQp9logic")).trim());
+                afterAfter = next.trim().substring(next.trim().indexOf("logicF6cyUQp9logic"));
+            } else {
+                after = Double.parseDouble(next.trim());
+            }
+        } catch (NumberFormatException exception) {
+            if (global.debug) {
+                ChatHandler.warn("red", "Error in logic: One of two numbers where not numbers -> " + last + "-" + next);
+            }
+        }
+    }
+
+    private static void getBeforeAndAfterString(String last, String next) {
+        beforeBefore = "";
+        afterAfter = "";
+        if (last.trim().contains("logicF6cyUQp9logic")) {
+            beforeString = last.trim().substring(last.trim().lastIndexOf("logicF6cyUQp9logic")+18).trim();
+            beforeBefore = last.trim().substring(0, last.trim().lastIndexOf("logicF6cyUQp9logic")+18);
+        } else {beforeString = last.trim();}
+        if (next.trim().contains("logicF6cyUQp9logic")) {
+            afterString = next.trim().substring(0, next.trim().indexOf("logicF6cyUQp9logic")).trim();
+            afterAfter = next.trim().substring(next.trim().indexOf("logicF6cyUQp9logic"));
+        } else {afterString = next.trim();}
+    }
+
+    private static String rebuildLogic(String[] split) {
+        StringBuilder logicBuilder = new StringBuilder();
+        for (String value : split) {
+            logicBuilder.append(value);
+        }
+        return logicBuilder.toString().trim()
+                .replace("!true", "false")
+                .replace("!false", "true");
+    }
+
+    private static String tieredLogic(String logic) {
         while (logic.contains("(") && logic.contains(")")) {
             String in = logic.substring(logic.indexOf("(")+1, logic.indexOf(")", logic.indexOf("(")));
             String search = logic.substring(logic.indexOf("(")+1);
@@ -18,6 +70,12 @@ class EventsReference {
                     .replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
             logic = logic.replace("("+in+")", calculateLogic(in));
         }
+        return logic;
+    }
+
+    static String calculateLogic(String logic) {
+        //tiered logic
+        logic = tieredLogic(logic);
 
         //logic
         //  <  >  <= >= ==
@@ -40,161 +98,71 @@ class EventsReference {
         //split logic
         String[] split = logic.split("compareF6cyUQp9compare");
         for (int i=1; i<split.length-1; i++) {
-            try {
-                if (split[i].equals("<")) {
-                    String beforeBefore = "";
-                    Double before;
-                    String afterAfter = "";
-                    Double after;
-                    if (split[i - 1].trim().contains("logicF6cyUQp9logic")) {
-                        before = Double.parseDouble(split[i-1].trim().substring(split[i-1].trim().lastIndexOf("logicF6cyUQp9logic")+18).trim());
-                        beforeBefore = split[i-1].trim().substring(0, split[i-1].trim().lastIndexOf("logicF6cyUQp9logic")+18);
-                    } else {before = Double.parseDouble(split[i - 1].trim());}
-                    if (split[i+1].trim().contains("logicF6cyUQp9logic")) {
-                        after = Double.parseDouble(split[i+1].trim().substring(0, split[i+1].trim().indexOf("logicF6cyUQp9logic")).trim());
-                        afterAfter = split[i+1].trim().substring(split[i+1].trim().indexOf("logicF6cyUQp9logic"));
-                    } else {after = Double.parseDouble(split[i+1].trim());}
+            if (split[i].equals("<")) {
+                getBeforeAndAfter(split[i-1], split[i+1]);
 
-                    if (before < after) {
-                        split[i-1] = "";
-                        split[i] = "";
-                        split[i+1] = beforeBefore+"true"+afterAfter;
-                    } else {
-                        split[i-1] = "";
-                        split[i] = "";
-                        split[i+1] = beforeBefore+"false"+afterAfter;
-                    }
-                } else if (split[i].equals(">")) {
-                    String beforeBefore = "";
-                    Double before;
-                    String afterAfter = "";
-                    Double after;
-                    if (split[i - 1].trim().contains("logicF6cyUQp9logic")) {
-                        before = Double.parseDouble(split[i-1].trim().substring(split[i-1].trim().lastIndexOf("logicF6cyUQp9logic")+18).trim());
-                        beforeBefore = split[i-1].trim().substring(0, split[i-1].trim().lastIndexOf("logicF6cyUQp9logic")+18);
-                    } else {before = Double.parseDouble(split[i - 1].trim());}
-                    if (split[i+1].trim().contains("logicF6cyUQp9logic")) {
-                        after = Double.parseDouble(split[i+1].trim().substring(0, split[i+1].trim().indexOf("logicF6cyUQp9logic")).trim());
-                        afterAfter = split[i+1].trim().substring(split[i+1].trim().indexOf("logicF6cyUQp9logic"));
-                    } else {after = Double.parseDouble(split[i+1].trim());}
-
-                    if (before > after) {
-                        split[i-1] = "";
-                        split[i] = "";
-                        split[i+1] = beforeBefore+"true"+afterAfter;
-                    } else {
-                        split[i-1] = "";
-                        split[i] = "";
-                        split[i+1] = beforeBefore+"false"+afterAfter;
-                    }
-                } else if (split[i].equals("<=")) {
-                    String beforeBefore = "";
-                    Double before;
-                    String afterAfter = "";
-                    Double after;
-                    if (split[i - 1].trim().contains("logicF6cyUQp9logic")) {
-                        before = Double.parseDouble(split[i-1].trim().substring(split[i-1].trim().lastIndexOf("logicF6cyUQp9logic")+18).trim());
-                        beforeBefore = split[i-1].trim().substring(0, split[i-1].trim().lastIndexOf("logicF6cyUQp9logic")+18);
-                    } else {before = Double.parseDouble(split[i - 1].trim());}
-                    if (split[i+1].trim().contains("logicF6cyUQp9logic")) {
-                        after = Double.parseDouble(split[i+1].trim().substring(0, split[i+1].trim().indexOf("logicF6cyUQp9logic")).trim());
-                        afterAfter = split[i+1].trim().substring(split[i+1].trim().indexOf("logicF6cyUQp9logic"));
-                    } else {after = Double.parseDouble(split[i+1].trim());}
-
-                    if (before <= after) {
-                        split[i-1] = "";
-                        split[i] = "";
-                        split[i+1] = beforeBefore+"true"+afterAfter;
-                    } else {
-                        split[i-1] = "";
-                        split[i] = "";
-                        split[i+1] = beforeBefore+"false"+afterAfter;
-                    }
-                } else if (split[i].equals(">=")) {
-                    String beforeBefore = "";
-                    Double before;
-                    String afterAfter = "";
-                    Double after;
-                    if (split[i - 1].trim().contains("logicF6cyUQp9logic")) {
-                        before = Double.parseDouble(split[i-1].trim().substring(split[i-1].trim().lastIndexOf("logicF6cyUQp9logic")+18).trim());
-                        beforeBefore = split[i-1].trim().substring(0, split[i-1].trim().lastIndexOf("logicF6cyUQp9logic")+18);
-                    } else {before = Double.parseDouble(split[i - 1].trim());}
-                    if (split[i+1].trim().contains("logicF6cyUQp9logic")) {
-                        after = Double.parseDouble(split[i+1].trim().substring(0, split[i+1].trim().indexOf("logicF6cyUQp9logic")).trim());
-                        afterAfter = split[i+1].trim().substring(split[i+1].trim().indexOf("logicF6cyUQp9logic"));
-                    } else {after = Double.parseDouble(split[i+1].trim());}
-
-                    if (before >= after) {
-                        split[i-1] = "";
-                        split[i] = "";
-                        split[i+1] = beforeBefore+"true"+afterAfter;
-                    } else {
-                        split[i-1] = "";
-                        split[i] = "";
-                        split[i+1] = beforeBefore+"false"+afterAfter;
-                    }
-                } else if (split[i].equals("==")) {
-                    String beforeBefore = "";
-                    String before;
-                    String afterAfter = "";
-                    String after;
-                    if (split[i - 1].trim().contains("logicF6cyUQp9logic")) {
-                        before = split[i-1].trim().substring(split[i-1].trim().lastIndexOf("logicF6cyUQp9logic")+18).trim();
-                        beforeBefore = split[i-1].trim().substring(0, split[i-1].trim().lastIndexOf("logicF6cyUQp9logic")+18);
-                    } else {before = split[i - 1].trim();}
-                    if (split[i+1].trim().contains("logicF6cyUQp9logic")) {
-                        after = split[i+1].trim().substring(0, split[i+1].trim().indexOf("logicF6cyUQp9logic")).trim();
-                        afterAfter = split[i+1].trim().substring(split[i+1].trim().indexOf("logicF6cyUQp9logic"));
-                    } else {after = split[i+1].trim();}
-                    if (before.equals(after)) {
-                        split[i-1] = "";
-                        split[i] = "";
-                        split[i+1] = beforeBefore+"true"+afterAfter;
-                    } else {
-                        split[i-1] = "";
-                        split[i] = "";
-                        split[i+1] = beforeBefore+"false"+afterAfter;
-                    }
-                } else if (split[i].equals("!=")) {
-                    String beforeBefore = "";
-                    String before;
-                    String afterAfter = "";
-                    String after;
-                    if (split[i - 1].trim().contains("logicF6cyUQp9logic")) {
-                        before = split[i-1].trim().substring(split[i-1].trim().lastIndexOf("logicF6cyUQp9logic")+18).trim();
-                        beforeBefore = split[i-1].trim().substring(0, split[i-1].trim().lastIndexOf("logicF6cyUQp9logic")+18);
-                    } else {before = split[i - 1].trim();}
-                    if (split[i+1].trim().contains("logicF6cyUQp9logic")) {
-                        after = split[i+1].trim().substring(0, split[i+1].trim().indexOf("logicF6cyUQp9logic")).trim();
-                        afterAfter = split[i+1].trim().substring(split[i+1].trim().indexOf("logicF6cyUQp9logic"));
-                    } else {after = split[i+1].trim();}
-                    if (before.equals(after)) {
-                        split[i-1] = "";
-                        split[i] = "";
-                        split[i+1] = beforeBefore+"false"+afterAfter;
-                    } else {
-                        split[i-1] = "";
-                        split[i] = "";
-                        split[i+1] = beforeBefore+"true"+afterAfter;
-                    }
+                if (before < after) {
+                    split[i-1] = ""; split[i] = "";
+                    split[i+1] = beforeBefore+"true"+afterAfter;
+                } else {
+                    split[i-1] = ""; split[i] = "";
+                    split[i+1] = beforeBefore+"false"+afterAfter;
                 }
-            } catch(NumberFormatException exception) {
-                if (global.debug) {
-                    ChatHandler.warn("red", "Error in logic: One of two numbers where not numbers -> " + split[i-1] + "-" + split[i+1]);
+            } else if (split[i].equals(">")) {
+                getBeforeAndAfter(split[i-1], split[i+1]);
+
+                if (before > after) {
+                    split[i-1] = ""; split[i] = "";
+                    split[i+1] = beforeBefore+"true"+afterAfter;
+                } else {
+                    split[i-1] = ""; split[i] = "";
+                    split[i+1] = beforeBefore+"false"+afterAfter;
+                }
+            } else if (split[i].equals("<=")) {
+                getBeforeAndAfter(split[i-1], split[i+1]);
+
+                if (before <= after) {
+                    split[i-1] = ""; split[i] = "";
+                    split[i+1] = beforeBefore+"true"+afterAfter;
+                } else {
+                    split[i-1] = ""; split[i] = "";
+                    split[i+1] = beforeBefore+"false"+afterAfter;
+                }
+            } else if (split[i].equals(">=")) {
+                getBeforeAndAfter(split[i-1], split[i+1]);
+
+                if (before >= after) {
+                    split[i-1] = ""; split[i] = "";
+                    split[i+1] = beforeBefore+"true"+afterAfter;
+                } else {
+                    split[i-1] = ""; split[i] = "";
+                    split[i+1] = beforeBefore+"false"+afterAfter;
+                }
+            } else if (split[i].equals("==")) {
+                getBeforeAndAfterString(split[i-1], split[i+1]);
+
+                if (beforeString.equals(afterString)) {
+                    split[i-1] = ""; split[i] = "";
+                    split[i+1] = beforeBefore+"true"+afterAfter;
+                } else {
+                    split[i-1] = ""; split[i] = "";
+                    split[i+1] = beforeBefore+"false"+afterAfter;
+                }
+            } else if (split[i].equals("!=")) {
+                getBeforeAndAfterString(split[i-1], split[i+1]);
+
+                if (beforeString.equals(afterString)) {
+                    split[i-1] = ""; split[i] = "";
+                    split[i+1] = beforeBefore+"false"+afterAfter;
+                } else {
+                    split[i-1] = ""; split[i] = "";
+                    split[i+1] = beforeBefore+"true"+afterAfter;
                 }
             }
         }
 
         //rebuild logic
-        StringBuilder logicBuilder = new StringBuilder();
-        for (String value : split) {
-            logicBuilder.append(value);
-        }
-        logic = logicBuilder.toString().trim();
-        logic = logic.replace("!true", "false")
-                .replace("!false", "true");
-
-
+        logic = rebuildLogic(split);
 
         //split logic
         split = logic.split("logicF6cyUQp9logic");
@@ -202,47 +170,35 @@ class EventsReference {
             if (split[i].equals("&&")) {
                 if (split[i-1].trim().equalsIgnoreCase("true")
                         && split[i+1].trim().equalsIgnoreCase("true")) {
-                    split[i-1] = "";
-                    split[i] = "";
+                    split[i-1] = ""; split[i] = "";
                     split[i+1] = "true";
                 } else {
-                    split[i-1] = "";
-                    split[i] = "";
+                    split[i-1] = ""; split[i] = "";
                     split[i+1] = "false";
                 }
             } else if (split[i].equals("||")) {
                 if (split[i-1].trim().equalsIgnoreCase("true")
                         || split[i+1].trim().equalsIgnoreCase("true")) {
-                    split[i-1] = "";
-                    split[i] = "";
+                    split[i-1] = ""; split[i] = "";
                     split[i+1] = "true";
                 } else {
-                    split[i-1] = "";
-                    split[i] = "";
+                    split[i-1] = ""; split[i] = "";
                     split[i+1] = "false";
                 }
             } else if (split[i].equals("^")) {
                 if (split[i-1].trim().equalsIgnoreCase("true")
                         ^ split[i+1].trim().equalsIgnoreCase("true")) {
-                    split[i-1] = "";
-                    split[i] = "";
+                    split[i-1] = "";  split[i] = "";
                     split[i+1] = "true";
                 } else {
-                    split[i-1] = "";
-                    split[i] = "";
+                    split[i-1] = ""; split[i] = "";
                     split[i+1] = "false";
                 }
             }
         }
 
         //rebuild logic
-        logicBuilder = new StringBuilder();
-        for (String value : split) {
-            logicBuilder.append(value);
-        }
-        logic = logicBuilder.toString().trim();
-        logic = logic.replace("!true", "false")
-                .replace("!false", "true");
+        logic = rebuildLogic(split);
 
         return logic;
     }
