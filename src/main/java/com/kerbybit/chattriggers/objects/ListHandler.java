@@ -16,15 +16,15 @@ public class ListHandler {
 
     private static ArrayList<String> getListFromURL(String url) {
         try {
-            String listString = "";
+            StringBuilder listString = new StringBuilder();
             String line;
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new URL(url).openStream(),"UTF-8"));
             while ((line = bufferedReader.readLine()) != null) {
-                listString+=line;
+                listString.append(line);
             }
             bufferedReader.close();
 
-            return getListFromValue(listString);
+            return getListFromValue(listString.toString());
         } catch (MalformedURLException e1) {
             return null;
         } catch (Exception e2) {
@@ -34,14 +34,14 @@ public class ListHandler {
 
     private static ArrayList<String> getListFromFile(String dest) {
         try {
-            String listString = "";
+            StringBuilder listString = new StringBuilder();
             String line;
             BufferedReader bufferedReader;
             bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(dest),"UTF-8"));
             while ((line = bufferedReader.readLine()) != null) {
-                listString += line;
+                listString.append(line);
             }
-            return getListFromValue(listString);
+            return getListFromValue(listString.toString());
         } catch (Exception e1) {
             return null;
         }
@@ -75,23 +75,23 @@ public class ListHandler {
         } else {
             clearList(list_name);
             lists.put(list_name, list_object);
-            String return_string = "[";
+            StringBuilder return_string = new StringBuilder("[");
             for (String value : list_object) {
-                return_string += value + ",";
+                return_string.append(value).append(",");
             }
-            return_string = return_string.substring(0, return_string.length()-1) + "]";
-            return return_string;
+            return_string = new StringBuilder(return_string.substring(0, return_string.length()-1) + "]");
+            return return_string.toString();
         }
     }
 
     private static String getList(String list_name) {
         if (lists.containsKey(list_name)) {
-            String return_string = "[";
+            StringBuilder return_string = new StringBuilder("[");
             for (String value : lists.get(list_name)) {
-                return_string += value + ",";
+                return_string.append(value).append(",");
             }
-            return_string = return_string.substring(0, return_string.length()-1) + "]";
-            return return_string;
+            return_string = new StringBuilder(return_string.substring(0, return_string.length()-1) + "]");
+            return return_string.toString();
         } else {
             return "Not a list";
         }

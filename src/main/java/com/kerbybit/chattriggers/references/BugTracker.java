@@ -24,20 +24,20 @@ public class BugTracker {
                 public void run() {
                     try {
                         ChatHandler.warn("&7Sending bug report...");
-                        String bug = "";
+                        StringBuilder bug = new StringBuilder();
                         if (global.bugLastCommand.equals("")) {
-                            bug += global.bugLastEvent+"\n\n";
+                            bug.append(global.bugLastEvent).append("\n\n");
                         } else {
-                            bug += global.bugLastCommand+"\n\n";
+                            bug.append(global.bugLastCommand).append("\n\n");
                         }
                         for (String b : global.bugReport) {
-                            bug += b + "\n";
+                            bug.append(b).append("\n");
                         }
                         URL url = new URL("http://ct.kerbybit.com/bugreport/");
                         Map<String,Object> params = new LinkedHashMap<String,Object>();
                         params.put("name", Minecraft.getMinecraft().thePlayer.getDisplayNameString());
                         params.put("uuid", Minecraft.getMinecraft().thePlayer.getUniqueID());
-                        params.put("bug", bug);
+                        params.put("bug", bug.toString());
 
                         StringBuilder postData = new StringBuilder();
                         for (Map.Entry<String,Object> param : params.entrySet()) {
@@ -84,7 +84,7 @@ public class BugTracker {
             global.bugLastEvent = global.lastEvent;
         }
         ChatHandler.warn(ChatHandler.color("darkred",getError(type)));
-        if (type!="blacklisted") {
+        if (!type.equals("blacklisted")) {
             ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitbugreport,Send a bug report) &4to submit a bug report");
         } else {
             ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitfakebugreport,Send a bug report) &4to submit a bug report");

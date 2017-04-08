@@ -134,11 +134,11 @@ public class DisplayHandler {
 
     private static String getDisplaySettings(String display_name) {
         if (display_settings.containsKey(display_name)) {
-            String return_string = "";
+            StringBuilder return_string = new StringBuilder();
             for (String value : display_settings.get(display_name).split(",")) {
-                return_string+="<"+value+">";
+                return_string.append("<").append(value).append(">");
             }
-            return return_string;
+            return return_string.toString();
         } else {
             return "";
         }

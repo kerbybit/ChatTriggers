@@ -841,21 +841,21 @@ public class StringHandler {
             }
             return "{string["+sn+"]}";
         } else if (func.equalsIgnoreCase("SPLIT")) {
-		    String tmp_string;
+		    StringBuilder tmp_string;
 		    if (stringnum!=-1) {
-		        tmp_string = global.USR_string.get(stringnum).get(1);
+		        tmp_string = new StringBuilder(global.USR_string.get(stringnum).get(1));
             } else {
-		        tmp_string = global.TMP_string.get(tmpstringnum).get(1);
+		        tmp_string = new StringBuilder(global.TMP_string.get(tmpstringnum).get(1));
             }
 
-            String[] split_tmp_string = tmp_string.split(args);
-		    tmp_string = "[";
+            String[] split_tmp_string = tmp_string.toString().split(args);
+		    tmp_string = new StringBuilder("[");
 		    for (String value : split_tmp_string) {
-		        tmp_string += value + ",";
+		        tmp_string.append(value).append(",");
             }
-            tmp_string = tmp_string.substring(0, tmp_string.length()-1) + "]";
+            tmp_string = new StringBuilder(tmp_string.substring(0, tmp_string.length()-1) + "]");
 
-            ListHandler.getList("StringToList->"+sn+"SPLIT-"+(ListHandler.getListsSize()+1), tmp_string);
+            ListHandler.getList("StringToList->"+sn+"SPLIT-"+(ListHandler.getListsSize()+1), tmp_string.toString());
 		    return "{list[StringToList->"+sn+"SPLIT-"+ListHandler.getListsSize()+"]}";
         } else {
             for (List<String> function : global.function) {
@@ -1326,8 +1326,9 @@ public class StringHandler {
 						}
 					}
 				}
-				trig = "";
-				for (String value : split_trig) {trig += value;}
+				StringBuilder trigSB = new StringBuilder();
+				for (String value : split_trig) {trigSB.append(value);}
+				trig = trigSB.toString();
 			}
 		}
 		return trig;

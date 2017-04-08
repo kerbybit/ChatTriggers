@@ -22,9 +22,9 @@ public class CommandT extends CommandBase{
                 if (Settings.commandT) {
                     CommandTrigger.doCommand(args, false);
                 } else {
-                    String send = "";
-                    for (String arg : args) {send += arg + " ";}
-                    Minecraft.getMinecraft().thePlayer.sendChatMessage("/t " + send.trim());
+                    StringBuilder send = new StringBuilder();
+                    for (String arg : args) {send.append(arg).append(" ");}
+                    Minecraft.getMinecraft().thePlayer.sendChatMessage("/t " + send.toString().trim());
                 }
             } else {
                 if (EventsHandler.randInt(0,5) == 0) {
@@ -33,9 +33,9 @@ public class CommandT extends CommandBase{
                     if (Settings.commandT) {
                         CommandTrigger.doCommand(args, false);
                     } else {
-                        String send = "";
-                        for (String arg : args) {send += arg + " ";}
-                        Minecraft.getMinecraft().thePlayer.sendChatMessage("/t " + send.trim());
+                        StringBuilder send = new StringBuilder();
+                        for (String arg : args) {send.append(arg).append(" ");}
+                        Minecraft.getMinecraft().thePlayer.sendChatMessage("/t " + send.toString().trim());
                     }
                 }
             }

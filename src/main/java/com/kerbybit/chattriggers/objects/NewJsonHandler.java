@@ -20,15 +20,15 @@ public class NewJsonHandler {
 
     private static JsonObject getJsonFromURL(String url) {
         try {
-            String jsonString = "";
+            StringBuilder jsonString = new StringBuilder();
             String line;
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new URL(url).openStream(),"UTF-8"));
             while ((line = bufferedReader.readLine()) != null) {
-                jsonString+=line;
+                jsonString.append(line);
             }
             bufferedReader.close();
 
-            return new JsonParser().parse(jsonString).getAsJsonObject();
+            return new JsonParser().parse(jsonString.toString()).getAsJsonObject();
         } catch (MalformedURLException e1) {
             return null;
         } catch (Exception e2) {
@@ -38,14 +38,14 @@ public class NewJsonHandler {
 
     private static JsonObject getJsonFromFile(String dest) {
         try {
-            String jsonString = "";
+            StringBuilder jsonString = new StringBuilder();
             String line;
             BufferedReader bufferedReader;
             bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(dest),"UTF-8"));
             while ((line = bufferedReader.readLine()) != null) {
-                jsonString += line;
+                jsonString.append(line);
             }
-            return new JsonParser().parse(jsonString).getAsJsonObject();
+            return new JsonParser().parse(jsonString.toString()).getAsJsonObject();
         } catch (Exception e1) {
             return null;
         }
@@ -119,37 +119,37 @@ public class NewJsonHandler {
     }
 
     private static String getKeys(String key, String value) {
-        String returnString;
+        StringBuilder returnString;
         JsonObject obj;
         if (value.equals("")) {
-            returnString = getValue(key);
-            obj = new JsonParser().parse(returnString).getAsJsonObject();
+            returnString = new StringBuilder(getValue(key));
+            obj = new JsonParser().parse(returnString.toString()).getAsJsonObject();
         } else {
-            returnString = getValue(key, value);
-            obj = new JsonParser().parse(returnString).getAsJsonObject();
+            returnString = new StringBuilder(getValue(key, value));
+            obj = new JsonParser().parse(returnString.toString()).getAsJsonObject();
         }
         List<String> keys = new ArrayList<String>();
         for (Map.Entry<String, JsonElement> ele : obj.entrySet()) {
             keys.add(ele.getKey());
         }
 
-        returnString = "[";
+        returnString = new StringBuilder("[");
         for (String element : keys) {
-            returnString += element + ",";
+            returnString.append(element).append(",");
         }
-        if (returnString.equals("[")) {
-            returnString += "]";
+        if (returnString.toString().equals("[")) {
+            returnString.append("]");
         } else {
-            returnString = returnString.substring(0, returnString.length()-1) + "]";
+            returnString = new StringBuilder(returnString.substring(0, returnString.length()-1) + "]");
         }
 
 
-        return returnString;
+        return returnString.toString();
     }
 
     private static String getValues(String key, String value) {
-        String returnString = getValue(key, value);
-        JsonObject obj = new JsonParser().parse(returnString).getAsJsonObject();
+        StringBuilder returnString = new StringBuilder(getValue(key, value));
+        JsonObject obj = new JsonParser().parse(returnString.toString()).getAsJsonObject();
         List<String> keys = new ArrayList<String>();
         for (Map.Entry<String, JsonElement> eles : obj.entrySet()) {
             String ele = eles.getValue() + "";
@@ -159,13 +159,13 @@ public class NewJsonHandler {
             keys.add(ele);
         }
 
-        returnString = "[";
+        returnString = new StringBuilder("[");
         for (String element : keys) {
-            returnString += element + ",";
+            returnString.append(element).append(",");
         }
-        returnString = returnString.substring(0, returnString.length()-1) + "]";
+        returnString = new StringBuilder(returnString.substring(0, returnString.length()-1) + "]");
 
-        return returnString;
+        return returnString.toString();
     }
 
     private static String clearJson(String name) {
@@ -188,7 +188,7 @@ public class NewJsonHandler {
                 get_name = get_name.substring(get_name.indexOf("{json[")+6);
             }
 
-            TMP_e = createDefaultString("clear", get_name, clearJson(get_name), TMP_e);
+            TMP_e = createDefaultString(get_name, clearJson(get_name), TMP_e);
         }
 
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.load(") && TMP_e.contains(")")) {
@@ -292,8 +292,8 @@ public class NewJsonHandler {
         return TMP_e.replace("{json["+json_name+"]}."+function+"("+arguments+")","{string[JsonToString->"+json_name+function.toUpperCase()+"-"+global.TMP_string.size()+"]}");
     }
 
-    private static String createDefaultString(String function, String json_name, String value, String TMP_e) {
-        return createDefaultString(function, json_name, "", value, TMP_e);
+    private static String createDefaultString(String json_name, String value, String TMP_e) {
+        return createDefaultString("clear", json_name, "", value, TMP_e);
     }
 
     public static int getJsonsSize() {

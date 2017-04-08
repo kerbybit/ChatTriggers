@@ -13,11 +13,11 @@ import net.minecraft.util.IChatComponent;
 public class ChatHandler {
 	
 	public static void warnBreak(int type) {
-		String dashes = "";
+		StringBuilder dashes = new StringBuilder();
 		float chatWidth = Minecraft.getMinecraft().gameSettings.chatWidth;
 		float chatScale = Minecraft.getMinecraft().gameSettings.chatScale;
 		int numdash = (int) Math.floor(((((280*(chatWidth))+40)/320) * (1/chatScale))*52);
-		for (int j=0; j<numdash; j++) {dashes += "-";}
+		for (int j=0; j<numdash; j++) {dashes.append("-");}
 		if (type==0) {
 			warn(color(Settings.col[0], "&m-"+dashes));
 		} else if (type==1) {
@@ -36,13 +36,13 @@ public class ChatHandler {
 	}
 	
 	public static void sendJson(List<String> out) {
-		String TMP_o = "['',";
+		StringBuilder TMP_o = new StringBuilder("['',");
 		for (int i=0; i<out.size(); i++) {
-			TMP_o += "{" + out.get(i) + "}";
-			if (i != out.size()-1) {TMP_o += ",";}
+			TMP_o.append("{").append(out.get(i)).append("}");
+			if (i != out.size()-1) {TMP_o.append(",");}
 		}
-		TMP_o += "]";
-		IChatComponent TMP_out = IChatComponent.Serializer.jsonToComponent(TMP_o);
+		TMP_o.append("]");
+		IChatComponent TMP_out = IChatComponent.Serializer.jsonToComponent(TMP_o.toString());
 		Minecraft.getMinecraft().thePlayer.addChatMessage(TMP_out);
 	}
 
@@ -53,7 +53,7 @@ public class ChatHandler {
         //fix link
         cht = removeFormatting(cht);
         while (cht.contains("{link[") && cht.contains("]stringCommaReplacementF6cyUQp9stringCommaReplacement[") && cht.contains("]}")) {
-            String prev_color = "";
+            StringBuilder prev_color = new StringBuilder();
             if (cht.indexOf("{link[")!=0) {
                 String testfor = cht.substring(0, cht.indexOf("{link["));
                 while (testfor.contains("&0") || testfor.contains("&1") || testfor.contains("&2")
@@ -63,22 +63,22 @@ public class ChatHandler {
                         || testfor.contains("&c") || testfor.contains("&d") || testfor.contains("&e")
                         || testfor.contains("&f")) {
                     testfor = testfor.substring(testfor.indexOf("&"));
-                    if (testfor.startsWith("&0")) {prev_color+="&0";}
-                    if (testfor.startsWith("&1")) {prev_color+="&1";}
-                    if (testfor.startsWith("&2")) {prev_color+="&2";}
-                    if (testfor.startsWith("&3")) {prev_color+="&3";}
-                    if (testfor.startsWith("&4")) {prev_color+="&4";}
-                    if (testfor.startsWith("&5")) {prev_color+="&5";}
-                    if (testfor.startsWith("&6")) {prev_color+="&6";}
-                    if (testfor.startsWith("&7")) {prev_color+="&7";}
-                    if (testfor.startsWith("&8")) {prev_color+="&8";}
-                    if (testfor.startsWith("&9")) {prev_color+="&9";}
-                    if (testfor.startsWith("&a")) {prev_color+="&a";}
-                    if (testfor.startsWith("&b")) {prev_color+="&b";}
-                    if (testfor.startsWith("&c")) {prev_color+="&c";}
-                    if (testfor.startsWith("&d")) {prev_color+="&d";}
-                    if (testfor.startsWith("&e")) {prev_color+="&e";}
-                    if (testfor.startsWith("&f")) {prev_color+="&f";}
+                    if (testfor.startsWith("&0")) {prev_color.append("&0");}
+                    if (testfor.startsWith("&1")) {prev_color.append("&1");}
+                    if (testfor.startsWith("&2")) {prev_color.append("&2");}
+                    if (testfor.startsWith("&3")) {prev_color.append("&3");}
+                    if (testfor.startsWith("&4")) {prev_color.append("&4");}
+                    if (testfor.startsWith("&5")) {prev_color.append("&5");}
+                    if (testfor.startsWith("&6")) {prev_color.append("&6");}
+                    if (testfor.startsWith("&7")) {prev_color.append("&7");}
+                    if (testfor.startsWith("&8")) {prev_color.append("&8");}
+                    if (testfor.startsWith("&9")) {prev_color.append("&9");}
+                    if (testfor.startsWith("&a")) {prev_color.append("&a");}
+                    if (testfor.startsWith("&b")) {prev_color.append("&b");}
+                    if (testfor.startsWith("&c")) {prev_color.append("&c");}
+                    if (testfor.startsWith("&d")) {prev_color.append("&d");}
+                    if (testfor.startsWith("&e")) {prev_color.append("&e");}
+                    if (testfor.startsWith("&f")) {prev_color.append("&f");}
                     testfor = testfor.substring(2);
                 }
             }
@@ -185,7 +185,7 @@ public class ChatHandler {
 	
 	public static String color(String clr, String msg) {
 		String[] tmp = msg.split(" ");
-		String formatted = "";
+		StringBuilder formatted = new StringBuilder();
 		String chatColor = EnumChatFormatting.WHITE.toString();
 		
 		if      (clr.trim().equalsIgnoreCase("&0") || clr.trim().equalsIgnoreCase("BLACK"))       {chatColor = EnumChatFormatting.BLACK.toString();}
@@ -205,9 +205,9 @@ public class ChatHandler {
 		else if (clr.trim().equalsIgnoreCase("&e") || clr.trim().equalsIgnoreCase("YELLOW"))      {chatColor = EnumChatFormatting.YELLOW.toString();}
 		else if (clr.trim().equalsIgnoreCase("&f") || clr.trim().equalsIgnoreCase("WHITE"))       {chatColor = EnumChatFormatting.WHITE.toString();}
 
-		for (String value : tmp) {formatted += chatColor + value + " ";}
+		for (String value : tmp) {formatted.append(chatColor).append(value).append(" ");}
 		
-		return formatted.trim();
+		return formatted.toString().trim();
 	}
 	
 	public static void onClientTick() {

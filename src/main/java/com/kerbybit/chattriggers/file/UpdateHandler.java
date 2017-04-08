@@ -150,7 +150,7 @@ public class UpdateHandler {
                     e.printStackTrace();
                 }
 
-                String updatedImports = "import ";
+                StringBuilder updatedImports = new StringBuilder("import ");
                 for (Map.Entry<String, String> importMap : global.imported.entrySet()) {
                     String importName = importMap.getKey();
                     String importVersion = importMap.getValue();
@@ -167,7 +167,7 @@ public class UpdateHandler {
                             if (line.contains(check)) {
                                 String currentVersion = line.substring(line.indexOf(check)+check.length(), line.length()-2);
                                 if (!currentVersion.equals(importVersion)) {
-                                    updatedImports += importName.replace(".txt","") + " ";
+                                    updatedImports.append(importName.replace(".txt","")).append(" ");
                                 }
                             }
                         }
@@ -177,10 +177,10 @@ public class UpdateHandler {
                         System.out.println("Did not find import " + importName.replace(".txt","") + " online. skipping update.");
                     }
                 }
-                if (!updatedImports.equals("import ")) {
+                if (!updatedImports.toString().equals("import ")) {
                     ChatHandler.warn(ChatHandler.color(Settings.col[0], "Found updates for the following imports:"));
-                    ChatHandler.warn("  " + updatedImports.trim().replace("import ", "").replace(" ", ", "));
-                    CommandTrigger.doCommand(updatedImports.trim().split(" "), false);
+                    ChatHandler.warn("  " + updatedImports.toString().trim().replace("import ", "").replace(" ", ", "));
+                    CommandTrigger.doCommand(updatedImports.toString().trim().split(" "), false);
                 }
             }
 		});

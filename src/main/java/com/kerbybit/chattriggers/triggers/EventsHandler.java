@@ -390,9 +390,9 @@ public class EventsHandler {
 
                     if (arrayto.size()>0 && eventsToFor.size() > 0) {
                         if (valwait.equals("")) {
-                            for (int j=0; j<arrayto.size(); j++) {
+                            for (String array : arrayto) {
                                 String[] first = {valin};
-                                String[] second = {arrayto.get(j)};
+                                String[] second = {array};
                                 ret = doEvents(eventsToFor, chatEvent, first, second);
                             }
                         } else {
@@ -526,9 +526,9 @@ public class EventsHandler {
                                 } else {checkSplit[j-1] = ""; checkSplit[j] = ""; checkSplit[j+1] = "FALSE";}
                             }
                         }
-                        TMP_e = "";
-                        for (String value : checkSplit) {TMP_e += value + " ";}
-                        TMP_e = TMP_e.trim();
+                        StringBuilder TMP_eSB = new StringBuilder();
+                        for (String value : checkSplit) {TMP_eSB.append(value).append(" ");}
+                        TMP_e = TMP_eSB.toString().trim();
                     }
 
 

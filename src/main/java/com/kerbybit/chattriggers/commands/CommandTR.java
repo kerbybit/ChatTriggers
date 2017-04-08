@@ -29,9 +29,9 @@ public class CommandTR extends CommandBase {
                     temporary.addAll(Arrays.asList(args));
                     CommandTrigger.doCommand(temporary.toArray(new String[temporary.size()]), false);
                 } else {
-                    String send = "";
-                    for (String arg : args) {send += arg + " ";}
-                    Minecraft.getMinecraft().thePlayer.sendChatMessage("/tr " + send.trim());
+                    StringBuilder send = new StringBuilder();
+                    for (String arg : args) {send.append(arg).append(" ");}
+                    Minecraft.getMinecraft().thePlayer.sendChatMessage("/tr " + send.toString().trim());
                 }
             } else {
                 if (EventsHandler.randInt(0,5) == 0) {
@@ -43,9 +43,9 @@ public class CommandTR extends CommandBase {
                         temporary.addAll(Arrays.asList(args));
                         CommandTrigger.doCommand(temporary.toArray(new String[temporary.size()]), false);
                     } else {
-                        String send = "";
-                        for (String arg : args) {send += arg + " ";}
-                        Minecraft.getMinecraft().thePlayer.sendChatMessage("/tr " + send.trim());
+                        StringBuilder send = new StringBuilder();
+                        for (String arg : args) {send.append(arg).append(" ");}
+                        Minecraft.getMinecraft().thePlayer.sendChatMessage("/tr " + send.toString().trim());
                     }
                 }
             }

@@ -54,7 +54,7 @@ public class JsonHandler {
 						.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
 						.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
 				writer.println("     \""+nodeName+"\":\""+nodeValue+"\""+hasComma);
-				returnString.append("\""+nodeName+"\":\""+nodeValue+"\""+hasComma);
+				returnString.append("\"").append(nodeName).append("\":\"").append(nodeValue).append("\"").append(hasComma);
 			}
 			writer.println("}");
 			returnString.append("}");
@@ -65,7 +65,7 @@ public class JsonHandler {
 	}
 	
 	public static String importJsonFile(String type, String fileName, String toImport) {
-		String returnString = "Something went wrong!";
+		StringBuilder returnString = new StringBuilder("Something went wrong!");
 		try {
 			List<String> lines = new ArrayList<String>();
 			String line;
@@ -76,9 +76,9 @@ public class JsonHandler {
 			}
 			bufferedReader.close();
 			
-			String jsonString = "";
-			for (String value : lines) {jsonString += value;}
-			jsonString = jsonString.replace("[", "openSquareF6cyUQp9openSquare").replace("]", "closeSquareF6cyUQp9closeSquare")
+			StringBuilder jsonStringBuilder = new StringBuilder();
+			for (String value : lines) {jsonStringBuilder.append(value);}
+			String jsonString = jsonStringBuilder.toString().replace("[", "openSquareF6cyUQp9openSquare").replace("]", "closeSquareF6cyUQp9closeSquare")
 					.replace("+", "plusF6cyUQp9plus").replace("-", "minusF6cyUQp9minus").replace("*", "timesF6cyUQp9times");
 			
 			if (toImport.contains("=>")) {
@@ -103,17 +103,17 @@ public class JsonHandler {
 					
 					String check = "\""+jsonGet+"\""+":\"";
 					if (jsonString.contains(check)) {
-						returnString = "[";
+						returnString = new StringBuilder("[");
 						while (jsonString.contains(check)) {
 							String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
                             ArrayHandler.USR_array.get(whatArray).add(jsonGot.replace("openSquareF6cyUQp9openSquare","[").replace("closeSquareF6cyUQp9closeSquare","]")
 									.replace("plusF6cyUQp9plus", "+").replace("minusF6cyUQp9minus", "-").replace("timesF6cyUQp9times", "*"));
 							jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
-							returnString += jsonGot+",";
+							returnString.append(jsonGot).append(",");
 						}
-						returnString = returnString.substring(0,returnString.length()-1)+"]";
+						returnString = new StringBuilder(returnString.substring(0,returnString.length()-1)+"]");
 					} else {
-						returnString = "No "+jsonGet+" in json!";
+						returnString = new StringBuilder("No "+jsonGet+" in json!");
 					}
 				} else if (type.equalsIgnoreCase("STRING")) {
 					String stringToSave = toImport.substring(0,toImport.indexOf("=>"));
@@ -126,7 +126,7 @@ public class JsonHandler {
 							if (jsonString.contains(check)) {
 								String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
 								global.USR_string.get(i).set(1, jsonGot);
-								returnString = jsonGot;
+								returnString = new StringBuilder(jsonGot);
 							}
 						}
 					}
@@ -138,33 +138,33 @@ public class JsonHandler {
 							if (jsonString.contains(check)) {
 								String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
 								global.TMP_string.get(i).set(1, jsonGot);
-								returnString = jsonGot;
+								returnString = new StringBuilder(jsonGot);
 							}
 						}
 					}
 				}
 			} else {
-				returnString = "No array! use 'array=>nodes'";
+				returnString = new StringBuilder("No array! use 'array=>nodes'");
 			}
 		} catch (UnsupportedEncodingException e) {
-			returnString = "Unsupported encoding!";
+			returnString = new StringBuilder("Unsupported encoding!");
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
-			returnString = "File not found!";
+			returnString = new StringBuilder("File not found!");
 			e.printStackTrace();
 		} catch (IOException e) {
-			returnString = "IO exception!";
+			returnString = new StringBuilder("IO exception!");
 			e.printStackTrace();
 		}
-		return returnString;
+		return returnString.toString();
 	}
 	
 	public static String importJsonURL(String type, String url, String toImport) {
-		String returnString = "Something went wrong!";
-        String jsonString = "";
+		StringBuilder returnString = new StringBuilder("Something went wrong!");
+        StringBuilder jsonStringBuilder = new StringBuilder();
 
 		if (jsonURL.containsKey(url)) {
-            jsonString = jsonURL.get(url);
+            jsonStringBuilder = new StringBuilder(jsonURL.get(url));
         } else {
             try {
                 URL web = new URL(url);
@@ -178,23 +178,24 @@ public class JsonHandler {
                 bufferedReader.close();
 
 
-                for (String value : lines) {jsonString += value;}
-                jsonString = jsonString.replace("[", "openSquareF6cyUQp9openSquare").replace("]", "closeSquareF6cyUQp9closeSquare")
-                        .replace("+", "plusF6cyUQp9plus").replace("-", "minusF6cyUQp9minus");
-                jsonURL.put(url, jsonString);
+                for (String value : lines) {jsonStringBuilder.append(value);}
+                jsonStringBuilder = new StringBuilder(jsonStringBuilder.toString().replace("[", "openSquareF6cyUQp9openSquare").replace("]", "closeSquareF6cyUQp9closeSquare")
+                        .replace("+", "plusF6cyUQp9plus").replace("-", "minusF6cyUQp9minus"));
+                jsonURL.put(url, jsonStringBuilder.toString());
 
             } catch (UnsupportedEncodingException e) {
-                returnString = "Unsupported encoding!";
+                returnString = new StringBuilder("Unsupported encoding!");
                 e.printStackTrace();
             } catch (FileNotFoundException e) {
-                returnString = "File not found!";
+                returnString = new StringBuilder("File not found!");
                 e.printStackTrace();
             } catch (IOException e) {
-                returnString = "IO exception!";
+                returnString = new StringBuilder("IO exception!");
                 e.printStackTrace();
             }
         }
 
+        String jsonString = jsonStringBuilder.toString();
         if (toImport.contains("=>")) {
             if (type.equalsIgnoreCase("ARRAY")) {
                 String arrayToSave = toImport.substring(0,toImport.indexOf("=>"));
@@ -216,18 +217,19 @@ public class JsonHandler {
                 String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
 
                 String check = "\""+jsonGet+"\":\"";
+
                 if (jsonString.contains(check)) {
-                    returnString = "[";
+                    returnString = new StringBuilder("[");
                     while (jsonString.contains(check)) {
                         String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
                         ArrayHandler.USR_array.get(whatArray).add(jsonGot.replace("openSquareF6cyUQp9openSquare","[").replace("closeSquareF6cyUQp9closeSquare","]")
                                 .replace("plusF6cyUQp9plus", "+").replace("minusF6cyUQp9minus", "-"));
                         jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
-                        returnString += jsonGot+",";
+                        returnString.append(jsonGot).append(",");
                     }
-                    returnString = returnString.substring(0, returnString.length()-1) + "]";
+                    returnString = new StringBuilder(returnString.substring(0, returnString.length()-1) + "]");
                 } else {
-                    returnString = "No "+jsonGet+" in json!";
+                    returnString = new StringBuilder("No "+jsonGet+" in json!");
                 }
             } else if (type.equalsIgnoreCase("STRING")) {
                 String stringToSave = toImport.substring(0,toImport.indexOf("=>"));
@@ -240,7 +242,7 @@ public class JsonHandler {
                         if (jsonString.contains(check)) {
                             String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
                             global.USR_string.get(i).set(1, jsonGot);
-                            returnString = jsonGot;
+                            returnString = new StringBuilder(jsonGot);
                         }
                     }
                 }
@@ -252,15 +254,15 @@ public class JsonHandler {
                         if (jsonString.contains(check)) {
                             String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
                             global.TMP_string.get(i).set(1, jsonGot);
-                            returnString = jsonGot;
+                            returnString = new StringBuilder(jsonGot);
                         }
                     }
                 }
             }
         } else {
-            returnString = "No array! use 'array=>nodes'";
+            returnString = new StringBuilder("No array! use 'array=>nodes'");
         }
 
-		return returnString;
+		return returnString.toString();
 	}
 }

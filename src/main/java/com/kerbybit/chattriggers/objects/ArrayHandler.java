@@ -60,7 +60,7 @@ public class ArrayHandler {
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.setSplit(") && TMP_e.contains(",") && TMP_e.contains(")")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.setSplit(", TMP_e.indexOf("{array[")));
 			String checkTo = TMP_e.substring(TMP_e.indexOf("]}.setSplit(")+12, TMP_e.indexOf(")", TMP_e.indexOf("]}.setSplit(")));
-			String returnString = "Something went wrong with parsing setSplit!";
+			StringBuilder returnString = new StringBuilder("Something went wrong with parsing setSplit!");
 			Boolean isArray = false;
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
@@ -74,9 +74,9 @@ public class ArrayHandler {
 						String[] moreargs = args[0].split(args[1]);
 						List<String> temporary = new ArrayList<String>();
 						temporary.addAll(Arrays.asList(moreargs));
-						returnString = "[";
-						for (String value : temporary) {returnString+=value + " ";}
-						returnString = returnString.trim().replace(" ",",")+"]";
+						returnString = new StringBuilder("[");
+						for (String value : temporary) {returnString.append(value).append(" ");}
+						returnString = new StringBuilder(returnString.toString().trim().replace(" ",",")+"]");
 						USR_array.get(j).addAll(temporary);
 						isArray = true;
 					}
@@ -87,17 +87,17 @@ public class ArrayHandler {
 					temporary.add(checkFrom);
 					List<String> temp = new ArrayList<String>();
 					temporary.addAll(Arrays.asList(moreargs));
-					returnString = "[";
-					for (String value : temp) {returnString+=value + " ";}
-					returnString = returnString.trim().replace(" ",",")+"]";
+					returnString = new StringBuilder("[");
+					for (String value : temp) {returnString.append(value).append(" ");}
+					returnString = new StringBuilder(returnString.toString().trim().replace(" ",",")+"]");
 					temporary.addAll(temp);
 					USR_array.add(temporary);
 				}
-			} else {returnString = "setSplit formatted wrong! use .setSplit(value,split)";}
+			} else {returnString = new StringBuilder("setSplit formatted wrong! use .setSplit(value,split)");}
 			
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("ArrayToString->"+checkFrom+"SETSPLIT"+checkTo+"-"+(global.TMP_string.size()+1));
-			temporary.add(returnString);
+			temporary.add(returnString.toString());
 			global.TMP_string.add(temporary);
 			global.backupTMP_strings.add(temporary);
 			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.setSplit(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"SETSPLIT"+checkTo+"-"+global.TMP_string.size()+"]}");

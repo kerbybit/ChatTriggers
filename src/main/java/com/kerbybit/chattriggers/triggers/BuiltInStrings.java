@@ -16,7 +16,6 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
-import net.minecraft.scoreboard.Scoreboard;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 import java.io.File;
@@ -166,13 +165,13 @@ public class BuiltInStrings {
             TMP_e = createDefaultString("setcol", Settings.col[0], TMP_e);
         }
         if (TMP_e.contains("{br}")) {
-            String dashes = "";
+            StringBuilder dashes = new StringBuilder();
             float chatWidth = Minecraft.getMinecraft().gameSettings.chatWidth;
             float chatScale = Minecraft.getMinecraft().gameSettings.chatScale;
             int numdash = (int) floor(((((280*(chatWidth))+40)/320) * (1/chatScale))*53);
-            for (int j=0; j<numdash; j++) {dashes += "-";}
+            for (int j=0; j<numdash; j++) {dashes.append("-");}
 
-            TMP_e = createDefaultString("br", dashes, TMP_e);
+            TMP_e = createDefaultString("br", dashes.toString(), TMP_e);
         }
         if (TMP_e.contains("{chatwidth}")) {
             TMP_e = createDefaultString("chatwidth", ""+(int)((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40), TMP_e);
@@ -191,7 +190,8 @@ public class BuiltInStrings {
             }
             TMP_e = createDefaultString("scoreboardtitle", ChatHandler.removeFormatting(boardTitle), TMP_e);
         }
-        if (TMP_e.contains("{scoreboard}")) {
+        ///TODO unused - needs fix
+        /*if (TMP_e.contains("{scoreboard}")) {
             String board = "[";
             HashMap<String, Integer> board_hash = new HashMap<String, Integer>();
             ValueComparator bvc = new ValueComparator(board_hash);
@@ -232,7 +232,7 @@ public class BuiltInStrings {
             ListHandler.getList("DefaultList->SCOREBOARD-"+(ListHandler.getListsSize()+1), board);
 
             TMP_e = TMP_e.replace("{scoreboard}", "{list[DefaultList->SCOREBOARD-"+ListHandler.getListsSize()+"]}");
-        }
+        }*/
         if (TMP_e.contains("{hp}") || TMP_e.contains("{HP}")) {
             TMP_e = createDefaultString("hp", global.playerHealth + "", TMP_e);
         }
@@ -287,7 +287,7 @@ public class BuiltInStrings {
         }
         if (TMP_e.contains("{potionEffects}")) {
             Collection<PotionEffect> potionEffects = Minecraft.getMinecraft().thePlayer.getActivePotionEffects();
-            String potionList = "{";
+            StringBuilder potionList = new StringBuilder("{");
             for (PotionEffect potionEffect : potionEffects) {
                 if (!potionEffect.getIsAmbient()) {
                     String potionName = IconHandler.simplifyPotionName(Potion.potionTypes[potionEffect.getPotionID()].getName().replace("potion.",""));
@@ -295,25 +295,25 @@ public class BuiltInStrings {
                     String potionDuration = Potion.getDurationString(potionEffect);
                     String potionColor = IconHandler.getPotionColors(potionName);
 
-                    potionList += "\"" + potionName + "\":{";
-                    potionList += "\"amplitude\":\"" + potionAmp
-                            + "\",\"duration\":\"" + potionDuration
-                            + "\",\"color\":\"" + potionColor + "\"},";
+                    potionList.append("\"").append(potionName).append("\":{")
+                            .append("\"amplitude\":\"").append(potionAmp)
+                            .append("\",\"duration\":\"").append(potionDuration)
+                            .append("\",\"color\":\"").append(potionColor).append("\"},");
                 }
             }
-            if (potionList.equals("{")) {
-                potionList += "}";
+            if (potionList.toString().equals("{")) {
+                potionList.append("}");
             } else {
-                potionList = potionList.substring(0, potionList.length()-1) + "}";
+                potionList = new StringBuilder(potionList.substring(0, potionList.length()-1) + "}");
             }
 
-            NewJsonHandler.getJson("DefaultJson->POTIONEFFECTS-"+(NewJsonHandler.getJsonsSize()+1), potionList);
+            NewJsonHandler.getJson("DefaultJson->POTIONEFFECTS-"+(NewJsonHandler.getJsonsSize()+1), potionList.toString());
 
             TMP_e = TMP_e.replace("{potionEffects}", "{json[DefaultJson->POTIONEFFECTS-"+NewJsonHandler.getJsonsSize()+"]}");
         }
         if (TMP_e.contains("{armor}")) {
             ItemStack[] armor_set = Minecraft.getMinecraft().thePlayer.inventory.armorInventory;
-            String armorList = "{";
+            StringBuilder armorList = new StringBuilder("{");
             for (int i=armor_set.length-1; i>=0; i--) {
                 ItemStack armor = armor_set[i];
                 if (armor != null) {
@@ -338,21 +338,21 @@ public class BuiltInStrings {
                             }
                         }
                     }
-                    armorList += "\"" + armor.getItem().getRegistryName().replace("minecraft:","") + "\":{";
-                    armorList += "\"displayName\":\"" + armor.getDisplayName()
-                            + "\",\"maxDurability\":" + (int)floor(armorMaxDamage)
-                            + ",\"durability\":" + (int)floor(armorDamage)
-                            + ",\"durabilityPercent\":" + (int)floor(armorPercent)
-                            + ",\"data\":\""+armorData+"\"},";
+                    armorList.append("\"").append(armor.getItem().getRegistryName().replace("minecraft:","")).append("\":{")
+                            .append("\"displayName\":\"").append(armor.getDisplayName())
+                            .append("\",\"maxDurability\":").append((int)floor(armorMaxDamage))
+                            .append(",\"durability\":").append((int)floor(armorDamage))
+                            .append(",\"durabilityPercent\":").append((int)floor(armorPercent))
+                            .append(",\"data\":\"").append(armorData).append("\"},");
                 }
             }
-            if (armorList.equals("{")) {
-                armorList += "}";
+            if (armorList.toString().equals("{")) {
+                armorList.append("}");
             } else {
-                armorList = armorList.substring(0, armorList.length()-1) + "}";
+                armorList = new StringBuilder(armorList.substring(0, armorList.length()-1) + "}");
             }
 
-            NewJsonHandler.getJson("DefaultJson->ARMOR-"+(NewJsonHandler.getJsonsSize()+1), armorList);
+            NewJsonHandler.getJson("DefaultJson->ARMOR-"+(NewJsonHandler.getJsonsSize()+1), armorList.toString());
 
             TMP_e = TMP_e.replace("{armor}", "{json[DefaultJson->ARMOR-"+NewJsonHandler.getJsonsSize()+"]}");
         }
@@ -494,7 +494,7 @@ public class BuiltInStrings {
         return TMP_e;
     }
 
-    public static String createDefaultString(String string_name, String string_value, String TMP_e) {
+    private static String createDefaultString(String string_name, String string_value, String TMP_e) {
         List<String> temporary = new ArrayList<String>();
         temporary.add("DefaultString->"+string_name.toUpperCase()+"-"+(global.TMP_string.size()+1));
         temporary.add(string_value);
