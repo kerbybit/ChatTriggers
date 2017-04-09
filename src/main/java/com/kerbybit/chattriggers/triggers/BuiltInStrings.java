@@ -394,6 +394,20 @@ public class BuiltInStrings {
 
             TMP_e = TMP_e.replace("{heldItem}", "{json[DefaultJson->HELDITEM-"+NewJsonHandler.getJsonsSize()+"]}");
         }
+        if (TMP_e.contains("{arrows}")) {
+            ItemStack[] inventory = Minecraft.getMinecraft().thePlayer.inventory.mainInventory;
+            int arrows = 0;
+
+            for (ItemStack item : inventory) {
+                if (item != null) {
+                    if (item.getDisplayName().equals("Arrow")) {
+                        arrows += item.stackSize;
+                    }
+                }
+            }
+
+            TMP_e = createDefaultString("arrows", arrows+"", TMP_e);
+        }
         if (TMP_e.contains("{cps}")) {
             String returnString;
 
