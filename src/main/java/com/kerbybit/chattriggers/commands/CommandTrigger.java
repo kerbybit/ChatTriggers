@@ -1435,6 +1435,38 @@ public class CommandTrigger extends CommandBase {
                         }
                     }
                 }
+            } else if (args[1].equalsIgnoreCase("file")) {
+                if (args.length == 2) {
+                    ChatHandler.warn("red", "/trigger settings file [formatting] <...>");
+                } else {
+                    if (args.length == 3) {
+                        if (args[2].equalsIgnoreCase("FORMATTING")) {
+                            if (Settings.oldFormatting) {
+                                Settings.oldFormatting = false;
+                                ChatHandler.warn(Settings.col[0], "Toggled old file formatting &cOFF");
+                            } else {
+                                Settings.oldFormatting = true;
+                                ChatHandler.warn(Settings.col[0], "Toggled old file formatting &aON");
+                            }
+                        } else {
+                            ChatHandler.warn("red", "/trigger settings file [formatting] <...>");
+                        }
+                    } else {
+                        if (args.length == 4) {
+                            if (args[3].equalsIgnoreCase("new")) {
+                                Settings.oldFormatting = false;
+                                ChatHandler.warn(Settings.col[0], "Toggled old file formatting &cOFF");
+                            } else if (args[3].equalsIgnoreCase("old")) {
+                                Settings.oldFormatting = true;
+                                ChatHandler.warn(Settings.col[0], "Toggled old file formatting &aON");
+                            } else {
+                                ChatHandler.warn("red", "/trigger settings file formatting [new/old]");
+                            }
+                        } else {
+                            ChatHandler.warn("red", "/trigger settings file formatting [new/old]");
+                        }
+                    }
+                }
             } else {
                 ChatHandler.warn(ChatHandler.color("red", "/trigger settings [debug/dump/test/color/killfeed/beta] <...>"));
             }

@@ -142,7 +142,12 @@ public class FileHandler {
 				writer.println(">>" + value);
                 for (List<String> trig : trigger) {
 					if (trig.get(1).contains(value)) {
-						writer.println("trigger "+trig.get(0)+"("+trig.get(1)+") {");
+					    if (Settings.oldFormatting) {
+					        writer.println("trigger:" + trig.get(1));
+					        writer.println("type:" + trig.get(0));
+                        } else {
+                            writer.println("trigger "+trig.get(0)+"("+trig.get(1)+") {");
+                        }
 						
 						int tabbed_logic=0;
 						for (int j=2; j<trig.size(); j++) {
@@ -155,7 +160,12 @@ public class FileHandler {
 							}
 							
 								for (int k=0; k<tabbed_logic; k++) {extraSpaces.append("  ");}
-								writer.println(extraSpaces + "  "+trig.get(j));
+								if (Settings.oldFormatting) {
+							        writer.println(extraSpaces + "  event:"+trig.get(j));
+                                } else {
+                                    writer.println(extraSpaces + "  "+trig.get(j));
+                                }
+
 							
 							if (TMP_c.toUpperCase().startsWith("IF") 
 							|| TMP_c.toUpperCase().startsWith("FOR")
@@ -166,16 +176,23 @@ public class FileHandler {
 								tabbed_logic++;
 							}
 						}
-						writer.println("}");
+						if (!Settings.oldFormatting) {
+                            writer.println("}");
+                        }
 					}
 				}
 				writer.println("<<"); writer.println(""); writer.println("");
 			}
 		}
-		writer.println("NO LIST");
+		writer.println();
         for (List<String> trig : trigger) {
 			if (!trig.get(1).contains("<list=") && !trig.get(1).contains("<imported>")) {
-				writer.println("trigger "+trig.get(0)+"("+trig.get(1)+") {");
+                if (Settings.oldFormatting) {
+                    writer.println("trigger:" + trig.get(1));
+                    writer.println("type:" + trig.get(0));
+                } else {
+                    writer.println("trigger "+trig.get(0)+"("+trig.get(1)+") {");
+                }
 				
 				int tabbed_logic = 0;
 				for (int j=2; j<trig.size(); j++) {
@@ -188,7 +205,12 @@ public class FileHandler {
 					}
 					
 						for (int k=0; k<tabbed_logic; k++) {extraSpaces.append("  ");}
-						writer.println(extraSpaces + "  "+trig.get(j));
+						if (Settings.oldFormatting) {
+                            writer.println(extraSpaces + "  event:"+trig.get(j));
+                        } else {
+                            writer.println(extraSpaces + "  "+trig.get(j));
+                        }
+
 					
 					if (TMP_c.toUpperCase().startsWith("IF") 
 					|| TMP_c.toUpperCase().startsWith("FOR")
@@ -199,7 +221,9 @@ public class FileHandler {
                         tabbed_logic++;
                     }
 				}
-				writer.println("}");
+				if (!Settings.oldFormatting) {
+                    writer.println("}");
+                }
 			}
 		}
 		writer.println("");
@@ -237,6 +261,7 @@ public class FileHandler {
         writer.println("fpslow:"+global.fpslowcol + " " + global.fpslow);
         writer.println("fpsmed:"+global.fpsmedcol);
         writer.println("fpshigh:"+global.fpshighcol + " " + global.fpshigh);
+        writer.println("old formatting:"+Settings.oldFormatting);
 
 		writer.close();
 	}
@@ -573,6 +598,10 @@ public class FileHandler {
                     global.fpshigh = 60;
                     throw new NumberFormatException();
                 }
+            }
+            if (l.startsWith("old formatting:")) {
+			    String get = l.substring(l.indexOf("old formatting:")+15).trim();
+			    Settings.oldFormatting = get.equalsIgnoreCase("true");
             }
 		}
 	}
