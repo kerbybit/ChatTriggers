@@ -143,7 +143,6 @@ public class NewJsonHandler {
             returnString = new StringBuilder(returnString.substring(0, returnString.length()-1) + "]");
         }
 
-
         return returnString.toString();
     }
 

@@ -375,7 +375,7 @@ public class ListHandler {
         global.TMP_string.add(temporary);
         global.backupTMP_strings.add(temporary);
 
-        return TMP_e.replace("{list["+list_name+"]}", "{string[ListToString->"+list_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
+        return TMP_e.replace("{list["+list_name+"]}."+function_name+"("+arguments+")", "{string[ListToString->"+list_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
     }
 
     private static String createDefaultString(String function_name, String list_name, String value, String TMP_e) {
