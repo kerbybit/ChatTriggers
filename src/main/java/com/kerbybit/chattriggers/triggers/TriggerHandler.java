@@ -9,6 +9,7 @@ import java.util.List;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
+import com.kerbybit.chattriggers.objects.DisplayHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
@@ -256,6 +257,7 @@ public class TriggerHandler {
 	
 	public static void worldLoadTriggers() {
 		if (global.worldLoaded) {
+            DisplayHandler.clearDisplays();
 			for (int i=0; i<global.onWorldFirstLoadTrigger.size(); i++) {
 				if (global.worldFirstLoad) {
 					//add all events to temp list
@@ -264,7 +266,6 @@ public class TriggerHandler {
 					
 					//do events
 					EventsHandler.doEvents(TMP_events, null);
-					System.out.println("doing world first load events" + TMP_events);
 				}
 			}
 				
@@ -293,6 +294,7 @@ public class TriggerHandler {
 				}
 			}
 			global.worldFirstLoad = false;
+
 			if (Minecraft.getMinecraft().isSingleplayer()) {global.connectedToServer = "SinglePlayer";} 
 			else {global.connectedToServer = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
 		}

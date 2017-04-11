@@ -73,8 +73,10 @@ public class BugTracker {
     }
 
     public static void show(Exception e, String type) {
-        for (StackTraceElement stack : e.getStackTrace()) {
-            global.bugReport.add(stack.toString());
+        if (e != null) {
+            for (StackTraceElement stack : e.getStackTrace()) {
+                global.bugReport.add(stack.toString());
+            }
         }
         if (type.equals("command")) {
             global.bugLastCommand = global.lastCommand;
@@ -90,8 +92,9 @@ public class BugTracker {
             ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitfakebugreport,Send a bug report) &4to submit a bug report");
         }
 
-
-        e.printStackTrace();
+        if (e != null) {
+            e.printStackTrace();
+        }
 
         for (int i=0; i<global.onUnknownError.size(); i++) {
             //add all events to temp list

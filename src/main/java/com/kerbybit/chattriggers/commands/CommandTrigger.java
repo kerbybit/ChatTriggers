@@ -388,6 +388,7 @@ public class CommandTrigger extends CommandBase {
         CommandReference.clearAll();
         global.tick = 0;
         FileHandler.firstFileLoad();
+        global.worldLoaded = true;
     }
 
     private static void commandTest() {
@@ -454,6 +455,7 @@ public class CommandTrigger extends CommandBase {
                         if (!file.renameTo(new File("./mods/ChatTriggers/Imports/DisabledImports/" + args[i] + ".txt"))) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while moving the file!"));}
                         ChatHandler.warn(ChatHandler.color(Settings.col[0], "Disabled " + args[i] + ".txt"));
                         try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                        global.worldLoaded = true;
                     }
                 } catch (IOException e) {
                     ChatHandler.warn(ChatHandler.color("red", args[i] + " is not an active import!"));
@@ -480,6 +482,7 @@ public class CommandTrigger extends CommandBase {
                         if (!file.renameTo(new File("./mods/ChatTriggers/Imports/" + args[i] + ".txt"))) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         ChatHandler.warn(ChatHandler.color(Settings.col[0], "Enabled " + args[i] + ".txt"));
                         try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                        global.worldLoaded = true;
                     }
 
                 } catch (IOException e) {
@@ -1487,6 +1490,7 @@ public class CommandTrigger extends CommandBase {
             FileHandler.loadImports();
             CommandReference.silentResetAll();
             ChatHandler.warn(Settings.col[0] + "Files loaded");
+            global.worldLoaded = true;
         } catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error loading triggers!"));}
     }
 

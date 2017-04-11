@@ -143,10 +143,10 @@ public class ChatTriggers {
 			KillfeedHandler.drawKillfeed(event);
 			NotifyHandler.drawNotify(event);
             DisplayHandler.drawDisplays(event);
-			
+
 			GuiTriggerList.openGui();
             DisplayOverlay.openGui();
-			
+
 			FileHandler.firstFileLoad();
 
             try {
@@ -183,7 +183,7 @@ public class ChatTriggers {
 		if (global.canUse) {
 			KillfeedHandler.tickKillfeed();
 			//OverlayHandler.tickNotify();
-			
+
 			FileHandler.tickImports();
 
             try {
@@ -194,7 +194,7 @@ public class ChatTriggers {
 
             EventsHandler.eventTick();
             global.ticksElapsed += 1;
-			
+
 			ChatHandler.onClientTick();
 		} else {
             Minecraft.getMinecraft().gameSettings.invertMouse = global.inverted;

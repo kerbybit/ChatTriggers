@@ -117,6 +117,7 @@ public class FileHandler {
 			 			e.printStackTrace();
 			 		}
 			 		global.canImport=true;
+			 		global.worldLoaded = true;
 			     }
 			});
 			t1.start();
