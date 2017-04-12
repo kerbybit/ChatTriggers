@@ -1,15 +1,10 @@
 package com.kerbybit.chattriggers.globalvars;
 
-import com.google.gson.JsonObject;
-import net.minecraft.client.Minecraft;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class global {
-	public static List<String> asyncEvents = new ArrayList<String>();
+	public static HashMap<Integer, List<String>> asyncMap = new HashMap<Integer, List<String>>();
+	public static int asyncID = 0;
 
 	public static Boolean worldLoaded = false;
 	public static Boolean worldFirstLoad = true;

@@ -117,6 +117,8 @@ public class BugTracker {
             return "An unknown error has occured while executing \"&conWorldLoad&4\"";
         } else if (type.equalsIgnoreCase("onClientTick")) {
             return "An unknown error has occured while executing \"&conClientTick&4\"";
+        } else if (type.equalsIgnoreCase("async")) {
+            return "An unknown error has occured while executing \"async\"";
         } else {
             return "An unknown error has occurred";
         }

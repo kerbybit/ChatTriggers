@@ -361,7 +361,7 @@ public class CommandTrigger extends CommandBase {
                 if (global.canSave) {
                     global.trigger.clear(); global.USR_string.clear(); global.TMP_string.clear();
                     CommandReference.clearTriggerList();
-                    global.waitEvents.clear(); global.asyncEvents.clear();
+                    global.waitEvents.clear(); global.asyncMap.clear();
                     for (int i=1; i<args.length; i++) {
                         ChatHandler.warn(ChatHandler.color(Settings.col[0], "You are now in testing mode for import '"+args[i]+"'"));
                     }

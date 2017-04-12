@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.gui.DisplayOverlay;
+import com.kerbybit.chattriggers.references.AsyncHandler;
 import com.kerbybit.chattriggers.references.BugTracker;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.overlay.KillfeedHandler;
@@ -190,6 +191,12 @@ public class ChatTriggers {
 			    TriggerHandler.onClientTickTriggers();
             } catch (Exception exception) {
                 BugTracker.show(exception, "onClientTick");
+            }
+
+            try {
+                AsyncHandler.asyncTick();
+            } catch (Exception exception) {
+                BugTracker.show(exception, "async");
             }
 
             EventsHandler.eventTick();

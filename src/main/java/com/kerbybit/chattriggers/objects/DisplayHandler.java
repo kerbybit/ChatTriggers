@@ -357,13 +357,13 @@ public class DisplayHandler {
 
     public static void dumpDisplays() {
         if (displays.size() > 0) {
-        for (String display_name : displays.keySet()) {
-            ChatHandler.warn(display_name);
-            ChatHandler.warn(" " + displays_xy.get(display_name)[0] + " " + displays_xy.get(display_name)[1]);
-            for (String display_value : displays.get(display_name)) {
-                ChatHandler.warn(" " + ChatHandler.ignoreFormatting(display_value));
+            for (String display_name : displays.keySet()) {
+                ChatHandler.warn(display_name);
+                ChatHandler.warn(" " + displays_xy.get(display_name)[0] + " " + displays_xy.get(display_name)[1]);
+                for (String display_value : displays.get(display_name)) {
+                    ChatHandler.warn(" " + ChatHandler.ignoreFormatting(display_value));
+                }
             }
-        }
         } else {
             ChatHandler.warn(ChatHandler.color("red","There are currently no displays"));
         }

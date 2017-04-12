@@ -18,7 +18,7 @@ public class CommandReference {
     static void clearAll() {
         global.waitEvents.clear();
         global.waitTime.clear();
-        global.asyncEvents.clear();
+        global.asyncMap.clear();
         global.backupTMP_strings.clear();
         global.backupUSR_strings.clear();
         global.killfeed.clear();

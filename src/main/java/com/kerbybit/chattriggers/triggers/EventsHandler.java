@@ -206,16 +206,9 @@ public class EventsHandler {
 					
 					eventsToAsync.remove(0);
 					eventsToAsync.remove(eventsToAsync.size()-1);
-					global.asyncEvents.clear();
-					global.asyncEvents.addAll(eventsToAsync);
-					Thread t1 = new Thread(new Runnable() {
-					     public void run() {
-					          EventsHandler.doEvents(global.asyncEvents, null);
-					          global.asyncEvents.clear();
-					     }
-					});
-					t1.start();
-					
+
+                    global.asyncMap.put(global.asyncID, eventsToAsync);
+                    global.asyncID++;
 				}
 				
 				//move i
@@ -722,12 +715,12 @@ public class EventsHandler {
 				global.waitEvents.clear();
 				global.waitTime.clear();
 			}
-			if (global.asyncEvents.size()>0) {
-				global.asyncEvents.clear();
+			if (global.asyncMap.size()>0) {
+				global.asyncMap.clear();
 			}
 		}
 		
-		if (global.waitEvents.size()==0 && global.asyncEvents.size()==0 && global.TMP_string.size()>0) {
+		if (global.waitEvents.size()==0 && global.asyncMap.size()==0 && global.TMP_string.size()>0) {
 			global.TMP_string.clear();
 			JsonHandler.jsonURL.clear();
 		}
