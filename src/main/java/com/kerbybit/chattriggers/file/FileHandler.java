@@ -352,9 +352,11 @@ public class FileHandler {
                     for (String event : CommandReference.getAllEventTypes()) {
                         if (!event.equals("")) {
                             if (lines.get(i).trim().startsWith(event + " ") || lines.get(i).trim().equals(event)) {
-                                String tmp_event = lines.get(i).trim();
-                                tmp_triggers.get(j).add(tmp_event);
-                                break;
+                                if (j != -1) {
+                                    String tmp_event = lines.get(i).trim();
+                                    tmp_triggers.get(j).add(tmp_event);
+                                    break;
+                                }
                             }
                         }
                     }
