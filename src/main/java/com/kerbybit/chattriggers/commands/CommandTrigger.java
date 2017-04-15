@@ -220,6 +220,8 @@ public class CommandTrigger extends CommandBase {
             ChatHandler.warn(" &f>> clickable(" + Settings.col[0] + "Built in strings,run_command,/trigger help strings,&7Built in string list)");
             ChatHandler.warn(" &f>> clickable(" + Settings.col[0] + "String functions,run_command,/trigger help stringfunctions,&7String function list)");
             ChatHandler.warn(" &f>> clickable(" + Settings.col[0] + "Array functions,run_command,/trigger help arrayfunctions,&7Array function list)");
+            ChatHandler.warn(" &f>> clickable(" + Settings.col[0] + "List functions,run_command,/trigger help listfunctions,&7List function list)");
+            ChatHandler.warn(" &f>> clickable(" + Settings.col[0] + "Json functions,run_command,/trigger help jsonfunctions,&7Json function list)");
             ChatHandler.warn(" &f>> clickable(" + Settings.col[0] + "Display functions,run_command,/trigger help displayfunctions,&7Display function list)");
             ChatHandler.warnBreak(1);
         } else {
@@ -271,8 +273,26 @@ public class CommandTrigger extends CommandBase {
                 ChatHandler.warnBreak(1);
             } else if (args[1].equalsIgnoreCase("ARRAYFUNCTIONS")) {
                 ChatHandler.warnBreak(0);
-                ChatHandler.warn("&fArray functions");
+                ChatHandler.warn("&fArray functions (depreciated)");
                 for (String value : CommandReference.getArrayFunctions()) {
+                    ChatHandler.warn(Settings.col[0] + " " + value);
+                }
+                ChatHandler.warn("");
+                ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
+                ChatHandler.warnBreak(1);
+            } else if (args[1].equalsIgnoreCase("LISTFUNCTIONS")) {
+                ChatHandler.warnBreak(0);
+                ChatHandler.warn("&fList functions");
+                for (String value : CommandReference.getListFunctions()) {
+                    ChatHandler.warn(Settings.col[0] + " " + value);
+                }
+                ChatHandler.warn("");
+                ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
+                ChatHandler.warnBreak(1);
+            } else if (args[1].equalsIgnoreCase("JSONFUNCTIONS")) {
+                ChatHandler.warnBreak(0);
+                ChatHandler.warn("&fJson functions");
+                for (String value : CommandReference.getJsonFunctions()) {
                     ChatHandler.warn(Settings.col[0] + " " + value);
                 }
                 ChatHandler.warn("");

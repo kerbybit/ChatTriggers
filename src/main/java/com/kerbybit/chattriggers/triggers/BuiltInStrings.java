@@ -292,6 +292,10 @@ public class BuiltInStrings {
             Date date = new Date();
             TMP_e = createDefaultString("date", dateFormat.format(date), TMP_e);
         }
+        if (TMP_e.contains("{unixtime}")) {
+            Date date = new Date();
+            TMP_e = createDefaultString("unixtime", date.getTime()+"", TMP_e);
+        }
         if (TMP_e.contains("{potionEffects}")) {
             Collection<PotionEffect> potionEffects = Minecraft.getMinecraft().thePlayer.getActivePotionEffects();
             StringBuilder potionList = new StringBuilder("{");

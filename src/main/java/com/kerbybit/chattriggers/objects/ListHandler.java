@@ -189,6 +189,15 @@ public class ListHandler {
         }
     }
 
+    private static String getHasValue(String list_name, String value) {
+        if (lists.containsKey(list_name)) {
+            if (lists.get(list_name).contains(value)) {
+                return "true";
+            }
+        }
+        return "false";
+    }
+
     private static String getValue(String list_name, String value) {
         if (lists.containsKey(list_name)) {
             try {
@@ -375,6 +384,24 @@ public class ListHandler {
             get_value = listFunctions(get_value);
 
             TMP_e = createDefaultString("get", get_name, get_prevalue, getValue(get_name, get_value), TMP_e);
+        }
+
+        while (TMP_e.contains("{list[") && TMP_e.contains("]}.has(") && TMP_e.contains(")")) {
+            String get_name = TMP_e.substring(TMP_e.indexOf("{list[")+6, TMP_e.indexOf("]}.has(", TMP_e.indexOf("{list[")));
+            String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.has(", TMP_e.indexOf("{list["))+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.has(", TMP_e.indexOf("{list["))));
+            while (get_name.contains("{list[")) {
+                get_name = get_name.substring(get_name.indexOf("{list[")+6);
+            }
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.has(", TMP_e.indexOf("{list["))+7);
+            while (get_prevalue.contains("(")) {
+                temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
+                get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
+            }
+            get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
+            String get_value = StringHandler.stringFunctions(get_prevalue, null);
+            get_value = listFunctions(get_value);
+
+            TMP_e = createDefaultString("has", get_name, get_prevalue, getHasValue(get_name, get_value), TMP_e);
         }
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.getRandom()")) {

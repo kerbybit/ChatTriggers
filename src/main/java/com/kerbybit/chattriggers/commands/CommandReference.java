@@ -205,19 +205,25 @@ public class CommandReference {
     static List<String> getStrings() {
         List<String> r = new ArrayList<String>();
 
-            r.add("{msg} {msg[$n]}");
+            r.add("{msg} {msg[$number]}");
             r.add("{br}");
             r.add("{trigsize}");
             r.add("{notifysize}");
             r.add("{setcol}");
             r.add("{debug}");
+            r.add("{chatwidth}");
             r.add("");
             r.add("{me}");
             r.add("{hp}");
             r.add("{sneak}");
             r.add("{x} {y} {z}");
             r.add("{facing}");
-            r.add("{fps}");
+            r.add("{fps} {fpscol}");
+            r.add("{potionEffects}");
+            r.add("{armor}");
+            r.add("{heldItem}");
+            r.add("{arrows}");
+            r.add("{cps} {cpsAve} {cpsMax}");
             r.add("");
             r.add("{server}");
             r.add("{serverIP}");
@@ -225,6 +231,9 @@ public class CommandReference {
             r.add("{serverversion}");
             r.add("{ping}");
             r.add("{scoreboardtitle}");
+            r.add("");
+            r.add("{random($low,$high)} {random($high)}");
+            r.add("{time} {date} {unixtime}");
 
         return r;
     }
@@ -232,32 +241,32 @@ public class CommandReference {
     static List<String> getStringFunctions() {
         List<String> r = new ArrayList<String>();
 
-            r.add(".set($v) .set(~)");
-            r.add(".save($v) .save(~)");
+            r.add(".set($value) .set(~)");
+            r.add(".save($value) .save(~)");
             r.add("");
-            r.add(".add($n) .plus($n) .+($n)");
-            r.add(".subtract($n) .minus($n) .-($n)");
-            r.add(".multiply($n) .mult($n) .*($n)");
-            r.add(".divide($n) .div($n) ./($n)");
-            r.add(".divideGetPercentage($n) .divPercent($n) ./%($n)");
-            r.add(".power($n) .pow($n) .^($n)");
-            r.add(".modulus($n) .mod($n) .%($n)");
+            r.add(".add($number) .plus($number) .+($number)");
+            r.add(".subtract($number) .minus($number) .-($number)");
+            r.add(".multiply($number) .mult($number) .*($number)");
+            r.add(".divide($number) .div($number) ./($number)");
+            r.add(".divideGetPercentage($number) .divPercent($number) ./%($number)");
+            r.add(".power($number) .pow($number) .^($number)");
+            r.add(".modulus($number) .mod($number) .%($number)");
             r.add(".absolute() .abs()");
             r.add("");
-            r.add(".greaterThan($n) .>($n)");
-            r.add(".greaterThanOrEqualTo($n) .>=($n)");
-            r.add(".lessThan($n) .<($n)");
-            r.add(".lessThanOrEqualTo($n) .<=($n)");
+            r.add(".greaterThan($number) .>($number)");
+            r.add(".greaterThanOrEqualTo($number) .>=($number)");
+            r.add(".lessThan($number) .<($number)");
+            r.add(".lessThanOrEqualTo($number) .<=($number)");
             r.add("");
-            r.add(".equals($v) .=($v) .equalsIgnoreCase($v)");
-            r.add(".startsWith($v) .startsWithIgnoreCase($v)");
-            r.add(".contains($v) .containsIgnoreCase($v)");
-            r.add(".endsWith($v) .endsWithIgnoreCase($v)");
+            r.add(".equals($value) .=($value) .equalsIgnoreCase($value)");
+            r.add(".startsWith($value) .startsWithIgnoreCase($value)");
+            r.add(".contains($value) .containsIgnoreCase($value)");
+            r.add(".endsWith($value) .endsWithIgnoreCase($value)");
             r.add("");
-            r.add(".replace($v1,$v2) .replace($v)");
+            r.add(".replace($value1,$value2) .replace($value)");
             r.add(".substring($v1,$v2)");
             r.add(".trim()");
-            r.add(".prefix($v) .suffix($v)");
+            r.add(".prefix($value) .suffix($value)");
             r.add(".toUpper() .toUpperCase()");
             r.add(".toLower() .toLowerCase()");
             r.add(".removeFormatting() .remForm()");
@@ -270,6 +279,7 @@ public class CommandReference {
             r.add("");
             r.add(".length()");
             r.add(".size()");
+            r.add(".split($value)");
 
         return r;
     }
@@ -291,6 +301,34 @@ public class CommandReference {
         return r;
     }
 
+    static List<String> getListFunctions() {
+        List<String> r = new ArrayList<String>();
+
+            r.add(".load($value) .load($file) .load($URL)");
+            r.add(".export($file)");
+            r.add(".size()");
+            r.add(".add($value)");
+            r.add(".get($value)");
+            r.add(".has($value)");
+            r.add(".getRandom()");
+            r.add(".remove($index) .remove($value)");
+            r.add(".clear()");
+
+        return r;
+    }
+
+    static List<String> getJsonFunctions() {
+        List<String> r = new ArrayList<String>();
+
+            r.add(".clear()");
+            r.add(".load($value) .load($file) .load($URL)");
+            r.add(".get($value)");
+            r.add(".getKeys($value)");
+            r.add(".getValues($value)");
+
+        return r;
+    }
+
     static List<String> getDisplayFunctions() {
         List<String> r = new ArrayList<String>();
 
@@ -298,6 +336,7 @@ public class CommandReference {
             r.add(".clear()");
             r.add(".getX() .getY()");
             r.add(".setX($v) .setY($v)");
+            r.add(".settings($v)");
             r.add(".update()");
 
         return r;
