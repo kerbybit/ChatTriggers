@@ -1,12 +1,11 @@
 package com.kerbybit.chattriggers.objects;
 
+import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.triggers.EventsHandler;
 import com.kerbybit.chattriggers.triggers.StringHandler;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -47,6 +46,53 @@ public class ListHandler {
         }
     }
 
+    private static void saveListToFile(String list_name, String dest) {
+        Boolean compact = false;
+
+        if (!dest.contains("/")) {
+            dest = "./mods/ChatTriggers/"+dest;
+        }
+
+        if (dest.contains("<compact>")) {
+            dest = dest.replace("<compact>", "");
+            compact = true;
+        }
+
+        try {
+            PrintWriter writer = new PrintWriter(dest, "UTF-8");
+            if (compact) {
+                StringBuilder write = new StringBuilder("[");
+                if (lists.containsKey(list_name)) {
+                    for (int i = 0; i < lists.get(list_name).size()-1; i++) {
+                        write.append(lists.get(list_name).get(i)).append(",");
+                    }
+                    write.append(lists.get(list_name).get(lists.get(list_name).size()-1));
+                }
+                write.append("]");
+                writer.println(write);
+                writer.close();
+            } else {
+                writer.println("[");
+                if (lists.containsKey(list_name)) {
+                    for (int i = 0; i < lists.get(list_name).size()-1; i++) {
+                        writer.println("  " + lists.get(list_name).get(i) + ",");
+                    }
+                    writer.println("  " + lists.get(list_name).get(lists.get(list_name).size()-1));
+                }
+                writer.println("]");
+                writer.close();
+            }
+        } catch (FileNotFoundException exception) {
+            File check = new File(dest.substring(0, dest.lastIndexOf("/")));
+            if (!check.mkdir()) {
+                ChatHandler.warn("red", "Unable to save list to file!");
+            }
+        } catch (IOException exception) {
+            ChatHandler.warn("red", "Unable to save list to file! IOException");
+            exception.printStackTrace();
+        }
+    }
+
     private static ArrayList<String> getListFromValue(String value) {
         if (value.startsWith("[") && value.endsWith("]")) {
             if (value.equals("[]")) {
@@ -60,7 +106,7 @@ public class ListHandler {
         }
     }
 
-    public static String getList(String list_name, String list_from) {
+    public static void getList(String list_name, String list_from) {
         ArrayList<String> list_object;
         if (list_from.toUpperCase().startsWith("HTTP")) {
             list_object = getListFromURL(list_from);
@@ -70,17 +116,9 @@ public class ListHandler {
             list_object = getListFromFile(list_from);
         }
 
-        if (list_object == null) {
-            return "Unable to load list!";
-        } else {
+        if (list_object != null) {
             clearList(list_name);
             lists.put(list_name, list_object);
-            StringBuilder return_string = new StringBuilder("[");
-            for (String value : list_object) {
-                return_string.append(value).append(",");
-            }
-            return_string = new StringBuilder(return_string.substring(0, return_string.length()-1) + "]");
-            return return_string.toString();
         }
     }
 
@@ -93,7 +131,7 @@ public class ListHandler {
             return_string = new StringBuilder(return_string.substring(0, return_string.length()-1) + "]");
             return return_string.toString();
         } else {
-            return "Not a list";
+            return "[]";
         }
     }
 
@@ -272,6 +310,26 @@ public class ListHandler {
             getList(get_name, get_value);
 
             TMP_e = TMP_e.replace("{list["+get_name+"]}.load("+get_prevalue+")","{list["+get_name+"]}");
+        }
+
+        while (TMP_e.contains("{list[") && TMP_e.contains("]}.export(") && TMP_e.contains(")")) {
+            String get_name = TMP_e.substring(TMP_e.indexOf("{list[")+6, TMP_e.indexOf("]}.export(", TMP_e.indexOf("{list[")));
+            String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.export(", TMP_e.indexOf("{list["))+10, TMP_e.indexOf(")", TMP_e.indexOf("]}.export(", TMP_e.indexOf("{list["))));
+            while (get_name.contains("{list[")) {
+                get_name = get_name.substring(get_name.indexOf("{list[")+6);
+            }
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.export(", TMP_e.indexOf("{list["))+10);
+            while (get_prevalue.contains("(")) {
+                temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
+                get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
+            }
+            get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
+            String get_value = StringHandler.stringFunctions(get_prevalue, null);
+            get_value = listFunctions(get_value);
+
+            saveListToFile(get_name, get_value);
+
+            TMP_e = TMP_e.replace("{list["+get_name+"]}.export("+get_prevalue+")","{list["+get_name+"]}");
         }
 
         while(TMP_e.contains("{list[") && TMP_e.contains("]}.size()")) {

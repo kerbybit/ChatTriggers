@@ -19,6 +19,8 @@ import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.lang.Math.floor;
@@ -284,6 +286,11 @@ public class BuiltInStrings {
             }
 
             TMP_e = createDefaultString("time", hour + ":" + minute_string, TMP_e);
+        }
+        if (TMP_e.contains("{date}")) {
+            DateFormat dateFormat = new SimpleDateFormat(Settings.dateFormat);
+            Date date = new Date();
+            TMP_e = createDefaultString("date", dateFormat.format(date), TMP_e);
         }
         if (TMP_e.contains("{potionEffects}")) {
             Collection<PotionEffect> potionEffects = Minecraft.getMinecraft().thePlayer.getActivePotionEffects();

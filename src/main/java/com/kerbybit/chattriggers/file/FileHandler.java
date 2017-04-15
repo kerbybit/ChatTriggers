@@ -263,6 +263,7 @@ public class FileHandler {
         writer.println("fpsmed:"+global.fpsmedcol);
         writer.println("fpshigh:"+global.fpshighcol + " " + global.fpshigh);
         writer.println("old formatting:"+Settings.oldFormatting);
+        writer.println("date format:"+Settings.dateFormat);
 
 		writer.close();
 	}
@@ -605,6 +606,9 @@ public class FileHandler {
             if (l.startsWith("old formatting:")) {
 			    String get = l.substring(l.indexOf("old formatting:")+15).trim();
 			    Settings.oldFormatting = get.equalsIgnoreCase("true");
+            }
+            if (l.startsWith("date format:")) {
+			    Settings.dateFormat = l.substring(l.indexOf("date format:")+12).trim();
             }
 		}
 	}

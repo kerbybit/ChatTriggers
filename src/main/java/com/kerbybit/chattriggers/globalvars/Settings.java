@@ -22,4 +22,6 @@ public class Settings {
     public static String CTversion = "4.1.7";
 
     public static Boolean oldFormatting = false;
+
+    public static String dateFormat = "dd/MM/yyyy";
 }
