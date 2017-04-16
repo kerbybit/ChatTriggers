@@ -38,7 +38,7 @@ public class ListHandler {
             BufferedReader bufferedReader;
             bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(dest),"UTF-8"));
             while ((line = bufferedReader.readLine()) != null) {
-                listString.append(line);
+                listString.append(line.trim());
             }
             return getListFromValue(listString.toString());
         } catch (Exception e1) {

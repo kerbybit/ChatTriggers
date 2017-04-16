@@ -614,6 +614,10 @@ public class EventsHandler {
 					i += moveEvents-1;
 				}
 			}
+            //escape return if set with value
+            if (!ret.equals("null")) {
+                i = tmp_event.size();
+            }
 		}
         return ret;
 	}
