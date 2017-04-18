@@ -9,10 +9,15 @@ import com.kerbybit.chattriggers.triggers.TagHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
+import java.util.List;
 
 import static net.minecraft.realms.RealmsMth.floor;
 
@@ -172,6 +177,7 @@ public class DisplayHandler {
             List<String> display = display_map.getValue();
             Double[] display_xy;
             String settings = getDisplaySettings(display_name);
+            int max_width = 0;
             int color = 0x00ffffff;
 
             if (displays_xy.containsKey(display_name)) {
@@ -180,59 +186,213 @@ public class DisplayHandler {
                 display_xy = new Double[]{0.0,0.0};
             }
 
-            for (int i=0; i<display.size(); i++) {
-                if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
-                    String display_text = ChatHandler.addFormatting(settings + display.get(i));
-                    float display_x;
-                    float display_y;
-                    float spacing = 1;
-                    if (display_text.contains("<spacing=") && display_text.contains(">")) {
-                        try {
-                            String spacing_string = display_text.substring(display_text.indexOf("<spacing=")+9, display_text.indexOf(">", display_text.indexOf("<spacing=")));
-                            spacing = Float.parseFloat(spacing_string);
-                            display_text = display_text.replace("<spacing="+spacing_string+">", "");
-                        } catch (NumberFormatException e) {
-                            e.printStackTrace();
-                            System.out.println("<spacing=$n> - $n must be a number!");
-                        }
-                    }
+            String bg = "none";
+            String bgc = "40000000";
 
-                    if (display_text.contains("<up>")) {
-                        display_text = display_text.replace("<up>","");
-                        if (display_text.contains("<center>")) {
-                            display_text = display_text.replace("<center>","");
-                            display_x = ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(IconHandler.removeIconString(display_text))/2);
-                            display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
-                        } else if (display_text.contains("<right>")) {
-                            display_text = display_text.replace("<right>","");
-                            display_x = ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(IconHandler.removeIconString(display_text));
-                            display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
-                        } else {
-                            display_text = display_text.replace("<left>","");
-                            display_x = (display_xy[0].floatValue() * width) / 100;
-                            display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
-                        }
-                    } else {
-                        display_text = display_text.replace("<down>","");
-                        if (display_text.contains("<center>")) {
-                            display_text = display_text.replace("<center>","");
-                            display_x = ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(IconHandler.removeIconString(display_text))/2);
-                            display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
-                        } else if (display_text.contains("<right>")) {
-                            display_text = display_text.replace("<right>","");
-                            display_x = ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(IconHandler.removeIconString(display_text));
-                            display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
-                        } else {
-                            display_text = display_text.replace("<left>","");
-                            display_x = (display_xy[0].floatValue() * width) / 100;
-                            display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
-                        }
+            List<String> display_texts = new ArrayList<String>();
+            List<Float> display_xs = new ArrayList<Float>();
+            List<Float> display_ys = new ArrayList<Float>();
+            boolean up = false;
+            int align = 0;
+
+            if (settings.contains("<bg=") && settings.contains(">")) {
+                bg = settings.substring(settings.indexOf("<bg=")+4, settings.indexOf(">", settings.indexOf("<bg=")));
+                settings = settings.replace("<bg="+bg+">", "");
+            }
+            if (settings.contains("<bgc=") && settings.contains(">")) {
+                bgc = settings.substring(settings.indexOf("<bgc=")+5, settings.indexOf(">", settings.indexOf("<bgc=")));
+                settings = settings.replace("<bgc="+bgc+">", "");
+                bgc = bgc.replace("0x", "");
+            }
+
+            for (int i=0; i<display.size(); i++) {
+                String display_text = ChatHandler.addFormatting(settings + display.get(i));
+                display_text = display_text.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                        .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+                        .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")
+                        .replace("stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement", "(")
+                        .replace("stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement", ")")
+                        .replace("AmpF6cyUQp9Amp","&")
+                        .replace("TripleDotF6cyUQp9TripleDot","...")
+                        .replace("BackslashF6cyUQp9Backslash","\\\\")
+                        .replace("NewLineF6cyUQp9NewLine","\\n")
+                        .replace("SingleQuoteF6cyUQp9SingleQuote","\\'");
+                float display_x;
+                float display_y;
+                float spacing = 1;
+                if (display_text.contains("<spacing=") && display_text.contains(">")) {
+                    try {
+                        String spacing_string = display_text.substring(display_text.indexOf("<spacing=")+9, display_text.indexOf(">", display_text.indexOf("<spacing=")));
+                        spacing = Float.parseFloat(spacing_string);
+                        display_text = display_text.replace("<spacing="+spacing_string+">", "");
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                        System.out.println("<spacing=$n> - $n must be a number!");
                     }
-                    display_text = IconHandler.drawIcons(display_text, floor(display_x), floor(display_y));
-                    ren.drawStringWithShadow(display_text, display_x, display_y, color);
+                }
+
+                if (display_text.contains("<up>")) {
+                    up = true;
+                    display_text = display_text.replace("<up>","");
+                    if (display_text.contains("<center>")) {
+                        align = 1;
+                        display_text = display_text.replace("<center>","");
+                        display_x = ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(IconHandler.removeIconString(display_text))/2);
+                        display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
+                    } else if (display_text.contains("<right>")) {
+                        align = 2;
+                        display_text = display_text.replace("<right>","");
+                        display_x = ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(IconHandler.removeIconString(display_text));
+                        display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
+                    } else {
+                        display_text = display_text.replace("<left>","");
+                        display_x = (display_xy[0].floatValue() * width) / 100;
+                        display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
+                    }
+                } else {
+                    display_text = display_text.replace("<down>","");
+                    if (display_text.contains("<center>")) {
+                        align = 1;
+                        display_text = display_text.replace("<center>","");
+                        display_x = ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(IconHandler.removeIconString(display_text))/2);
+                        display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
+                    } else if (display_text.contains("<right>")) {
+                        align = 2;
+                        display_text = display_text.replace("<right>","");
+                        display_x = ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(IconHandler.removeIconString(display_text));
+                        display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
+                    } else {
+                        display_text = display_text.replace("<left>","");
+                        display_x = (display_xy[0].floatValue() * width) / 100;
+                        display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
+                    }
+                }
+                display_text = IconHandler.drawIcons(display_text, floor(display_x), floor(display_y));
+
+                if (ren.getStringWidth(display_text) > max_width) {
+                    max_width = ren.getStringWidth(display_text);
+                }
+
+                display_texts.add(display_text);
+                display_xs.add(display_x);
+                display_ys.add(display_y);
+            }
+            if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
+                if (display_texts.size() > 0) {
+                    drawDisplay(display_texts, display_xs, display_ys, color, bg, bgc, max_width, up, align);
                 }
             }
         }
+    }
+
+    private static void drawDisplay(List<String> display_texts, List<Float> display_xs, List<Float> display_ys, int color, String bg, String bgc, int max_width, boolean up, int align) {
+        FontRenderer ren = Minecraft.getMinecraft().fontRendererObj;
+
+        if (bg.equalsIgnoreCase("full")) {
+            int bg_y = floor(display_ys.get(0));
+            if (up) {
+                if (align == 0) {
+                    int bg_x = floor(display_xs.get(0));
+                    int bg_h = floor(display_ys.get(display_ys.size()-1));
+                    try {
+                        drawRect(bg_x, bg_y+10, bg_x+max_width, bg_h, (int) Long.parseLong(bgc, 16));
+                    } catch (NumberFormatException e) {
+                        drawRect(bg_x, bg_y+10, bg_x+max_width, bg_h, 0x40000000);
+                    }
+                } else if (align == 1) {
+                    int bg_x = floor(display_xs.get(0)) + 3;
+                    int bg_h = floor(display_ys.get(display_ys.size()-1));
+                    try {
+                        drawRect(bg_x-max_width/4, bg_y+10, bg_x+(max_width-max_width/4), bg_h, (int) Long.parseLong(bgc, 16));
+                    } catch (NumberFormatException e) {
+                        drawRect(bg_x-max_width/4, bg_y+10, bg_x+(max_width-max_width/4), bg_h, 0x40000000);
+                    }
+                } else if (align == 2) {
+                    int bg_x = floor(display_xs.get(0)) + 5;
+                    int bg_h = floor(display_ys.get(display_ys.size()-1));
+                    try {
+                        drawRect(bg_x - max_width/2, bg_y+10, bg_x + max_width/2, bg_h, (int) Long.parseLong(bgc, 16));
+                    } catch (NumberFormatException e) {
+                        drawRect(bg_x - max_width/2, bg_y+10, bg_x + max_width/2, bg_h, 0x40000000);
+                    }
+                }
+            } else {
+                if (align == 0) {
+                    int bg_x = floor(display_xs.get(0));
+                    int bg_h = floor(display_ys.get(display_ys.size()-1))+10;
+                    try {
+                        drawRect(bg_x, bg_y, bg_x+max_width, bg_h, (int) Long.parseLong(bgc, 16));
+                    } catch (NumberFormatException e) {
+                        drawRect(bg_x, bg_y, bg_x+max_width, bg_h, 0x40000000);
+                    }
+                } else if (align == 1) {
+                    int bg_x = floor(display_xs.get(0)) + 3;
+                    int bg_h = floor(display_ys.get(display_ys.size()-1))+10;
+                    try {
+                        drawRect(bg_x-max_width/4, bg_y, bg_x+(max_width-max_width/4), bg_h, (int) Long.parseLong(bgc, 16));
+                    } catch (NumberFormatException e) {
+                        drawRect(bg_x-max_width/4, bg_y, bg_x+(max_width-max_width/4), bg_h, 0x40000000);
+                    }
+                } else if (align == 2) {
+                    int bg_x = floor(display_xs.get(0)) + 5;
+                    int bg_h = floor(display_ys.get(display_ys.size()-1)) + 10;
+                    try {
+                        drawRect(bg_x - max_width/2, bg_y, bg_x + max_width/2, bg_h, (int) Long.parseLong(bgc, 16));
+                    } catch (NumberFormatException e) {
+                        drawRect(bg_x - max_width/2, bg_y, bg_x + max_width/2, bg_h, 0x40000000);
+                    }
+                }
+            }
+        }
+
+        for (int i=0; i<display_texts.size(); i++) {
+            String display_text = display_texts.get(i);
+            float display_x = display_xs.get(i);
+            float display_y = display_ys.get(i);
+
+            if (!display_text.equals("") && bg.equalsIgnoreCase("line")) {
+                try {
+                    drawRect(floor(display_x), floor(display_y), floor(display_x) + ren.getStringWidth(display_text), floor(display_y) + 10, (int) Long.parseLong(bgc, 16));
+                } catch (NumberFormatException e) {
+                    drawRect(floor(display_x), floor(display_y), floor(display_x) + ren.getStringWidth(display_text), floor(display_y) + 10, 0x40000000);
+                }
+            }
+
+            ren.drawStringWithShadow(display_text, display_x, display_y, color);
+        }
+    }
+
+    private static void drawRect(int left, int top, int right, int bottom, int color) {
+        if (left < right) {
+            int i = left;
+            left = right;
+            right = i;
+        }
+
+        if (top < bottom) {
+            int j = top;
+            top = bottom;
+            bottom = j;
+        }
+
+        float f3 = (float)(color >> 24 & 255) / 255.0F;
+        float f = (float)(color >> 16 & 255) / 255.0F;
+        float f1 = (float)(color >> 8 & 255) / 255.0F;
+        float f2 = (float)(color & 255) / 255.0F;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.color(f, f1, f2, f3);
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION);
+        worldrenderer.pos((double)left+2, (double)bottom-1, 0.0D).endVertex();
+        worldrenderer.pos((double)right-1, (double)bottom-1, 0.0D).endVertex();
+        worldrenderer.pos((double)right-1, (double)top-1, 0.0D).endVertex();
+        worldrenderer.pos((double)left+2, (double)top-1, 0.0D).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
     }
 
     public static String displayFunctions(String TMP_e) {
