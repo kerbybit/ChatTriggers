@@ -165,119 +165,119 @@ public class DisplayHandler {
     }
 
     public static void drawDisplays(RenderGameOverlayEvent event) {
+        if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
         GL11.glColor4f(1, 1, 1, 1);
+            FontRenderer ren = Minecraft.getMinecraft().fontRendererObj;
+                ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
+                float width = res.getScaledWidth();
+                float height = res.getScaledHeight();
 
-        FontRenderer ren = Minecraft.getMinecraft().fontRendererObj;
-        ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
-        float width = res.getScaledWidth();
-        float height = res.getScaledHeight();
+                for (Map.Entry<String, List<String>> display_map : shown_displays.entrySet()) {
+                    String display_name = display_map.getKey();
+                    List<String> display = display_map.getValue();
+                    Double[] display_xy;
+                    String settings = getDisplaySettings(display_name);
+                    int max_width = 0;
+                    int color = 0x00ffffff;
 
-        for (Map.Entry<String, List<String>> display_map : shown_displays.entrySet()) {
-            String display_name = display_map.getKey();
-            List<String> display = display_map.getValue();
-            Double[] display_xy;
-            String settings = getDisplaySettings(display_name);
-            int max_width = 0;
-            int color = 0x00ffffff;
-
-            if (displays_xy.containsKey(display_name)) {
-                display_xy = displays_xy.get(display_name);
-            } else {
-                display_xy = new Double[]{0.0,0.0};
-            }
-
-            String bg = "none";
-            String bgc = "40000000";
-
-            List<String> display_texts = new ArrayList<String>();
-            List<Float> display_xs = new ArrayList<Float>();
-            List<Float> display_ys = new ArrayList<Float>();
-            boolean up = false;
-            int align = 0;
-
-            if (settings.contains("<bg=") && settings.contains(">")) {
-                bg = settings.substring(settings.indexOf("<bg=")+4, settings.indexOf(">", settings.indexOf("<bg=")));
-                settings = settings.replace("<bg="+bg+">", "");
-            }
-            if (settings.contains("<bgc=") && settings.contains(">")) {
-                bgc = settings.substring(settings.indexOf("<bgc=")+5, settings.indexOf(">", settings.indexOf("<bgc=")));
-                settings = settings.replace("<bgc="+bgc+">", "");
-                bgc = bgc.replace("0x", "");
-            }
-
-            for (int i=0; i<display.size(); i++) {
-                String display_text = ChatHandler.addFormatting(settings + display.get(i));
-                display_text = display_text.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
-                        .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-                        .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")
-                        .replace("stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement", "(")
-                        .replace("stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement", ")")
-                        .replace("AmpF6cyUQp9Amp","&")
-                        .replace("TripleDotF6cyUQp9TripleDot","...")
-                        .replace("BackslashF6cyUQp9Backslash","\\\\")
-                        .replace("NewLineF6cyUQp9NewLine","\\n")
-                        .replace("SingleQuoteF6cyUQp9SingleQuote","\\'");
-                float display_x;
-                float display_y;
-                float spacing = 1;
-                if (display_text.contains("<spacing=") && display_text.contains(">")) {
-                    try {
-                        String spacing_string = display_text.substring(display_text.indexOf("<spacing=")+9, display_text.indexOf(">", display_text.indexOf("<spacing=")));
-                        spacing = Float.parseFloat(spacing_string);
-                        display_text = display_text.replace("<spacing="+spacing_string+">", "");
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
-                        System.out.println("<spacing=$n> - $n must be a number!");
-                    }
-                }
-
-                if (display_text.contains("<up>")) {
-                    up = true;
-                    display_text = display_text.replace("<up>","");
-                    if (display_text.contains("<center>")) {
-                        align = 1;
-                        display_text = display_text.replace("<center>","");
-                        display_x = ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(IconHandler.removeIconString(display_text))/2);
-                        display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
-                    } else if (display_text.contains("<right>")) {
-                        align = 2;
-                        display_text = display_text.replace("<right>","");
-                        display_x = ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(IconHandler.removeIconString(display_text));
-                        display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
+                    if (displays_xy.containsKey(display_name)) {
+                        display_xy = displays_xy.get(display_name);
                     } else {
-                        display_text = display_text.replace("<left>","");
-                        display_x = (display_xy[0].floatValue() * width) / 100;
-                        display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
+                        display_xy = new Double[]{0.0,0.0};
                     }
-                } else {
-                    display_text = display_text.replace("<down>","");
-                    if (display_text.contains("<center>")) {
-                        align = 1;
-                        display_text = display_text.replace("<center>","");
-                        display_x = ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(IconHandler.removeIconString(display_text))/2);
-                        display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
-                    } else if (display_text.contains("<right>")) {
-                        align = 2;
-                        display_text = display_text.replace("<right>","");
-                        display_x = ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(IconHandler.removeIconString(display_text));
-                        display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
-                    } else {
-                        display_text = display_text.replace("<left>","");
-                        display_x = (display_xy[0].floatValue() * width) / 100;
-                        display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
+
+                    String bg = "none";
+                    String bgc = "40000000";
+
+                    List<String> display_texts = new ArrayList<String>();
+                    List<Float> display_xs = new ArrayList<Float>();
+                    List<Float> display_ys = new ArrayList<Float>();
+                    boolean up = false;
+                    int align = 0;
+
+                    if (settings.contains("<bg=") && settings.contains(">")) {
+                        bg = settings.substring(settings.indexOf("<bg=")+4, settings.indexOf(">", settings.indexOf("<bg=")));
+                        settings = settings.replace("<bg="+bg+">", "");
                     }
-                }
-                display_text = IconHandler.drawIcons(display_text, floor(display_x), floor(display_y));
+                    if (settings.contains("<bgc=") && settings.contains(">")) {
+                        bgc = settings.substring(settings.indexOf("<bgc=")+5, settings.indexOf(">", settings.indexOf("<bgc=")));
+                        settings = settings.replace("<bgc="+bgc+">", "");
+                        bgc = bgc.replace("0x", "");
+                    }
 
-                if (ren.getStringWidth(display_text) > max_width) {
-                    max_width = ren.getStringWidth(display_text);
-                }
+                    for (int i=0; i<display.size(); i++) {
+                        String display_text = ChatHandler.addFormatting(settings + display.get(i));
+                        display_text = display_text.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                                .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+                                .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")
+                                .replace("stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement", "(")
+                                .replace("stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement", ")")
+                                .replace("AmpF6cyUQp9Amp","&")
+                                .replace("TripleDotF6cyUQp9TripleDot","...")
+                                .replace("BackslashF6cyUQp9Backslash","\\\\")
+                                .replace("NewLineF6cyUQp9NewLine","\\n")
+                                .replace("SingleQuoteF6cyUQp9SingleQuote","\\'");
+                        float display_x;
+                        float display_y;
+                        float spacing = 1;
+                        if (display_text.contains("<spacing=") && display_text.contains(">")) {
+                            try {
+                                String spacing_string = display_text.substring(display_text.indexOf("<spacing=")+9, display_text.indexOf(">", display_text.indexOf("<spacing=")));
+                                spacing = Float.parseFloat(spacing_string);
+                                display_text = display_text.replace("<spacing="+spacing_string+">", "");
+                            } catch (NumberFormatException e) {
+                                e.printStackTrace();
+                                System.out.println("<spacing=$n> - $n must be a number!");
+                            }
+                        }
 
-                display_texts.add(display_text);
-                display_xs.add(display_x);
-                display_ys.add(display_y);
-            }
-            if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
+                        if (display_text.contains("<up>")) {
+                            up = true;
+                            display_text = display_text.replace("<up>","");
+                            if (display_text.contains("<center>")) {
+                                align = 1;
+                                display_text = display_text.replace("<center>","");
+                                display_x = ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(IconHandler.removeIconString(display_text))/2);
+                                display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
+                            } else if (display_text.contains("<right>")) {
+                                align = 2;
+                                display_text = display_text.replace("<right>","");
+                                display_x = ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(IconHandler.removeIconString(display_text));
+                                display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
+                            } else {
+                                display_text = display_text.replace("<left>","");
+                                display_x = (display_xy[0].floatValue() * width) / 100;
+                                display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
+                            }
+                        } else {
+                            display_text = display_text.replace("<down>","");
+                            if (display_text.contains("<center>")) {
+                                align = 1;
+                                display_text = display_text.replace("<center>","");
+                                display_x = ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(IconHandler.removeIconString(display_text))/2);
+                                display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
+                            } else if (display_text.contains("<right>")) {
+                                align = 2;
+                                display_text = display_text.replace("<right>","");
+                                display_x = ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(IconHandler.removeIconString(display_text));
+                                display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
+                            } else {
+                                display_text = display_text.replace("<left>","");
+                                display_x = (display_xy[0].floatValue() * width) / 100;
+                                display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
+                            }
+                        }
+                        display_text = IconHandler.drawIcons(display_text, floor(display_x), floor(display_y));
+
+                        if (ren.getStringWidth(display_text) > max_width) {
+                            max_width = ren.getStringWidth(display_text);
+                        }
+
+                        display_texts.add(display_text);
+                        display_xs.add(display_x);
+                        display_ys.add(display_y);
+                    }
+
                 if (display_texts.size() > 0) {
                     drawDisplay(display_texts, display_xs, display_ys, color, bg, bgc, max_width, up, align);
                 }
