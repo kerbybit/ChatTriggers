@@ -359,12 +359,20 @@ public class CommandReference {
         while (Minecraft.getSystemTime() > sysTime + 1000L) {
             sysTime += 1000L;
             global.clicks_ave.add(global.clicks);
+            global.rclicks_ave.add(global.rclicks);
             if (global.clicks > global.clicks_max) {
                 global.clicks_max = global.clicks;
             }
+            if (global.rclicks > global.rclicks_max) {
+                global.rclicks_max = global.rclicks;
+            }
             global.clicks = 0.0;
+            global.rclicks = 0.0;
             if (global.clicks_ave.size() > 10) {
                 global.clicks_ave.remove(0);
+            }
+            if (global.rclicks_ave.size() > 10) {
+                global.rclicks_ave.remove(0);
             }
         }
     }

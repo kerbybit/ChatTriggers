@@ -180,5 +180,8 @@ public class ChatTriggers {
 	    if (e.button == 0 && e.buttonstate) {
             global.clicks++;
         }
+        if (e.button == 1 && e.buttonstate) {
+	        global.rclicks++;
+        }
     }
 }

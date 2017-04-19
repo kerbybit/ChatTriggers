@@ -308,7 +308,7 @@ public class DisplayHandler {
                         drawRect(bg_x-max_width/4, bg_y+10, bg_x+(max_width-max_width/4), bg_h, 0x40000000);
                     }
                 } else if (align == 2) {
-                    int bg_x = floor(display_xs.get(0)) + 5;
+                    int bg_x = floor(display_xs.get(0)) + 9;
                     int bg_h = floor(display_ys.get(display_ys.size()-1));
                     try {
                         drawRect(bg_x - max_width/2, bg_y+10, bg_x + max_width/2, bg_h, (int) Long.parseLong(bgc, 16));
@@ -334,7 +334,7 @@ public class DisplayHandler {
                         drawRect(bg_x-max_width/4, bg_y, bg_x+(max_width-max_width/4), bg_h, 0x40000000);
                     }
                 } else if (align == 2) {
-                    int bg_x = floor(display_xs.get(0)) + 5;
+                    int bg_x = floor(display_xs.get(0)) + 9;
                     int bg_h = floor(display_ys.get(display_ys.size()-1)) + 10;
                     try {
                         drawRect(bg_x - max_width/2, bg_y, bg_x + max_width/2, bg_h, (int) Long.parseLong(bgc, 16));

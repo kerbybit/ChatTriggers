@@ -276,7 +276,6 @@ public class TriggerHandler {
 				
 				//do events
 				EventsHandler.doEvents(TMP_events, null);
-                System.out.println("doing world load events" + TMP_events);
 			}
 			
 			for (int i=0; i<global.onServerChangeTrigger.size(); i++) {

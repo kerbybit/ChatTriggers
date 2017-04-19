@@ -29,6 +29,10 @@ public class global {
     public static Double clicks = 0.0;
     public static List<Double> clicks_ave = new ArrayList<Double>();
     public static Double clicks_max = 0.0;
+
+    public static Double rclicks = 0.0;
+    public static List<Double> rclicks_ave = new ArrayList<Double>();
+    public static Double rclicks_max = 0.0;
 	
 	public static String importURL = "";
 	public static Boolean canImport = true;

@@ -430,6 +430,17 @@ public class BuiltInStrings {
 
             TMP_e = createDefaultString("cps", returnString.replace(".0",""), TMP_e);
         }
+        if (TMP_e.contains("{rcps}")) {
+            String returnString;
+
+            if (global.rclicks_ave.size() > 0)  {
+                returnString = floor(global.rclicks_ave.get(global.rclicks_ave.size()-1)) +"";
+            } else {
+                returnString = "0";
+            }
+
+            TMP_e = createDefaultString("rcps", returnString.replace(".0", ""), TMP_e);
+        }
         if (TMP_e.contains("{cpsAve}")) {
             String clicksAve;
 
@@ -445,8 +456,26 @@ public class BuiltInStrings {
 
             TMP_e = createDefaultString("cpsAve", clicksAve.replace(".0",""), TMP_e);
         }
+        if (TMP_e.contains("{rcpsAve}")) {
+            String clicksAve;
+
+            if (global.rclicks_ave.size() > 0) {
+                Double clicks = 0.0;
+                for (Double click : global.rclicks_ave) {
+                    clicks += click;
+                }
+                clicksAve = clicks/global.rclicks_ave.size() + "";
+            } else {
+                clicksAve = "0";
+            }
+
+            TMP_e = createDefaultString("rcpsAve", clicksAve.replace(".0",""), TMP_e);
+        }
         if (TMP_e.contains("{cpsMax}")) {
             TMP_e = createDefaultString("cpsMax", global.clicks_max.toString().replace(".0",""), TMP_e);
+        }
+        if (TMP_e.contains("{rcpsMax}")) {
+            TMP_e = createDefaultString("rcpsMax", global.clicks_max.toString().replace(".0",""), TMP_e);
         }
 
         if (TMP_e.contains("{black}")) {
