@@ -82,7 +82,7 @@ public class CommandTrigger extends CommandBase {
         } else if (args[0].equalsIgnoreCase("ARRAYS") || args[0].equalsIgnoreCase("ARRAY")) {
             commandArrays(args);
         } else if (args[0].equalsIgnoreCase("SUBMITBUGREPORT")) {
-            args[0] = commandSubmitBugReport(args[0]);
+            commandSubmitBugReport(args[0]);
         } else if (args[0].equalsIgnoreCase("SUBMITFAKEBUGREPORT")) {
             ChatHandler.warn(ChatHandler.color(Settings.col[0],"Sending bug report..."));
             ChatHandler.warn(ChatHandler.color("&c", "Unable to submit bug report at this time. try again later."));
@@ -188,12 +188,8 @@ public class CommandTrigger extends CommandBase {
         ChatHandler.warnBreak(1);
     }
 
-    private static String commandSubmitBugReport(String arg) {
-        if (global.canUse) {
-            return "submitfakebugreport";
-        }
+    private static void commandSubmitBugReport(String arg) {
         BugTracker.send();
-        return arg;
     }
 
     private static void commandSimulate(String args[]) {

@@ -536,7 +536,7 @@ public class StringHandler {
 			return "{string["+sn+"]}";
 		} else if (func.equalsIgnoreCase("SUFFIX")) {
 			if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1) + args);}
-			else {global.TMP_string.get(tmpstringnum).set(1, args + global.TMP_string.get(tmpstringnum).get(1));}
+			else {global.TMP_string.get(tmpstringnum).set(1, global.TMP_string.get(tmpstringnum).get(1) + args);}
 			return "{string["+sn+"]}";
 		} else if (func.equalsIgnoreCase("TOUPPER") || func.equalsIgnoreCase("TOUPPERCASE")) {
 			if (stringnum!=-1) {global.USR_string.get(stringnum).set(1, global.USR_string.get(stringnum).get(1).toUpperCase());}
