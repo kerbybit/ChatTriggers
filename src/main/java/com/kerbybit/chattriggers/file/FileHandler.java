@@ -630,10 +630,55 @@ public class FileHandler {
 			ChatHandler.warn(ChatHandler.color("red", "do </trigger load> to leave testing"));
 		}
 	}
+
+	private static void backupDefaultFiles() {
+        try {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd_h.mm");
+            Date date = new Date();
+
+            File checkFile = new File("./mods/ChatTriggers/backups/");
+            if (!checkFile.exists()) {
+                if (!checkFile.mkdir()) {
+                    throw new IOException();
+                }
+            }
+
+            checkFile = new File("./mods/ChatTriggers/backups/" + dateFormat.format(date));
+            if (!checkFile.exists()) {
+                if (!checkFile.mkdir()) {
+                    throw new IOException();
+                }
+            }
+
+            PrintWriter writer = new PrintWriter("./mods/ChatTriggers/backups/" + dateFormat.format(date) + "/triggers.txt","UTF-8");
+            for (String line : loadFile("./mods/ChatTriggers/triggers.txt")) {
+                writer.println(line);
+            }
+            writer.close();
+
+            writer = new PrintWriter("./mods/ChatTriggers/backups/" + dateFormat.format(date) + "/strings.txt", "UTF-8");
+            for (String line : loadFile("./mods/ChatTriggers/strings.txt")) {
+                writer.println(line);
+            }
+            writer.close();
+
+            writer = new PrintWriter("./mods/ChatTriggers/backups/" + dateFormat.format(date) + "/settings.txt", "UTF-8");
+            for (String line : loadFile("./mods/ChatTriggers/settings.txt")) {
+                writer.println(line);
+            }
+            writer.close();
+        } catch (Exception e) {
+            ChatHandler.warn("red", "There was a problem while creating backups!");
+            e.printStackTrace();
+        }
+    }
 	
 	private static void startup() throws ClassNotFoundException {
 		ChatHandler.warn(ChatHandler.color("gray", "Loading ChatTriggers..."));
 		try {
+		    //backup
+            backupDefaultFiles();
+
 			CommandReference.clearTriggerList();
 			global.trigger = loadTriggers("./mods/ChatTriggers/triggers.txt", false, null);
 			global.USR_string = loadStrings();
