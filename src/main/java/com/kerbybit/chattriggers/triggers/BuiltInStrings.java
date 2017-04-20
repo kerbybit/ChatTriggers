@@ -241,6 +241,9 @@ public class BuiltInStrings {
         if (TMP_e.contains("{sneak}")) {
             TMP_e = createDefaultString("sneak", Minecraft.getMinecraft().thePlayer.isSneaking()+"", TMP_e);
         }
+        if (TMP_e.contains("{inchat}")) {
+            TMP_e = createDefaultString("inchat", Minecraft.getMinecraft().ingameGUI.getChatGUI().getChatOpen() + "", TMP_e);
+        }
         if (TMP_e.contains("{coordx}") || TMP_e.contains("{x}")) {
             TMP_e = createDefaultString("coordx", "x", Math.round(Minecraft.getMinecraft().thePlayer.posX)+"", TMP_e);
         }

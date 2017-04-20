@@ -1462,9 +1462,11 @@ public class CommandTrigger extends CommandBase {
                         if (args[2].equalsIgnoreCase("FORMATTING")) {
                             if (Settings.oldFormatting) {
                                 Settings.oldFormatting = false;
+                                try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                                 ChatHandler.warn(Settings.col[0], "Toggled old file formatting &cOFF");
                             } else {
                                 Settings.oldFormatting = true;
+                                try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                                 ChatHandler.warn(Settings.col[0], "Toggled old file formatting &aON");
                             }
                         } else {
@@ -1474,9 +1476,11 @@ public class CommandTrigger extends CommandBase {
                         if (args.length == 4) {
                             if (args[3].equalsIgnoreCase("new")) {
                                 Settings.oldFormatting = false;
+                                try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                                 ChatHandler.warn(Settings.col[0], "Toggled old file formatting &cOFF");
                             } else if (args[3].equalsIgnoreCase("old")) {
                                 Settings.oldFormatting = true;
+                                try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                                 ChatHandler.warn(Settings.col[0], "Toggled old file formatting &aON");
                             } else {
                                 ChatHandler.warn("red", "/trigger settings file formatting [new/old]");
