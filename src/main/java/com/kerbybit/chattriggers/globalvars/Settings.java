@@ -24,4 +24,8 @@ public class Settings {
     public static Boolean oldFormatting = false;
 
     public static String dateFormat = "dd/MM/yyyy";
+
+    public static Boolean notifyBackground = true;
+
+    public static Boolean killfeedBackground = false;
 }

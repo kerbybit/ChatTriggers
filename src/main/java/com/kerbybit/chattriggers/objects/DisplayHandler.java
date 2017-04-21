@@ -352,9 +352,9 @@ public class DisplayHandler {
 
             if (!display_text.equals("") && bg.equalsIgnoreCase("line")) {
                 try {
-                    drawRect(floor(display_x), floor(display_y), floor(display_x) + ren.getStringWidth(display_text), floor(display_y) + 10, (int) Long.parseLong(bgc, 16));
+                    drawRect(display_x, display_y, display_x + ren.getStringWidth(display_text), display_y + 10, (int) Long.parseLong(bgc, 16));
                 } catch (NumberFormatException e) {
-                    drawRect(floor(display_x), floor(display_y), floor(display_x) + ren.getStringWidth(display_text), floor(display_y) + 10, 0x40000000);
+                    drawRect(display_x, display_y, display_x + ren.getStringWidth(display_text), display_y + 10, 0x40000000);
                 }
             }
 
@@ -362,15 +362,15 @@ public class DisplayHandler {
         }
     }
 
-    private static void drawRect(int left, int top, int right, int bottom, int color) {
+    public static void drawRect(double left, double top, double right, double bottom, int color) {
         if (left < right) {
-            int i = left;
+            double i = left;
             left = right;
             right = i;
         }
 
         if (top < bottom) {
-            int j = top;
+            double j = top;
             top = bottom;
             bottom = j;
         }
@@ -386,10 +386,10 @@ public class DisplayHandler {
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.color(f, f1, f2, f3);
         worldrenderer.begin(7, DefaultVertexFormats.POSITION);
-        worldrenderer.pos((double)left+2, (double)bottom-1, 0.0D).endVertex();
-        worldrenderer.pos((double)right-1, (double)bottom-1, 0.0D).endVertex();
-        worldrenderer.pos((double)right-1, (double)top-1, 0.0D).endVertex();
-        worldrenderer.pos((double)left+2, (double)top-1, 0.0D).endVertex();
+        worldrenderer.pos(left+1, bottom-1, 0.0D).endVertex();
+        worldrenderer.pos(right-1, bottom-1, 0.0D).endVertex();
+        worldrenderer.pos(right-1, top-1, 0.0D).endVertex();
+        worldrenderer.pos(left+1, top-1, 0.0D).endVertex();
         tessellator.draw();
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();

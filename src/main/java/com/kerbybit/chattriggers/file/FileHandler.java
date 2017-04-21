@@ -248,20 +248,30 @@ public class FileHandler {
 
 		writer.println("color:"+Settings.col[0]);
 		writer.println("colorName:"+Settings.col[1]);
+
+		writer.println("");
 		writer.println("version:"+Settings.CTversion);
-		writer.println("killfeed pos:"+Settings.killfeedPosition[0] + " " + Settings.killfeedPosition[1]);
-		writer.println("isBeta:"+Settings.isBeta);
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-		Date date = new Date();
-		writer.println("lastOpened:"+dateFormat.format(date));
+        writer.println("isBeta:"+Settings.isBeta);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = new Date();
+        writer.println("lastOpened:"+dateFormat.format(date));
         writer.println("t:"+Settings.commandT);
         writer.println("tr:"+Settings.commandTR);
-        writer.println("notification speed:"+Settings.notifySpeed);
+
+        writer.println("");
+		writer.println("killfeed pos:"+Settings.killfeedPosition[0] + " " + Settings.killfeedPosition[1]);
         writer.println("killfeed fade:"+Settings.killfeedFade);
+        writer.println("killfeed background:"+Settings.killfeedBackground);
         writer.println("show killfeed in notifications:"+Settings.killfeedInNotify);
+        writer.println("notification speed:"+Settings.notifySpeed);
+        writer.println("notify background:"+Settings.notifyBackground);
+
+        writer.println("");
         writer.println("fpslow:"+global.fpslowcol + " " + global.fpslow);
         writer.println("fpsmed:"+global.fpsmedcol);
         writer.println("fpshigh:"+global.fpshighcol + " " + global.fpshigh);
+
+        writer.println("");
         writer.println("old formatting:"+Settings.oldFormatting);
         writer.println("date format:"+Settings.dateFormat);
 
@@ -609,6 +619,14 @@ public class FileHandler {
             }
             if (l.startsWith("date format:")) {
 			    Settings.dateFormat = l.substring(l.indexOf("date format:")+12).trim();
+            }
+            if (l.startsWith("notify background:")) {
+			    String get = l.substring(l.indexOf("notify background:")+18).trim();
+			    Settings.notifyBackground = get.equalsIgnoreCase("true");
+            }
+            if (l.startsWith("killfeed background:")) {
+			    String get = l.substring(l.indexOf("killfeed background:")+20).trim();
+			    Settings.killfeedBackground = get.equalsIgnoreCase("true");
             }
 		}
 	}

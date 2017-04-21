@@ -1160,7 +1160,16 @@ public class CommandTrigger extends CommandBase {
 
     private static void commandSettings(String args[]) {
         if (args.length < 2) {
-            ChatHandler.warn(ChatHandler.color("red", "/trigger settings [debug/test/color/killfeed/beta] <...>"));
+            ChatHandler.warn("&c/trigger &csettings &c[clickable(&cdebug,suggest_command,/trigger settings debug ,&7Suggest &7/trigger &7settings &7debug)&c"
+                    +"/clickable(&ctest,suggest_command,/trigger settings test ,&7Suggest &7/trigger &7settings &7test)&c"
+                    +"/clickable(&ccolor,suggeest_command,/trigger settings color ,&7Suggest &7/trigger &7settings &7color)&c"
+                    +"/clickable(&ckillfeed,suggest_command,/trigger settings killfeed ,&7Suggest &7/trigger &7settings &7killfeed)&c"
+                    +"/clickable(&cnotify,suggest_command,/trigger settings notify ,&7Suggest &7/trigger &7settings &7notify)&c"
+                    +"] &c<...>");
+            ChatHandler.warn("&c/trigger settings &c[clickable(&cbeta,run_command,/trigger settings beta,&7Run &7/trigger &7settings &7beta)&c"
+                    +"/clickable(&cfile,suggest_command,/trigger settings file ,&7Run &7/trigger &7settings &7file)&c"
+                    +"/clickable(&cfps,suggest_command,/trigger settings fps ,&7Run &7/trigger &7settings &7fps)&c"
+                    +"] &c<...>");
         } else {
             if (args[1].equalsIgnoreCase("DEBUG")) {
                 if (args.length == 2) {
@@ -1246,11 +1255,25 @@ public class CommandTrigger extends CommandBase {
                             ChatHandler.warn(ChatHandler.color("gray", "Toggled showing killfeed as notifications") + " " + ChatHandler.color("green", "on"));
                             try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         }
+                    } else if (args[2].equalsIgnoreCase("BACKGROUND")) {
+                        if (Settings.killfeedBackground) {
+                            Settings.killfeedBackground = false;
+                            CommandReference.silentResetAll();
+                            ChatHandler.warn(ChatHandler.color("gray", "Toggled killfeed background") + " " + ChatHandler.color("red", "off"));
+                            try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                        } else {
+                            Settings.killfeedBackground = true;
+                            CommandReference.silentResetAll();
+                            ChatHandler.warn(ChatHandler.color("gray", "Toggled killfeed background") + " " + ChatHandler.color("green", "on"));
+                            try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                        }
                     } else {
-                        ChatHandler.warn(ChatHandler.color("red", "/trigger settings killfeed [position/fade/showInNotify] <...>"));
+                        ChatHandler.warn("&c/trigger &csettings &ckillfeed &c[clickable(&cposition,suggest_command,/trigger settings killfeed position ,&7Suggest &7/trigger &7settings &7killfeed &7position)&c/clickable(&cshowInNotify,run_command,/trigger settings killfeed showInNotify,&7Run &7/trigger &7settings &7killfeed &7showInNotify)&c] &c<...>");
+                        ChatHandler.warn("&c/trigger &csettings &ckillfeed &c[clickable(&cfade,run_command,/trigger settings killfeed fade,&7Run &7/trigger &7settings &7killfeed &7fade)&c/clickable(&cbackground,run_command,/trigger settings killfeed background,&7Run &7/trigger &7setting &7killfeed &7background)&c] &c<...>");
                     }
                 } else {
-                    ChatHandler.warn(ChatHandler.color("red", "/trigger settings killfeed [position/fade/showInNotify] <...>"));
+                    ChatHandler.warn("&c/trigger &csettings &ckillfeed &c[clickable(&cposition,suggest_command,/trigger settings killfeed position ,&7Suggest &7/trigger &7settings &7killfeed &7position)&c/clickable(&cshowInNotify,run_command,/trigger settings killfeed showInNotify,&7Run &7/trigger &7settings &7killfeed &7showInNotify)&c] &c<...>");
+                    ChatHandler.warn("&c/trigger &csettings &ckillfeed &c[clickable(&cfade,run_command,/trigger settings killfeed fade,&7Run &7/trigger &7settings &7killfeed &7fade)&c/clickable(&cbackground,run_command,/trigger settings killfeed background,&7Run &7/trigger &7setting &7killfeed &7background)&c] &c<...>");
                 }
             } else if (args[1].equalsIgnoreCase("NOTIFY")) {
                 if (args.length>2) {
@@ -1273,11 +1296,23 @@ public class CommandTrigger extends CommandBase {
                         } else {
                             ChatHandler.warn(ChatHandler.color("red", "/trigger settings notify [speed] <integer (greater is slower)>"));
                         }
+                    } else if (args[2].equalsIgnoreCase("BACKGROUND")) {
+                        if (Settings.notifyBackground) {
+                            Settings.notifyBackground = false;
+                            CommandReference.silentResetAll();
+                            ChatHandler.warn(ChatHandler.color("gray", "Toggled notify background") + " " + ChatHandler.color("red", "off"));
+                            try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                        } else {
+                            Settings.notifyBackground = true;
+                            CommandReference.silentResetAll();
+                            ChatHandler.warn(ChatHandler.color("gray", "Toggled notify background") + " " + ChatHandler.color("green", "on"));
+                            try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                        }
                     } else {
-                        ChatHandler.warn(ChatHandler.color("red", "/trigger settings notify [speed] <...>"));
+                        ChatHandler.warn("&c/trigger &csettings &cnotify &c[clickable(&cspeed,suggest_command,/trigger settings notify speed ,&7Suggest &7/trigger &7settings &7notify &7speed)&c/clickable(&cbackground,run_command,/trigger settings notify background,&7Run &7/trigger &7settings &7notify &7background)&c] &c<...>");
                     }
                 } else {
-                    ChatHandler.warn(ChatHandler.color("red", "/trigger settings notify [speed] <...>"));
+                    ChatHandler.warn("&c/trigger &csettings &cnotify &c[clickable(&cspeed,suggest_command,/trigger settings notify speed ,&7Suggest &7/trigger &7settings &7notify &7speed)&c/clickable(&cbackground,run_command,/trigger settings notify background,&7Run &7/trigger &7settings &7notify &7background)&c] &c<...>");
                 }
             } else if (args[1].equalsIgnoreCase("BETA")) {
                 if (args.length>2) {
@@ -1303,7 +1338,7 @@ public class CommandTrigger extends CommandBase {
                     if (Settings.isBeta) {
                         ChatHandler.warn(ChatHandler.color("red", "You currently have the beta version")+" "+ChatHandler.color("green","enabled!"));
                         ChatHandler.warn(ChatHandler.color("red", "You will recieve notifications on nightly builds"));
-                        ChatHandler.warn(ChatHandler.color("red", "To change this, do </trigger settings beta toggle>"));
+                        ChatHandler.warn("&cTo &cchange &cthis, &cdo &c<clickable(&c/trigger settings beta toggle,run_command,/trigger settings beta toggle,&7Run &7trigger &7settings &7beta &7toggle)&c>");
                         ChatHandler.warn(ChatHandler.color("red", ""));
                         ChatHandler.warn(ChatHandler.color("red", "The beta versions may have unforseen bugs"));
                         ChatHandler.warn(ChatHandler.color("red", "but gets updated regularly with new features"));
@@ -1312,7 +1347,7 @@ public class CommandTrigger extends CommandBase {
                         ChatHandler.warn(ChatHandler.color("red", "Although this doesnt prevent you from downloading"));
                         ChatHandler.warn(ChatHandler.color("red", "and using the beta version,"));
                         ChatHandler.warn(ChatHandler.color("red", "You will NOT get notified of nightly builds"));
-                        ChatHandler.warn(ChatHandler.color("red", "To opt into the beta, do </trigger settings beta toggle>"));
+                        ChatHandler.warn("&cTo &copt &cinto &cthe &cbeta, &cdo &c<clickable(&c/trigger settings beta toggle,run_command,/trigger settings beta toggle,&7Run &7trigger &7settings &7beta &7toggle)&c>");
                         ChatHandler.warn(ChatHandler.color("red", ""));
                         ChatHandler.warn(ChatHandler.color("red", "The beta versions may have unforseen bugs"));
                         ChatHandler.warn(ChatHandler.color("red", "but gets updated regularly with new features"));
@@ -1321,8 +1356,8 @@ public class CommandTrigger extends CommandBase {
                 }
             } else if (args[1].equalsIgnoreCase("TEST")){
                 if (args.length<3) {
-                    ChatHandler.warn(ChatHandler.color("red", "/trigger settings test [onWorldLoad/onWorldFirstLoad]"));
-                    ChatHandler.warn(ChatHandler.color("red", "/trigger settings test [onServerChange/onNewDay]"));
+                    ChatHandler.warn("&c/trigger &csettings &ctest &c[clickable(&conWorldLoad,run_command,/trigger settings test onWorldLoad,&7Run &7/trigger &7settings &7test &7onWorldLoad)&c/clickable(&conWorldFirstLoad,run_command,/trigger settings test onWorldFirstLoad,&7Run &7/trigger &7settings &7test &7onWorldFirstLoad)&c]");
+                    ChatHandler.warn("&c/trigger &csettings &ctest &c[clickable(&conServerChange,run_command,/trigger settings test onServerChange,&7Run &7/trigger &7settings &7test &7onServerChange)&c/clickable(&conNewDay,run_command,/trigger settings test onNewDay,&7Run &7/trigger &7settings &7test &7onNewDay)&c]");
                 } else {
                     if (args[2].equalsIgnoreCase("ONWORLDLOAD")) {
                         global.worldLoaded = true;
@@ -1335,8 +1370,8 @@ public class CommandTrigger extends CommandBase {
                     } else if (args[2].equalsIgnoreCase("ONNEWDAY")) {
                         global.currentDate = "";
                     } else {
-                        ChatHandler.warn(ChatHandler.color("red", "/trigger settings test [onWorldLoad/onWorldFirstLoad]"));
-                        ChatHandler.warn(ChatHandler.color("red", "/trigger settings test [onServerChange/onNewDay]"));
+                        ChatHandler.warn("&c/trigger &csettings &ctest &c[clickable(&conWorldLoad,run_command,/trigger settings test onWorldLoad,&7Run &7/trigger &7settings &7test &7onWorldLoad)&c/clickable(&conWorldFirstLoad,run_command,/trigger settings test onWorldFirstLoad,&7Run &7/trigger &7settings &7test &7onWorldFirstLoad)&c]");
+                        ChatHandler.warn("&c/trigger &csettings &ctest &c[clickable(&conServerChange,run_command,/trigger settings test onServerChange,&7Run &7/trigger &7settings &7test &7onServerChange)&c/clickable(&conNewDay,run_command,/trigger settings test onNewDay,&7Run &7/trigger &7settings &7test &7onNewDay)&c]");
                     }
                 }
             }else if (args[1].equalsIgnoreCase("DUMP")) {
@@ -1410,13 +1445,13 @@ public class CommandTrigger extends CommandBase {
                         } else {
                             if (args.length == 4) {
                                 global.fpslowcol = args[3];
-                                ChatHandler.warn(Settings.col[0] +"Changed fps low to " + global.fpslowcol + global.fpslow);
+                                ChatHandler.warn("gray", "Changed fps low to " + global.fpslowcol + global.fpslow);
                                 try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                             } else {
                                 try {
                                     global.fpslowcol = args[3];
                                     global.fpslow = Integer.parseInt(args[4]);
-                                    ChatHandler.warn(Settings.col[0] + "Changed fps low to " + global.fpslowcol + global.fpslow);
+                                    ChatHandler.warn("gray", "Changed fps low to " + global.fpslowcol + global.fpslow);
                                     try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                                 } catch (NumberFormatException e) {
                                     ChatHandler.warn(ChatHandler.color("red", "/trigger settings fps low [color] [number]"));
@@ -1429,7 +1464,7 @@ public class CommandTrigger extends CommandBase {
                             ChatHandler.warn(ChatHandler.color("red","/trigger settings fps medium [color]"));
                         } else {
                             global.fpsmedcol = args[3];
-                            ChatHandler.warn(Settings.col[0] + "Changed fps medium to " + global.fpsmedcol + global.fpslow + "-" + global.fpshigh);
+                            ChatHandler.warn("gray", "Changed fps medium to " + global.fpsmedcol + global.fpslow + "-" + global.fpshigh);
                             try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         }
                     } else if (args[2].equalsIgnoreCase("HIGH") || args[2].equalsIgnoreCase("H")) {
@@ -1438,13 +1473,13 @@ public class CommandTrigger extends CommandBase {
                         } else {
                             if (args.length == 4) {
                                 global.fpshighcol = args[3];
-                                ChatHandler.warn(Settings.col[0] + "Changed fps high to " + global.fpshighcol + global.fpshigh);
+                                ChatHandler.warn("gray", "Changed fps high to " + global.fpshighcol + global.fpshigh);
                                 try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                             } else {
                                 try {
                                     global.fpshighcol = args[3];
                                     global.fpshigh = Integer.parseInt(args[4]);
-                                    ChatHandler.warn(Settings.col[0] + "Changed fps high to " + global.fpshighcol + global.fpshigh);
+                                    ChatHandler.warn("gray", "Changed fps high to " + global.fpshighcol + global.fpshigh);
                                     try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                                 } catch (NumberFormatException e) {
                                     ChatHandler.warn(ChatHandler.color("red", "/trigger settings fps high [color] [number]"));
@@ -1452,36 +1487,38 @@ public class CommandTrigger extends CommandBase {
                                 }
                             }
                         }
+                    } else {
+                        ChatHandler.warn(ChatHandler.color("red", "/trigger settings fps [low/medium/high] <...>"));
                     }
                 }
             } else if (args[1].equalsIgnoreCase("file")) {
                 if (args.length == 2) {
-                    ChatHandler.warn("red", "/trigger settings file [formatting] <...>");
+                    ChatHandler.warn("&c/trigger &csettings &cfile &c[clickable(&cformatting,run_command,/trigger settings file formatting,&7Run &7/trigger &7settings &7file &7formatting)&c] &c<...>");
                 } else {
                     if (args.length == 3) {
                         if (args[2].equalsIgnoreCase("FORMATTING")) {
                             if (Settings.oldFormatting) {
                                 Settings.oldFormatting = false;
                                 try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
-                                ChatHandler.warn(Settings.col[0], "Toggled old file formatting &cOFF");
+                                ChatHandler.warn("gray", "Toggled old file formatting &cOFF");
                             } else {
                                 Settings.oldFormatting = true;
                                 try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
-                                ChatHandler.warn(Settings.col[0], "Toggled old file formatting &aON");
+                                ChatHandler.warn("gray", "Toggled old file formatting &aON");
                             }
                         } else {
-                            ChatHandler.warn("red", "/trigger settings file [formatting] <...>");
+                            ChatHandler.warn("&c/trigger &csettings &cfile &c[clickable(&cformatting,run_command,/trigger settings file formatting,&7Run &7/trigger &7settings &7file &7formatting)&c] &c<...>");
                         }
                     } else {
                         if (args.length == 4) {
                             if (args[3].equalsIgnoreCase("new")) {
                                 Settings.oldFormatting = false;
                                 try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
-                                ChatHandler.warn(Settings.col[0], "Toggled old file formatting &cOFF");
+                                ChatHandler.warn("gray", "Toggled old file formatting &cOFF");
                             } else if (args[3].equalsIgnoreCase("old")) {
                                 Settings.oldFormatting = true;
                                 try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
-                                ChatHandler.warn(Settings.col[0], "Toggled old file formatting &aON");
+                                ChatHandler.warn("gray", "Toggled old file formatting &aON");
                             } else {
                                 ChatHandler.warn("red", "/trigger settings file formatting [new/old]");
                             }
@@ -1491,7 +1528,16 @@ public class CommandTrigger extends CommandBase {
                     }
                 }
             } else {
-                ChatHandler.warn(ChatHandler.color("red", "/trigger settings [debug/dump/test/color/killfeed/beta] <...>"));
+                ChatHandler.warn("&c/trigger &csettings &c[clickable(&cdebug,suggest_command,/trigger settings debug ,&7Suggest &7/trigger &7settings &7debug)&c"
+                        +"/clickable(&ctest,suggest_command,/trigger settings test ,&7Suggest &7/trigger &7settings &7test)&c"
+                        +"/clickable(&ccolor,suggeest_command,/trigger settings color ,&7Suggest &7/trigger &7settings &7color)&c"
+                        +"/clickable(&ckillfeed,suggest_command,/trigger settings killfeed ,&7Suggest &7/trigger &7settings &7killfeed)&c"
+                        +"/clickable(&cnotify,suggest_command,/trigger settings notify ,&7Suggest &7/trigger &7settings &7notify)&c"
+                        +"] &c<...>");
+                ChatHandler.warn("&c/trigger settings &c[clickable(&cbeta,run_command,/trigger settings beta,&7Run &7/trigger &7settings &7beta)&c"
+                        +"/clickable(&cfile,suggest_command,/trigger settings file ,&7Run &7/trigger &7settings &7file)&c"
+                        +"/clickable(&cfps,suggest_command,/trigger settings fps ,&7Run &7/trigger &7settings &7fps)&c"
+                        +"] &c<...>");
             }
         }
     }
