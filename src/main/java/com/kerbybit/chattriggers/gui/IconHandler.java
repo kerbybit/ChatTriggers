@@ -129,7 +129,8 @@ public class IconHandler {
                 || name.equals("invisibility") || name.equals("hunger")
                 || name.equals("blindness") || name.equals("saturation")
                 || name.equals("absorption") || name.equals("health boost")
-                || name.equals("mining fatigue") || name.equals("wither"));
+                || name.equals("mining fatigue") || name.equals("wither")
+                || name.equals("resistance"));
     }
 
     private static Potion getPotionByName(String name) {
@@ -169,6 +170,8 @@ public class IconHandler {
             return Potion.digSlowdown;
         } else if (name.equals("wither")) {
             return Potion.wither;
+        } else if (name.equals("resistance")) {
+            return Potion.resistance;
         }
         return null;
     }
@@ -195,7 +198,8 @@ public class IconHandler {
             return "&d";
         } else if (name.equals("night vision")) {
             return "&1";
-        } else if (name.equals("invisibility")) {
+        } else if (name.equals("invisibility")
+                || name.equals("resistance")) {
             return "&7";
         } else if (name.equals("hunger")) {
             return "&2";

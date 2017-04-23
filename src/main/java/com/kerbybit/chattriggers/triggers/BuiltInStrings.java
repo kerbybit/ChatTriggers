@@ -431,7 +431,7 @@ public class BuiltInStrings {
             TMP_e = createDefaultString("cpsMax", global.clicks_max.toString().replace(".0",""), TMP_e);
         }
         if (TMP_e.contains("{rcpsMax}")) {
-            TMP_e = createDefaultString("rcpsMax", global.clicks_max.toString().replace(".0",""), TMP_e);
+            TMP_e = createDefaultString("rcpsMax", global.rclicks_max.toString().replace(".0",""), TMP_e);
         }
 
         if (TMP_e.contains("{black}")) {

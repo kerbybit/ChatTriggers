@@ -318,14 +318,23 @@ public class StringHandler {
                 try {
                     int argnmbr = Integer.parseInt(args.replace(",",""));
                     Double rtnmbr = Math.round(strnmbr * Math.pow(10,argnmbr)) / Math.pow(10,argnmbr);
-                    String rtstrng = rtnmbr + "";
-                    if (stringnum!=-1) {global.USR_string.get(stringnum).set(1,rtstrng);}
-                    else {global.TMP_string.get(tmpstringnum).set(1,rtstrng);}
+                    if (stringnum!=-1) {global.USR_string.get(stringnum).set(1,rtnmbr+"");}
+                    else {global.TMP_string.get(tmpstringnum).set(1,rtnmbr+"");}
                 } catch (NumberFormatException e) {
-                    if (global.debug) {
-                        ChatHandler.warn(ChatHandler.color("gray", args + " is not a number!"));
-                    }
+                    if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", args + " is not a number!"));}
                 }
+            } catch (NumberFormatException e) {
+                if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", sn+" is not a number!"));}
+            }
+            return "{string["+sn+"]}";
+        } else if (func.equalsIgnoreCase("FLOOR")) {
+            try {
+                Float strnmbr;
+                if (stringnum != 1) {strnmbr = Float.parseFloat(global.USR_string.get(stringnum).get(1).replace(",",""));}
+                else {strnmbr = Float.parseFloat(global.TMP_string.get(tmpstringnum).get(1).replace(",", ""));}
+                Double rtnmbr = Math.floor(strnmbr);
+                if (stringnum!=-1) {global.USR_string.get(stringnum).set(1,rtnmbr+"");}
+                else {global.TMP_string.get(tmpstringnum).set(1,rtnmbr+"");}
             } catch (NumberFormatException e) {
                 if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", sn+" is not a number!"));}
             }
