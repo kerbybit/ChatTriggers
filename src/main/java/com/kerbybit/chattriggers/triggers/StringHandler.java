@@ -6,6 +6,7 @@ import java.util.*;
 import com.kerbybit.chattriggers.objects.ArrayHandler;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
+import com.kerbybit.chattriggers.objects.NewJsonHandler;
 import org.apache.commons.lang3.text.WordUtils;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
@@ -78,6 +79,14 @@ public class StringHandler {
 		}
         while (args.contains("{display[") && args.contains("]}")) {
             args = DisplayHandler.displayFunctions(args);
+            args = stringFunctions(args, chatEvent);
+        }
+        while (args.contains("{list[") && args.contains("]}")) {
+            args = ListHandler.listFunctions(args);
+            args = stringFunctions(args, chatEvent);
+        }
+        while (args.contains("{json[") && args.contains("]}")) {
+            args = NewJsonHandler.jsonFunctions(args);
             args = stringFunctions(args, chatEvent);
         }
 		while (args.contains("{string[") && args.contains("]}")) {
@@ -987,7 +996,6 @@ public class StringHandler {
 			} else {
 				String sn = TMP_e.substring(TMP_e.indexOf("{string[")+8, TMP_e.indexOf("]}", TMP_e.indexOf("{string[")));
 				while (sn.contains("{string[")) {
-				    System.out.println(TMP_e);
 					sn = TMP_e.substring(TMP_e.indexOf("{string[")+8, TMP_e.indexOf("]}", TMP_e.indexOf(sn)+sn.length()+2));
 					
 					String first = sn.substring(0, sn.indexOf("{string["));
