@@ -164,7 +164,11 @@ public class FileHandler {
 								if (Settings.oldFormatting) {
 							        writer.println(extraSpaces + "  event:"+trig.get(j));
                                 } else {
-                                    writer.println(extraSpaces + "  "+trig.get(j));
+							        if (trig.get(j).toUpperCase().startsWith("DO {")) {
+                                        writer.println(extraSpaces + "  "+trig.get(j).substring(3));
+                                    } else {
+                                        writer.println(extraSpaces + "  "+trig.get(j));
+                                    }
                                 }
 
 							
@@ -209,7 +213,11 @@ public class FileHandler {
 						if (Settings.oldFormatting) {
                             writer.println(extraSpaces + "  event:"+trig.get(j));
                         } else {
-                            writer.println(extraSpaces + "  "+trig.get(j));
+                            if (trig.get(j).toUpperCase().startsWith("DO {")) {
+                                writer.println(extraSpaces + "  "+trig.get(j).substring(3));
+                            } else {
+                                writer.println(extraSpaces + "  "+trig.get(j));
+                            }
                         }
 
 					
@@ -360,13 +368,20 @@ public class FileHandler {
 			}
 			if (!isTrigger) {
                 if (!lines.get(i).trim().startsWith("//") && !lines.get(i).trim().equals("")) {
-                    for (String event : CommandReference.getAllEventTypes()) {
-                        if (!event.equals("")) {
-                            if (lines.get(i).trim().startsWith(event + " ") || lines.get(i).trim().equals(event)) {
-                                if (j != -1) {
-                                    String tmp_event = lines.get(i).trim();
-                                    tmp_triggers.get(j).add(tmp_event);
-                                    break;
+                    if (lines.get(i).trim().startsWith("{")) {
+                        if (j != -1) {
+                            String tmp_event = "do "+lines.get(i).trim();
+                            tmp_triggers.get(j).add(tmp_event);
+                        }
+                    } else {
+                        for (String event : CommandReference.getAllEventTypes()) {
+                            if (!event.equals("")) {
+                                if (lines.get(i).trim().startsWith(event + " ") || lines.get(i).trim().equals(event)) {
+                                    if (j != -1) {
+                                        String tmp_event = lines.get(i).trim();
+                                        tmp_triggers.get(j).add(tmp_event);
+                                        break;
+                                    }
                                 }
                             }
                         }

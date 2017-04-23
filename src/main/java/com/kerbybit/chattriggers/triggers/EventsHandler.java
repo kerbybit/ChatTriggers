@@ -246,6 +246,11 @@ public class EventsHandler {
 					
 					eventsToWait.remove(0);
 					eventsToWait.remove(eventsToWait.size()-1);
+
+					if (TMP_e.startsWith("(") && TMP_e.endsWith(")")) {
+					    TMP_e = TMP_e.substring(1, TMP_e.length()-1);
+                    }
+
 					try {
 						int TMP_time = Integer.parseInt(TMP_e);
 						if (TMP_time>0) {
@@ -344,6 +349,10 @@ public class EventsHandler {
 				
 				eventsToFor.remove(0);
 				eventsToFor.remove(eventsToFor.size()-1);
+
+                if (TMP_e.startsWith("(") && TMP_e.endsWith(")")) {
+                    TMP_e = TMP_e.substring(1, TMP_e.length()-1);
+                }
 
                 if (TMP_e.contains(":") || (TMP_e.contains(" in "))) {
                     String[] tmp_valuefor;
