@@ -339,10 +339,10 @@ public class StringHandler {
         } else if (func.equalsIgnoreCase("FLOOR")) {
             try {
                 Float strnmbr;
-                if (stringnum != 1) {strnmbr = Float.parseFloat(global.USR_string.get(stringnum).get(1).replace(",",""));}
+                if (stringnum != -1) {strnmbr = Float.parseFloat(global.USR_string.get(stringnum).get(1).replace(",",""));}
                 else {strnmbr = Float.parseFloat(global.TMP_string.get(tmpstringnum).get(1).replace(",", ""));}
-                Double rtnmbr = Math.floor(strnmbr);
-                if (stringnum!=-1) {global.USR_string.get(stringnum).set(1,rtnmbr+"");}
+                int rtnmbr = (int)Math.floor(strnmbr);
+                if (stringnum != -1) {global.USR_string.get(stringnum).set(1,rtnmbr+"");}
                 else {global.TMP_string.get(tmpstringnum).set(1,rtnmbr+"");}
             } catch (NumberFormatException e) {
                 if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", sn+" is not a number!"));}
