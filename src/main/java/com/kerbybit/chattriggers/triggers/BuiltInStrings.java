@@ -5,9 +5,11 @@ import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.gui.IconHandler;
+import com.kerbybit.chattriggers.objects.ListHandler;
 import com.kerbybit.chattriggers.objects.NewJsonHandler;
 import com.kerbybit.chattriggers.references.RomanNumber;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
@@ -155,6 +157,22 @@ public class BuiltInStrings {
             else {returnString = Minecraft.getMinecraft().getCurrentServerData().gameVersion;}
 
             TMP_e = createDefaultString("serverversion", returnString, TMP_e);
+        }
+        if (TMP_e.contains("{playerlist}")) {
+            StringBuilder returnString = new StringBuilder("[");
+            for (EntityPlayer player : Minecraft.getMinecraft().theWorld.playerEntities) {
+                returnString.append(player.getName()).append(",");
+            }
+            if (returnString.toString().equals("[")) {
+                System.out.println("wrong one");
+                TMP_e = createDefaultString("playerlist", "[]", TMP_e);
+            } else {
+                System.out.println("right one");
+                System.out.println(returnString.substring(0, returnString.length()-1)+"]");
+                ListHandler.getList("DefaultList->PLAYERLIST-"+(ListHandler.getListsSize()+1), returnString.substring(0, returnString.length()-1)+"]");
+                TMP_e = TMP_e.replace("{playerlist}", "{list[DefaultList->PLAYERLIST-"+ListHandler.getListsSize()+"]}");
+                System.out.println(ListHandler.getListsSize());
+            }
         }
         if (TMP_e.contains("{debug}")) {
             TMP_e = createDefaultString("debug", global.debug + "", TMP_e);

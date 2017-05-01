@@ -124,6 +124,7 @@ public class ChatTriggers {
 	public void RenderGameOverlayEvent(RenderGameOverlayEvent event) {
 		if (global.canUse) {
             CommandReference.clickCalc();
+            global.framesElapsed++;
 
 			KillfeedHandler.drawKillfeed(event);
 			NotifyHandler.drawNotify(event);
@@ -167,7 +168,7 @@ public class ChatTriggers {
             }
 
             EventsHandler.eventTick();
-            global.ticksElapsed += 1;
+            global.ticksElapsed++;
 
 			ChatHandler.onClientTick();
 		} else {
