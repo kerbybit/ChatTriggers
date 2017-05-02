@@ -230,24 +230,7 @@ public class DisplayHandler {
                         display_text = display_text.replace("<spacing="+spacing_string+">", "");
                     }
 
-                    if (display_text.contains("<rainbow>")) {
-                        display_text = display_text.replace("<rainbow>", "");
-                        int step = global.framesElapsed;
-                        int red = (int) ((Math.sin(step / 100) + 0.75) * 170);
-                        int green = (int) ((Math.sin(step / 100 + ((2 * Math.PI) / 3)) + 0.75) * 170);
-                        int blue = (int) ((Math.sin(step / 100 + ((4 * Math.PI) / 3)) + 0.75) * 170);
 
-                        if (red < 0) red = 0;
-                        if (green < 0) green = 0;
-                        if (blue < 0) blue = 0;
-                        if (red > 255) red = 255;
-                        if (green > 255) green = 255;
-                        if (blue > 255) blue = 255;
-
-                        color = 0xff000000 + (red*0x10000) + (green*0x100) + blue;
-                    } else {
-                        color = 0xffffff;
-                    }
 
                     if (display_text.contains("<up>")) {
                         up = true;
@@ -255,12 +238,14 @@ public class DisplayHandler {
                         if (display_text.contains("<center>")) {
                             align = 1;
                             display_text = display_text.replace("<center>","");
-                            display_x = ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(IconHandler.removeIconString(display_text))/2);
+                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","")));
+                            display_x = ((display_xy[0].floatValue() * width) / 100) - text_width/2;
                             display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
                         } else if (display_text.contains("<right>")) {
                             align = 2;
                             display_text = display_text.replace("<right>","");
-                            display_x = ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(IconHandler.removeIconString(display_text));
+                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","")));
+                            display_x = ((display_xy[0].floatValue() * width) / 100) - text_width;
                             display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
                         } else {
                             display_text = display_text.replace("<left>","");
@@ -272,12 +257,14 @@ public class DisplayHandler {
                         if (display_text.contains("<center>")) {
                             align = 1;
                             display_text = display_text.replace("<center>","");
-                            display_x = ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(IconHandler.removeIconString(display_text))/2);
+                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","")));
+                            display_x = ((display_xy[0].floatValue() * width) / 100) - text_width/2;
                             display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
                         } else if (display_text.contains("<right>")) {
                             align = 2;
                             display_text = display_text.replace("<right>","");
-                            display_x = ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(IconHandler.removeIconString(display_text));
+                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","")));
+                            display_x = ((display_xy[0].floatValue() * width) / 100) - text_width;
                             display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
                         } else {
                             display_text = display_text.replace("<left>","");
@@ -367,6 +354,25 @@ public class DisplayHandler {
             String display_text = display_texts.get(i);
             float display_x = display_xs.get(i);
             float display_y = display_ys.get(i);
+
+            if (display_text.contains("<rainbow>")) {
+                display_text = display_text.replace("<rainbow>", "");
+                float step = global.ticksElapsed;
+                int red = (int) ((Math.sin(step / 5) + 0.75) * 170);
+                int green = (int) ((Math.sin(step / 5 + ((2 * Math.PI) / 3)) + 0.75) * 170);
+                int blue = (int) ((Math.sin(step / 5 + ((4 * Math.PI) / 3)) + 0.75) * 170);
+
+                if (red < 0) red = 0;
+                if (green < 0) green = 0;
+                if (blue < 0) blue = 0;
+                if (red > 255) red = 255;
+                if (green > 255) green = 255;
+                if (blue > 255) blue = 255;
+
+                color = 0xff000000 + (red*0x10000) + (green*0x100) + blue;
+            } else {
+                color = 0xffffff;
+            }
 
             if (!display_text.equals("") && bg.equalsIgnoreCase("line")) {
                 try {

@@ -103,12 +103,9 @@ public class ChatTriggers {
 	
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load e) {
-        try {
-            if (global.canUse) {
-                global.worldLoaded=true;
-            }
-        } catch (Exception exception) {
-            BugTracker.show(exception, "onWorldLoad");
+        if (global.canUse) {
+            global.worldLoaded=true;
+            NotifyHandler.systimeResetNotify();
         }
 	}
 	
@@ -124,7 +121,6 @@ public class ChatTriggers {
 	public void RenderGameOverlayEvent(RenderGameOverlayEvent event) {
 		if (global.canUse) {
             CommandReference.clickCalc();
-            global.framesElapsed++;
 
 			KillfeedHandler.drawKillfeed(event);
 			NotifyHandler.drawNotify(event);
@@ -150,8 +146,8 @@ public class ChatTriggers {
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent e) throws ClassNotFoundException {
 		if (global.canUse) {
+
 			KillfeedHandler.tickKillfeed();
-			//OverlayHandler.tickNotify();
 
 			FileHandler.tickImports();
 
