@@ -6,13 +6,12 @@ import java.util.*;
 import com.kerbybit.chattriggers.objects.ArrayHandler;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
-import com.kerbybit.chattriggers.objects.NewJsonHandler;
+import com.kerbybit.chattriggers.objects.JsonHandler;
 import org.apache.commons.lang3.text.WordUtils;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.file.FileHandler;
-import com.kerbybit.chattriggers.file.JsonHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
 import net.minecraft.client.Minecraft;
@@ -86,7 +85,7 @@ public class StringHandler {
             args = stringFunctions(args, chatEvent);
         }
         while (args.contains("{json[") && args.contains("]}")) {
-            args = NewJsonHandler.jsonFunctions(args);
+            args = JsonHandler.jsonFunctions(args);
             args = stringFunctions(args, chatEvent);
         }
 		while (args.contains("{string[") && args.contains("]}")) {
@@ -578,7 +577,7 @@ public class StringHandler {
 		} else if (func.equalsIgnoreCase("IMPORTJSONFILE")){
 			String sj = "Improper format! use importJsonFile(file,node)";
 			if (args.contains(",")) {
-				sj = JsonHandler.importJsonFile("string", args.substring(0, args.indexOf(",")), sn + "=>" + args.substring(args.indexOf(",")+1));
+				sj = ArrayHandler.importJsonFile("string", args.substring(0, args.indexOf(",")), sn + "=>" + args.substring(args.indexOf(",")+1));
 				if (stringnum!=-1) {
 					global.USR_string.get(stringnum).set(1, sj);
 					global.backupUSR_strings.get(stringnum).set(1, sj);
@@ -594,7 +593,7 @@ public class StringHandler {
 		} else if (func.equalsIgnoreCase("IMPORTJSONURL")) {
 			String sj = "Improper format! use importJsonFile(file,node)";
 			if (args.contains(",")) {
-				sj = JsonHandler.importJsonURL("string", args.substring(0, args.indexOf(",")), sn + "=>" + args.substring(args.indexOf(",")+1));
+				sj = ArrayHandler.importJsonURL("string", args.substring(0, args.indexOf(",")), sn + "=>" + args.substring(args.indexOf(",")+1));
 				if (stringnum!=-1) {
 					global.USR_string.get(stringnum).set(1, sj);
 					global.backupUSR_strings.get(stringnum).set(1, sj);

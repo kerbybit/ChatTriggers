@@ -33,6 +33,10 @@ public class ListHandler {
 
     private static ArrayList<String> getListFromFile(String dest) {
         try {
+            if (!dest.contains("/")) {
+                dest = "./mods/ChatTriggers/"+dest;
+            }
+
             StringBuilder listString = new StringBuilder();
             String line;
             BufferedReader bufferedReader;

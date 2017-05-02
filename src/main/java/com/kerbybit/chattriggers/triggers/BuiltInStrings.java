@@ -6,7 +6,7 @@ import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.gui.IconHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
-import com.kerbybit.chattriggers.objects.NewJsonHandler;
+import com.kerbybit.chattriggers.objects.JsonHandler;
 import com.kerbybit.chattriggers.references.RomanNumber;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -292,9 +292,9 @@ public class BuiltInStrings {
                 potionList = new StringBuilder(potionList.substring(0, potionList.length()-1) + "}");
             }
 
-            NewJsonHandler.getJson("DefaultJson->POTIONEFFECTS-"+(NewJsonHandler.getJsonsSize()+1), potionList.toString());
+            JsonHandler.getJson("DefaultJson->POTIONEFFECTS-"+(JsonHandler.getJsonsSize()+1), potionList.toString());
 
-            TMP_e = TMP_e.replace("{potionEffects}", "{json[DefaultJson->POTIONEFFECTS-"+NewJsonHandler.getJsonsSize()+"]}");
+            TMP_e = TMP_e.replace("{potionEffects}", "{json[DefaultJson->POTIONEFFECTS-"+ JsonHandler.getJsonsSize()+"]}");
         }
         if (TMP_e.contains("{armor}")) {
             ItemStack[] armor_set = Minecraft.getMinecraft().thePlayer.inventory.armorInventory;
@@ -337,9 +337,9 @@ public class BuiltInStrings {
                 armorList = new StringBuilder(armorList.substring(0, armorList.length()-1) + "}");
             }
 
-            NewJsonHandler.getJson("DefaultJson->ARMOR-"+(NewJsonHandler.getJsonsSize()+1), armorList.toString());
+            JsonHandler.getJson("DefaultJson->ARMOR-"+(JsonHandler.getJsonsSize()+1), armorList.toString());
 
-            TMP_e = TMP_e.replace("{armor}", "{json[DefaultJson->ARMOR-"+NewJsonHandler.getJsonsSize()+"]}");
+            TMP_e = TMP_e.replace("{armor}", "{json[DefaultJson->ARMOR-"+ JsonHandler.getJsonsSize()+"]}");
         }
         if (TMP_e.contains("{heldItem}")) {
             ItemStack item = Minecraft.getMinecraft().thePlayer.getHeldItem();
@@ -375,9 +375,9 @@ public class BuiltInStrings {
             } catch (Exception e) {
                 held = "{}";
             }
-            NewJsonHandler.getJson("DefaultJson->HELDITEM-"+(NewJsonHandler.getJsonsSize()+1), held);
+            JsonHandler.getJson("DefaultJson->HELDITEM-"+(JsonHandler.getJsonsSize()+1), held);
 
-            TMP_e = TMP_e.replace("{heldItem}", "{json[DefaultJson->HELDITEM-"+NewJsonHandler.getJsonsSize()+"]}");
+            TMP_e = TMP_e.replace("{heldItem}", "{json[DefaultJson->HELDITEM-"+ JsonHandler.getJsonsSize()+"]}");
         }
         if (TMP_e.contains("{arrows}")) {
             ItemStack[] inventory = Minecraft.getMinecraft().thePlayer.inventory.mainInventory;

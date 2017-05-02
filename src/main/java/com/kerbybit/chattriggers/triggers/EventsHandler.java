@@ -12,14 +12,12 @@ import java.util.List;
 import java.util.Random;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
-import com.kerbybit.chattriggers.file.JsonHandler;
 import com.kerbybit.chattriggers.objects.ArrayHandler;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
-import com.kerbybit.chattriggers.objects.NewJsonHandler;
+import com.kerbybit.chattriggers.objects.JsonHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
-import com.kerbybit.chattriggers.overlay.ActionBar;
 import com.kerbybit.chattriggers.overlay.KillfeedHandler;
 import com.kerbybit.chattriggers.overlay.NotifyHandler;
 import net.minecraft.client.Minecraft;
@@ -57,7 +55,7 @@ public class EventsHandler {
 			}
 		}
         //trim jsons and lists to save memory
-        NewJsonHandler.trimJsons();
+        JsonHandler.trimJsons();
         ListHandler.trimLists();
 
 		for (int i=0; i<tmp_event.size(); i++) {
@@ -89,7 +87,7 @@ public class EventsHandler {
                     .replace("{list<", "{list[")
                     .replace(">}", "]}");
 
-            TMP_e = NewJsonHandler.jsonFunctions(TMP_e);
+            TMP_e = JsonHandler.jsonFunctions(TMP_e);
             TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent);
             TMP_e = ListHandler.listFunctions(TMP_e);
 			TMP_e = ArrayHandler.arrayFunctions(TMP_e, chatEvent);
@@ -158,10 +156,6 @@ public class EventsHandler {
 			if (TMP_c.equalsIgnoreCase("NOTIFY")) {
 				NotifyHandler.addToNotify(TMP_e, TMP_t, TMP_p);
 			}
-            if (TMP_c.equalsIgnoreCase("ACTIONBAR")) {
-			    System.out.println("actionbar-"+TMP_e);
-			    ActionBar.showActionBar(TMP_e);
-            }
 			if (TMP_c.equalsIgnoreCase("COMMAND")) {global.commandQueue.add(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("COPY")) {
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -735,7 +729,7 @@ public class EventsHandler {
 		
 		if (global.waitEvents.size()==0 && global.asyncMap.size()==0 && global.TMP_string.size()>0) {
 			global.TMP_string.clear();
-			JsonHandler.jsonURL.clear();
+			ArrayHandler.jsonURL.clear();
 		}
 		
 		if (global.waitEvents.size()>0) {

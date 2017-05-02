@@ -10,7 +10,7 @@ import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
-import com.kerbybit.chattriggers.objects.NewJsonHandler;
+import com.kerbybit.chattriggers.objects.JsonHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -27,7 +27,7 @@ public class CommandReference {
         global.notifyAnimation.clear();
         DisplayHandler.clearDisplays();
         ListHandler.clearLists();
-        NewJsonHandler.clearJsons();
+        JsonHandler.clearJsons();
     }
 
 	public static void resetAll() {
@@ -146,7 +146,6 @@ public class CommandReference {
             r.add("cancel");
             r.add("killfeed");
             r.add("notify");
-            r.add("actionbar");
             r.add("sound");
             r.add("");
             r.add("trigger");
@@ -304,14 +303,14 @@ public class CommandReference {
     static List<String> getListFunctions() {
         List<String> r = new ArrayList<String>();
 
-            r.add(".load($value) .load($file) .load($URL)");
+            r.add(".load($v) .load($file) .load($URL)");
             r.add(".export($file)");
             r.add(".size()");
-            r.add(".add($value)");
-            r.add(".get($value)");
-            r.add(".has($value)");
+            r.add(".add($v)");
+            r.add(".get($v) .get($n)");
+            r.add(".has($v)");
             r.add(".getRandom()");
-            r.add(".remove($index) .remove($value)");
+            r.add(".remove($n) .remove($v)");
             r.add(".clear()");
 
         return r;
@@ -321,10 +320,10 @@ public class CommandReference {
         List<String> r = new ArrayList<String>();
 
             r.add(".clear()");
-            r.add(".load($value) .load($file) .load($URL)");
-            r.add(".get($value)");
-            r.add(".getKeys($value)");
-            r.add(".getValues($value)");
+            r.add(".load($v) .load($file) .load($URL)");
+            r.add(".get($v)");
+            r.add(".getKeys($v)");
+            r.add(".getValues($v)");
 
         return r;
     }

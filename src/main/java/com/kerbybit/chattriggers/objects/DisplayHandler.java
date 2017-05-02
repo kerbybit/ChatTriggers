@@ -52,7 +52,7 @@ public class DisplayHandler {
                         .replace("{list<", "{list[")
                         .replace(">}", "]}");
 
-                value = NewJsonHandler.jsonFunctions(value);
+                value = JsonHandler.jsonFunctions(value);
                 value = StringHandler.stringFunctions(value, null);
                 value = ListHandler.listFunctions(value);
                 value = ArrayHandler.arrayFunctions(value, null);
@@ -221,15 +221,15 @@ public class DisplayHandler {
                     float display_y;
                     float spacing = 1;
                     if (display_text.contains("<spacing=") && display_text.contains(">")) {
+                        String spacing_string = display_text.substring(display_text.indexOf("<spacing=")+9, display_text.indexOf(">", display_text.indexOf("<spacing=")));
                         try {
-                            String spacing_string = display_text.substring(display_text.indexOf("<spacing=")+9, display_text.indexOf(">", display_text.indexOf("<spacing=")));
                             spacing = Float.parseFloat(spacing_string);
-                            display_text = display_text.replace("<spacing="+spacing_string+">", "");
                         } catch (NumberFormatException e) {
-                            e.printStackTrace();
                             System.out.println("<spacing=$n> - $n must be a number!");
                         }
+                        display_text = display_text.replace("<spacing="+spacing_string+">", "");
                     }
+
                     if (display_text.contains("<rainbow>")) {
                         display_text = display_text.replace("<rainbow>", "");
                         int step = global.framesElapsed;

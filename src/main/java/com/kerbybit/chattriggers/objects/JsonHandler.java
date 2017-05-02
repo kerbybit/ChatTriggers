@@ -3,6 +3,7 @@ package com.kerbybit.chattriggers.objects;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.triggers.StringHandler;
 
@@ -14,8 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//TODO bad class name. pls change
-public class NewJsonHandler {
+public class JsonHandler {
     private static HashMap<String, JsonObject> jsons = new HashMap<String, JsonObject>();
 
     private static JsonObject getJsonFromURL(String url) {
@@ -38,6 +38,10 @@ public class NewJsonHandler {
 
     private static JsonObject getJsonFromFile(String dest) {
         try {
+            if (!dest.contains("/")) {
+                dest = "./mods/ChatTriggers/"+dest;
+            }
+
             StringBuilder jsonString = new StringBuilder();
             String line;
             BufferedReader bufferedReader;
@@ -75,6 +79,28 @@ public class NewJsonHandler {
             clearJson(json_name);
             jsons.put(json_name, json_object);
             return json_object + "";
+        }
+    }
+
+    private static void saveJsonToFile(String json_name, String dest) {
+        if (!dest.contains("/")) {
+            dest = "./mods/ChatTriggers/"+dest;
+        }
+
+        try {
+            PrintWriter writer = new PrintWriter(dest, "UTF-8");
+            if (jsons.containsKey(json_name)) {
+                writer.println(jsons.get(json_name).toString());
+                writer.close();
+            }
+        } catch (FileNotFoundException exception) {
+            File check = new File(dest.substring(0, dest.lastIndexOf("/")));
+            if (!check.mkdir()) {
+                ChatHandler.warn("red", "Unable to save json to file!");
+            }
+        } catch (IOException exception) {
+            ChatHandler.warn("red", "Unable to save json to file! IOException");
+            exception.printStackTrace();
         }
     }
 
@@ -205,6 +231,25 @@ public class NewJsonHandler {
             String get_value = StringHandler.stringFunctions(get_prevalue, null);
 
             TMP_e = createDefaultString("load", get_name, get_prevalue, getJson(get_name, get_value), TMP_e);
+        }
+
+        while (TMP_e.contains("{json[") && TMP_e.contains("]}.export(") && TMP_e.contains(")")) {
+            String get_name = TMP_e.substring(TMP_e.indexOf("{json[")+6, TMP_e.indexOf("]}.export(", TMP_e.indexOf("{json[")));
+            String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.export(", TMP_e.indexOf("{json["))+10, TMP_e.indexOf(")", TMP_e.indexOf("]}.export(", TMP_e.indexOf("{json["))));
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.export(", TMP_e.indexOf("{json["))+10);
+            while (get_name.contains("{json[")) {
+                get_name = get_name.substring(get_name.indexOf("{json[")+6);
+            }
+            while (get_prevalue.contains("(")) {
+                temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
+                get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
+            }
+            get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
+            String get_value = StringHandler.stringFunctions(get_prevalue, null);
+
+            saveJsonToFile(get_name, get_value);
+
+            TMP_e = TMP_e.replace("{json["+get_name+"]}.export("+get_prevalue+")","{json["+get_name+"]}");
         }
 
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) {
