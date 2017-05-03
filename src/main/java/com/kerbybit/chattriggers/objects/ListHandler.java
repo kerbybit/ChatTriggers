@@ -301,6 +301,13 @@ public class ListHandler {
         }
     }
 
+    private static void sortList(String list_name) {
+        if (lists.containsKey(list_name)) {
+            List<String> list = lists.get(list_name);
+            Collections.sort(list);
+        }
+    }
+
     private static String clearList(String list_name) {
         if (lists.containsKey(list_name)) {
             String return_string = getList(list_name);
@@ -363,6 +370,17 @@ public class ListHandler {
             }
 
             TMP_e = createDefaultString("size", get_name, getSize(get_name), TMP_e);
+        }
+
+        while(TMP_e.contains("{list[") && TMP_e.contains("]}.sort()")) {
+            String get_name = TMP_e.substring(TMP_e.indexOf("{list[") + 6, TMP_e.indexOf("]}.sort()", TMP_e.indexOf("{list[")));
+            while (get_name.contains("{list[")) {
+                get_name = get_name.substring(get_name.indexOf("{list[")+6);
+            }
+
+            sortList(get_name);
+
+            TMP_e = TMP_e.replace("{list["+get_name+"]}.sort()", "{list["+get_name+"]}");
         }
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.add(") && TMP_e.contains(")")) {

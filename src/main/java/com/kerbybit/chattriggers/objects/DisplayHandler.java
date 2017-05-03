@@ -230,6 +230,11 @@ public class DisplayHandler {
                         display_text = display_text.replace("<spacing="+spacing_string+">", "");
                     }
 
+                    String rainbow_string = "";
+                    if (display_text.contains("<rainbow=") && display_text.contains(">")) {
+                        rainbow_string = display_text.substring(display_text.indexOf("<rainbow="), display_text.indexOf(">", display_text.indexOf("<rainbow="))+1);
+                    }
+
 
 
                     if (display_text.contains("<up>")) {
@@ -238,13 +243,13 @@ public class DisplayHandler {
                         if (display_text.contains("<center>")) {
                             align = 1;
                             display_text = display_text.replace("<center>","");
-                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","")));
+                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","").replace(rainbow_string,"")));
                             display_x = ((display_xy[0].floatValue() * width) / 100) - text_width/2;
                             display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
                         } else if (display_text.contains("<right>")) {
                             align = 2;
                             display_text = display_text.replace("<right>","");
-                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","")));
+                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","").replace(rainbow_string,"")));
                             display_x = ((display_xy[0].floatValue() * width) / 100) - text_width;
                             display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
                         } else {
@@ -257,13 +262,13 @@ public class DisplayHandler {
                         if (display_text.contains("<center>")) {
                             align = 1;
                             display_text = display_text.replace("<center>","");
-                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","")));
+                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","").replace(rainbow_string,"")));
                             display_x = ((display_xy[0].floatValue() * width) / 100) - text_width/2;
                             display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
                         } else if (display_text.contains("<right>")) {
                             align = 2;
                             display_text = display_text.replace("<right>","");
-                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","")));
+                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","").replace(rainbow_string,"")));
                             display_x = ((display_xy[0].floatValue() * width) / 100) - text_width;
                             display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
                         } else {
@@ -355,12 +360,22 @@ public class DisplayHandler {
             float display_x = display_xs.get(i);
             float display_y = display_ys.get(i);
 
-            if (display_text.contains("<rainbow>")) {
+            if (display_text.contains("<rainbow>") || (display_text.contains("<rainbow=") && display_text.contains(">"))) {
                 display_text = display_text.replace("<rainbow>", "");
+                float speed = 5;
+                if (display_text.contains("<rainbow=") && display_text.contains(">")) {
+                    String speed_string = display_text.substring(display_text.indexOf("<rainbow=")+9, display_text.indexOf(">", display_text.indexOf("<rainbow=")));
+                    try {
+                        speed = Float.parseFloat(speed_string);
+                    } catch (NumberFormatException exception) {
+                        if (global.debug) {ChatHandler.warn("gray", "<rainbow=&n> - &n must be a number!");}
+                    }
+                    display_text = display_text.replace("<rainbow="+speed_string+">", "");
+                }
                 float step = global.ticksElapsed;
-                int red = (int) ((Math.sin(step / 5) + 0.75) * 170);
-                int green = (int) ((Math.sin(step / 5 + ((2 * Math.PI) / 3)) + 0.75) * 170);
-                int blue = (int) ((Math.sin(step / 5 + ((4 * Math.PI) / 3)) + 0.75) * 170);
+                int red = (int) ((Math.sin(step / speed) + 0.75) * 170);
+                int green = (int) ((Math.sin(step / speed + ((2 * Math.PI) / 3)) + 0.75) * 170);
+                int blue = (int) ((Math.sin(step / speed + ((4 * Math.PI) / 3)) + 0.75) * 170);
 
                 if (red < 0) red = 0;
                 if (green < 0) green = 0;
