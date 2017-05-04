@@ -23,23 +23,27 @@ public class StringHandler {
 	public static void resetBackupStrings() {
 		try {
 			global.backupUSR_strings.clear();
-			for (int j=0; j<global.USR_string.size(); j++) {
-				String first = global.USR_string.get(j).get(0);
-				String second = global.USR_string.get(j).get(1);
-				List<String> temporary = new ArrayList<String>();
-				temporary.add(first);
-				temporary.add(second);
-				global.backupUSR_strings.add(temporary);
+			for (List<String> backup : global.USR_string) {
+			    if (backup.size() == 2) {
+                    String first = backup.get(0);
+                    String second = backup.get(1);
+                    List<String> temporary = new ArrayList<String>();
+                    temporary.add(first);
+                    temporary.add(second);
+                    global.backupUSR_strings.add(temporary);
+                }
 			}
 			
 			global.backupTMP_strings.clear();
-			for (int j=0; j<global.TMP_string.size(); j++) {
-				String first = global.TMP_string.get(j).get(0);
-				String second = global.TMP_string.get(j).get(1);
-				List<String> temporary = new ArrayList<String>();
-				temporary.add(first);
-				temporary.add(second);
-				global.backupTMP_strings.add(temporary);
+			for (List<String> backup : global.TMP_string) {
+			    if (backup.size() == 2) {
+                    String first = backup.get(0);
+                    String second = backup.get(1);
+                    List<String> temporary = new ArrayList<String>();
+                    temporary.add(first);
+                    temporary.add(second);
+                    global.backupTMP_strings.add(temporary);
+                }
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1045,22 +1049,26 @@ public class StringHandler {
 						+ secondpart;
 				
 				global.USR_string.clear();
-				for (int i=0; i<global.backupUSR_strings.size(); i++) {
-					String first = global.backupUSR_strings.get(i).get(0);
-					String second = global.backupUSR_strings.get(i).get(1);
-					List<String> temporary = new ArrayList<String>();
-					temporary.add(first);
-					temporary.add(second);
-					global.USR_string.add(temporary);
+				for (List<String> backup : global.backupUSR_strings) {
+				    if (backup.size() == 2) {
+                        String first = backup.get(0);
+                        String second = backup.get(1);
+                        List<String> temporary = new ArrayList<String>();
+                        temporary.add(first);
+                        temporary.add(second);
+                        global.USR_string.add(temporary);
+                    }
 				}
 				global.TMP_string.clear();
-				for (int i=0; i<global.backupTMP_strings.size(); i++) {
-                    String first = global.backupTMP_strings.get(i).get(0);
-                    String second = global.backupTMP_strings.get(i).get(1);
-                    List<String> temporary = new ArrayList<String>();
-                    temporary.add(first);
-                    temporary.add(second);
-                    global.TMP_string.add(temporary);
+				for (List<String> backup : global.backupTMP_strings) {
+				    if (backup.size() == 2) {
+                        String first = backup.get(0);
+                        String second = backup.get(1);
+                        List<String> temporary = new ArrayList<String>();
+                        temporary.add(first);
+                        temporary.add(second);
+                        global.TMP_string.add(temporary);
+                    }
 				}
 			}
 		}

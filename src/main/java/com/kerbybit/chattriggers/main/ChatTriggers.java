@@ -120,25 +120,31 @@ public class ChatTriggers {
 	@SubscribeEvent
 	public void RenderGameOverlayEvent(RenderGameOverlayEvent event) {
 		if (global.canUse) {
-            CommandReference.clickCalc();
+		    try {
+                CommandReference.clickCalc();
 
-			KillfeedHandler.drawKillfeed(event);
-			NotifyHandler.drawNotify(event);
-            DisplayHandler.drawDisplays(event);
+                KillfeedHandler.drawKillfeed(event);
+                NotifyHandler.drawNotify(event);
 
-			GuiTriggerList.openGui();
-            DisplayOverlay.openGui();
+                DisplayHandler.drawDisplays(event);
 
-			FileHandler.firstFileLoad();
 
-            try {
-                TriggerHandler.worldLoadTriggers();
-            } catch (NullPointerException e) {
-                //Catch for replay mod
+                GuiTriggerList.openGui();
+                DisplayOverlay.openGui();
+
+                FileHandler.firstFileLoad();
+
+                try {
+                    TriggerHandler.worldLoadTriggers();
+                } catch (NullPointerException e) {
+                    //Catch for replay mod
+                }
+
+                TriggerHandler.newDayTriggers();
+                global.worldLoaded=false;
+		    } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            TriggerHandler.newDayTriggers();
-            global.worldLoaded=false;
         }
 	}
 
