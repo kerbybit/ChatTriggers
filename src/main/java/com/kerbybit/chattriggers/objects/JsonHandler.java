@@ -18,6 +18,10 @@ import java.util.Map;
 public class JsonHandler {
     private static HashMap<String, JsonObject> jsons = new HashMap<String, JsonObject>();
 
+    public static String getForJson(String in) {
+        return in.replace("\"", "\\\"").replace("'", "\\'");
+    }
+
     private static JsonObject getJsonFromURL(String url) {
         try {
             StringBuilder jsonString = new StringBuilder();

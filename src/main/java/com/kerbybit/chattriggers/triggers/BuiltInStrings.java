@@ -280,7 +280,7 @@ public class BuiltInStrings {
                     String potionDuration = Potion.getDurationString(potionEffect);
                     String potionColor = IconHandler.getPotionColors(potionName);
 
-                    potionList.append("\"").append(potionName).append("\":{")
+                    potionList.append("\"").append(JsonHandler.getForJson(potionName)).append("\":{")
                             .append("\"amplitude\":\"").append(potionAmp)
                             .append("\",\"duration\":\"").append(potionDuration)
                             .append("\",\"color\":\"").append(potionColor).append("\"},");
@@ -324,7 +324,7 @@ public class BuiltInStrings {
                         }
                     }
                     armorList.append("\"").append(armor.getItem().getRegistryName().replace("minecraft:","")).append("\":{")
-                            .append("\"displayName\":\"").append(armor.getDisplayName())
+                            .append("\"displayName\":\"").append(JsonHandler.getForJson(armor.getDisplayName()))
                             .append("\",\"maxDurability\":").append((int)floor(armorMaxDamage))
                             .append(",\"durability\":").append((int)floor(armorDamage))
                             .append(",\"durabilityPercent\":").append((int)floor(armorPercent))
@@ -367,7 +367,7 @@ public class BuiltInStrings {
                     }
                 }
                 held = "{\"" + item.getItem().getRegistryName().replace("minecraft:", "")
-                        + "\":{\"displayName\":\"" + item.getDisplayName()
+                        + "\":{\"displayName\":\"" + JsonHandler.getForJson(item.getDisplayName())
                         + "\",\"maxDurability\":" + (int) floor(itemMaxDamage)
                         + ",\"durability\":" + (int) floor(itemDamage)
                         + ",\"durabilityPercent\":" + (int) floor(itemPercent)
