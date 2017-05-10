@@ -1374,7 +1374,7 @@ public class CommandTrigger extends CommandBase {
                         ChatHandler.warn("&c/trigger &csettings &ctest &c[clickable(&conServerChange,run_command,/trigger settings test onServerChange,&7Run &7/trigger &7settings &7test &7onServerChange)&c/clickable(&conNewDay,run_command,/trigger settings test onNewDay,&7Run &7/trigger &7settings &7test &7onNewDay)&c]");
                     }
                 }
-            }else if (args[1].equalsIgnoreCase("DUMP")) {
+            } else if (args[1].equalsIgnoreCase("DUMP")) {
                 if (args.length == 2) {
                     for (String fmsg : global.chatHistory) {
                         String tmp_out = ChatHandler.removeFormatting(fmsg);
@@ -1428,6 +1428,21 @@ public class CommandTrigger extends CommandBase {
                                 }
                             } else {
                                 NotifyHandler.showNotifyHistory();
+                            }
+                        } else if (args[2].equalsIgnoreCase("ASYNC")) {
+                            Map<String, String> temp = new HashMap<String, String>(global.Async_string);
+                            for (Map.Entry<String, String> entry : temp.entrySet()) {
+                                ChatHandler.warn(entry.getKey() + " - " + entry.getValue());
+                            }
+                        } else if (args[2].equalsIgnoreCase("TEMP")) {
+                            List<List<String>> temp = new ArrayList<List<String>>(global.TMP_string);
+                            for (List<String> string : temp) {
+                                ChatHandler.warn(string.get(0) + " - " + string.get(1));
+                            }
+                        } else if (args[2].equalsIgnoreCase("STRINGS")) {
+                            List<List<String>> temp = new ArrayList<List<String>>(global.USR_string);
+                            for (List<String> string : global.USR_string) {
+                                ChatHandler.warn(string.get(0) + " - " + string.get(1));
                             }
                         } else {
                             ChatHandler.warn(ChatHandler.color("red", "/trigger settings dump [number]"));
@@ -1547,9 +1562,10 @@ public class CommandTrigger extends CommandBase {
         ChatHandler.warn(ChatHandler.color(Settings.col[0], "Organized and saved files"));
     }
 
-    static void commandLoad() {
+    public static void commandLoad() {
         global.canSave = true;
         try {
+            CommandReference.clearAll();
             global.trigger = FileHandler.loadTriggers("./mods/ChatTriggers/triggers.txt", false, null);
             global.USR_string = FileHandler.loadStrings();
             FileHandler.loadSettings();

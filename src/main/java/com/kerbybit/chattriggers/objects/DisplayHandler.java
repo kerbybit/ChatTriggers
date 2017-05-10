@@ -27,7 +27,7 @@ public class DisplayHandler {
     private static HashMap<String,Double[]> displays_xy = new HashMap<String,Double[]>();
     private static HashMap<String,String> display_settings = new HashMap<String, String>();
 
-    private static String updateDisplay(String display_name) {
+    private static String updateDisplay(String display_name, Boolean isAsync) {
         List<String> display;
 
         if (displays.containsKey(display_name)
@@ -42,7 +42,7 @@ public class DisplayHandler {
                 StringHandler.resetBackupStrings();
 
                 //built in strings
-                value = BuiltInStrings.builtInStrings(value, null);
+                value = BuiltInStrings.builtInStrings(value, null, isAsync);
 
                 //user strings and functions
                 value = value.replace("{string<", "{string[")
@@ -52,11 +52,11 @@ public class DisplayHandler {
                         .replace("{list<", "{list[")
                         .replace(">}", "]}");
 
-                value = JsonHandler.jsonFunctions(value);
-                value = StringHandler.stringFunctions(value, null);
-                value = ListHandler.listFunctions(value);
-                value = ArrayHandler.arrayFunctions(value, null);
-                value = StringHandler.stringFunctions(value, null);
+                value = JsonHandler.jsonFunctions(value, isAsync);
+                value = StringHandler.stringFunctions(value, null, isAsync);
+                value = ListHandler.listFunctions(value, isAsync);
+                value = ArrayHandler.arrayFunctions(value, null, isAsync);
+                value = StringHandler.stringFunctions(value, null, isAsync);
 
                 display_return.add(TagHandler.removeTags(value));
             }
@@ -434,14 +434,14 @@ public class DisplayHandler {
         GlStateManager.disableBlend();
     }
 
-    public static String displayFunctions(String TMP_e) {
+    public static String displayFunctions(String TMP_e, Boolean isAsync) {
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.update()")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{display[") + 9, TMP_e.indexOf("]}.update()", TMP_e.indexOf("{display[")));
             while (get_name.contains("{display[")) {
                 get_name = get_name.substring(get_name.indexOf("{display[") + 9);
             }
 
-            TMP_e = createDefaultString("update", get_name, updateDisplay(get_name), TMP_e);
+            TMP_e = createDefaultString("update", get_name, updateDisplay(get_name, isAsync), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.clear()")) {
@@ -450,7 +450,7 @@ public class DisplayHandler {
                 get_name = get_name.substring(get_name.indexOf("{display[") + 9);
             }
 
-            TMP_e = createDefaultString("clear", get_name, deleteDisplay(get_name), TMP_e);
+            TMP_e = createDefaultString("clear", get_name, deleteDisplay(get_name), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.getX()")) {
@@ -459,7 +459,7 @@ public class DisplayHandler {
                 get_name = get_name.substring(get_name.indexOf("{display[") + 9);
             }
 
-            TMP_e = createDefaultString("getX", get_name, getDisplayX(get_name), TMP_e);
+            TMP_e = createDefaultString("getX", get_name, getDisplayX(get_name), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.getY()")) {
@@ -468,7 +468,7 @@ public class DisplayHandler {
                 get_name = get_name.substring(get_name.indexOf("{display[") + 9);
             }
 
-            TMP_e = createDefaultString("getY", get_name, getDisplayY(get_name), TMP_e);
+            TMP_e = createDefaultString("getY", get_name, getDisplayY(get_name), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.setX(") && TMP_e.contains(")")) {
@@ -483,9 +483,9 @@ public class DisplayHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
+            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
 
-            TMP_e = createDefaultString("setX", get_name, get_prevalue, setDisplayX(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("setX", get_name, get_prevalue, setDisplayX(get_name, get_value), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.setY(") && TMP_e.contains(")")) {
@@ -500,9 +500,9 @@ public class DisplayHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
+            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
 
-            TMP_e = createDefaultString("setY", get_name, get_prevalue, setDisplayY(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("setY", get_name, get_prevalue, setDisplayY(get_name, get_value), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.add(") && TMP_e.contains(")")) {
@@ -518,7 +518,7 @@ public class DisplayHandler {
             }
             get_value = get_value.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
 
-            TMP_e = createDefaultString("add", get_name, get_value, addToDisplay(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("add", get_name, get_value, addToDisplay(get_name, get_value), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.settings(") && TMP_e.contains(")")) {
@@ -534,24 +534,29 @@ public class DisplayHandler {
             }
             get_value = get_value.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
 
-            TMP_e = createDefaultString("settings", get_name, get_value, setDisplaySettings(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("settings", get_name, get_value, setDisplaySettings(get_name, get_value), TMP_e, isAsync);
         }
 
         return TMP_e;
     }
 
-    private static String createDefaultString(String function_name, String display_name, String arguments, String value, String TMP_e) {
-        List<String> temporary = new ArrayList<String>();
-        temporary.add("DisplayToString->"+display_name+function_name.toUpperCase()+"-"+(global.TMP_string.size()+1));
-        temporary.add(value);
-        global.TMP_string.add(temporary);
-        global.backupTMP_strings.add(temporary);
-
-        return TMP_e.replace("{display["+display_name+"]}."+function_name+"("+arguments+")","{string[DisplayToString->"+display_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
+    private static String createDefaultString(String function_name, String display_name, String arguments, String value, String TMP_e, Boolean isAsync) {
+        if (isAsync) {
+            global.Async_string.put("DisplayToString->" + display_name + function_name.toUpperCase() + "-" + (global.TMP_string.size() + 1), value);
+            global.backupAsync_string.put("DisplayToString->" + display_name + function_name.toUpperCase() + "-" + global.TMP_string.size(), value);
+            return TMP_e.replace("{display["+display_name+"]}."+function_name+"("+arguments+")","{string[AsyncDisplayToString->"+display_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
+        } else {
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("DisplayToString->" + display_name + function_name.toUpperCase() + "-" + (global.TMP_string.size() + 1));
+            temporary.add(value);
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+            return TMP_e.replace("{display["+display_name+"]}."+function_name+"("+arguments+")","{string[DisplayToString->"+display_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
+        }
     }
 
-    private static String createDefaultString(String function_name, String display_name, String value, String TMP_e) {
-        return createDefaultString(function_name, display_name, "", value, TMP_e);
+    private static String createDefaultString(String function_name, String display_name, String value, String TMP_e, Boolean isAsync) {
+        return createDefaultString(function_name, display_name, "", value, TMP_e, isAsync);
     }
 
     public static void dumpDisplays() {

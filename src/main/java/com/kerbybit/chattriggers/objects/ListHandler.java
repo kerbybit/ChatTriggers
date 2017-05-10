@@ -322,7 +322,7 @@ public class ListHandler {
         lists.clear();
     }
 
-    public static String listFunctions(String TMP_e) {
+    public static String listFunctions(String TMP_e, Boolean isAsync) {
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.load(") && TMP_e.contains(")")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{list[")+6, TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list[")));
             String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list["))+8, TMP_e.indexOf(")", TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list["))));
@@ -335,8 +335,8 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
-            get_value = listFunctions(get_value);
+            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
+            get_value = listFunctions(get_value, isAsync);
 
             getList(get_name, get_value);
 
@@ -355,8 +355,8 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
-            get_value = listFunctions(get_value);
+            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
+            get_value = listFunctions(get_value, isAsync);
 
             saveListToFile(get_name, get_value);
 
@@ -369,7 +369,7 @@ public class ListHandler {
                 get_name = get_name.substring(get_name.indexOf("{list[")+6);
             }
 
-            TMP_e = createDefaultString("size", get_name, getSize(get_name), TMP_e);
+            TMP_e = createDefaultString("size", get_name, getSize(get_name), TMP_e, isAsync);
         }
 
         while(TMP_e.contains("{list[") && TMP_e.contains("]}.sort()")) {
@@ -395,10 +395,10 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
-            get_value = listFunctions(get_value);
+            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
+            get_value = listFunctions(get_value, isAsync);
 
-            TMP_e = createDefaultString("add", get_name, get_prevalue, addToList(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("add", get_name, get_prevalue, addToList(get_name, get_value), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) {
@@ -413,10 +413,10 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
-            get_value = listFunctions(get_value);
+            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
+            get_value = listFunctions(get_value, isAsync);
 
-            TMP_e = createDefaultString("get", get_name, get_prevalue, getValue(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("get", get_name, get_prevalue, getValue(get_name, get_value), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.has(") && TMP_e.contains(")")) {
@@ -431,10 +431,10 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
-            get_value = listFunctions(get_value);
+            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
+            get_value = listFunctions(get_value, isAsync);
 
-            TMP_e = createDefaultString("has", get_name, get_prevalue, getHasValue(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("has", get_name, get_prevalue, getHasValue(get_name, get_value), TMP_e, isAsync);
         }
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.hasIgnoreCase(") && TMP_e.contains(")")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{list[")+6, TMP_e.indexOf("]}.hasIgnoreCase(", TMP_e.indexOf("{list[")));
@@ -448,10 +448,10 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
-            get_value = listFunctions(get_value);
+            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
+            get_value = listFunctions(get_value, isAsync);
 
-            TMP_e = createDefaultString("hasIgnoreCase", get_name, get_prevalue, getHasValue(get_name, get_value, true), TMP_e);
+            TMP_e = createDefaultString("hasIgnoreCase", get_name, get_prevalue, getHasValue(get_name, get_value, true), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.getRandom()")) {
@@ -460,7 +460,7 @@ public class ListHandler {
                 get_name = get_name.substring(get_name.indexOf("{list[")+6);
             }
 
-            TMP_e = createDefaultString("getRandom", get_name, getRandomValue(get_name), TMP_e);
+            TMP_e = createDefaultString("getRandom", get_name, getRandomValue(get_name), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.remove(") && TMP_e.contains(")")) {
@@ -475,10 +475,10 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
-            get_value = listFunctions(get_value);
+            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
+            get_value = listFunctions(get_value, isAsync);
 
-            TMP_e = createDefaultString("remove", get_name, get_prevalue, removeValue(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("remove", get_name, get_prevalue, removeValue(get_name, get_value), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.clear()")) {
@@ -487,7 +487,7 @@ public class ListHandler {
                 get_name = get_name.substring(get_name.indexOf("{list[")+6);
             }
 
-            TMP_e = createDefaultString("clear", get_name, clearList(get_name), TMP_e);
+            TMP_e = createDefaultString("clear", get_name, clearList(get_name), TMP_e, isAsync);
         }
 
 
@@ -497,34 +497,43 @@ public class ListHandler {
                 get_name = get_name.substring(get_name.indexOf("{list[")+6);
             }
 
-            TMP_e = createDefaultString(get_name, TMP_e);
+            TMP_e = createDefaultString(get_name, TMP_e, isAsync);
         }
 
         return TMP_e;
     }
 
-    private static String createDefaultString(String function_name, String list_name, String arguments, String value, String TMP_e) {
-        List<String> temporary = new ArrayList<String>();
-        temporary.add("ListToString->"+list_name+function_name.toUpperCase()+"-"+(global.TMP_string.size()+1));
-        temporary.add(value);
-        global.TMP_string.add(temporary);
-        global.backupTMP_strings.add(temporary);
-
-        return TMP_e.replace("{list["+list_name+"]}."+function_name+"("+arguments+")", "{string[ListToString->"+list_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
+    private static String createDefaultString(String function_name, String list_name, String arguments, String value, String TMP_e, Boolean isAsync) {
+        if (isAsync) {
+            global.Async_string.put("AsyncListToString->" + list_name + function_name.toUpperCase() + "-" + (global.Async_string.size() + 1), value);
+            return TMP_e.replace("{list["+list_name+"]}."+function_name+"("+arguments+")", "{string[AsyncListToString->"+list_name+function_name.toUpperCase()+"-"+global.Async_string.size()+"]}");
+        } else {
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("ListToString->" + list_name + function_name.toUpperCase() + "-" + (global.TMP_string.size() + 1));
+            temporary.add(value);
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+            return TMP_e.replace("{list["+list_name+"]}."+function_name+"("+arguments+")", "{string[ListToString->"+list_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
+        }
     }
 
-    private static String createDefaultString(String function_name, String list_name, String value, String TMP_e) {
-        return createDefaultString(function_name, list_name, "", value, TMP_e);
+    private static String createDefaultString(String function_name, String list_name, String value, String TMP_e, Boolean isAsync) {
+        return createDefaultString(function_name, list_name, "", value, TMP_e, isAsync);
     }
 
-    private static String createDefaultString(String list_name, String TMP_e) {
-        List<String> temporary = new ArrayList<String>();
-        temporary.add("ListToString->"+list_name+"LITERAL"+"-"+(global.TMP_string.size()+1));
-        temporary.add(getList(list_name));
-        global.TMP_string.add(temporary);
-        global.backupTMP_strings.add(temporary);
-
-        return TMP_e.replace("{list["+list_name+"]}", "{string[ListToString->"+list_name+"LITERAL"+"-"+global.TMP_string.size()+"]}");
+    private static String createDefaultString(String list_name, String TMP_e, Boolean isAsync) {
+        if (isAsync) {
+            global.Async_string.put("AsyncListToString->" + list_name + "LITERAL" + "-" + (global.Async_string.size() + 1), getList(list_name));
+            global.backupAsync_string.put("AsyncListToString->" + list_name + "LITERAL" + "-" + global.Async_string.size(), getList(list_name));
+            return TMP_e.replace("{list[" + list_name + "]}", "{string[AsyncListToString->" + list_name + "LITERAL" + "-" + global.Async_string.size() + "]}");
+        } else {
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("ListToString->" + list_name + "LITERAL" + "-" + (global.TMP_string.size() + 1));
+            temporary.add(getList(list_name));
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+            return TMP_e.replace("{list[" + list_name + "]}", "{string[ListToString->" + list_name + "LITERAL" + "-" + global.TMP_string.size() + "]}");
+        }
     }
 
     public static int getListsSize() {

@@ -11,6 +11,7 @@ import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
 import com.kerbybit.chattriggers.objects.JsonHandler;
+import com.kerbybit.chattriggers.references.AsyncHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -18,7 +19,7 @@ public class CommandReference {
     static void clearAll() {
         global.waitEvents.clear();
         global.waitTime.clear();
-        global.asyncMap.clear();
+        AsyncHandler.clearAsyncs();
         global.backupTMP_strings.clear();
         global.backupUSR_strings.clear();
         global.killfeed.clear();
@@ -30,9 +31,8 @@ public class CommandReference {
         JsonHandler.clearJsons();
     }
 
-	public static void resetAll() {
+	static void resetAll() {
 		ChatHandler.warn(ChatHandler.color("red", "Resetting everything in attempt to fix things"));
-		clearAll();
 		CommandTrigger.commandLoad();
 		ChatHandler.warn(ChatHandler.color("green", "Reset completed"));
 	}

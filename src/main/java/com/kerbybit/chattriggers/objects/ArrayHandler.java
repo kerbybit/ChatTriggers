@@ -24,7 +24,8 @@ public class ArrayHandler {
         return USR_array.size();
     }
 
-	public static String arrayFunctions(String TMP_e, ClientChatReceivedEvent chatEvent) {
+    ///TODO fix isAsync
+	public static String arrayFunctions(String TMP_e, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
 	    while (TMP_e.contains("{array[") && TMP_e.contains("]}.getRandom()")) {
 	        String get_name = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.getRandom()", TMP_e.indexOf("{array[")));
 	        while (get_name.contains("{array[")) {
@@ -64,7 +65,7 @@ public class ArrayHandler {
 			Boolean isArray = false;
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
 			String[] args = checkTo.split(",");
@@ -111,7 +112,7 @@ public class ArrayHandler {
             int where = -1;
 
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 
             if (checkTo.contains(",")) {
@@ -155,7 +156,7 @@ public class ArrayHandler {
             Boolean isArray = false;
 
             if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-                checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+                checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
             }
 
             for (int j=0; j<USR_array.size(); j++) {
@@ -185,7 +186,7 @@ public class ArrayHandler {
 			String returnString = checkFrom + " is not an array!";
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
 			for (int j=0; j<USR_array.size(); j++) {
@@ -209,7 +210,7 @@ public class ArrayHandler {
 			String checkThis = "false";
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
 			for (int j=0; j<USR_array.size(); j++) {
@@ -234,7 +235,7 @@ public class ArrayHandler {
 			String checkThis = "false";
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
 			for (int j=0; j<USR_array.size(); j++) {
@@ -262,7 +263,7 @@ public class ArrayHandler {
 			String returnString = checkFrom + " is not an array!";
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
 			try {
@@ -310,7 +311,7 @@ public class ArrayHandler {
 			String returnString = checkFrom + " is not an array!";
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
 			try {
@@ -351,7 +352,7 @@ public class ArrayHandler {
 			int arraysize = 0;
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
 			for (int j=0; j<USR_array.size(); j++) {
@@ -372,7 +373,7 @@ public class ArrayHandler {
 			String checkTo = TMP_e.substring(TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile("))+1, TMP_e.indexOf(")", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile("+checkFile+",")));
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
 			String checkJson = importJsonFile("array",checkFile, checkFrom+"=>"+checkTo);
@@ -391,7 +392,7 @@ public class ArrayHandler {
 			String checkTo = TMP_e.substring(TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL("))+1, TMP_e.indexOf(")", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL("+checkFile+",")));
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
 			String checkJson = importJsonURL("array",checkFile, checkFrom + "=>" + checkTo);
@@ -410,7 +411,7 @@ public class ArrayHandler {
 			String returnString;
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
 			if (checkTo.contains(",")) {

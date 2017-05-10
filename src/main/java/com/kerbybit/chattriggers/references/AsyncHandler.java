@@ -1,6 +1,7 @@
 package com.kerbybit.chattriggers.references;
 
 import com.kerbybit.chattriggers.globalvars.global;
+import com.kerbybit.chattriggers.objects.ArrayHandler;
 import com.kerbybit.chattriggers.triggers.EventsHandler;
 
 import java.util.ArrayList;
@@ -26,20 +27,44 @@ public class AsyncHandler {
                 }
             } else {
                 asyncsStatus.put(asyncID, "not running");
+                preloadAsyncStrings();
             }
+        }
+
+        if (global.Async_string.size() > 0 && global.waitEvents.size()==0 && global.asyncMap.size()==0 && asyncsStatus.size()==0) {
+            global.Async_string.clear();
+            ArrayHandler.jsonURL.clear();
         }
     }
 
     private static void runAsync(Integer asyncID) {
         final Integer asyncIDfin = asyncID;
         asyncsStatus.put(asyncID, "0");
+
+        //preloadAsyncStrings();
+
         threads.put(asyncID, new Thread(new Runnable() {
             public void run() {
-                EventsHandler.doEvents(global.asyncMap.get(asyncIDfin), null);
-                asyncsStatus.put(asyncIDfin, "finished");
+                try {
+                    EventsHandler.doEvents(global.asyncMap.get(asyncIDfin), null, true);
+                    asyncsStatus.put(asyncIDfin, "finished");
+                } catch (Exception e) {
+                    BugTracker.show(e, "async");
+                    timeoutAsync(asyncIDfin);
+                }
             }
         }));
         threads.get(asyncID).start();
+    }
+
+    public static void preloadAsyncStrings() {
+        for (List<String> string : global.backupUSR_strings) {
+            global.Async_string.put(string.get(0), string.get(1));
+        }
+
+        for (List<String> string : global.backupTMP_strings) {
+            global.Async_string.put(string.get(0), string.get(1));
+        }
     }
 
     private static void trimAsyncs() {
@@ -63,5 +88,16 @@ public class AsyncHandler {
 
     private static void timeoutAsync(Integer asyncID) {
         threads.get(asyncID).interrupt();
+    }
+
+    public static void clearAsyncs() {
+        for (Integer asyncID : threads.keySet()) {
+            timeoutAsync(asyncID);
+        }
+        threads.clear();
+        global.asyncMap.clear();
+        asyncsStatus.clear();
+        global.Async_string.clear();
+        global.backupAsync_string.clear();
     }
 }

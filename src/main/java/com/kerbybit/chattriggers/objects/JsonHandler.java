@@ -210,14 +210,14 @@ public class JsonHandler {
         jsons.clear();
     }
 
-    public static String jsonFunctions(String TMP_e) {
+    public static String jsonFunctions(String TMP_e, Boolean isAsync) {
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.clear()")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{json[")+6, TMP_e.indexOf("]}.clear()", TMP_e.indexOf("{json[")));
             while (get_name.contains("{json[")) {
                 get_name = get_name.substring(get_name.indexOf("{json[")+6);
             }
 
-            TMP_e = createDefaultString(get_name, clearJson(get_name), TMP_e);
+            TMP_e = createDefaultString(get_name, clearJson(get_name), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.load(") && TMP_e.contains(")")) {
@@ -232,9 +232,9 @@ public class JsonHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
+            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
 
-            TMP_e = createDefaultString("load", get_name, get_prevalue, getJson(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("load", get_name, get_prevalue, getJson(get_name, get_value), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.export(") && TMP_e.contains(")")) {
@@ -249,7 +249,7 @@ public class JsonHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
+            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
 
             saveJsonToFile(get_name, get_value);
 
@@ -268,9 +268,9 @@ public class JsonHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
+            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
 
-            TMP_e = createDefaultString("get", get_name, get_prevalue, getValue(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("get", get_name, get_prevalue, getValue(get_name, get_value), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{json[") && TMP_e.contains("]}.getKeys(") && TMP_e.contains(")")) {
@@ -285,7 +285,7 @@ public class JsonHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
+            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
 
             ListHandler.getList("JsonToList->"+get_name+"GETKEYS"+get_value+"-"+(ListHandler.getListsSize()+1), getKeys(get_name, get_value));
 
@@ -304,9 +304,9 @@ public class JsonHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
+            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
 
-            TMP_e = createDefaultString("getValues", get_name, get_prevalue, getValues(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("getValues", get_name, get_prevalue, getValues(get_name, get_value), TMP_e, isAsync);
         }
 
 
@@ -330,18 +330,23 @@ public class JsonHandler {
         return TMP_e;
     }
 
-    private static String createDefaultString(String function, String json_name, String arguments, String value, String TMP_e) {
-        List<String> temporary = new ArrayList<String>();
-        temporary.add("JsonToString->"+json_name+function.toUpperCase()+"-"+(global.TMP_string.size()+1));
-        temporary.add(value);
-        global.TMP_string.add(temporary);
-        global.backupTMP_strings.add(temporary);
-
-        return TMP_e.replace("{json["+json_name+"]}."+function+"("+arguments+")","{string[JsonToString->"+json_name+function.toUpperCase()+"-"+global.TMP_string.size()+"]}");
+    private static String createDefaultString(String function, String json_name, String arguments, String value, String TMP_e, Boolean isAsync) {
+        if (isAsync) {
+            global.Async_string.put("AsyncJsonToString->"+json_name+function.toUpperCase()+"-"+(global.Async_string.size()+1), value);
+            global.backupAsync_string.put("AsyncJsonToString->"+json_name+function.toUpperCase()+"-"+global.Async_string.size(), value);
+            return TMP_e.replace("{json["+json_name+"]}."+function+"("+arguments+")","{string[AsyncJsonToString->"+json_name+function.toUpperCase()+"-"+global.Async_string.size()+"]}");
+        } else {
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("JsonToString->"+json_name+function.toUpperCase()+"-"+(global.TMP_string.size()+1));
+            temporary.add(value);
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+            return TMP_e.replace("{json["+json_name+"]}."+function+"("+arguments+")","{string[JsonToString->"+json_name+function.toUpperCase()+"-"+global.TMP_string.size()+"]}");
+        }
     }
 
-    private static String createDefaultString(String json_name, String value, String TMP_e) {
-        return createDefaultString("clear", json_name, "", value, TMP_e);
+    private static String createDefaultString(String json_name, String value, String TMP_e, Boolean isAsync) {
+        return createDefaultString("clear", json_name, "", value, TMP_e, isAsync);
     }
 
     public static int getJsonsSize() {
