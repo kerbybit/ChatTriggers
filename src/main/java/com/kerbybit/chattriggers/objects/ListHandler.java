@@ -337,6 +337,7 @@ public class ListHandler {
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
             String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
             get_value = listFunctions(get_value, isAsync);
+            get_value = StringHandler.stringFunctions(get_value, null, isAsync);
 
             getList(get_name, get_value);
 
@@ -357,6 +358,7 @@ public class ListHandler {
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
             String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
             get_value = listFunctions(get_value, isAsync);
+            get_value = StringHandler.stringFunctions(get_value, null, isAsync);
 
             saveListToFile(get_name, get_value);
 
@@ -397,6 +399,7 @@ public class ListHandler {
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
             String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
             get_value = listFunctions(get_value, isAsync);
+            get_value = StringHandler.stringFunctions(get_value, null, isAsync);
 
             TMP_e = createDefaultString("add", get_name, get_prevalue, addToList(get_name, get_value), TMP_e, isAsync);
         }
@@ -415,6 +418,7 @@ public class ListHandler {
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
             String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
             get_value = listFunctions(get_value, isAsync);
+            get_value = StringHandler.stringFunctions(get_value, null, isAsync);
 
             TMP_e = createDefaultString("get", get_name, get_prevalue, getValue(get_name, get_value), TMP_e, isAsync);
         }
@@ -433,6 +437,7 @@ public class ListHandler {
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
             String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
             get_value = listFunctions(get_value, isAsync);
+            get_value = StringHandler.stringFunctions(get_value, null, isAsync);
 
             TMP_e = createDefaultString("has", get_name, get_prevalue, getHasValue(get_name, get_value), TMP_e, isAsync);
         }
@@ -450,6 +455,7 @@ public class ListHandler {
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
             String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
             get_value = listFunctions(get_value, isAsync);
+            get_value = StringHandler.stringFunctions(get_value, null, isAsync);
 
             TMP_e = createDefaultString("hasIgnoreCase", get_name, get_prevalue, getHasValue(get_name, get_value, true), TMP_e, isAsync);
         }
@@ -477,6 +483,7 @@ public class ListHandler {
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
             String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
             get_value = listFunctions(get_value, isAsync);
+            get_value = StringHandler.stringFunctions(get_value, null, isAsync);
 
             TMP_e = createDefaultString("remove", get_name, get_prevalue, removeValue(get_name, get_value), TMP_e, isAsync);
         }

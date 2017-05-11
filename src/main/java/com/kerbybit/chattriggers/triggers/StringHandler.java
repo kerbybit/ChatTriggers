@@ -50,7 +50,8 @@ public class StringHandler {
         }
 
         global.backupAsync_string.clear();
-        for (Map.Entry<String, String> entry : global.Async_string.entrySet()) {
+        Map<String, String> tempAsync = new HashMap<String, String>(global.Async_string);
+        for (Map.Entry<String, String> entry : tempAsync.entrySet()) {
             global.backupAsync_string.put(entry.getKey(), entry.getValue());
         }
 		

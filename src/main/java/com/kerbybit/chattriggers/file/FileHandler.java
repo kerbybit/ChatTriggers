@@ -142,7 +142,7 @@ public class FileHandler {
 			if (!value.equals("")) {
 				writer.println(">>" + value);
                 for (List<String> trig : trigger) {
-					if (trig.get(1).contains(value)) {
+					if (trig.get(1).contains(value) && !trig.get(1).contains("<imported>")) {
 					    if (Settings.oldFormatting) {
 					        writer.println("trigger:" + trig.get(1));
 					        writer.println("type:" + trig.get(0));
