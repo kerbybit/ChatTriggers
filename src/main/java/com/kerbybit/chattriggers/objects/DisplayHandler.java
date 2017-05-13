@@ -4,6 +4,7 @@ import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.gui.IconHandler;
 import com.kerbybit.chattriggers.triggers.BuiltInStrings;
+import com.kerbybit.chattriggers.triggers.StringFunctions;
 import com.kerbybit.chattriggers.triggers.StringHandler;
 import com.kerbybit.chattriggers.triggers.TagHandler;
 import net.minecraft.client.Minecraft;
@@ -483,7 +484,7 @@ public class DisplayHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
             TMP_e = createDefaultString("setX", get_name, get_prevalue, setDisplayX(get_name, get_value), TMP_e, isAsync);
         }
@@ -500,7 +501,7 @@ public class DisplayHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
             TMP_e = createDefaultString("setY", get_name, get_prevalue, setDisplayY(get_name, get_value), TMP_e, isAsync);
         }

@@ -20,7 +20,7 @@ import static com.kerbybit.chattriggers.triggers.StringHandler.stringFunctions;
 import static java.lang.Math.abs;
 import static net.minecraft.realms.RealmsMth.floor;
 
-class StringFunctions {
+public class StringFunctions {
     static String doStringFunctions(String stringName, String func, String args, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
         func = func.toUpperCase();
 
@@ -49,19 +49,27 @@ class StringFunctions {
             returnString = doStringUserFunctions(stringValue, func, args, chatEvent);
         }
 
-        if (returnString != null) {
-            if (isAsync || stringPos == null) {
-                global.Async_string.put(stringName, returnString);
-            } else {
-                if (stringPos >= 0) {
-                    global.USR_string.get(floor(stringPos)).set(1, returnString);
+        if (returnString != null && getIsObject(returnString)) {
+            return returnString;
+        } else {
+            if (returnString != null) {
+                if (isAsync || stringPos == null) {
+                    global.Async_string.put(stringName, returnString);
                 } else {
-                    global.TMP_string.get(floor(abs(stringPos) - 1)).set(1, returnString);
+                    if (stringPos >= 0) {
+                        global.USR_string.get(floor(stringPos)).set(1, returnString);
+                    } else {
+                        global.TMP_string.get(floor(abs(stringPos) - 1)).set(1, returnString);
+                    }
                 }
             }
         }
+        return "{string[" + stringName + "]}";
+    }
 
-        return "{string["+stringName+"]}";
+    private static Boolean getIsObject(String in) {
+        return in.startsWith("{list[") || in.startsWith("{array[")
+                || in.startsWith("{display[") || in.startsWith("{json[");
     }
 
     private static String doStringSetFunctions(Double stringPos,String stringName, String func, String args) {
@@ -468,7 +476,7 @@ class StringFunctions {
         }
     }
 
-    private static String nestedArgs(String args, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
+    public static String nestedArgs(String args, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
         args = stringFunctions(args, chatEvent, isAsync);
         while (args.contains("{array[") && args.contains("]}")) {
             args = ArrayHandler.arrayFunctions(args, chatEvent, isAsync);

@@ -3,7 +3,7 @@ package com.kerbybit.chattriggers.objects;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.triggers.EventsHandler;
-import com.kerbybit.chattriggers.triggers.StringHandler;
+import com.kerbybit.chattriggers.triggers.StringFunctions;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -102,6 +102,7 @@ public class ListHandler {
             if (value.equals("[]")) {
                 return null;
             } else {
+                value = value.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",");
                 String[] list = value.substring(1, value.length()-1).split(",");
                 return new ArrayList<String>(Arrays.asList(list));
             }
@@ -335,9 +336,7 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
-            get_value = listFunctions(get_value, isAsync);
-            get_value = StringHandler.stringFunctions(get_value, null, isAsync);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
             getList(get_name, get_value);
 
@@ -356,9 +355,7 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
-            get_value = listFunctions(get_value, isAsync);
-            get_value = StringHandler.stringFunctions(get_value, null, isAsync);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
             saveListToFile(get_name, get_value);
 
@@ -397,9 +394,7 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
-            get_value = listFunctions(get_value, isAsync);
-            get_value = StringHandler.stringFunctions(get_value, null, isAsync);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
             TMP_e = createDefaultString("add", get_name, get_prevalue, addToList(get_name, get_value), TMP_e, isAsync);
         }
@@ -416,9 +411,7 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
-            get_value = listFunctions(get_value, isAsync);
-            get_value = StringHandler.stringFunctions(get_value, null, isAsync);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
             TMP_e = createDefaultString("get", get_name, get_prevalue, getValue(get_name, get_value), TMP_e, isAsync);
         }
@@ -435,9 +428,7 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
-            get_value = listFunctions(get_value, isAsync);
-            get_value = StringHandler.stringFunctions(get_value, null, isAsync);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
             TMP_e = createDefaultString("has", get_name, get_prevalue, getHasValue(get_name, get_value), TMP_e, isAsync);
         }
@@ -453,9 +444,7 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
-            get_value = listFunctions(get_value, isAsync);
-            get_value = StringHandler.stringFunctions(get_value, null, isAsync);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
             TMP_e = createDefaultString("hasIgnoreCase", get_name, get_prevalue, getHasValue(get_name, get_value, true), TMP_e, isAsync);
         }
@@ -481,9 +470,7 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
-            get_value = listFunctions(get_value, isAsync);
-            get_value = StringHandler.stringFunctions(get_value, null, isAsync);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
             TMP_e = createDefaultString("remove", get_name, get_prevalue, removeValue(get_name, get_value), TMP_e, isAsync);
         }

@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
+import com.kerbybit.chattriggers.triggers.StringFunctions;
 import com.kerbybit.chattriggers.triggers.StringHandler;
 
 import java.io.*;
@@ -232,7 +233,7 @@ public class JsonHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
             TMP_e = createDefaultString("load", get_name, get_prevalue, getJson(get_name, get_value), TMP_e, isAsync);
         }
@@ -249,7 +250,7 @@ public class JsonHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
             saveJsonToFile(get_name, get_value);
 
@@ -268,7 +269,7 @@ public class JsonHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
             TMP_e = createDefaultString("get", get_name, get_prevalue, getValue(get_name, get_value), TMP_e, isAsync);
         }
@@ -285,7 +286,7 @@ public class JsonHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
             ListHandler.getList("JsonToList->"+get_name+"GETKEYS"+get_value+"-"+(ListHandler.getListsSize()+1), getKeys(get_name, get_value));
 
@@ -304,7 +305,7 @@ public class JsonHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null, isAsync);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
             TMP_e = createDefaultString("getValues", get_name, get_prevalue, getValues(get_name, get_value), TMP_e, isAsync);
         }
