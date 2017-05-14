@@ -24,7 +24,6 @@ public class ArrayHandler {
         return USR_array.size();
     }
 
-    ///TODO fix isAsync
 	public static String arrayFunctions(String TMP_e, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
 	    while (TMP_e.contains("{array[") && TMP_e.contains("]}.getRandom()")) {
 	        String get_name = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.getRandom()", TMP_e.indexOf("{array[")));

@@ -7,6 +7,7 @@ import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.gui.IconHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
 import com.kerbybit.chattriggers.objects.JsonHandler;
+import com.kerbybit.chattriggers.references.Reference;
 import com.kerbybit.chattriggers.references.RomanNumber;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -62,15 +63,19 @@ public class BuiltInStrings {
             List<String> temporary = new ArrayList<String>();
             String lowhigh = TMP_e.substring(TMP_e.indexOf("{random(")+8, TMP_e.indexOf(")}", TMP_e.indexOf("{random(")));
             temporary.add("DefaultString->RANDOM"+lowhigh+"-"+(global.TMP_string.size()+1));
+
             try {
                 int low = 0;
                 int high;
                 if (lowhigh.contains(",")) {
                     String[] tmp_lowhigh = lowhigh.split(",");
-                    low = Integer.parseInt(tmp_lowhigh[0].trim());
-                    high = Integer.parseInt(tmp_lowhigh[1].trim());
+                    String strlow = StringFunctions.nestedArgs(tmp_lowhigh[0].trim(), chatEvent, isAsync);
+                    String strhigh = StringFunctions.nestedArgs(tmp_lowhigh[1].trim(), chatEvent, isAsync);
+                    low = Integer.parseInt(strlow);
+                    high = Integer.parseInt(strhigh);
                 } else {
-                    high = Integer.parseInt(lowhigh);
+                    String strhigh = StringFunctions.nestedArgs(lowhigh, chatEvent, isAsync);
+                    high = Integer.parseInt(strhigh);
                 }
 
                 temporary.add(EventsHandler.randInt(low,high) + "");
@@ -83,12 +88,14 @@ public class BuiltInStrings {
 
             TMP_e = TMP_e.replace("{random("+lowhigh+")}", "{string[DefaultString->RANDOM"+lowhigh+"-"+global.TMP_string.size()+"]}");
         }
-        while (TMP_e.contains("{msg[") && TMP_e.contains("]}")) {
-            String strnum = TMP_e.substring(TMP_e.indexOf("{msg[")+5, TMP_e.indexOf("]}", TMP_e.indexOf("{msg[")));
+        while (TMP_e.contains("{msg(") && TMP_e.contains(")}")) {
+            String strnum = TMP_e.substring(TMP_e.indexOf("{msg(")+5, TMP_e.indexOf(")}", TMP_e.indexOf("{msg(")));
             List<String> temporary = new ArrayList<String>();
             temporary.add("DefaultString->MSGHISTORY"+strnum+"-"+(global.TMP_string.size()+1));
+            String get_number = StringFunctions.nestedArgs(strnum, chatEvent, isAsync);
+
             try {
-                int num = Integer.parseInt(strnum);
+                int num = Integer.parseInt(get_number);
                 if (num>=0) {
                     if (num<global.chatHistory.size()) {temporary.add(ChatHandler.removeFormatting(global.chatHistory.get(global.chatHistory.size()-(num+1))));}
                     else {temporary.add("Number must be less than the chat history size! ("+global.chatHistory.size()+")");}
@@ -97,7 +104,7 @@ public class BuiltInStrings {
             global.TMP_string.add(temporary);
             global.backupTMP_strings.add(temporary);
 
-            TMP_e = TMP_e.replace("{msg["+strnum+"]}", "{string[DefaultString->MSGHISTORY"+strnum+"-"+global.TMP_string.size()+"]}");
+            TMP_e = TMP_e.replace("{msg("+strnum+")}", "{string[DefaultString->MSGHISTORY"+strnum+"-"+global.TMP_string.size()+"]}");
         }
         if (chatEvent!=null) {
             if (TMP_e.contains("{msg}.meta()")) {
@@ -450,6 +457,9 @@ public class BuiltInStrings {
         }
         if (TMP_e.contains("{rcpsMax}")) {
             TMP_e = createDefaultString("rcpsMax", global.rclicks_max.toString().replace(".0",""), TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{CTVersion}")) {
+            TMP_e = createDefaultString("CTVersion", Reference.VERSION, TMP_e, isAsync);
         }
 
         if (TMP_e.contains("{black}")) {
