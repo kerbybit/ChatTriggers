@@ -181,16 +181,12 @@ public class ListHandler {
         }
     }
 
-    private static String getValue(String list_name, int position) {
-        if (lists.containsKey(list_name)) {
-            List<String> entries = lists.get(list_name);
-            if (position < entries.size() && position >= 0) {
-                return entries.get(position);
-            } else {
-                return "Index out of bounds";
-            }
+    private static String getValue(String list_name, int position) throws NumberFormatException {
+        List<String> entries = lists.get(list_name);
+        if (position < entries.size() && position >= 0) {
+            return entries.get(position);
         } else {
-            return "Not a list";
+            throw new NumberFormatException();
         }
     }
 
@@ -230,13 +226,13 @@ public class ListHandler {
                     i++;
                 }
                 if (position == -1) {
-                    return "Not in list";
+                    return "Index out of bounds";
                 } else {
                     return position+"";
                 }
             }
         } else {
-            return "Not a list";
+            return "Empty list";
         }
     }
 
@@ -246,7 +242,7 @@ public class ListHandler {
             int randInt = EventsHandler.randInt(0, list.size()-1);
             return list.get(randInt);
         } else {
-            return "Not a list";
+            return "Empty list";
         }
     }
 
@@ -258,18 +254,18 @@ public class ListHandler {
         }
     }
 
-    private static String removeValue(String list_name, int position) {
-        if (lists.containsKey(list_name)) {
-            List<String> entries = lists.get(list_name);
-            if (position < entries.size() && position >= 0) {
-                String removed = entries.remove(position);
-                lists.put(list_name, entries);
-                return removed;
+    private static String removeValue(String list_name, int position) throws NumberFormatException {
+        List<String> entries = lists.get(list_name);
+        if (position < entries.size() && position >= 0) {
+            String removed = entries.remove(position);
+            if (entries.size() == 0) {
+                lists.remove(list_name);
             } else {
-                return "Index out of bounds";
+                lists.put(list_name, entries);
             }
+            return removed;
         } else {
-            return "Not a list";
+            throw new NumberFormatException();
         }
     }
 
@@ -290,15 +286,19 @@ public class ListHandler {
                     i++;
                 }
                 if (position == -1) {
-                    return "Not in list";
+                    return "Index out of bounds";
                 } else {
-                    entries.remove(position);
-                    lists.put(list_name, entries);
+                    if (entries.size() == 1) {
+                        lists.remove(list_name);
+                    } else {
+                        entries.remove(position);
+                        lists.put(list_name, entries);
+                    }
                     return position+"";
                 }
             }
         } else {
-            return "Not a list";
+            return "Empty list";
         }
     }
 
@@ -315,7 +315,7 @@ public class ListHandler {
             lists.remove(list_name);
             return return_string;
         } else {
-            return "Not a list";
+            return "Empty list";
         }
     }
 
