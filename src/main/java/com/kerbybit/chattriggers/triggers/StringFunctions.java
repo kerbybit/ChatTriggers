@@ -355,31 +355,46 @@ public class StringFunctions {
         Double argsValueNumber;
         try {
             stringValueNumber = Double.parseDouble(stringValue.replace(",", ""));
-            argsValueNumber = Double.parseDouble(args.replace(",", ""));
         } catch (NumberFormatException e) {
             return null;
         }
 
-        if (func.equals("ADD") || func.equals("+")) {
-            return trimNumber(stringValueNumber+argsValueNumber);
-        } else if (func.equals("SUBTRACT") || func.equals("MINUS") || func.equals("-")) {
-            return trimNumber(stringValueNumber-argsValueNumber);
-        } else if (func.equals("MULTIPLY") || func.equals("TIMES") || func.equals("*")) {
-            return trimNumber(stringValueNumber*argsValueNumber);
-        } else if (func.equals("DIVIDE") || func.equals("/")) {
-            return trimNumber(stringValueNumber/argsValueNumber);
-        } else if (func.equals("DIVIDEGETPERCENT") || func.equals("DIVPERCENT") || func.equals("/%")) {
-            return trimNumber((stringValueNumber/argsValueNumber)*100);
-        } else if (func.equals("POW") || func.equals("POWER") || func.equals("^")) {
-            return trimNumber(Math.pow(stringValueNumber, argsValueNumber));
-        } else if (func.equals("MOD") || func.equals("MODULUS") || func.equals("%")) {
-            return trimNumber(stringValueNumber%argsValueNumber);
-        } else if (func.equals("ABSOLUTE") || func.equals("ABS")) {
-            return trimNumber(Math.abs(stringValueNumber));
-        } else if (func.equals("ROUND")) {
-            return trimNumber(Math.round(stringValueNumber * Math.pow(10,argsValueNumber))/Math.pow(10,argsValueNumber));
+        try {
+            argsValueNumber = Double.parseDouble(args.replace(",", ""));
+        } catch (NumberFormatException e) {
+            argsValueNumber = null;
+        }
+
+        if (argsValueNumber != null) {
+            if (func.equals("ADD") || func.equals("+")) {
+                return trimNumber(stringValueNumber + argsValueNumber);
+            } else if (func.equals("SUBTRACT") || func.equals("MINUS") || func.equals("-")) {
+                return trimNumber(stringValueNumber - argsValueNumber);
+            } else if (func.equals("MULTIPLY") || func.equals("TIMES") || func.equals("*")) {
+                return trimNumber(stringValueNumber * argsValueNumber);
+            } else if (func.equals("DIVIDE") || func.equals("/")) {
+                return trimNumber(stringValueNumber / argsValueNumber);
+            } else if (func.equals("DIVIDEGETPERCENT") || func.equals("DIVPERCENT") || func.equals("/%")) {
+                return trimNumber((stringValueNumber / argsValueNumber) * 100);
+            } else if (func.equals("POW") || func.equals("POWER") || func.equals("^")) {
+                return trimNumber(Math.pow(stringValueNumber, argsValueNumber));
+            } else if (func.equals("MOD") || func.equals("MODULUS") || func.equals("%")) {
+                return trimNumber(stringValueNumber % argsValueNumber);
+            } else if (func.equals("ABSOLUTE") || func.equals("ABS")) {
+                return trimNumber(Math.abs(stringValueNumber));
+            }
+        }
+
+        if (func.equals("ROUND")) {
+            if (argsValueNumber == null) {
+                return trimNumber(Math.round(stringValueNumber));
+            } else {
+                return trimNumber(Math.round(stringValueNumber * Math.pow(10, argsValueNumber)) / Math.pow(10, argsValueNumber));
+            }
         } else if (func.equals("FLOOR")) {
             return trimNumber(Math.floor(stringValueNumber));
+        } else if (func.equals("CEIL")) {
+            return trimNumber(Math.ceil(stringValueNumber));
         }
 
         return null;
@@ -394,6 +409,7 @@ public class StringFunctions {
     private static String trimNumber(Integer number) {
         return number+"";
     }
+    private static String trimNumber(Long number) {return trimNumber((double) number);}
 
     private static String doStringUserFunctions(String stringValue, String func, String args, ClientChatReceivedEvent chatEvent) {
         for (List<String> function : global.function) {
