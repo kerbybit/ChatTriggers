@@ -605,7 +605,6 @@ public class FileHandler {
                 } else {
                     global.fpslowcol = "&c";
                     global.fpslow = 50;
-                    throw new NumberFormatException();
                 }
             }
             if (l.startsWith("fpsmed:")) {
@@ -614,7 +613,6 @@ public class FileHandler {
                     global.fpsmedcol = get[0];
                 } else {
                     global.fpsmedcol = "&e";
-                    throw new NumberFormatException();
                 }
             }
             if (l.startsWith("fpshigh:")) {
@@ -625,7 +623,6 @@ public class FileHandler {
                 } else {
                     global.fpshighcol = "&a";
                     global.fpshigh = 60;
-                    throw new NumberFormatException();
                 }
             }
             if (l.startsWith("old formatting:")) {

@@ -110,7 +110,7 @@ public class StringFunctions {
                 }
             }
         } else if (func.equals("SAVE")) {
-            String ret = null;
+            String ret;
             if (args.equals("~")) {
                 if (stringPos == null) {
                     String set = addExtras(global.Async_string.get(stringName));
@@ -227,8 +227,10 @@ public class StringFunctions {
                 int last = -1;
                 Boolean getStart = false;
                 Boolean startContain = false;
+                Boolean startAlwaysNumber = false;
                 Boolean getEnd = false;
                 Boolean endContain = false;
+                Boolean endAlwaysNumber = false;
                 if (subargs[0].toUpperCase().contains("<START>") || subargs[0].toUpperCase().contains("<S>")) {
                     getStart = true;
                     subargs[0] = subargs[0].replaceAll("(?i)<start>", "").replaceAll("(?i)<s>", "");
@@ -237,6 +239,15 @@ public class StringFunctions {
                     startContain = true;
                     subargs[0] = subargs[0].replaceAll("(?i)<include>", "").replaceAll("(?i)<i>", "");
                 }
+                if (subargs[0].toUpperCase().contains("<NUMBER>") || subargs[0].toUpperCase().contains("<N>")) {
+                    startAlwaysNumber = true;
+                    subargs[0] = subargs[0].replaceAll("(?i)<number>", "").replaceAll("(?i)<n>", "");
+                }
+                if (subargs[0].toUpperCase().contains("<TEXT>") || subargs[0].toUpperCase().contains("<T>")) {
+                    subargs[0] = subargs[0].replaceAll("(?i)<text>", "").replaceAll("(?i)<t>", "");
+                }
+
+
                 if (subargs[1].toUpperCase().contains("<END>") || subargs[1].toUpperCase().contains("<E>")) {
                     getEnd = true;
                     subargs[1] = subargs[1].replaceAll("(?i)<end>", "").replaceAll("(?i)<e>", "");
@@ -245,12 +256,19 @@ public class StringFunctions {
                     endContain = true;
                     subargs[1] = subargs[1].replaceAll("(?i)<include>", "").replaceAll("(?i)<i>", "");
                 }
+                if (subargs[1].toUpperCase().contains("<NUMBER>") || subargs[1].toUpperCase().contains("<N>")) {
+                    endAlwaysNumber = true;
+                    subargs[1] = subargs[1].replaceAll("(?i)<number>", "").replaceAll("(?i)<n>", "");
+                }
+                if (subargs[1].toUpperCase().contains("<TEXT>") || subargs[1].toUpperCase().contains("<T>")) {
+                    subargs[1] = subargs[1].replaceAll("(?i)<text>", "").replaceAll("(?i)<t>", "");
+                }
 
                 String temp = removeExtras(stringValue);
                 if (getStart) first = 0;
                 if (getEnd) last = temp.length();
                 if (first == -1) {
-                    if (temp.contains(subargs[0])) {
+                    if (temp.contains(subargs[0]) && !startAlwaysNumber) {
                         if (startContain) first = temp.indexOf(subargs[0]);
                         else first = temp.indexOf(subargs[0]) + subargs[0].length();
                     } else {
@@ -263,7 +281,7 @@ public class StringFunctions {
                     }
                 }
                 if (last == -1) {
-                    if (temp.contains(subargs[1])) {
+                    if (temp.contains(subargs[1]) && !endAlwaysNumber) {
                         if (endContain) last = temp.indexOf(subargs[1]) + subargs[1].length();
                         else last = temp.indexOf(subargs[1]);
                     } else {
@@ -416,7 +434,7 @@ public class StringFunctions {
             if (function.size() > 2) {
                 String func_define = function.get(1);
                 if (func_define.contains(".") && func_define.contains("(") && func_define.contains(")")) {
-                    String func_name = func_define.substring(func_define.indexOf(".")+1, func_define.indexOf("(", func_define.indexOf(".")));
+                    String func_name = func_define.substring(func_define.indexOf(".")+1, func_define.indexOf("(", func_define.indexOf("."))).toUpperCase();
                     if (func_name.equals(func)) {
                         String func_to = TagHandler.removeTags(func_define.substring(0, func_define.indexOf(".")));
                         String func_arg = func_define.substring(func_define.indexOf("(")+1, func_define.indexOf(")", func_define.indexOf(")")));
