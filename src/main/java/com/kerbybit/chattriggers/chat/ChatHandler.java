@@ -10,6 +10,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 
+import static net.minecraft.realms.RealmsMth.floor;
+
 public class ChatHandler {
 	
 	public static void warnBreak(int type) {
@@ -46,10 +48,97 @@ public class ChatHandler {
 		Minecraft.getMinecraft().thePlayer.addChatMessage(TMP_out);
 	}
 
+	private static String removeExtras(String cht) {
+	    return cht.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+                .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")
+                .replace("stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement", "(")
+                .replace("stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement", ")")
+                .replace("AmpF6cyUQp9Amp","&")
+                .replace("TripleDotF6cyUQp9TripleDot","...")
+                .replace("\\n","NewLineF6cyUQp9NewLine")
+                .replace("\\'","SingleQuoteF6cyUQp9SingleQuote")
+                .replace("\\","\\\\")
+                .replace("BackslashF6cyUQp9Backslash","\\\\")
+                .replace("NewLineF6cyUQp9NewLine","\\n")
+                .replace("SingleQuoteF6cyUQp9SingleQuote","\\'")
+                .replace("'", "\'")
+                .replace("\0","");
+    }
+
+    private static String removeClickableExtras(String cht) {
+	    while (cht.contains("clickable(") && cht.contains(",") && cht.contains(")")) {
+	        String first = cht.substring(0, cht.indexOf("clickable("));
+	        String text = cht.substring(cht.indexOf("clickable(")+10, cht.indexOf(",", cht.indexOf("clickable(")));
+	        String last = cht.substring(cht.indexOf(")", cht.indexOf("clickable("))+1);
+	        cht = first + text + last;
+        }
+        return cht;
+    }
+
+    private static String removeHoverExtras(String cht) {
+        while (cht.contains("hover(") && cht.contains(",") && cht.contains(")")) {
+            String first = cht.substring(0, cht.indexOf("hover("));
+            String text = cht.substring(cht.indexOf("hover(")+6, cht.indexOf(",", cht.indexOf("hover(")));
+            String last = cht.substring(cht.indexOf(")", cht.indexOf("hover("))+1);
+            cht = first + text + last;
+        }
+        return cht;
+    }
+
+    private static String removeLinkExtras(String cht) {
+        while (cht.contains("{link[") && cht.contains("]stringCommaReplacementF6cyUQp9stringCommaReplacement[") && cht.contains("]}")) {
+            String first = cht.substring(0, cht.indexOf("{link["));
+            String text = cht.substring(cht.indexOf("{link[")+6, cht.indexOf("]stringCommaReplacementF6cyUQp9stringCommaReplacement[", cht.indexOf("{link[")));
+            String last = cht.substring(cht.indexOf("]}", cht.indexOf("{link["))+2);
+            cht = first + text + last;
+        }
+        return cht;
+    }
+
+    private static int getChatWidth(String cht) {
+	    if (cht.equals(" ")) {
+            return Minecraft.getMinecraft().fontRendererObj.getStringWidth(cht);
+        } else {
+            cht = removeClickableExtras(cht);
+            cht = removeHoverExtras(cht);
+            cht = removeLinkExtras(cht);
+            cht = removeExtras(cht);
+
+            return Minecraft.getMinecraft().fontRendererObj.getStringWidth(cht);
+        }
+    }
+
+	private static String center(String cht) {
+	    cht = cht.replaceAll("(?i)<center>", "");
+
+	    float chatWidth = getChatWidth(cht);
+        float fullWidth = Minecraft.getMinecraft().gameSettings.chatWidth * 320;
+
+        if (chatWidth < fullWidth) {
+            StringBuilder spaces = new StringBuilder();
+            float spaceWidth = getChatWidth(" ");
+            float centerWidth = (fullWidth - chatWidth) / 2;
+
+            int numberSpaces = floor(centerWidth / spaceWidth);
+            for (int i = 0; i < numberSpaces; i++) {
+                spaces.append(" ");
+            }
+            return spaces + cht;
+        }
+        return cht;
+
+
+    }
+
 	public static void warn(String color, String chat) {
 	    warn(color(color, chat));
     }
 	public static void warn(String cht) {
+	    if (cht.toUpperCase().contains("<CENTER>")) {
+	        cht = center(cht);
+        }
+
         //fix link
         cht = removeFormatting(cht);
         while (cht.contains("{link[") && cht.contains("]stringCommaReplacementF6cyUQp9stringCommaReplacement[") && cht.contains("]}")) {
