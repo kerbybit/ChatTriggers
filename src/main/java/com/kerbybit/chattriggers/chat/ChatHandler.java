@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 
+import static java.lang.StrictMath.round;
 import static net.minecraft.realms.RealmsMth.floor;
 
 public class ChatHandler {
@@ -120,7 +121,7 @@ public class ChatHandler {
             float spaceWidth = getChatWidth(" ");
             float centerWidth = (fullWidth - chatWidth) / 2;
 
-            int numberSpaces = floor(centerWidth / spaceWidth);
+            int numberSpaces = round(centerWidth / spaceWidth);
             for (int i = 0; i < numberSpaces; i++) {
                 spaces.append(" ");
             }

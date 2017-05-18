@@ -181,6 +181,34 @@ public class ListHandler {
         }
     }
 
+    private static String setInList(String list_name, String value) {
+        List<String> list_object = getListObject(list_name);
+
+        if (list_object != null) {
+
+            if (value.contains(",")) {
+                String position_string = value.substring(0, value.indexOf(","));
+                String new_value = value.substring(value.indexOf(",")+1);
+                System.out.println(position_string + " " + new_value);
+
+                try {
+                    list_object.set(Integer.parseInt(position_string), new_value);
+                    lists.put(list_name, list_object);
+                    return getList(list_name);
+                } catch(NumberFormatException e) {
+                    return getList(list_name);
+                }
+            } else {
+                list_object.set(list_object.size()-1, value);
+                lists.put(list_name, list_object);
+                return getList(list_name);
+            }
+        } else {
+            lists.put(list_name, Collections.singletonList(value));
+            return getList(list_name);
+        }
+    }
+
     private static String getValue(String list_name, int position) throws NumberFormatException {
         List<String> entries = lists.get(list_name);
         if (position < entries.size() && position >= 0) {
@@ -397,6 +425,23 @@ public class ListHandler {
             String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
             TMP_e = createDefaultString("add", get_name, get_prevalue, addToList(get_name, get_value), TMP_e, isAsync);
+        }
+
+        while (TMP_e.contains("{list[") && TMP_e.contains("]}.set(") && TMP_e.contains(")")) {
+            String get_name = TMP_e.substring(TMP_e.indexOf("{list[")+6, TMP_e.indexOf("]}.set(", TMP_e.indexOf("{list[")));
+            String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.set(", TMP_e.indexOf("{list["))+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.set(", TMP_e.indexOf("{list["))));
+            while (get_name.contains("{list[")) {
+                get_name = get_name.substring(get_name.indexOf("{list[")+6);
+            }
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.set(", TMP_e.indexOf("{list["))+7);
+            while (get_prevalue.contains("(")) {
+                temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
+                get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
+            }
+            get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
+
+            TMP_e = createDefaultString("set", get_name, get_prevalue, setInList(get_name, get_value), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) {
