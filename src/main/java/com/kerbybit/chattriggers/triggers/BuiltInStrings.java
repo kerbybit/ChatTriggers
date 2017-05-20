@@ -403,11 +403,7 @@ public class BuiltInStrings {
         if (TMP_e.contains("{cps}")) {
             String returnString;
 
-            if (global.clicks_ave.size() > 0) {
-                returnString = floor(global.clicks_ave.get(global.clicks_ave.size()-1)) + "";
-            } else {
-                returnString = "0";
-            }
+            returnString = global.secondClicks.size() + "";
 
             TMP_e = createDefaultString("cps", returnString.replace(".0",""), TMP_e, isAsync);
         }

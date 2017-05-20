@@ -353,8 +353,23 @@ public class CommandReference {
     }
 
     private static Long sysTime = Minecraft.getSystemTime();
+    private static Long secSysTime = Minecraft.getSystemTime();
     //run on render
     public static void clickCalc() {
+
+        while (Minecraft.getSystemTime() > secSysTime + 50L) {
+            secSysTime += 50L;
+
+            if (global.secondClicks.size() > 0) {
+                for (int i=0; i<global.secondClicks.size(); i++) {
+                    global.secondClicks.set(i, global.secondClicks.get(i)-1);
+                    if (global.secondClicks.get(i) == 0) {
+                        global.secondClicks.remove(i);
+                    }
+                }
+            }
+        }
+
         while (Minecraft.getSystemTime() > sysTime + 1000L) {
             sysTime += 1000L;
             global.clicks_ave.add(global.clicks);
