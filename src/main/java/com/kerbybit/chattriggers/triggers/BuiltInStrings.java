@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.lang.Math.floor;
+import static java.lang.StrictMath.round;
 
 public class BuiltInStrings {
     public static String builtInStrings(String TMP_e, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
@@ -403,7 +404,7 @@ public class BuiltInStrings {
         if (TMP_e.contains("{cps}")) {
             String returnString;
 
-            returnString = global.secondClicks.size() + "";
+            returnString = global.clicks.size() + "";
 
             TMP_e = createDefaultString("cps", returnString.replace(".0",""), TMP_e, isAsync);
         }
@@ -426,7 +427,7 @@ public class BuiltInStrings {
                 for (Double click : global.clicks_ave) {
                     clicks += click;
                 }
-                clicksAve = clicks/global.clicks_ave.size() + "";
+                clicksAve = round(clicks/global.clicks_ave.size()) + "";
             } else {
                 clicksAve = "0";
             }

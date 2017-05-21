@@ -26,10 +26,9 @@ public class global {
     public static String fpsmedcol = "&e";
     public static String fpshighcol = "&a";
 
-    public static Double clicks = 0.0;
-    public static List<Integer> secondClicks = new ArrayList<Integer>();
+    public static List<Integer> clicks = new ArrayList<Integer>();
     public static List<Double> clicks_ave = new ArrayList<Double>();
-    public static Double clicks_max = 0.0;
+    public static Integer clicks_max = 0;
 
     public static Double rclicks = 0.0;
     public static List<Double> rclicks_ave = new ArrayList<Double>();

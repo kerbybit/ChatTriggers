@@ -181,8 +181,7 @@ public class ChatTriggers {
 	@SubscribeEvent
     public void onMouseClicked(MouseEvent e) {
 	    if (e.button == 0 && e.buttonstate) {
-            global.clicks++;
-            global.secondClicks.add(20);
+            global.clicks.add(20);
         }
         if (e.button == 1 && e.buttonstate) {
 	        global.rclicks++;

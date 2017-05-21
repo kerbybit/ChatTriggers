@@ -360,33 +360,41 @@ public class CommandReference {
         while (Minecraft.getSystemTime() > secSysTime + 50L) {
             secSysTime += 50L;
 
-            if (global.secondClicks.size() > 0) {
-                for (int i=0; i<global.secondClicks.size(); i++) {
-                    global.secondClicks.set(i, global.secondClicks.get(i)-1);
-                    if (global.secondClicks.get(i) == 0) {
-                        global.secondClicks.remove(i);
+            if (global.clicks.size() > 0) {
+                for (int i=0; i<global.clicks.size(); i++) {
+                    global.clicks.set(i, global.clicks.get(i)-1);
+                    if (global.clicks.get(i) == 0) {
+                        global.clicks.remove(i);
                     }
+                }
+            }
+
+            global.clicks_ave.add((double) global.clicks.size());
+            global.rclicks_ave.add(global.rclicks);
+            if (global.clicks.size() > global.clicks_max) {
+                global.clicks_max = global.clicks.size();
+            }
+            if (global.clicks_ave.size() > 100) {
+                global.clicks_ave.remove(0);
+            }
+            if (global.clicks_ave.size() > 0) {
+                if (global.clicks_ave.get(global.clicks_ave.size() - 1) == 0) {
+                    global.clicks_ave.clear();
+                    global.clicks_max = 0;
                 }
             }
         }
 
         while (Minecraft.getSystemTime() > sysTime + 1000L) {
             sysTime += 1000L;
-            global.clicks_ave.add(global.clicks);
-            global.rclicks_ave.add(global.rclicks);
-            if (global.clicks > global.clicks_max) {
-                global.clicks_max = global.clicks;
+
+            global.rclicks = 0.0;
+
+            if (global.rclicks_ave.size() > 10) {
+                global.rclicks_ave.remove(0);
             }
             if (global.rclicks > global.rclicks_max) {
                 global.rclicks_max = global.rclicks;
-            }
-            global.clicks = 0.0;
-            global.rclicks = 0.0;
-            if (global.clicks_ave.size() > 10) {
-                global.clicks_ave.remove(0);
-            }
-            if (global.rclicks_ave.size() > 10) {
-                global.rclicks_ave.remove(0);
             }
         }
     }

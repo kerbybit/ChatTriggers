@@ -407,8 +407,14 @@ public class FileHandler {
 						svo = sn.substring(sn.toUpperCase().indexOf("ONCE WITH ")+10);
 					} else if (sn.toUpperCase().contains("ONCEWITH ")) {
 						svo = sn.substring(sn.toUpperCase().indexOf("ONCEWITH ")+9);
+						if (svo.startsWith("\"") && svo.endsWith("\"")) {
+						    svo = svo.substring(1, svo.length()-2);
+                        }
 					} else if (sn.toUpperCase().contains("WITH ")) {
 						sv = sn.substring(sn.toUpperCase().indexOf("WITH ")+5);
+                        if (sv.startsWith("\"") && sv.endsWith("\"")) {
+                            sv = sv.substring(1, sv.length()-2);
+                        }
 					}
 					
 					if (sn.contains(" ")) {sn = sn.substring(0, sn.indexOf(" ")).trim();}
