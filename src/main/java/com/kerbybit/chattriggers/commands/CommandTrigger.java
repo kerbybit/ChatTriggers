@@ -1441,8 +1441,22 @@ public class CommandTrigger extends CommandBase {
                             }
                         } else if (args[2].equalsIgnoreCase("STRINGS")) {
                             List<List<String>> temp = new ArrayList<List<String>>(global.USR_string);
-                            for (List<String> string : global.USR_string) {
+                            for (List<String> string : temp) {
                                 ChatHandler.warn(string.get(0) + " - " + string.get(1));
+                            }
+                        } else if (args[2].equalsIgnoreCase("ACTIONBAR")) {
+                            List<String> temp = new ArrayList<String>(global.actionHistory);
+                            for (String action : temp) {
+                                String tmp_out = ChatHandler.removeFormatting(action);
+                                global.copyText.add(tmp_out.replace("\n", "\\n"));
+                                /*String tmp_outfin = tmp_out.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
+                                        .replace("(", "stringOpenBracketF6cyUQp9stringOpenBracket")
+                                        .replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket");
+                                ChatHandler.warn("clickable("+tmp_outfin+",run_command,/t copy CopyFromDebugChat "+(global.copyText.size()-1)+",Click to copy\n"+tmp_out+")");*/
+                                tmp_out = tmp_out.replace("'", "\\'");
+                                List<String> TMP_eventout = new ArrayList<String>();
+                                TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size() - 1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
+                                ChatHandler.sendJson(TMP_eventout);
                             }
                         } else {
                             ChatHandler.warn(ChatHandler.color("red", "/trigger settings dump [number]"));

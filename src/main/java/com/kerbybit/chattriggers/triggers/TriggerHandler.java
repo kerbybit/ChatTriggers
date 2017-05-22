@@ -16,12 +16,16 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 
 public class TriggerHandler {
     public static void onChat(String fmsg, String msg, ClientChatReceivedEvent e) {
+        onChat(fmsg, msg, e, false);
+    }
+
+    public static void onChat(String fmsg, String msg, ClientChatReceivedEvent e, Boolean isActionbar) {
         msg = msg.replace("\n", "\\n");
         fmsg = fmsg.replace("\n", "\\n");
         String msgNOEDIT = msg;
 
         //debug chat
-        if (global.debugChat) {
+        if (global.debugChat && !isActionbar) {
             String tmp_out = ChatHandler.removeFormatting(fmsg);
             global.copyText.add(tmp_out);
             tmp_out = tmp_out.replace("'", "\\'");
@@ -30,9 +34,14 @@ public class TriggerHandler {
             ChatHandler.sendJson(TMP_eventout);
         }
 
-        for (int i = 0; i < global.chatTrigger.size(); i++) {
+        //get trigger list if chat or actionbar
+        List<List<String>> temp;
+        if (isActionbar) temp = new ArrayList<List<String>>(global.actionTrigger);
+        else temp = new ArrayList<List<String>>(global.chatTrigger);
+
+        for (int i = 0; i < temp.size(); i++) {
             //setup
-            String TMP_trig = global.chatTrigger.get(i).get(1);
+            String TMP_trig = temp.get(i).get(1);
             String TMP_w;
             String[] TMP_server;
             String current_server;
@@ -79,126 +88,90 @@ public class TriggerHandler {
                 msg = msgNOEDIT;
             }
 
-            //read strings
-            if (TMP_trig.contains("{string<") && TMP_trig.contains(">}")) {
-                String TMP_sn = TMP_trig.substring(TMP_trig.indexOf("{string<") + 8, TMP_trig.indexOf(">}"));
-                for (int j = 0; j < global.USR_string.size(); j++) {
-                    if (global.USR_string.get(j).get(0).equals(TMP_sn)) {
-                        String TMP_s = global.USR_string.get(j).get(1);
-                        TMP_trig = TMP_trig.replace("{string<" + TMP_sn + ">}", TMP_s);
-                    }
-                }
-            }
-            TMP_trig = TMP_trig.replace("{me}", Minecraft.getMinecraft().thePlayer.getDisplayNameString());
+            TMP_trig = getTrigStrings(TMP_trig);
+
 
             if (correct_server) {
-                if (TMP_w.equals("s")) { //startWith
-                    try {
-                        TMP_trig = StringHandler.setStrings(msg, TMP_trig);
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                        ChatHandler.warn(ChatHandler.color("red", "There was a problem setting strings!"));
-                    }
-                    if (msg.startsWith(TMP_trig)) { //check
-                        //add all events to temp list
-                        List<String> TMP_events = new ArrayList<String>();
-                        for (int j = 2; j < global.chatTrigger.get(i).size(); j++) {
-                            TMP_events.add(global.chatTrigger.get(i).get(j));
-                        }
+                TMP_trig = setTrigStrings(msg, TMP_trig);
 
-                        //do events
-                        if (global.temporary_replace.size() == 0) {
-                            EventsHandler.doEvents(TMP_events, e);
-                        } else {
-                            EventsHandler.doEvents(TMP_events, e, global.temporary_replace.toArray(new String[global.temporary_replace.size()]), global.temporary_replacement.toArray(new String[global.temporary_replacement.size()]));
-                            global.temporary_replace.clear();
-                            global.temporary_replacement.clear();
-                        }
+                if (TMP_w.equals("s")) { //startWith
+                    if (msg.startsWith(TMP_trig)) {
+                        doEvents(i, e);
                     } else {
-                        global.temporary_replace.clear();
-                        global.temporary_replacement.clear();
+                        clearTemporary();
                     }
                 } else if (TMP_w.equals("c")) { //contains
-                    try {
-                        TMP_trig = StringHandler.setStrings(msg, TMP_trig);
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                        ChatHandler.warn(ChatHandler.color("red", "There was a problem setting strings!"));
-                    }
-                    if (msg.contains(TMP_trig)) { //check
-                        //add all events to temp list
-                        List<String> TMP_events = new ArrayList<String>();
-                        for (int j = 2; j < global.chatTrigger.get(i).size(); j++) {
-                            TMP_events.add(global.chatTrigger.get(i).get(j));
-                        }
-
-                        //do events
-                        if (global.temporary_replace.size() == 0) {
-                            EventsHandler.doEvents(TMP_events, e);
-                        } else {
-                            EventsHandler.doEvents(TMP_events, e, global.temporary_replace.toArray(new String[global.temporary_replace.size()]), global.temporary_replacement.toArray(new String[global.temporary_replacement.size()]));
-                            global.temporary_replace.clear();
-                            global.temporary_replacement.clear();
-                        }
+                    if (msg.contains(TMP_trig)) {
+                        doEvents(i, e);
                     } else {
-                        global.temporary_replace.clear();
-                        global.temporary_replacement.clear();
+                        clearTemporary();
                     }
                 } else if (TMP_w.equals("e")) { //endsWith
-                    try {
-                        TMP_trig = StringHandler.setStrings(msg, TMP_trig);
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                        ChatHandler.warn(ChatHandler.color("red", "There was a problem setting strings!"));
-                    }
                     if (msg.endsWith(TMP_trig)) {
-                        //add all events to temp list
-                        List<String> TMP_events = new ArrayList<String>();
-                        for (int j = 2; j < global.chatTrigger.get(i).size(); j++) {
-                            TMP_events.add(global.chatTrigger.get(i).get(j));
-                        }
-
-                        //do events
-                        if (global.temporary_replace.size() == 0) {
-                            EventsHandler.doEvents(TMP_events, e);
-                        } else {
-                            EventsHandler.doEvents(TMP_events, e, global.temporary_replace.toArray(new String[global.temporary_replace.size()]), global.temporary_replacement.toArray(new String[global.temporary_replacement.size()]));
-                            global.temporary_replace.clear();
-                            global.temporary_replacement.clear();
-                        }
+                        doEvents(i, e);
                     } else {
-                        global.temporary_replace.clear();
-                        global.temporary_replacement.clear();
+                        clearTemporary();
                     }
                 } else { //equals
-                    try {
-                        TMP_trig = StringHandler.setStrings(msg, TMP_trig);
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                        ChatHandler.warn(ChatHandler.color("red", "There was a problem setting strings!"));
-                    }
                     if (msg.equals(TMP_trig)) {
-                        //add all events to temp list
-                        List<String> TMP_events = new ArrayList<String>();
-                        for (int j = 2; j < global.chatTrigger.get(i).size(); j++) {
-                            TMP_events.add(global.chatTrigger.get(i).get(j));
-                        }
-
-                        //do events
-                        if (global.temporary_replace.size() == 0) {
-                            EventsHandler.doEvents(TMP_events, e);
-                        } else {
-                            EventsHandler.doEvents(TMP_events, e, global.temporary_replace.toArray(new String[global.temporary_replace.size()]), global.temporary_replacement.toArray(new String[global.temporary_replacement.size()]));
-                            global.temporary_replace.clear();
-                            global.temporary_replacement.clear();
-                        }
+                        doEvents(i, e);
                     } else {
-                        global.temporary_replace.clear();
-                        global.temporary_replacement.clear();
+                        clearTemporary();
                     }
                 }
             }
         }
+    }
+
+    private static String setTrigStrings(String msg, String TMP_trig) {
+        try {
+            return StringHandler.setStrings(msg, TMP_trig);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+            ChatHandler.warn(ChatHandler.color("red", "There was a problem setting strings!"));
+        }
+
+        return TMP_trig;
+    }
+
+    private static String getTrigStrings(String TMP_trig) {
+        //read strings
+        while (TMP_trig.contains("{string<") && TMP_trig.contains(">}")) {
+            Boolean  isString = false;
+            String TMP_sn = TMP_trig.substring(TMP_trig.indexOf("{string<") + 8, TMP_trig.indexOf(">}"));
+            for (int j = 0; j < global.USR_string.size(); j++) {
+                if (global.USR_string.get(j).get(0).equals(TMP_sn)) {
+                    String TMP_s = global.USR_string.get(j).get(1);
+                    TMP_trig = TMP_trig.replace("{string<" + TMP_sn + ">}", TMP_s);
+                    isString = true;
+                }
+            }
+            if (!isString) {
+                TMP_trig = TMP_trig.replace("{string<" + TMP_sn + ">}", "not a string!");
+            }
+        }
+        return TMP_trig.replace("{me}", Minecraft.getMinecraft().thePlayer.getDisplayNameString());
+    }
+
+    private static void doEvents(int i, ClientChatReceivedEvent e) {
+        //add all events to temp list
+        List<String> TMP_events = new ArrayList<String>();
+        for (int j = 2; j < global.chatTrigger.get(i).size(); j++) {
+            TMP_events.add(global.chatTrigger.get(i).get(j));
+        }
+
+        //do events
+        if (global.temporary_replace.size() == 0) {
+            EventsHandler.doEvents(TMP_events, e);
+        } else {
+            EventsHandler.doEvents(TMP_events, e, global.temporary_replace.toArray(new String[global.temporary_replace.size()]), global.temporary_replacement.toArray(new String[global.temporary_replacement.size()]));
+            clearTemporary();
+        }
+    }
+
+    private static void clearTemporary() {
+        global.temporary_replace.clear();
+        global.temporary_replacement.clear();
     }
 
 	public static void onChat(ClientChatReceivedEvent e) {
@@ -220,12 +193,22 @@ public class TriggerHandler {
                 if (!global.chatHistory.get(global.chatHistory.size()-1).equals(ChatHandler.removeFormatting(fmsg))) {
                     global.chatHistory.add(ChatHandler.removeFormatting(fmsg));
                 }
-            } else {
-                global.chatHistory.add(ChatHandler.removeFormatting(fmsg));
-            }
-            if (global.chatHistory.size()>100) {global.chatHistory.remove(0);}
+            } else global.chatHistory.add(ChatHandler.removeFormatting(fmsg));
+            if (global.chatHistory.size()>100) global.chatHistory.remove(0);
 
             onChat(fmsg, msg, e);
+        } else {
+            String msg = e.message.getUnformattedText();
+            String fmsg = e.message.getFormattedText();
+
+            if (global.actionHistory.size() >= 1) {
+                if (!global.actionHistory.get(global.actionHistory.size()-1).equals(ChatHandler.removeFormatting(fmsg))) {
+                    global.actionHistory.add(ChatHandler.removeFormatting(fmsg));
+                }
+            } else global.actionHistory.add(ChatHandler.removeFormatting(fmsg));
+            if (global.actionHistory.size() > 100) global.actionHistory.remove(0);
+
+            onChat(fmsg, msg, e, true);
         }
 	}
 	

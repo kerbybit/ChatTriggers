@@ -435,7 +435,7 @@ public class StringFunctions {
                 String func_define = function.get(1);
                 if (func_define.contains(".") && func_define.contains("(") && func_define.contains(")")) {
                     String func_name = func_define.substring(func_define.indexOf(".")+1, func_define.indexOf("(", func_define.indexOf("."))).toUpperCase();
-                    if (func_name.equals(func)) {
+                    if (func_name.equalsIgnoreCase(func)) {
                         String func_to = TagHandler.removeTags(func_define.substring(0, func_define.indexOf(".")));
                         String func_arg = func_define.substring(func_define.indexOf("(")+1, func_define.indexOf(")", func_define.indexOf(")")));
                         if (!func_arg.equals("")) {

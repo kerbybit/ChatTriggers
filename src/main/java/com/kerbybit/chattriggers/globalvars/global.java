@@ -47,6 +47,8 @@ public class global {
     public static String bugLastEvent = "";
 	
 	public static List<String> chatHistory = new ArrayList<String>();
+	public static List<String> actionHistory = new ArrayList<String>();
+
 	public static int tick = 0;
 	public static int ticksElapsed = 0;
 	public static List<String> chatQueue = new ArrayList<String>();
@@ -82,6 +84,7 @@ public class global {
 	////////////////////////////////////////////////////
 	public static List<List<String>> trigger = new ArrayList<List<String>>();
 	public static List<List<String>> chatTrigger = new ArrayList<List<String>>();
+	public static List<List<String>> actionTrigger = new ArrayList<List<String>>();
 	public static List<List<String>> tickTrigger = new ArrayList<List<String>>();
 	public static List<Integer> tickTriggerTime = new ArrayList<Integer>();
 	public static List<List<String>> onWorldLoadTrigger = new ArrayList<List<String>>();

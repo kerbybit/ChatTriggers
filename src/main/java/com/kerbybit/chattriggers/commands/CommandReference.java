@@ -9,8 +9,6 @@ import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
-import com.kerbybit.chattriggers.objects.ListHandler;
-import com.kerbybit.chattriggers.objects.JsonHandler;
 import com.kerbybit.chattriggers.references.AsyncHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,8 +25,6 @@ public class CommandReference {
         global.notify.clear();
         global.notifyAnimation.clear();
         DisplayHandler.clearDisplays();
-        ListHandler.clearLists();
-        JsonHandler.clearJsons();
     }
 
 	static void resetAll() {
@@ -95,7 +91,9 @@ public class CommandReference {
 	public static void addToTriggerList(List<String> tmp_list) {
 		if (tmp_list.get(0).equalsIgnoreCase("CHAT")) {
 			global.chatTrigger.add(tmp_list);
-		} else if (tmp_list.get(0).toUpperCase().startsWith("ONCLIENTTICK")) {
+		} else if (tmp_list.get(0).equalsIgnoreCase("ACTIONBAR")) {
+		    global.actionTrigger.add(tmp_list);
+        } else if (tmp_list.get(0).toUpperCase().startsWith("ONCLIENTTICK")) {
 			global.tickTrigger.add(tmp_list);
 			if (tmp_list.get(0).equalsIgnoreCase("ONCLIENTTICK")) {
 				global.tickTriggerTime.add(1);
@@ -143,6 +141,7 @@ public class CommandReference {
         List<String> r = new ArrayList<String>();
 
             r.add("chat");
+            r.add("actionbar");
             r.add("cancel");
             r.add("killfeed");
             r.add("notify");
@@ -177,7 +176,6 @@ public class CommandReference {
         r.add("cancel");
         r.add("killfeed");
         r.add("notify");
-        r.add("actionbar");
         r.add("sound");
         r.add("trigger");
         r.add("copy");
