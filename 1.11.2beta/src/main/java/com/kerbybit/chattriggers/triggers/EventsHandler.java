@@ -12,16 +12,15 @@ import java.util.List;
 import java.util.Random;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
-import com.kerbybit.chattriggers.file.JsonHandler;
 import com.kerbybit.chattriggers.objects.ArrayHandler;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
-import com.kerbybit.chattriggers.objects.NewJsonHandler;
+import com.kerbybit.chattriggers.objects.JsonHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
-import com.kerbybit.chattriggers.overlay.ActionBar;
 import com.kerbybit.chattriggers.overlay.KillfeedHandler;
 import com.kerbybit.chattriggers.overlay.NotifyHandler;
+import com.kerbybit.chattriggers.references.AsyncHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -38,28 +37,43 @@ public class EventsHandler {
                 .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
     }
 
+    public static String doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, String[] toreplace, String[] replacement) {
+        return doEvents(tmp_tmp_event, chatEvent, toreplace, replacement, false);
+    }
+
+    public static String doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
+        return doEvents(tmp_tmp_event, chatEvent, null, null, isAsync);
+    }
+
 	public static String doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent) {
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
 		return doEvents(tmp_event, chatEvent, null, null);
 	}
 	
-	public static String doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, String[] toreplace, String[] replacement) {
+	public static String doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, String[] toreplace, String[] replacement, Boolean isAsync) {
 		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
         String ret = "null";
 		
 		if (toreplace != null) {
 			for (int i=0; i<toreplace.length; i++) {
-				List<String> temporary = new ArrayList<String>();
-				temporary.add("TriggerArgument"+i+"-"+global.TMP_string.size());
-				temporary.add(replacement[i]);
-				for (int j=0; j<tmp_event.size(); j++) {
-                    tmp_event.set(j, tmp_event.get(j).replace(toreplace[i],"{string[TriggerArgument"+i+"-"+global.TMP_string.size()+"]}"));
-                }
-				global.TMP_string.add(temporary);
+			    if (isAsync) {
+                    global.Async_string.put("TriggerAsyncArgument"+i+"-"+(global.Async_string.size()+1), replacement[i]);
+                    for (int j=0; j<tmp_event.size(); j++) {
+                        tmp_event.set(j, tmp_event.get(j).replace(toreplace[i],"{string[TriggerAsyncArgument"+i+"-"+global.Async_string.size()+"]}"));
+                    }
+                } else {
+                    List<String> temporary = new ArrayList<String>();
+                    temporary.add("TriggerArgument"+i+"-"+global.TMP_string.size());
+                    temporary.add(replacement[i]);
+                    for (int j=0; j<tmp_event.size(); j++) {
+                        tmp_event.set(j, tmp_event.get(j).replace(toreplace[i],"{string[TriggerArgument"+i+"-"+global.TMP_string.size()+"]}"));
+                    }
+                    global.TMP_string.add(temporary);
+			    }
 			}
 		}
         //trim jsons and lists to save memory
-        NewJsonHandler.trimJsons();
+        JsonHandler.trimJsons();
         ListHandler.trimLists();
 
 		for (int i=0; i<tmp_event.size(); i++) {
@@ -78,10 +92,10 @@ public class EventsHandler {
 			StringHandler.resetBackupStrings();
 
         //displays
-            TMP_e = DisplayHandler.displayFunctions(TMP_e);
+            TMP_e = DisplayHandler.displayFunctions(TMP_e, isAsync);
 
 		//built in strings
-			TMP_e = BuiltInStrings.builtInStrings(TMP_e, chatEvent);
+			TMP_e = BuiltInStrings.builtInStrings(TMP_e, chatEvent, isAsync);
 			
 		//strings and functions
             TMP_e = TMP_e.replace("{string<", "{string[")
@@ -91,11 +105,11 @@ public class EventsHandler {
                     .replace("{list<", "{list[")
                     .replace(">}", "]}");
 
-            TMP_e = NewJsonHandler.jsonFunctions(TMP_e);
-            TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent);
-            TMP_e = ListHandler.listFunctions(TMP_e);
-			TMP_e = ArrayHandler.arrayFunctions(TMP_e, chatEvent);
-			TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent);
+            TMP_e = JsonHandler.jsonFunctions(TMP_e, isAsync);
+            TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent, isAsync);
+            TMP_e = ListHandler.listFunctions(TMP_e, isAsync);
+			TMP_e = ArrayHandler.arrayFunctions(TMP_e, chatEvent, isAsync);
+			TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent, isAsync);
 			
 		//tags
 			try {
@@ -134,7 +148,7 @@ public class EventsHandler {
 			}
 			
 		//non-logic events
-			if (TMP_c.equalsIgnoreCase("TRIGGER")) {doTrigger(TMP_e, chatEvent);}
+			if (TMP_c.equalsIgnoreCase("TRIGGER")) {doTrigger(TMP_e, chatEvent, isAsync);}
             if (TMP_c.equalsIgnoreCase("CHAT")) {
                 ChatHandler.warn(TMP_e);
             }
@@ -144,18 +158,15 @@ public class EventsHandler {
             if (TMP_c.equalsIgnoreCase("DEBUG") || TMP_c.equalsIgnoreCase("DO")) {if (global.debug) {ChatHandler.warn(TMP_e);}}
             if (TMP_c.equalsIgnoreCase("LOG")) {System.out.println(removeStringReplacements(TMP_e));}
             if (TMP_c.equalsIgnoreCase("SIMULATE")) {
-                ClientChatReceivedEvent ce = new ClientChatReceivedEvent((byte)0, ITextComponent.Serializer.jsonToComponent("{text:'"+TMP_e+"'}"));
+                ClientChatReceivedEvent ce = new ClientChatReceivedEvent((byte)0, ITextComponent.Serializer.jsonToComponent("{\"text\":\""+TMP_e+"\"}"));
                 onChat(TMP_e, ChatHandler.deleteFormatting(TMP_e), ce);
                 if (!ce.isCanceled()) {
                     ChatHandler.warn(TMP_e);
                 }
             }
-            if (TMP_c.equalsIgnoreCase("SOUND")) {
+			if (TMP_c.equalsIgnoreCase("SOUND")) {
                 float real_v = ((float)TMP_v) / 100;
-                ResourceLocation location = new ResourceLocation("minecraft",""+TMP_e
-                        .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
-                        .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-                        .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"));
+                ResourceLocation location = new ResourceLocation("minecraft",removeStringReplacements(TMP_e));
                 Minecraft.getMinecraft().player.playSound(SoundEvent.REGISTRY.getObject(location), real_v, TMP_pi);}
 			if (TMP_c.equalsIgnoreCase("CANCEL") && chatEvent!=null) {chatEvent.setCanceled(true);}
 			if (TMP_c.equalsIgnoreCase("KILLFEED")) {
@@ -164,10 +175,6 @@ public class EventsHandler {
 			if (TMP_c.equalsIgnoreCase("NOTIFY")) {
 				NotifyHandler.addToNotify(TMP_e, TMP_t, TMP_p);
 			}
-            if (TMP_c.equalsIgnoreCase("ACTIONBAR")) {
-			    System.out.println("actionbar-"+TMP_e);
-			    ActionBar.showActionBar(TMP_e);
-            }
 			if (TMP_c.equalsIgnoreCase("COMMAND")) {global.commandQueue.add(TMP_e);}
 			if (TMP_c.equalsIgnoreCase("COPY")) {
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -262,6 +269,7 @@ public class EventsHandler {
 						if (TMP_time>0) {
 							global.waitEvents.add(eventsToWait);
 							global.waitTime.add(TMP_time);
+							AsyncHandler.preloadAsyncStrings();
 						} else {
 							ChatHandler.warn(ChatHandler.color("red", "Malformed WAIT event - skipping"));
 						}
@@ -306,6 +314,7 @@ public class EventsHandler {
                                     if (TMP_time>0) {
                                         global.waitEvents.add(eventsToWait);
                                         global.waitTime.add(TMP_time);
+                                        AsyncHandler.preloadAsyncStrings();
                                     } else {
                                         ChatHandler.warn(ChatHandler.color("red", "Malformed WAIT event - skipping"));
                                     }
@@ -401,20 +410,17 @@ public class EventsHandler {
                             for (String array : arrayto) {
                                 String[] first = {valin};
                                 String[] second = {array};
-                                ret = doEvents(eventsToFor, chatEvent, first, second);
+                                ret = doEvents(eventsToFor, chatEvent, first, second, isAsync);
                             }
                         } else {
                             try {
                                 int intwait = Integer.parseInt(valwait.replace(",",""));
                                 for (int j=0; j<arrayto.size(); j++) {
                                     List<String> eventsToForFin = new ArrayList<String>(eventsToFor);
-                                    List<String> temporary = new ArrayList<String>();
-                                    temporary.add("TriggerArgument"+j+"-"+global.TMP_string.size());
-                                    temporary.add(arrayto.get(j));
+                                    global.Async_string.put("AsyncTriggerArgument"+j+"-"+(global.Async_string.size()+1), arrayto.get(j));
                                     for (int k=0; k<eventsToFor.size(); k++) {
-                                        eventsToForFin.set(k, eventsToFor.get(k).replace(valin,"{string[TriggerArgument"+j+"-"+global.TMP_string.size()+"]}"));
+                                        eventsToForFin.set(k, eventsToFor.get(k).replace(valin,"{string[AsyncTriggerArgument"+j+"-"+global.Async_string.size()+"]}"));
                                     }
-                                    global.TMP_string.add(temporary);
 
                                     global.waitEvents.add(eventsToForFin);
                                     global.waitTime.add(intwait*(j-1));
@@ -437,7 +443,7 @@ public class EventsHandler {
                                 for (int j=int_from; j<int_to+1; j++) {
                                     String[] first = {args[0].trim()};
                                     String[] second = {j + ""};
-                                    ret = doEvents(eventsToFor, chatEvent, first, second);
+                                    ret = doEvents(eventsToFor, chatEvent, first, second, isAsync);
                                 }
                             } else {
                                 try {
@@ -445,13 +451,10 @@ public class EventsHandler {
                                     int count = 0;
                                     for (int j=int_from; j<int_to+1; j++) {
                                         List<String> eventsToForFin = new ArrayList<String>(eventsToFor);
-                                        List<String> temporary = new ArrayList<String>();
-                                        temporary.add("TriggerArgument"+j+"-"+global.TMP_string.size());
-                                        temporary.add(j+"");
+                                        global.Async_string.put("AsyncTriggerArgument"+j+"-"+(global.Async_string.size()+1), j+"");
                                         for (int k=0; k<eventsToFor.size(); k++) {
-                                            eventsToForFin.set(k, eventsToFor.get(k).replace(args[0].trim(),"{string[TriggerArgument"+j+"-"+global.TMP_string.size()+"]}"));
+                                            eventsToForFin.set(k, eventsToFor.get(k).replace(args[0].trim(),"{string[AsyncTriggerArgument"+j+"-"+global.Async_string.size()+"]}"));
                                         }
-                                        global.TMP_string.add(temporary);
 
                                         global.waitEvents.add(eventsToForFin);
                                         global.waitTime.add(intwait*count);
@@ -545,16 +548,16 @@ public class EventsHandler {
 					if (TMP_e.equalsIgnoreCase("TRUE") || TMP_e.equalsIgnoreCase("NOT FALSE")) {
 						if (eventsToIf.size()>0) {
 							eventsToIf.remove(0);
-							ret = doEvents(eventsToIf, chatEvent);
+							ret = doEvents(eventsToIf, chatEvent, isAsync);
 						}
 					} else {
 						if (eventsToElse.size()>0) {
 							if (eventsToElse.get(0).toUpperCase().startsWith("ELSEIF")) {
 								eventsToElse.set(0, eventsToElse.get(0).substring(4));
-								ret = doEvents(eventsToElse, chatEvent);
+								ret = doEvents(eventsToElse, chatEvent, isAsync);
 							} else {
 								eventsToElse.remove(0);
-								ret = doEvents(eventsToElse, chatEvent);
+								ret = doEvents(eventsToElse, chatEvent, isAsync);
 							}
 						}
 					}
@@ -621,7 +624,7 @@ public class EventsHandler {
 					int rand = randInt(1,eventsToChoose.size()-2);
 					
 					//do events
-					ret = doEvents(eventsToChoose.get(rand), chatEvent);
+					ret = doEvents(eventsToChoose.get(rand), chatEvent, isAsync);
 					
 					//move i to closing end
 					int moveEvents = 0;
@@ -637,7 +640,7 @@ public class EventsHandler {
         return ret;
 	}
 	
-	private static void doTrigger(String triggerName, ClientChatReceivedEvent chatEvent) {
+	private static void doTrigger(String triggerName, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
 		try {
 			//run trigger by number
 			int num = Integer.parseInt(triggerName);
@@ -647,7 +650,7 @@ public class EventsHandler {
 				for (int i=2; i<global.trigger.get(num).size(); i++) {TMP_events.add(global.trigger.get(num).get(i));}
 				
 				//do events
-				doEvents(TMP_events, chatEvent);
+				doEvents(TMP_events, chatEvent, isAsync);
 			}
 		} catch (NumberFormatException e1) { 
 			//run trigger by name
@@ -671,7 +674,7 @@ public class EventsHandler {
                         }
 
                         //do events
-                        doEvents(TMP_events, chatEvent);
+                        doEvents(TMP_events, chatEvent, isAsync);
                     } else {
                         if (TMP_trig.contains("(") && TMP_trig.endsWith(")")) {
                             String TMP_trigtest = TMP_trig.substring(0, TMP_trig.indexOf("("));
@@ -685,7 +688,7 @@ public class EventsHandler {
                                     for (int j = 2; j < global.trigger.get(k).size(); j++) {
                                         TMP_events.add(global.trigger.get(k).get(j));
                                     }
-                                    doEvents(TMP_events, chatEvent, argsOut, argsIn);
+                                    doEvents(TMP_events, chatEvent, argsOut, argsIn, isAsync);
                                 }
                             }
                         }
@@ -699,7 +702,7 @@ public class EventsHandler {
                         }
 
                         //do events
-                        doEvents(TMP_events, chatEvent);
+                        doEvents(TMP_events, chatEvent, isAsync);
                     } else {
                         if (TMP_trig.contains("(") && TMP_trig.endsWith(")")) {
                             String TMP_trigtest = TMP_trig.substring(0, TMP_trig.indexOf("("));
@@ -713,7 +716,7 @@ public class EventsHandler {
                                     for (int j = 2; j < global.trigger.get(k).size(); j++) {
                                         TMP_events.add(global.trigger.get(k).get(j));
                                     }
-                                    doEvents(TMP_events, chatEvent, argsOut, argsIn);
+                                    doEvents(TMP_events, chatEvent, argsOut, argsIn, isAsync);
                                 }
                             }
                         }
@@ -738,19 +741,20 @@ public class EventsHandler {
 				global.asyncMap.clear();
 			}
 		}
-		
-		if (global.waitEvents.size()==0 && global.asyncMap.size()==0 && global.TMP_string.size()>0) {
-			global.TMP_string.clear();
-			JsonHandler.jsonURL.clear();
-		}
-		
+
+
+
+		if (global.TMP_string.size() > 0) {
+            global.TMP_string.clear();
+        }
+
 		if (global.waitEvents.size()>0) {
 			if (global.waitEvents.size() == global.waitTime.size()) {
 				for (int i=0; i<global.waitTime.size(); i++) {
 					if (global.waitTime.get(i)>0) {
 						global.waitTime.set(i, global.waitTime.get(i)-1);
 					} else {
-						doEvents(global.waitEvents.get(i), null);
+						doEvents(global.waitEvents.get(i), null, true);
 						global.waitEvents.remove(i);
 						global.waitTime.remove(i);
 					}

@@ -22,7 +22,6 @@ import com.kerbybit.chattriggers.triggers.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
@@ -35,19 +34,13 @@ public class CommandTrigger extends CommandBase {
     public String getCommandName() {return "trigger";}
     public String getName() {return getCommandName();}
 
-    public void execute(MinecraftServer server,ICommandSender sender, String[] args) throws CommandException {processCommand(sender,args);}
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) {processCommand(sender,args);}
+    public void processCommand(ICommandSender sender, String[] args) {
         if (global.canUse) {
             try {
                 doCommand(args, false);
             } catch (Exception e) {
                 BugTracker.show(e, "command");
-            }
-        } else {
-            if (EventsHandler.randInt(0,5) == 0) {
-                BugTracker.show(null, "blacklisted");
-            } else {
-                doCommand(args, false);
             }
         }
     }
@@ -56,11 +49,6 @@ public class CommandTrigger extends CommandBase {
 
     public String getCommandUsage(ICommandSender sender) {return "/trigger [create/add/list] <...>";}
     public String getUsage(ICommandSender sender) {return getCommandUsage(sender);}
-
-    ///MC 1.9+
-    /*public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        processCommand(sender, args);
-    }*/
 
     private static void logCommand(String args[]) {
         StringBuilder temp_command = new StringBuilder("/trigger");
@@ -86,7 +74,7 @@ public class CommandTrigger extends CommandBase {
         } else if (args[0].equalsIgnoreCase("ARRAYS") || args[0].equalsIgnoreCase("ARRAY")) {
             commandArrays(args);
         } else if (args[0].equalsIgnoreCase("SUBMITBUGREPORT")) {
-            commandSubmitBugReport(args[0]);
+            commandSubmitBugReport();
         } else if (args[0].equalsIgnoreCase("SUBMITFAKEBUGREPORT")) {
             ChatHandler.warn(ChatHandler.color(Settings.col[0],"Sending bug report..."));
             ChatHandler.warn(ChatHandler.color("&c", "Unable to submit bug report at this time. try again later."));
@@ -192,7 +180,7 @@ public class CommandTrigger extends CommandBase {
         ChatHandler.warnBreak(1);
     }
 
-    private static void commandSubmitBugReport(String arg) {
+    private static void commandSubmitBugReport() {
         BugTracker.send();
     }
 
@@ -202,7 +190,7 @@ public class CommandTrigger extends CommandBase {
             TMP_e.append(args[i]).append(" ");
         }
         //ChatHandler.warn(TMP_e);
-        ClientChatReceivedEvent chatEvent = new ClientChatReceivedEvent((byte)0, ITextComponent.Serializer.jsonToComponent("{text:'"+TMP_e.toString().trim()+"'}"));
+        ClientChatReceivedEvent chatEvent = new ClientChatReceivedEvent((byte)0, ITextComponent.Serializer.jsonToComponent("{\"text\":\""+TMP_e.toString().trim()+"\"}"));
         onChat(TMP_e.toString().trim(), ChatHandler.deleteFormatting(TMP_e.toString().trim()), chatEvent);
         if (!chatEvent.isCanceled()) {
             ChatHandler.warn(TMP_e.toString().trim());
@@ -1378,7 +1366,7 @@ public class CommandTrigger extends CommandBase {
                         ChatHandler.warn("&c/trigger &csettings &ctest &c[clickable(&conServerChange,run_command,/trigger settings test onServerChange,&7Run &7/trigger &7settings &7test &7onServerChange)&c/clickable(&conNewDay,run_command,/trigger settings test onNewDay,&7Run &7/trigger &7settings &7test &7onNewDay)&c]");
                     }
                 }
-            }else if (args[1].equalsIgnoreCase("DUMP")) {
+            } else if (args[1].equalsIgnoreCase("DUMP")) {
                 if (args.length == 2) {
                     for (String fmsg : global.chatHistory) {
                         String tmp_out = ChatHandler.removeFormatting(fmsg);
@@ -1387,9 +1375,9 @@ public class CommandTrigger extends CommandBase {
                                 .replace("(", "stringOpenBracketF6cyUQp9stringOpenBracket")
                                 .replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket");
                         ChatHandler.warn("clickable("+tmp_outfin+",run_command,/t copy CopyFromDebugChat "+(global.copyText.size()-1)+",Click to copy\n"+tmp_out+")");*/
-                        tmp_out = tmp_out.replace("'", "\\'");
+                        tmp_out = tmp_out.replace("\"", "\\\"");
                         List<String> TMP_eventout = new ArrayList<String>();
-                        TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size()-1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
+                        TMP_eventout.add("\"text\":\"" + tmp_out + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/t copy CopyFromDebugChat " + (global.copyText.size()-1) + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Click to copy\n" + tmp_out + "\"}");
                         ChatHandler.sendJson(TMP_eventout);
                     }
                 } else {
@@ -1408,7 +1396,7 @@ public class CommandTrigger extends CommandBase {
                                 ChatHandler.warn("clickable("+tmp_outfin+",run_command,/t copy CopyFromDebugChat "+(global.copyText.size()-1)+",Click to copy\n"+tmp_out+")");*/
                                 tmp_out = tmp_out.replace("'", "\\'");
                                 List<String> TMP_eventout = new ArrayList<String>();
-                                TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size() - 1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
+                                TMP_eventout.add("\"text\":\"" + tmp_out + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/t copy CopyFromDebugChat " + (global.copyText.size()-1) + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Click to copy\n" + tmp_out + "\"}");
                                 ChatHandler.sendJson(TMP_eventout);
                             }
                         }
@@ -1432,6 +1420,35 @@ public class CommandTrigger extends CommandBase {
                                 }
                             } else {
                                 NotifyHandler.showNotifyHistory();
+                            }
+                        } else if (args[2].equalsIgnoreCase("ASYNC")) {
+                            Map<String, String> temp = new HashMap<String, String>(global.Async_string);
+                            for (Map.Entry<String, String> entry : temp.entrySet()) {
+                                ChatHandler.warn(entry.getKey() + " - " + entry.getValue());
+                            }
+                        } else if (args[2].equalsIgnoreCase("TEMP")) {
+                            List<List<String>> temp = new ArrayList<List<String>>(global.TMP_string);
+                            for (List<String> string : temp) {
+                                ChatHandler.warn(string.get(0) + " - " + string.get(1));
+                            }
+                        } else if (args[2].equalsIgnoreCase("STRINGS")) {
+                            List<List<String>> temp = new ArrayList<List<String>>(global.USR_string);
+                            for (List<String> string : temp) {
+                                ChatHandler.warn(string.get(0) + " - " + string.get(1));
+                            }
+                        } else if (args[2].equalsIgnoreCase("ACTIONBAR")) {
+                            List<String> temp = new ArrayList<String>(global.actionHistory);
+                            for (String action : temp) {
+                                String tmp_out = ChatHandler.removeFormatting(action);
+                                global.copyText.add(tmp_out.replace("\n", "\\n"));
+                                /*String tmp_outfin = tmp_out.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
+                                        .replace("(", "stringOpenBracketF6cyUQp9stringOpenBracket")
+                                        .replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket");
+                                ChatHandler.warn("clickable("+tmp_outfin+",run_command,/t copy CopyFromDebugChat "+(global.copyText.size()-1)+",Click to copy\n"+tmp_out+")");*/
+                                tmp_out = tmp_out.replace("'", "\\'");
+                                List<String> TMP_eventout = new ArrayList<String>();
+                                TMP_eventout.add("\"text\":\"" + tmp_out + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/t copy CopyFromDebugChat " + (global.copyText.size()-1) + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Click to copy\n" + tmp_out + "\"}");
+                                ChatHandler.sendJson(TMP_eventout);
                             }
                         } else {
                             ChatHandler.warn(ChatHandler.color("red", "/trigger settings dump [number]"));
@@ -1551,9 +1568,10 @@ public class CommandTrigger extends CommandBase {
         ChatHandler.warn(ChatHandler.color(Settings.col[0], "Organized and saved files"));
     }
 
-    static void commandLoad() {
+    public static void commandLoad() {
         global.canSave = true;
         try {
+            CommandReference.clearAll();
             global.trigger = FileHandler.loadTriggers("./mods/ChatTriggers/triggers.txt", false, null);
             global.USR_string = FileHandler.loadStrings();
             FileHandler.loadSettings();

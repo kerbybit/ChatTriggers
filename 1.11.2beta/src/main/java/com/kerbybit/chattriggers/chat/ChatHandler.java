@@ -10,8 +10,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 
-public class ChatHandler {
+import static java.lang.StrictMath.round;
 
+public class ChatHandler {
+	
 	public static void warnBreak(int type) {
 		StringBuilder dashes = new StringBuilder();
 		float chatWidth = Minecraft.getMinecraft().gameSettings.chatWidth;
@@ -25,31 +27,118 @@ public class ChatHandler {
 		}
 	}
 
-	public static void warnUnformatted(String cht) {
-		cht = cht.replace("'", "\\'")
+    public static void warnUnformatted(String cht) {
+        cht = cht.replace("\"", "\\\"")
                 .replace("\\", "\\\\");
-		String TMP_o = "[\"\",";
-		TMP_o += "{\"text\":\"" + cht +  "\"}";
-		TMP_o += "]";
-		ITextComponent TMP_out = ITextComponent.Serializer.jsonToComponent(TMP_o);
-		Minecraft.getMinecraft().player.sendMessage(TMP_out);
-	}
-
-    public static void sendJson(List<String> out) {
         String TMP_o = "[\"\",";
-        for (int i=0; i<out.size(); i++) {
-            TMP_o += "{" + out.get(i) + "}";
-            if (i != out.size()-1) {TMP_o += ",";}
-        }
+        TMP_o += "{\"text\":\"" + cht +  "\"}";
         TMP_o += "]";
         ITextComponent TMP_out = ITextComponent.Serializer.jsonToComponent(TMP_o);
         Minecraft.getMinecraft().player.sendMessage(TMP_out);
+    }
+
+    public static void sendJson(List<String> out) {
+        StringBuilder TMP_o = new StringBuilder("[\"\",");
+        for (int i=0; i<out.size(); i++) {
+            TMP_o.append("{").append(out.get(i)).append("}");
+            if (i != out.size()-1) {TMP_o.append(",");}
+        }
+        TMP_o.append("]");
+        ITextComponent TMP_out = ITextComponent.Serializer.jsonToComponent(TMP_o.toString());
+        Minecraft.getMinecraft().player.sendMessage(TMP_out);
+    }
+
+	private static String removeExtras(String cht) {
+	    return cht.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+                .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")
+                .replace("stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement", "(")
+                .replace("stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement", ")")
+                .replace("AmpF6cyUQp9Amp","&")
+                .replace("TripleDotF6cyUQp9TripleDot","...")
+                .replace("\\n","NewLineF6cyUQp9NewLine")
+                .replace("\\'","SingleQuoteF6cyUQp9SingleQuote")
+                .replace("\\","\\\\")
+                .replace("BackslashF6cyUQp9Backslash","\\\\")
+                .replace("NewLineF6cyUQp9NewLine","\\n")
+                .replace("SingleQuoteF6cyUQp9SingleQuote","\\'")
+                .replace("'", "\'")
+                .replace("\0","");
+    }
+
+    private static String removeClickableExtras(String cht) {
+	    while (cht.contains("clickable(") && cht.contains(",") && cht.contains(")")) {
+	        String first = cht.substring(0, cht.indexOf("clickable("));
+	        String text = cht.substring(cht.indexOf("clickable(")+10, cht.indexOf(",", cht.indexOf("clickable(")));
+	        String last = cht.substring(cht.indexOf(")", cht.indexOf("clickable("))+1);
+	        cht = first + text + last;
+        }
+        return cht;
+    }
+
+    private static String removeHoverExtras(String cht) {
+        while (cht.contains("hover(") && cht.contains(",") && cht.contains(")")) {
+            String first = cht.substring(0, cht.indexOf("hover("));
+            String text = cht.substring(cht.indexOf("hover(")+6, cht.indexOf(",", cht.indexOf("hover(")));
+            String last = cht.substring(cht.indexOf(")", cht.indexOf("hover("))+1);
+            cht = first + text + last;
+        }
+        return cht;
+    }
+
+    private static String removeLinkExtras(String cht) {
+        while (cht.contains("{link[") && cht.contains("]stringCommaReplacementF6cyUQp9stringCommaReplacement[") && cht.contains("]}")) {
+            String first = cht.substring(0, cht.indexOf("{link["));
+            String text = cht.substring(cht.indexOf("{link[")+6, cht.indexOf("]stringCommaReplacementF6cyUQp9stringCommaReplacement[", cht.indexOf("{link[")));
+            String last = cht.substring(cht.indexOf("]}", cht.indexOf("{link["))+2);
+            cht = first + text + last;
+        }
+        return cht;
+    }
+
+    private static int getChatWidth(String cht) {
+	    if (cht.equals(" ")) {
+            return Minecraft.getMinecraft().fontRendererObj.getStringWidth(cht);
+        } else {
+            cht = removeClickableExtras(cht);
+            cht = removeHoverExtras(cht);
+            cht = removeLinkExtras(cht);
+            cht = removeExtras(cht);
+
+            return Minecraft.getMinecraft().fontRendererObj.getStringWidth(cht);
+        }
+    }
+
+	private static String center(String cht) {
+	    cht = cht.replaceAll("(?i)<center>", "");
+
+	    float chatWidth = getChatWidth(cht);
+        float fullWidth = Minecraft.getMinecraft().gameSettings.chatWidth * 320;
+
+        if (chatWidth < fullWidth) {
+            StringBuilder spaces = new StringBuilder();
+            float spaceWidth = getChatWidth(" ");
+            float centerWidth = (fullWidth - chatWidth) / 2;
+
+            int numberSpaces = round(centerWidth / spaceWidth);
+            for (int i = 0; i < numberSpaces; i++) {
+                spaces.append(" ");
+            }
+            return spaces + cht;
+        }
+        return cht;
+
+
     }
 
 	public static void warn(String color, String chat) {
 	    warn(color(color, chat));
     }
 	public static void warn(String cht) {
+	    if (cht.toUpperCase().contains("<CENTER>")) {
+	        cht = center(cht);
+        }
+
         //fix link
         cht = removeFormatting(cht);
         while (cht.contains("{link[") && cht.contains("]stringCommaReplacementF6cyUQp9stringCommaReplacement[") && cht.contains("]}")) {
@@ -88,7 +177,7 @@ public class ChatHandler {
             cht = cht.replace("{link[" + first + "]stringCommaReplacementF6cyUQp9stringCommaReplacement[" + second + "]}", "clickable("+prev_color+first+",open_url,"+deleteFormatting(second)+",open link)"+prev_color);
         }
 
-		cht = cht.replace("'('", "LeftParF6cyUQp9LeftPar")
+        cht = cht.replace("'('", "LeftParF6cyUQp9LeftPar")
                 .replace("')'", "RightParF6cyUQp9RightPar")
                 .replace("','", "CommaReplacementF6cyUQp9CommaReplacement")
                 .replace("'", "\\'")
@@ -147,34 +236,34 @@ public class ChatHandler {
             }
         }
 
-		cht = cht.replace("LeftParF6cyUQp9LeftPar", "(")
+        cht = cht.replace("LeftParF6cyUQp9LeftPar", "(")
                 .replace("RightParF6cyUQp9RightPar", ")")
                 .replace("CommaReplacementF6cyUQp9CommaReplacement", ",");
 
-		cht = addFormatting(cht);
+        cht = addFormatting(cht);
 
 
 
-		String TMP_o = "[\"\",";
-		TMP_o += "{\"text\":\"" +
-				cht.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
-					.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-					.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")
-                    .replace("stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement", "(")
-                    .replace("stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement", ")")
-                    .replace("AmpF6cyUQp9Amp","&")
-                    .replace("TripleDotF6cyUQp9TripleDot","...")
-                    .replace("\\n","NewLineF6cyUQp9NewLine")
-                    .replace("\\'","SingleQuoteF6cyUQp9SingleQuote")
-                    .replace("\\","\\\\")
-                    .replace("BackslashF6cyUQp9Backslash","\\\\")
-                    .replace("NewLineF6cyUQp9NewLine","\\n")
-                    .replace("SingleQuoteF6cyUQp9SingleQuote","\\'")
-                    .replace("'", "\'")
-                    .replace("\0","")
-				+  "\"}";
-		TMP_o += "]";
-		ITextComponent TMP_out = ITextComponent.Serializer.jsonToComponent(TMP_o);
+        String TMP_o = "[\"\",";
+        TMP_o += "{\"text\":\"" +
+                cht.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                        .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+                        .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")
+                        .replace("stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement", "(")
+                        .replace("stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement", ")")
+                        .replace("AmpF6cyUQp9Amp","&")
+                        .replace("TripleDotF6cyUQp9TripleDot","...")
+                        .replace("\\n","NewLineF6cyUQp9NewLine")
+                        .replace("\\'","SingleQuoteF6cyUQp9SingleQuote")
+                        .replace("\\","\\\\")
+                        .replace("BackslashF6cyUQp9Backslash","\\\\")
+                        .replace("NewLineF6cyUQp9NewLine","\\n")
+                        .replace("SingleQuoteF6cyUQp9SingleQuote","\\'")
+                        .replace("'", "\'")
+                        .replace("\0","")
+                +  "\"}";
+        TMP_o += "]";
+        ITextComponent TMP_out = ITextComponent.Serializer.jsonToComponent(TMP_o);
         try {
             Minecraft.getMinecraft().player.sendMessage(TMP_out);
         } catch (NullPointerException e) {
@@ -182,12 +271,12 @@ public class ChatHandler {
             //world probably isnt loaded
         }
 	}
-
+	
 	public static String color(String clr, String msg) {
 		String[] tmp = msg.split(" ");
 		StringBuilder formatted = new StringBuilder();
 		String chatColor = TextFormatting.WHITE.toString();
-
+		
 		if      (clr.trim().equalsIgnoreCase("&0") || clr.trim().equalsIgnoreCase("BLACK"))       {chatColor = TextFormatting.BLACK.toString();}
 		else if (clr.trim().equalsIgnoreCase("&1") || clr.trim().equalsIgnoreCase("DARKBLUE"))    {chatColor = TextFormatting.DARK_BLUE.toString();}
 		else if (clr.trim().equalsIgnoreCase("&2") || clr.trim().equalsIgnoreCase("DARKGREEN"))   {chatColor = TextFormatting.DARK_GREEN.toString();}
@@ -206,24 +295,24 @@ public class ChatHandler {
 		else if (clr.trim().equalsIgnoreCase("&f") || clr.trim().equalsIgnoreCase("WHITE"))       {chatColor = TextFormatting.WHITE.toString();}
 
 		for (String value : tmp) {formatted.append(chatColor).append(value).append(" ");}
-
+		
 		return formatted.toString().trim();
 	}
-
+	
 	public static void onClientTick() {
 		if (global.chatDelay <= 0) {
 			if (global.chatQueue.size() > 0) {
 				String cht = global.chatQueue.remove(0).replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
 						.replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
 						.replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
-
+				
 				Minecraft.getMinecraft().player.sendChatMessage(cht);
 				global.chatDelay = 20;
 			}
 		} else {
 			global.chatDelay--;
 		}
-
+		
 		if (global.commandQueue.size() > 0) {
 			String cht = global.commandQueue.remove(0);
 			if (cht.startsWith("trigger ") || (cht.startsWith("t "))) {
@@ -242,7 +331,7 @@ public class ChatHandler {
 			}
 		}
 	}
-
+	
 	public static String removeFormatting(String msg) {
 		return msg.replace(TextFormatting.BLACK.toString(), "&0")
 			.replace(TextFormatting.DARK_BLUE.toString(), "&1")
@@ -314,7 +403,7 @@ public class ChatHandler {
                 .replace("&o", "AmpF6cyUQp9Ampo")
                 .replace("&r", "AmpF6cyUQp9Ampr");
     }
-
+	
 	public static String addFormatting(String msg) {
 		return msg.replace("&0", TextFormatting.BLACK.toString())
 			.replace("&1", TextFormatting.DARK_BLUE.toString())

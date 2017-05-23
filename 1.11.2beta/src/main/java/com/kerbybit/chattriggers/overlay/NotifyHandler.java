@@ -69,11 +69,18 @@ public class NotifyHandler {
             }
         }
 
-        while (Minecraft.getSystemTime() >= sysTime + 6L) {
-            sysTime += 6L;
-            tickNotify();
+        if (global.worldIsLoaded) {
+            while (Minecraft.getSystemTime() >= sysTime + 6L) {
+                sysTime += 6L;
+                tickNotify();
+            }
+        } else {
+            sysTime = Minecraft.getSystemTime();
         }
+    }
 
+    public static void systimeResetNotify() {
+        sysTime = Minecraft.getSystemTime();
     }
 
     private static void tickNotify() {

@@ -19,7 +19,7 @@ public class CommandT extends CommandBase{
 
 	public int getRequiredPermissionLevel() {return 0;}
 
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) {processCommand(sender,args);}
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) {processCommand(sender,args);}
 	public void processCommand(ICommandSender sender, String[] args) {
         try {
             if (global.canUse) {

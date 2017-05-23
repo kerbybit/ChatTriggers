@@ -7,7 +7,10 @@ import com.kerbybit.chattriggers.objects.DisplayHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+
+import static net.minecraft.realms.RealmsMth.floor;
 
 public class KillfeedHandler {
     private static Minecraft MC = Minecraft.getMinecraft();
@@ -88,6 +91,7 @@ public class KillfeedHandler {
                         if (Settings.killfeedBackground) {
                             DisplayHandler.drawRect(x, y+i*10, x+ren.getStringWidth(global.killfeed.get(i)), (y+i*10)+10, bgcol);
                         }
+                        GlStateManager.enableBlend();
                         ren.drawStringWithShadow(global.killfeed.get(i), x, y + i * 10, col);
                     }
                 } else {
@@ -103,6 +107,7 @@ public class KillfeedHandler {
                         if (Settings.killfeedBackground) {
                             DisplayHandler.drawRect(x, y-i*10, x+ren.getStringWidth(global.killfeed.get(i)), (y-i*10)+10, bgcol);
                         }
+                        GlStateManager.enableBlend();
                         ren.drawStringWithShadow(global.killfeed.get(i), x, y - i * 10, col);
                     }
                 }
@@ -120,6 +125,7 @@ public class KillfeedHandler {
                         if (Settings.killfeedBackground) {
                             DisplayHandler.drawRect((x-ren.getStringWidth(global.killfeed.get(i))), y+i*10, (x-ren.getStringWidth(global.killfeed.get(i)))+ren.getStringWidth(global.killfeed.get(i)), (y+i*10)+10, bgcol);
                         }
+                        GlStateManager.enableBlend();
                         ren.drawStringWithShadow(global.killfeed.get(i), x - ren.getStringWidth(global.killfeed.get(i)), y + i * 10, col);
                     }
                 } else {
@@ -135,6 +141,7 @@ public class KillfeedHandler {
                         if (Settings.killfeedBackground) {
                             DisplayHandler.drawRect((x-ren.getStringWidth(global.killfeed.get(i))), y-i*10, (x-ren.getStringWidth(global.killfeed.get(i)))+ren.getStringWidth(global.killfeed.get(i)), (y-i*10)+10, bgcol);
                         }
+                        GlStateManager.enableBlend();
                         ren.drawStringWithShadow(global.killfeed.get(i), x - ren.getStringWidth(global.killfeed.get(i)), y - i * 10, col);
                     }
                 }
@@ -152,6 +159,7 @@ public class KillfeedHandler {
                         if (Settings.killfeedBackground) {
                             DisplayHandler.drawRect((x-ren.getStringWidth(global.killfeed.get(i))/2), y+i*10, (x-ren.getStringWidth(global.killfeed.get(i))/2)+ren.getStringWidth(global.killfeed.get(i)), (y+i*10)+10, bgcol);
                         }
+                        GlStateManager.enableBlend();
                         ren.drawStringWithShadow(global.killfeed.get(i), x - ren.getStringWidth(global.killfeed.get(i))/2, y + i * 10, col);
                     }
                 } else {
@@ -167,6 +175,7 @@ public class KillfeedHandler {
                         if (Settings.killfeedBackground) {
                             DisplayHandler.drawRect((x-ren.getStringWidth(global.killfeed.get(i))/2), y-i*10, (x-ren.getStringWidth(global.killfeed.get(i))/2)+ren.getStringWidth(global.killfeed.get(i)), (y-i*10)+10, bgcol);
                         }
+                        GlStateManager.enableBlend();
                         ren.drawStringWithShadow(global.killfeed.get(i), x - ren.getStringWidth(global.killfeed.get(i))/2, y - i * 10, col);
                     }
                 }

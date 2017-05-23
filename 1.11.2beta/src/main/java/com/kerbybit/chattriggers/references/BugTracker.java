@@ -1,6 +1,7 @@
 package com.kerbybit.chattriggers.references;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
+import com.kerbybit.chattriggers.commands.CommandTrigger;
 import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.triggers.EventsHandler;
@@ -114,7 +115,8 @@ public class BugTracker {
         } else if (type.equalsIgnoreCase("onClientTick")) {
             return "An unknown error has occured while executing \"&conClientTick&4\"";
         } else if (type.equalsIgnoreCase("async")) {
-            return "An unknown error has occured while executing \"async\"";
+            CommandTrigger.commandLoad();
+            return "An unknown error has occured while executing \"&casync&4\"";
         } else {
             return "An unknown error has occurred";
         }

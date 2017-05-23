@@ -74,9 +74,9 @@ public class ChatTriggers {
             }
 		}
 	}
-	
-	@SubscribeEvent
-	public void onRightClickPlayer(PlayerInteractEvent.EntityInteract e) {
+
+    @SubscribeEvent
+    public void onRightClickPlayer(PlayerInteractEvent.EntityInteract e) {
         try {
             if (global.canUse) {
                 if (e.getEntity().equals(Minecraft.getMinecraft().player)) {
@@ -88,7 +88,7 @@ public class ChatTriggers {
         } catch (Exception exception) {
             BugTracker.show(exception, "onRightClickPlayer");
         }
-	}
+    }
 	
 	@SubscribeEvent
 	public void onChat(ClientChatReceivedEvent e) throws IOException, ClassNotFoundException {
@@ -103,12 +103,9 @@ public class ChatTriggers {
 	
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load e) {
-        try {
-            if (global.canUse) {
-                global.worldLoaded=true;
-            }
-        } catch (Exception exception) {
-            BugTracker.show(exception, "onWorldLoad");
+        if (global.canUse) {
+            global.worldLoaded=true;
+            NotifyHandler.systimeResetNotify();
         }
 	}
 	
@@ -123,25 +120,31 @@ public class ChatTriggers {
 	@SubscribeEvent
 	public void RenderGameOverlayEvent(RenderGameOverlayEvent event) {
 		if (global.canUse) {
-            CommandReference.clickCalc();
+		    try {
+                CommandReference.clickCalc();
 
-			KillfeedHandler.drawKillfeed(event);
-			NotifyHandler.drawNotify(event);
-            DisplayHandler.drawDisplays(event);
+                KillfeedHandler.drawKillfeed(event);
+                NotifyHandler.drawNotify(event);
 
-			GuiTriggerList.openGui();
-            DisplayOverlay.openGui();
+                DisplayHandler.drawDisplays(event);
 
-			FileHandler.firstFileLoad();
 
-            try {
-                TriggerHandler.worldLoadTriggers();
-            } catch (NullPointerException e) {
-                //Catch for replay mod
+                GuiTriggerList.openGui();
+                DisplayOverlay.openGui();
+
+                FileHandler.firstFileLoad();
+
+                try {
+                    TriggerHandler.worldLoadTriggers();
+                } catch (NullPointerException e) {
+                    //Catch for replay mod
+                }
+
+                TriggerHandler.newDayTriggers();
+                global.worldLoaded=false;
+		    } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            TriggerHandler.newDayTriggers();
-            global.worldLoaded=false;
         }
 	}
 
@@ -149,8 +152,8 @@ public class ChatTriggers {
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent e) throws ClassNotFoundException {
 		if (global.canUse) {
+
 			KillfeedHandler.tickKillfeed();
-			//OverlayHandler.tickNotify();
 
 			FileHandler.tickImports();
 
@@ -167,7 +170,7 @@ public class ChatTriggers {
             }
 
             EventsHandler.eventTick();
-            global.ticksElapsed += 1;
+            global.ticksElapsed++;
 
 			ChatHandler.onClientTick();
 		} else {
@@ -178,7 +181,7 @@ public class ChatTriggers {
 	@SubscribeEvent
     public void onMouseClicked(MouseEvent e) {
 	    if (e.getButton() == 0 && e.isButtonstate()) {
-            global.clicks++;
+            global.clicks.add(20);
         }
         if (e.getButton() == 1 && e.isButtonstate()) {
 	        global.rclicks++;

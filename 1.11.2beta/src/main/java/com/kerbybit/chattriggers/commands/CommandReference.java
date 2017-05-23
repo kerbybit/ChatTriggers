@@ -9,8 +9,7 @@ import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
-import com.kerbybit.chattriggers.objects.ListHandler;
-import com.kerbybit.chattriggers.objects.NewJsonHandler;
+import com.kerbybit.chattriggers.references.AsyncHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -18,7 +17,7 @@ public class CommandReference {
     static void clearAll() {
         global.waitEvents.clear();
         global.waitTime.clear();
-        global.asyncMap.clear();
+        AsyncHandler.clearAsyncs();
         global.backupTMP_strings.clear();
         global.backupUSR_strings.clear();
         global.killfeed.clear();
@@ -26,13 +25,10 @@ public class CommandReference {
         global.notify.clear();
         global.notifyAnimation.clear();
         DisplayHandler.clearDisplays();
-        ListHandler.clearLists();
-        NewJsonHandler.clearJsons();
     }
 
-	public static void resetAll() {
+	static void resetAll() {
 		ChatHandler.warn(ChatHandler.color("red", "Resetting everything in attempt to fix things"));
-		clearAll();
 		CommandTrigger.commandLoad();
 		ChatHandler.warn(ChatHandler.color("green", "Reset completed"));
 	}
@@ -95,7 +91,9 @@ public class CommandReference {
 	public static void addToTriggerList(List<String> tmp_list) {
 		if (tmp_list.get(0).equalsIgnoreCase("CHAT")) {
 			global.chatTrigger.add(tmp_list);
-		} else if (tmp_list.get(0).toUpperCase().startsWith("ONCLIENTTICK")) {
+		} else if (tmp_list.get(0).equalsIgnoreCase("ACTIONBAR")) {
+		    global.actionTrigger.add(tmp_list);
+        } else if (tmp_list.get(0).toUpperCase().startsWith("ONCLIENTTICK")) {
 			global.tickTrigger.add(tmp_list);
 			if (tmp_list.get(0).equalsIgnoreCase("ONCLIENTTICK")) {
 				global.tickTriggerTime.add(1);
@@ -143,10 +141,10 @@ public class CommandReference {
         List<String> r = new ArrayList<String>();
 
             r.add("chat");
+            r.add("actionbar");
             r.add("cancel");
             r.add("killfeed");
             r.add("notify");
-            r.add("actionbar");
             r.add("sound");
             r.add("");
             r.add("trigger");
@@ -178,7 +176,6 @@ public class CommandReference {
         r.add("cancel");
         r.add("killfeed");
         r.add("notify");
-        r.add("actionbar");
         r.add("sound");
         r.add("trigger");
         r.add("copy");
@@ -304,14 +301,14 @@ public class CommandReference {
     static List<String> getListFunctions() {
         List<String> r = new ArrayList<String>();
 
-            r.add(".load($value) .load($file) .load($URL)");
+            r.add(".load($v) .load($file) .load($URL)");
             r.add(".export($file)");
             r.add(".size()");
-            r.add(".add($value)");
-            r.add(".get($value)");
-            r.add(".has($value)");
+            r.add(".add($v)");
+            r.add(".get($v) .get($n)");
+            r.add(".has($v)");
             r.add(".getRandom()");
-            r.add(".remove($index) .remove($value)");
+            r.add(".remove($n) .remove($v)");
             r.add(".clear()");
 
         return r;
@@ -321,10 +318,10 @@ public class CommandReference {
         List<String> r = new ArrayList<String>();
 
             r.add(".clear()");
-            r.add(".load($value) .load($file) .load($URL)");
-            r.add(".get($value)");
-            r.add(".getKeys($value)");
-            r.add(".getValues($value)");
+            r.add(".load($v) .load($file) .load($URL)");
+            r.add(".get($v)");
+            r.add(".getKeys($v)");
+            r.add(".getValues($v)");
 
         return r;
     }
@@ -348,32 +345,58 @@ public class CommandReference {
             if (player == null) {
                 return "" + Minecraft.getMinecraft().getCurrentServerData().pingToServer;
             }
-            return "" + Minecraft.getMinecraft().getCurrentServerData().pingToServer;
-        } catch(NullPointerException e) {
+            if (Minecraft.getMinecraft().getConnection().getPlayerInfo(UUID.fromString(Minecraft.getMinecraft().player.getGameProfile().getId().toString())) != null) {
+                return "" + Minecraft.getMinecraft().getConnection().getPlayerInfo(UUID.fromString(Minecraft.getMinecraft().player.getGameProfile().getId().toString())).getResponseTime();
+            }
+        } catch (NullPointerException e) {
             return "null";
         }
+        return "" + Minecraft.getMinecraft().getCurrentServerData().pingToServer;
     }
 
     private static Long sysTime = Minecraft.getSystemTime();
+    private static Long secSysTime = Minecraft.getSystemTime();
     //run on render
     public static void clickCalc() {
+
+        while (Minecraft.getSystemTime() > secSysTime + 50L) {
+            secSysTime += 50L;
+
+            if (global.clicks.size() > 0) {
+                for (int i=0; i<global.clicks.size(); i++) {
+                    global.clicks.set(i, global.clicks.get(i)-1);
+                    if (global.clicks.get(i) == 0) {
+                        global.clicks.remove(i);
+                    }
+                }
+            }
+
+            global.clicks_ave.add((double) global.clicks.size());
+            global.rclicks_ave.add(global.rclicks);
+            if (global.clicks.size() > global.clicks_max) {
+                global.clicks_max = global.clicks.size();
+            }
+            if (global.clicks_ave.size() > 100) {
+                global.clicks_ave.remove(0);
+            }
+            if (global.clicks_ave.size() > 0) {
+                if (global.clicks_ave.get(global.clicks_ave.size() - 1) == 0) {
+                    global.clicks_ave.clear();
+                    global.clicks_max = 0;
+                }
+            }
+        }
+
         while (Minecraft.getSystemTime() > sysTime + 1000L) {
             sysTime += 1000L;
-            global.clicks_ave.add(global.clicks);
-            global.rclicks_ave.add(global.rclicks);
-            if (global.clicks > global.clicks_max) {
-                global.clicks_max = global.clicks;
+
+            global.rclicks = 0.0;
+
+            if (global.rclicks_ave.size() > 10) {
+                global.rclicks_ave.remove(0);
             }
             if (global.rclicks > global.rclicks_max) {
                 global.rclicks_max = global.rclicks;
-            }
-            global.clicks = 0.0;
-            global.rclicks = 0.0;
-            if (global.clicks_ave.size() > 10) {
-                global.clicks_ave.remove(0);
-            }
-            if (global.rclicks_ave.size() > 10) {
-                global.rclicks_ave.remove(0);
             }
         }
     }

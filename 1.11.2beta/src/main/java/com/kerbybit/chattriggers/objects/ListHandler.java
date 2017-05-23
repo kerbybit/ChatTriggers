@@ -3,7 +3,7 @@ package com.kerbybit.chattriggers.objects;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.triggers.EventsHandler;
-import com.kerbybit.chattriggers.triggers.StringHandler;
+import com.kerbybit.chattriggers.triggers.StringFunctions;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -33,6 +33,10 @@ public class ListHandler {
 
     private static ArrayList<String> getListFromFile(String dest) {
         try {
+            if (!dest.contains("/")) {
+                dest = "./mods/ChatTriggers/"+dest;
+            }
+
             StringBuilder listString = new StringBuilder();
             String line;
             BufferedReader bufferedReader;
@@ -98,6 +102,7 @@ public class ListHandler {
             if (value.equals("[]")) {
                 return null;
             } else {
+                value = value.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",");
                 String[] list = value.substring(1, value.length()-1).split(",");
                 return new ArrayList<String>(Arrays.asList(list));
             }
@@ -176,23 +181,58 @@ public class ListHandler {
         }
     }
 
-    private static String getValue(String list_name, int position) {
-        if (lists.containsKey(list_name)) {
-            List<String> entries = lists.get(list_name);
-            if (position < entries.size() && position >= 0) {
-                return entries.get(position);
+    private static String setInList(String list_name, String value) {
+        List<String> list_object = getListObject(list_name);
+
+        if (list_object != null) {
+
+            if (value.contains(",")) {
+                String position_string = value.substring(0, value.indexOf(","));
+                String new_value = value.substring(value.indexOf(",")+1);
+                System.out.println(position_string + " " + new_value);
+
+                try {
+                    list_object.set(Integer.parseInt(position_string), new_value);
+                    lists.put(list_name, list_object);
+                    return getList(list_name);
+                } catch(NumberFormatException e) {
+                    return getList(list_name);
+                }
             } else {
-                return "Index out of bounds";
+                list_object.set(list_object.size()-1, value);
+                lists.put(list_name, list_object);
+                return getList(list_name);
             }
         } else {
-            return "Not a list";
+            lists.put(list_name, Collections.singletonList(value));
+            return getList(list_name);
+        }
+    }
+
+    private static String getValue(String list_name, int position) throws NumberFormatException {
+        List<String> entries = lists.get(list_name);
+        if (position < entries.size() && position >= 0) {
+            return entries.get(position);
+        } else {
+            throw new NumberFormatException();
         }
     }
 
     private static String getHasValue(String list_name, String value) {
+        return getHasValue(list_name, value, false);
+    }
+    private static String getHasValue(String list_name, String value, Boolean ignoreCase) {
         if (lists.containsKey(list_name)) {
-            if (lists.get(list_name).contains(value)) {
-                return "true";
+            if (ignoreCase) {
+                for (String element : lists.get(list_name)) {
+                    if (element.equalsIgnoreCase(value)) {
+                        return "true";
+                    }
+                }
+            } else {
+                if (lists.get(list_name).contains(value)) {
+                    return "true";
+                }
             }
         }
         return "false";
@@ -214,13 +254,13 @@ public class ListHandler {
                     i++;
                 }
                 if (position == -1) {
-                    return "Not in list";
+                    return "Index out of bounds";
                 } else {
                     return position+"";
                 }
             }
         } else {
-            return "Not a list";
+            return "Empty list";
         }
     }
 
@@ -230,7 +270,7 @@ public class ListHandler {
             int randInt = EventsHandler.randInt(0, list.size()-1);
             return list.get(randInt);
         } else {
-            return "Not a list";
+            return "Empty list";
         }
     }
 
@@ -242,18 +282,18 @@ public class ListHandler {
         }
     }
 
-    private static String removeValue(String list_name, int position) {
-        if (lists.containsKey(list_name)) {
-            List<String> entries = lists.get(list_name);
-            if (position < entries.size() && position >= 0) {
-                String removed = entries.remove(position);
-                lists.put(list_name, entries);
-                return removed;
+    private static String removeValue(String list_name, int position) throws NumberFormatException {
+        List<String> entries = lists.get(list_name);
+        if (position < entries.size() && position >= 0) {
+            String removed = entries.remove(position);
+            if (entries.size() == 0) {
+                lists.remove(list_name);
             } else {
-                return "Index out of bounds";
+                lists.put(list_name, entries);
             }
+            return removed;
         } else {
-            return "Not a list";
+            throw new NumberFormatException();
         }
     }
 
@@ -274,15 +314,26 @@ public class ListHandler {
                     i++;
                 }
                 if (position == -1) {
-                    return "Not in list";
+                    return "Index out of bounds";
                 } else {
-                    entries.remove(position);
-                    lists.put(list_name, entries);
+                    if (entries.size() == 1) {
+                        lists.remove(list_name);
+                    } else {
+                        entries.remove(position);
+                        lists.put(list_name, entries);
+                    }
                     return position+"";
                 }
             }
         } else {
-            return "Not a list";
+            return "Empty list";
+        }
+    }
+
+    private static void sortList(String list_name) {
+        if (lists.containsKey(list_name)) {
+            List<String> list = lists.get(list_name);
+            Collections.sort(list);
         }
     }
 
@@ -292,7 +343,7 @@ public class ListHandler {
             lists.remove(list_name);
             return return_string;
         } else {
-            return "Not a list";
+            return "Empty list";
         }
     }
 
@@ -300,7 +351,7 @@ public class ListHandler {
         lists.clear();
     }
 
-    public static String listFunctions(String TMP_e) {
+    public static String listFunctions(String TMP_e, Boolean isAsync) {
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.load(") && TMP_e.contains(")")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{list[")+6, TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list[")));
             String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list["))+8, TMP_e.indexOf(")", TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list["))));
@@ -313,8 +364,7 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
-            get_value = listFunctions(get_value);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
             getList(get_name, get_value);
 
@@ -333,8 +383,7 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
-            get_value = listFunctions(get_value);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
             saveListToFile(get_name, get_value);
 
@@ -347,7 +396,18 @@ public class ListHandler {
                 get_name = get_name.substring(get_name.indexOf("{list[")+6);
             }
 
-            TMP_e = createDefaultString("size", get_name, getSize(get_name), TMP_e);
+            TMP_e = createDefaultString("size", get_name, getSize(get_name), TMP_e, isAsync);
+        }
+
+        while(TMP_e.contains("{list[") && TMP_e.contains("]}.sort()")) {
+            String get_name = TMP_e.substring(TMP_e.indexOf("{list[") + 6, TMP_e.indexOf("]}.sort()", TMP_e.indexOf("{list[")));
+            while (get_name.contains("{list[")) {
+                get_name = get_name.substring(get_name.indexOf("{list[")+6);
+            }
+
+            sortList(get_name);
+
+            TMP_e = TMP_e.replace("{list["+get_name+"]}.sort()", "{list["+get_name+"]}");
         }
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.add(") && TMP_e.contains(")")) {
@@ -362,10 +422,26 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
-            get_value = listFunctions(get_value);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
-            TMP_e = createDefaultString("add", get_name, get_prevalue, addToList(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("add", get_name, get_prevalue, addToList(get_name, get_value), TMP_e, isAsync);
+        }
+
+        while (TMP_e.contains("{list[") && TMP_e.contains("]}.set(") && TMP_e.contains(")")) {
+            String get_name = TMP_e.substring(TMP_e.indexOf("{list[")+6, TMP_e.indexOf("]}.set(", TMP_e.indexOf("{list[")));
+            String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.set(", TMP_e.indexOf("{list["))+7, TMP_e.indexOf(")", TMP_e.indexOf("]}.set(", TMP_e.indexOf("{list["))));
+            while (get_name.contains("{list[")) {
+                get_name = get_name.substring(get_name.indexOf("{list[")+6);
+            }
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.set(", TMP_e.indexOf("{list["))+7);
+            while (get_prevalue.contains("(")) {
+                temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
+                get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
+            }
+            get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
+
+            TMP_e = createDefaultString("set", get_name, get_prevalue, setInList(get_name, get_value), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) {
@@ -380,10 +456,9 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
-            get_value = listFunctions(get_value);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
-            TMP_e = createDefaultString("get", get_name, get_prevalue, getValue(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("get", get_name, get_prevalue, getValue(get_name, get_value), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.has(") && TMP_e.contains(")")) {
@@ -398,10 +473,25 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
-            get_value = listFunctions(get_value);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
-            TMP_e = createDefaultString("has", get_name, get_prevalue, getHasValue(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("has", get_name, get_prevalue, getHasValue(get_name, get_value), TMP_e, isAsync);
+        }
+        while (TMP_e.contains("{list[") && TMP_e.contains("]}.hasIgnoreCase(") && TMP_e.contains(")")) {
+            String get_name = TMP_e.substring(TMP_e.indexOf("{list[")+6, TMP_e.indexOf("]}.hasIgnoreCase(", TMP_e.indexOf("{list[")));
+            String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.hasIgnoreCase(", TMP_e.indexOf("{list["))+17, TMP_e.indexOf(")", TMP_e.indexOf("]}.hasIgnoreCase(", TMP_e.indexOf("{list["))));
+            while (get_name.contains("{list[")) {
+                get_name = get_name.substring(get_name.indexOf("{list[")+6);
+            }
+            String temp_search = TMP_e.substring(TMP_e.indexOf("]}.hasIgnoreCase(", TMP_e.indexOf("{list["))+17);
+            while (get_prevalue.contains("(")) {
+                temp_search = temp_search.replaceFirst("\\(","tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)","tempCloseBreacketF6cyUQp9tempCloseBracket");
+                get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
+            }
+            get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
+
+            TMP_e = createDefaultString("hasIgnoreCase", get_name, get_prevalue, getHasValue(get_name, get_value, true), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.getRandom()")) {
@@ -410,7 +500,7 @@ public class ListHandler {
                 get_name = get_name.substring(get_name.indexOf("{list[")+6);
             }
 
-            TMP_e = createDefaultString("getRandom", get_name, getRandomValue(get_name), TMP_e);
+            TMP_e = createDefaultString("getRandom", get_name, getRandomValue(get_name), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.remove(") && TMP_e.contains(")")) {
@@ -425,10 +515,9 @@ public class ListHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket","(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket",")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
-            get_value = listFunctions(get_value);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
-            TMP_e = createDefaultString("remove", get_name, get_prevalue, removeValue(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("remove", get_name, get_prevalue, removeValue(get_name, get_value), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.clear()")) {
@@ -437,7 +526,7 @@ public class ListHandler {
                 get_name = get_name.substring(get_name.indexOf("{list[")+6);
             }
 
-            TMP_e = createDefaultString("clear", get_name, clearList(get_name), TMP_e);
+            TMP_e = createDefaultString("clear", get_name, clearList(get_name), TMP_e, isAsync);
         }
 
 
@@ -447,34 +536,43 @@ public class ListHandler {
                 get_name = get_name.substring(get_name.indexOf("{list[")+6);
             }
 
-            TMP_e = createDefaultString(get_name, TMP_e);
+            TMP_e = createDefaultString(get_name, TMP_e, isAsync);
         }
 
         return TMP_e;
     }
 
-    private static String createDefaultString(String function_name, String list_name, String arguments, String value, String TMP_e) {
-        List<String> temporary = new ArrayList<String>();
-        temporary.add("ListToString->"+list_name+function_name.toUpperCase()+"-"+(global.TMP_string.size()+1));
-        temporary.add(value);
-        global.TMP_string.add(temporary);
-        global.backupTMP_strings.add(temporary);
-
-        return TMP_e.replace("{list["+list_name+"]}."+function_name+"("+arguments+")", "{string[ListToString->"+list_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
+    private static String createDefaultString(String function_name, String list_name, String arguments, String value, String TMP_e, Boolean isAsync) {
+        if (isAsync) {
+            global.Async_string.put("AsyncListToString->" + list_name + function_name.toUpperCase() + "-" + (global.Async_string.size() + 1), value);
+            return TMP_e.replace("{list["+list_name+"]}."+function_name+"("+arguments+")", "{string[AsyncListToString->"+list_name+function_name.toUpperCase()+"-"+global.Async_string.size()+"]}");
+        } else {
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("ListToString->" + list_name + function_name.toUpperCase() + "-" + (global.TMP_string.size() + 1));
+            temporary.add(value);
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+            return TMP_e.replace("{list["+list_name+"]}."+function_name+"("+arguments+")", "{string[ListToString->"+list_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
+        }
     }
 
-    private static String createDefaultString(String function_name, String list_name, String value, String TMP_e) {
-        return createDefaultString(function_name, list_name, "", value, TMP_e);
+    private static String createDefaultString(String function_name, String list_name, String value, String TMP_e, Boolean isAsync) {
+        return createDefaultString(function_name, list_name, "", value, TMP_e, isAsync);
     }
 
-    private static String createDefaultString(String list_name, String TMP_e) {
-        List<String> temporary = new ArrayList<String>();
-        temporary.add("ListToString->"+list_name+"LITERAL"+"-"+(global.TMP_string.size()+1));
-        temporary.add(getList(list_name));
-        global.TMP_string.add(temporary);
-        global.backupTMP_strings.add(temporary);
-
-        return TMP_e.replace("{list["+list_name+"]}", "{string[ListToString->"+list_name+"LITERAL"+"-"+global.TMP_string.size()+"]}");
+    private static String createDefaultString(String list_name, String TMP_e, Boolean isAsync) {
+        if (isAsync) {
+            global.Async_string.put("AsyncListToString->" + list_name + "LITERAL" + "-" + (global.Async_string.size() + 1), getList(list_name));
+            global.backupAsync_string.put("AsyncListToString->" + list_name + "LITERAL" + "-" + global.Async_string.size(), getList(list_name));
+            return TMP_e.replace("{list[" + list_name + "]}", "{string[AsyncListToString->" + list_name + "LITERAL" + "-" + global.Async_string.size() + "]}");
+        } else {
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("ListToString->" + list_name + "LITERAL" + "-" + (global.TMP_string.size() + 1));
+            temporary.add(getList(list_name));
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+            return TMP_e.replace("{list[" + list_name + "]}", "{string[ListToString->" + list_name + "LITERAL" + "-" + global.TMP_string.size() + "]}");
+        }
     }
 
     public static int getListsSize() {

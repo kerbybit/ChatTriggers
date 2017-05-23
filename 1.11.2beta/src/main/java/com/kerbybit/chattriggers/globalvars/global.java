@@ -26,9 +26,9 @@ public class global {
     public static String fpsmedcol = "&e";
     public static String fpshighcol = "&a";
 
-    public static Double clicks = 0.0;
+    public static List<Integer> clicks = new ArrayList<Integer>();
     public static List<Double> clicks_ave = new ArrayList<Double>();
-    public static Double clicks_max = 0.0;
+    public static Integer clicks_max = 0;
 
     public static Double rclicks = 0.0;
     public static List<Double> rclicks_ave = new ArrayList<Double>();
@@ -47,6 +47,8 @@ public class global {
     public static String bugLastEvent = "";
 	
 	public static List<String> chatHistory = new ArrayList<String>();
+	public static List<String> actionHistory = new ArrayList<String>();
+
 	public static int tick = 0;
 	public static int ticksElapsed = 0;
 	public static List<String> chatQueue = new ArrayList<String>();
@@ -82,6 +84,7 @@ public class global {
 	////////////////////////////////////////////////////
 	public static List<List<String>> trigger = new ArrayList<List<String>>();
 	public static List<List<String>> chatTrigger = new ArrayList<List<String>>();
+	public static List<List<String>> actionTrigger = new ArrayList<List<String>>();
 	public static List<List<String>> tickTrigger = new ArrayList<List<String>>();
 	public static List<Integer> tickTriggerTime = new ArrayList<Integer>();
 	public static List<List<String>> onWorldLoadTrigger = new ArrayList<List<String>>();
@@ -101,6 +104,8 @@ public class global {
 	/////////////////////////////////////////////////////
 	public static List<List<String>> USR_string = new ArrayList<List<String>>();
 	public static List<List<String>> TMP_string = new ArrayList<List<String>>();
+	public static Map<String, String> Async_string = new HashMap<String, String>();
+	public static Map<String, String> backupAsync_string = new HashMap<String, String>();
 	public static List<List<String>> backupUSR_strings = new ArrayList<List<String>>();
 	public static List<List<String>> backupTMP_strings = new ArrayList<List<String>>();
 	public static List<String> temporary_replace = new ArrayList<String>();

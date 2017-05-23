@@ -1,20 +1,20 @@
 package com.kerbybit.chattriggers.objects;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
-import com.kerbybit.chattriggers.file.JsonHandler;
+import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.triggers.EventsHandler;
 import com.kerbybit.chattriggers.triggers.StringHandler;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class ArrayHandler {
-    public static List<List<String>> USR_array = new ArrayList<List<String>>();
+    private static List<List<String>> USR_array = new ArrayList<List<String>>();
 
     public static List<List<String>> getArrays() {
         return USR_array;
@@ -24,7 +24,7 @@ public class ArrayHandler {
         return USR_array.size();
     }
 
-	public static String arrayFunctions(String TMP_e, ClientChatReceivedEvent chatEvent) {
+	public static String arrayFunctions(String TMP_e, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
 	    while (TMP_e.contains("{array[") && TMP_e.contains("]}.getRandom()")) {
 	        String get_name = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.getRandom()", TMP_e.indexOf("{array[")));
 	        while (get_name.contains("{array[")) {
@@ -64,7 +64,7 @@ public class ArrayHandler {
 			Boolean isArray = false;
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
 			String[] args = checkTo.split(",");
@@ -111,7 +111,7 @@ public class ArrayHandler {
             int where = -1;
 
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 
             if (checkTo.contains(",")) {
@@ -155,7 +155,7 @@ public class ArrayHandler {
             Boolean isArray = false;
 
             if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-                checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+                checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
             }
 
             for (int j=0; j<USR_array.size(); j++) {
@@ -185,7 +185,7 @@ public class ArrayHandler {
 			String returnString = checkFrom + " is not an array!";
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
 			for (int j=0; j<USR_array.size(); j++) {
@@ -209,7 +209,7 @@ public class ArrayHandler {
 			String checkThis = "false";
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
 			for (int j=0; j<USR_array.size(); j++) {
@@ -234,7 +234,7 @@ public class ArrayHandler {
 			String checkThis = "false";
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
 			for (int j=0; j<USR_array.size(); j++) {
@@ -262,7 +262,7 @@ public class ArrayHandler {
 			String returnString = checkFrom + " is not an array!";
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
 			try {
@@ -310,7 +310,7 @@ public class ArrayHandler {
 			String returnString = checkFrom + " is not an array!";
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
 			try {
@@ -351,7 +351,7 @@ public class ArrayHandler {
 			int arraysize = 0;
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
 			for (int j=0; j<USR_array.size(); j++) {
@@ -372,10 +372,10 @@ public class ArrayHandler {
 			String checkTo = TMP_e.substring(TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile("))+1, TMP_e.indexOf(")", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonFile("+checkFile+",")));
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
-			String checkJson = JsonHandler.importJsonFile("array",checkFile, checkFrom+"=>"+checkTo);
+			String checkJson = importJsonFile("array",checkFile, checkFrom+"=>"+checkTo);
 			
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("ArrayToString->"+checkFrom+"IMPORTJSONFILE"+checkTo+"FROM"+checkFile+"-"+(global.TMP_string.size()+1));
@@ -391,10 +391,10 @@ public class ArrayHandler {
 			String checkTo = TMP_e.substring(TMP_e.indexOf(",", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL("))+1, TMP_e.indexOf(")", TMP_e.indexOf("{array["+checkFrom+"]}.importJsonURL("+checkFile+",")));
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
-			String checkJson = JsonHandler.importJsonURL("array",checkFile, checkFrom + "=>" + checkTo);
+			String checkJson = importJsonURL("array",checkFile, checkFrom + "=>" + checkTo);
 			
 			List<String> temporary = new ArrayList<String>();
 			temporary.add("ArrayToString->"+checkFrom+"IMPORTJSONURL"+checkTo+"FROM"+checkFile+"-"+(global.TMP_string.size()+1));
@@ -410,11 +410,11 @@ public class ArrayHandler {
 			String returnString;
 			
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
-				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent);
+				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
 			if (checkTo.contains(",")) {
-				try {returnString = JsonHandler.exportJsonFile(checkTo.substring(0, checkTo.indexOf(",")), checkFrom, checkTo.substring(checkTo.indexOf(",")+1));} 
+				try {returnString = exportJsonFile(checkTo.substring(0, checkTo.indexOf(",")), checkFrom, checkTo.substring(checkTo.indexOf(",")+1));}
 				catch (FileNotFoundException e) {returnString = "File not found and could not be created!";} 
 				catch (UnsupportedEncodingException e) {returnString = "File could not be saved!";} 
 				catch (IOException e) {returnString = "File could not be saved!";}
@@ -430,4 +430,251 @@ public class ArrayHandler {
 		
 		return TMP_e;
 	}
+
+    public static HashMap<String, String> jsonURL = new HashMap<String, String>();
+
+    public static String exportJsonFile(String fileName, String arrayName, String nodeName) throws IOException {
+        StringBuilder returnString = new StringBuilder();
+        int arrayNum = -1;
+
+        for (int i = 0; i< ArrayHandler.getArraysSize(); i++) {
+            if (arrayName.equals(ArrayHandler.USR_array.get(i).get(0))) {
+                arrayNum = i;
+            }
+        }
+
+        File dir = new File(fileName);
+        if (!dir.exists()) {if (!dir.createNewFile()) {
+            ChatHandler.warn(ChatHandler.color("red","Unable to create file!"));}}
+
+        PrintWriter writer = new PrintWriter(fileName,"UTF-8");
+
+        if (arrayNum==-1) {
+            writer.println("{");
+            writer.println("}");
+            returnString.append("{}");
+        } else {
+            writer.println("{");
+            returnString.append("{");
+            for (int i=1; i<ArrayHandler.USR_array.get(arrayNum).size(); i++) {
+                String hasComma = "";
+                if (i!=ArrayHandler.USR_array.get(arrayNum).size()-1) {hasComma = ",";}
+                nodeName = nodeName.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                        .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+                        .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
+                String nodeValue = ArrayHandler.USR_array.get(arrayNum).get(i).replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                        .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+                        .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")");
+                writer.println("     \""+nodeName+"\":\""+nodeValue+"\""+hasComma);
+                returnString.append("\"").append(nodeName).append("\":\"").append(nodeValue).append("\"").append(hasComma);
+            }
+            writer.println("}");
+            returnString.append("}");
+        }
+        writer.close();
+
+        return returnString.toString();
+    }
+
+    public static String importJsonFile(String type, String fileName, String toImport) {
+        StringBuilder returnString = new StringBuilder("Something went wrong!");
+        try {
+            List<String> lines = new ArrayList<String>();
+            String line;
+            BufferedReader bufferedReader;
+            bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName),"UTF-8"));
+            while ((line = bufferedReader.readLine()) != null) {
+                lines.add(line);
+            }
+            bufferedReader.close();
+
+            StringBuilder jsonStringBuilder = new StringBuilder();
+            for (String value : lines) {jsonStringBuilder.append(value);}
+            String jsonString = jsonStringBuilder.toString().replace("[", "openSquareF6cyUQp9openSquare").replace("]", "closeSquareF6cyUQp9closeSquare")
+                    .replace("+", "plusF6cyUQp9plus").replace("-", "minusF6cyUQp9minus").replace("*", "timesF6cyUQp9times");
+
+            if (toImport.contains("=>")) {
+                if (type.equalsIgnoreCase("ARRAY")) {
+                    String arrayToSave = toImport.substring(0,toImport.indexOf("=>"));
+
+                    int whatArray = -1;
+                    for (int i=0; i<ArrayHandler.USR_array.size(); i++) {
+                        if (arrayToSave.equals(ArrayHandler.USR_array.get(i).get(0))) {
+                            whatArray = i;
+                        }
+                    }
+
+                    if (whatArray == -1) {
+                        List<String> temporary = new ArrayList<String>();
+                        temporary.add(arrayToSave);
+                        ArrayHandler.USR_array.add(temporary);
+                        whatArray = ArrayHandler.USR_array.size()-1;
+                    }
+
+                    String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+
+                    String check = "\""+jsonGet+"\""+":\"";
+                    if (jsonString.contains(check)) {
+                        returnString = new StringBuilder("[");
+                        while (jsonString.contains(check)) {
+                            String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+                            ArrayHandler.USR_array.get(whatArray).add(jsonGot.replace("openSquareF6cyUQp9openSquare","[").replace("closeSquareF6cyUQp9closeSquare","]")
+                                    .replace("plusF6cyUQp9plus", "+").replace("minusF6cyUQp9minus", "-").replace("timesF6cyUQp9times", "*"));
+                            jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
+                            returnString.append(jsonGot).append(",");
+                        }
+                        returnString = new StringBuilder(returnString.substring(0,returnString.length()-1)+"]");
+                    } else {
+                        returnString = new StringBuilder("No "+jsonGet+" in json!");
+                    }
+                } else if (type.equalsIgnoreCase("STRING")) {
+                    String stringToSave = toImport.substring(0,toImport.indexOf("=>"));
+
+                    for (int i=0; i<global.USR_string.size(); i++) {
+                        if (stringToSave.equals(global.USR_string.get(i).get(0))) {
+                            String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+
+                            String check = "\""+jsonGet+"\":\"";
+                            if (jsonString.contains(check)) {
+                                String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+                                global.USR_string.get(i).set(1, jsonGot);
+                                returnString = new StringBuilder(jsonGot);
+                            }
+                        }
+                    }
+                    for (int i=0; i<global.TMP_string.size(); i++) {
+                        if (stringToSave.equals(global.TMP_string.get(i).get(0))) {
+                            String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+
+                            String check = "\""+jsonGet+"\":\"";
+                            if (jsonString.contains(check)) {
+                                String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+                                global.TMP_string.get(i).set(1, jsonGot);
+                                returnString = new StringBuilder(jsonGot);
+                            }
+                        }
+                    }
+                }
+            } else {
+                returnString = new StringBuilder("No array! use 'array=>nodes'");
+            }
+        } catch (UnsupportedEncodingException e) {
+            returnString = new StringBuilder("Unsupported encoding!");
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            returnString = new StringBuilder("File not found!");
+            e.printStackTrace();
+        } catch (IOException e) {
+            returnString = new StringBuilder("IO exception!");
+            e.printStackTrace();
+        }
+        return returnString.toString();
+    }
+
+    public static String importJsonURL(String type, String url, String toImport) {
+        StringBuilder returnString = new StringBuilder("Something went wrong!");
+        StringBuilder jsonStringBuilder = new StringBuilder();
+
+        if (jsonURL.containsKey(url)) {
+            jsonStringBuilder = new StringBuilder(jsonURL.get(url));
+        } else {
+            try {
+                URL web = new URL(url);
+                InputStream fis = web.openStream();
+                List<String> lines = new ArrayList<String>();
+                String line;
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
+                while ((line = bufferedReader.readLine()) != null) {
+                    lines.add(line);
+                }
+                bufferedReader.close();
+
+
+                for (String value : lines) {jsonStringBuilder.append(value);}
+                jsonStringBuilder = new StringBuilder(jsonStringBuilder.toString().replace("[", "openSquareF6cyUQp9openSquare").replace("]", "closeSquareF6cyUQp9closeSquare")
+                        .replace("+", "plusF6cyUQp9plus").replace("-", "minusF6cyUQp9minus"));
+                jsonURL.put(url, jsonStringBuilder.toString());
+
+            } catch (UnsupportedEncodingException e) {
+                returnString = new StringBuilder("Unsupported encoding!");
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                returnString = new StringBuilder("File not found!");
+                e.printStackTrace();
+            } catch (IOException e) {
+                returnString = new StringBuilder("IO exception!");
+                e.printStackTrace();
+            }
+        }
+
+        String jsonString = jsonStringBuilder.toString();
+        if (toImport.contains("=>")) {
+            if (type.equalsIgnoreCase("ARRAY")) {
+                String arrayToSave = toImport.substring(0,toImport.indexOf("=>"));
+
+                int whatArray = -1;
+                for (int i=0; i<ArrayHandler.USR_array.size(); i++) {
+                    if (arrayToSave.equals(ArrayHandler.USR_array.get(i).get(0))) {
+                        whatArray = i;
+                    }
+                }
+
+                if (whatArray == -1) {
+                    List<String> temporary = new ArrayList<String>();
+                    temporary.add(arrayToSave);
+                    ArrayHandler.USR_array.add(temporary);
+                    whatArray = ArrayHandler.USR_array.size()-1;
+                }
+
+                String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+
+                String check = "\""+jsonGet+"\":\"";
+
+                if (jsonString.contains(check)) {
+                    returnString = new StringBuilder("[");
+                    while (jsonString.contains(check)) {
+                        String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+                        ArrayHandler.USR_array.get(whatArray).add(jsonGot.replace("openSquareF6cyUQp9openSquare","[").replace("closeSquareF6cyUQp9closeSquare","]")
+                                .replace("plusF6cyUQp9plus", "+").replace("minusF6cyUQp9minus", "-"));
+                        jsonString = jsonString.replaceFirst(check+jsonGot+"\"", "");
+                        returnString.append(jsonGot).append(",");
+                    }
+                    returnString = new StringBuilder(returnString.substring(0, returnString.length()-1) + "]");
+                } else {
+                    returnString = new StringBuilder("No "+jsonGet+" in json!");
+                }
+            } else if (type.equalsIgnoreCase("STRING")) {
+                String stringToSave = toImport.substring(0,toImport.indexOf("=>"));
+
+                for (int i=0; i<global.USR_string.size(); i++) {
+                    if (stringToSave.equals(global.USR_string.get(i).get(0))) {
+                        String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+
+                        String check = "\""+jsonGet+"\":\"";
+                        if (jsonString.contains(check)) {
+                            String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+                            global.USR_string.get(i).set(1, jsonGot);
+                            returnString = new StringBuilder(jsonGot);
+                        }
+                    }
+                }
+                for (int i=0; i<global.TMP_string.size(); i++) {
+                    if (stringToSave.equals(global.TMP_string.get(i).get(0))) {
+                        String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+
+                        String check = "\""+jsonGet+"\":\"";
+                        if (jsonString.contains(check)) {
+                            String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+                            global.TMP_string.get(i).set(1, jsonGot);
+                            returnString = new StringBuilder(jsonGot);
+                        }
+                    }
+                }
+            }
+        } else {
+            returnString = new StringBuilder("No array! use 'array=>nodes'");
+        }
+
+        return returnString.toString();
+    }
 }

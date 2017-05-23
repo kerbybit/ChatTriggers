@@ -4,6 +4,7 @@ import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.gui.IconHandler;
 import com.kerbybit.chattriggers.triggers.BuiltInStrings;
+import com.kerbybit.chattriggers.triggers.StringFunctions;
 import com.kerbybit.chattriggers.triggers.StringHandler;
 import com.kerbybit.chattriggers.triggers.TagHandler;
 import net.minecraft.client.Minecraft;
@@ -27,7 +28,7 @@ public class DisplayHandler {
     private static HashMap<String,Double[]> displays_xy = new HashMap<String,Double[]>();
     private static HashMap<String,String> display_settings = new HashMap<String, String>();
 
-    private static String updateDisplay(String display_name) {
+    private static String updateDisplay(String display_name, Boolean isAsync) {
         List<String> display;
 
         if (displays.containsKey(display_name)
@@ -42,7 +43,7 @@ public class DisplayHandler {
                 StringHandler.resetBackupStrings();
 
                 //built in strings
-                value = BuiltInStrings.builtInStrings(value, null);
+                value = BuiltInStrings.builtInStrings(value, null, isAsync);
 
                 //user strings and functions
                 value = value.replace("{string<", "{string[")
@@ -52,11 +53,11 @@ public class DisplayHandler {
                         .replace("{list<", "{list[")
                         .replace(">}", "]}");
 
-                value = NewJsonHandler.jsonFunctions(value);
-                value = StringHandler.stringFunctions(value, null);
-                value = ListHandler.listFunctions(value);
-                value = ArrayHandler.arrayFunctions(value, null);
-                value = StringHandler.stringFunctions(value, null);
+                value = JsonHandler.jsonFunctions(value, isAsync);
+                value = StringHandler.stringFunctions(value, null, isAsync);
+                value = ListHandler.listFunctions(value, isAsync);
+                value = ArrayHandler.arrayFunctions(value, null, isAsync);
+                value = StringHandler.stringFunctions(value, null, isAsync);
 
                 display_return.add(TagHandler.removeTags(value));
             }
@@ -168,115 +169,125 @@ public class DisplayHandler {
         if (event.getType() == RenderGameOverlayEvent.ElementType.TEXT) {
         GL11.glColor4f(1, 1, 1, 1);
             FontRenderer ren = Minecraft.getMinecraft().fontRendererObj;
-                ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
-                float width = res.getScaledWidth();
-                float height = res.getScaledHeight();
+            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
+            float width = res.getScaledWidth();
+            float height = res.getScaledHeight();
 
-                for (Map.Entry<String, List<String>> display_map : shown_displays.entrySet()) {
-                    String display_name = display_map.getKey();
-                    List<String> display = display_map.getValue();
-                    Double[] display_xy;
-                    String settings = getDisplaySettings(display_name);
-                    int max_width = 0;
-                    int color = 0x00ffffff;
+            for (Map.Entry<String, List<String>> display_map : shown_displays.entrySet()) {
+                String display_name = display_map.getKey();
+                List<String> display = display_map.getValue();
+                Double[] display_xy;
+                String settings = getDisplaySettings(display_name);
+                int max_width = 0;
+                int color = 0x00ffffff;
 
-                    if (displays_xy.containsKey(display_name)) {
-                        display_xy = displays_xy.get(display_name);
-                    } else {
-                        display_xy = new Double[]{0.0,0.0};
-                    }
+                if (displays_xy.containsKey(display_name)) {
+                    display_xy = displays_xy.get(display_name);
+                } else {
+                    display_xy = new Double[]{0.0,0.0};
+                }
 
-                    String bg = "none";
-                    String bgc = "40000000";
+                String bg = "none";
+                String bgc = "40000000";
 
-                    List<String> display_texts = new ArrayList<String>();
-                    List<Float> display_xs = new ArrayList<Float>();
-                    List<Float> display_ys = new ArrayList<Float>();
-                    boolean up = false;
-                    int align = 0;
+                List<String> display_texts = new ArrayList<String>();
+                List<Float> display_xs = new ArrayList<Float>();
+                List<Float> display_ys = new ArrayList<Float>();
+                boolean up = false;
+                int align = 0;
 
-                    if (settings.contains("<bg=") && settings.contains(">")) {
-                        bg = settings.substring(settings.indexOf("<bg=")+4, settings.indexOf(">", settings.indexOf("<bg=")));
-                        settings = settings.replace("<bg="+bg+">", "");
-                    }
-                    if (settings.contains("<bgc=") && settings.contains(">")) {
-                        bgc = settings.substring(settings.indexOf("<bgc=")+5, settings.indexOf(">", settings.indexOf("<bgc=")));
-                        settings = settings.replace("<bgc="+bgc+">", "");
-                        bgc = bgc.replace("0x", "");
-                    }
+                if (settings.contains("<bg=") && settings.contains(">")) {
+                    bg = settings.substring(settings.indexOf("<bg=")+4, settings.indexOf(">", settings.indexOf("<bg=")));
+                    settings = settings.replace("<bg="+bg+">", "");
+                }
+                if (settings.contains("<bgc=") && settings.contains(">")) {
+                    bgc = settings.substring(settings.indexOf("<bgc=")+5, settings.indexOf(">", settings.indexOf("<bgc=")));
+                    settings = settings.replace("<bgc="+bgc+">", "");
+                    bgc = bgc.replace("0x", "");
+                }
 
-                    for (int i=0; i<display.size(); i++) {
-                        String display_text = ChatHandler.addFormatting(settings + display.get(i));
-                        display_text = display_text.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
-                                .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-                                .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")
-                                .replace("stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement", "(")
-                                .replace("stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement", ")")
-                                .replace("AmpF6cyUQp9Amp","&")
-                                .replace("TripleDotF6cyUQp9TripleDot","...")
-                                .replace("BackslashF6cyUQp9Backslash","\\\\")
-                                .replace("NewLineF6cyUQp9NewLine","\\n")
-                                .replace("SingleQuoteF6cyUQp9SingleQuote","\\'");
-                        float display_x;
-                        float display_y;
-                        float spacing = 1;
-                        if (display_text.contains("<spacing=") && display_text.contains(">")) {
-                            try {
-                                String spacing_string = display_text.substring(display_text.indexOf("<spacing=")+9, display_text.indexOf(">", display_text.indexOf("<spacing=")));
-                                spacing = Float.parseFloat(spacing_string);
-                                display_text = display_text.replace("<spacing="+spacing_string+">", "");
-                            } catch (NumberFormatException e) {
-                                e.printStackTrace();
-                                System.out.println("<spacing=$n> - $n must be a number!");
-                            }
+                for (int i=0; i<display.size(); i++) {
+                    String display_text = ChatHandler.addFormatting(settings + display.get(i));
+                    display_text = display_text.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                            .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+                            .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")
+                            .replace("stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement", "(")
+                            .replace("stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement", ")")
+                            .replace("AmpF6cyUQp9Amp","&")
+                            .replace("TripleDotF6cyUQp9TripleDot","...")
+                            .replace("BackslashF6cyUQp9Backslash","\\\\")
+                            .replace("NewLineF6cyUQp9NewLine","\\n")
+                            .replace("SingleQuoteF6cyUQp9SingleQuote","\\'");
+                    float display_x;
+                    float display_y;
+                    float spacing = 1;
+                    if (display_text.contains("<spacing=") && display_text.contains(">")) {
+                        String spacing_string = display_text.substring(display_text.indexOf("<spacing=")+9, display_text.indexOf(">", display_text.indexOf("<spacing=")));
+                        try {
+                            spacing = Float.parseFloat(spacing_string);
+                        } catch (NumberFormatException e) {
+                            System.out.println("<spacing=$n> - $n must be a number!");
                         }
+                        display_text = display_text.replace("<spacing="+spacing_string+">", "");
+                    }
 
-                        if (display_text.contains("<up>")) {
-                            up = true;
-                            display_text = display_text.replace("<up>","");
-                            if (display_text.contains("<center>")) {
-                                align = 1;
-                                display_text = display_text.replace("<center>","");
-                                display_x = ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(IconHandler.removeIconString(display_text))/2);
-                                display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
-                            } else if (display_text.contains("<right>")) {
-                                align = 2;
-                                display_text = display_text.replace("<right>","");
-                                display_x = ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(IconHandler.removeIconString(display_text));
-                                display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
-                            } else {
-                                display_text = display_text.replace("<left>","");
-                                display_x = (display_xy[0].floatValue() * width) / 100;
-                                display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
-                            }
+                    String rainbow_string = "";
+                    if (display_text.contains("<rainbow=") && display_text.contains(">")) {
+                        rainbow_string = display_text.substring(display_text.indexOf("<rainbow="), display_text.indexOf(">", display_text.indexOf("<rainbow="))+1);
+                    }
+
+
+
+                    if (display_text.contains("<up>")) {
+                        up = true;
+                        display_text = display_text.replace("<up>","");
+                        if (display_text.contains("<center>")) {
+                            align = 1;
+                            display_text = display_text.replace("<center>","");
+                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","").replace(rainbow_string,"")));
+                            display_x = ((display_xy[0].floatValue() * width) / 100) - text_width/2;
+                            display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
+                        } else if (display_text.contains("<right>")) {
+                            align = 2;
+                            display_text = display_text.replace("<right>","");
+                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","").replace(rainbow_string,"")));
+                            display_x = ((display_xy[0].floatValue() * width) / 100) - text_width;
+                            display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
                         } else {
-                            display_text = display_text.replace("<down>","");
-                            if (display_text.contains("<center>")) {
-                                align = 1;
-                                display_text = display_text.replace("<center>","");
-                                display_x = ((display_xy[0].floatValue() * width) / 100) - (ren.getStringWidth(IconHandler.removeIconString(display_text))/2);
-                                display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
-                            } else if (display_text.contains("<right>")) {
-                                align = 2;
-                                display_text = display_text.replace("<right>","");
-                                display_x = ((display_xy[0].floatValue() * width) / 100) - ren.getStringWidth(IconHandler.removeIconString(display_text));
-                                display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
-                            } else {
-                                display_text = display_text.replace("<left>","");
-                                display_x = (display_xy[0].floatValue() * width) / 100;
-                                display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
-                            }
+                            display_text = display_text.replace("<left>","");
+                            display_x = (display_xy[0].floatValue() * width) / 100;
+                            display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
                         }
-                        display_text = IconHandler.drawIcons(display_text, floor(display_x), floor(display_y));
-
-                        if (ren.getStringWidth(display_text) > max_width) {
-                            max_width = ren.getStringWidth(display_text);
+                    } else {
+                        display_text = display_text.replace("<down>","");
+                        if (display_text.contains("<center>")) {
+                            align = 1;
+                            display_text = display_text.replace("<center>","");
+                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","").replace(rainbow_string,"")));
+                            display_x = ((display_xy[0].floatValue() * width) / 100) - text_width/2;
+                            display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
+                        } else if (display_text.contains("<right>")) {
+                            align = 2;
+                            display_text = display_text.replace("<right>","");
+                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","").replace(rainbow_string,"")));
+                            display_x = ((display_xy[0].floatValue() * width) / 100) - text_width;
+                            display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
+                        } else {
+                            display_text = display_text.replace("<left>","");
+                            display_x = (display_xy[0].floatValue() * width) / 100;
+                            display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
                         }
-
-                        display_texts.add(display_text);
-                        display_xs.add(display_x);
-                        display_ys.add(display_y);
                     }
+                    display_text = IconHandler.drawIcons(display_text, floor(display_x), floor(display_y));
+
+                    if (ren.getStringWidth(display_text) > max_width) {
+                        max_width = ren.getStringWidth(display_text);
+                    }
+
+                    display_texts.add(display_text);
+                    display_xs.add(display_x);
+                    display_ys.add(display_y);
+                }
 
                 if (display_texts.size() > 0) {
                     drawDisplay(display_texts, display_xs, display_ys, color, bg, bgc, max_width, up, align);
@@ -350,6 +361,35 @@ public class DisplayHandler {
             float display_x = display_xs.get(i);
             float display_y = display_ys.get(i);
 
+            if (display_text.contains("<rainbow>") || (display_text.contains("<rainbow=") && display_text.contains(">"))) {
+                display_text = display_text.replace("<rainbow>", "");
+                float speed = 5;
+                if (display_text.contains("<rainbow=") && display_text.contains(">")) {
+                    String speed_string = display_text.substring(display_text.indexOf("<rainbow=")+9, display_text.indexOf(">", display_text.indexOf("<rainbow=")));
+                    try {
+                        speed = Float.parseFloat(speed_string);
+                    } catch (NumberFormatException exception) {
+                        if (global.debug) {ChatHandler.warn("gray", "<rainbow=&n> - &n must be a number!");}
+                    }
+                    display_text = display_text.replace("<rainbow="+speed_string+">", "");
+                }
+                float step = global.ticksElapsed;
+                int red = (int) ((Math.sin(step / speed) + 0.75) * 170);
+                int green = (int) ((Math.sin(step / speed + ((2 * Math.PI) / 3)) + 0.75) * 170);
+                int blue = (int) ((Math.sin(step / speed + ((4 * Math.PI) / 3)) + 0.75) * 170);
+
+                if (red < 0) red = 0;
+                if (green < 0) green = 0;
+                if (blue < 0) blue = 0;
+                if (red > 255) red = 255;
+                if (green > 255) green = 255;
+                if (blue > 255) blue = 255;
+
+                color = 0xff000000 + (red*0x10000) + (green*0x100) + blue;
+            } else {
+                color = 0xffffff;
+            }
+
             if (!display_text.equals("") && bg.equalsIgnoreCase("line")) {
                 try {
                     drawRect(display_x, display_y, display_x + ren.getStringWidth(display_text), display_y + 10, (int) Long.parseLong(bgc, 16));
@@ -395,14 +435,14 @@ public class DisplayHandler {
         GlStateManager.disableBlend();
     }
 
-    public static String displayFunctions(String TMP_e) {
+    public static String displayFunctions(String TMP_e, Boolean isAsync) {
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.update()")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{display[") + 9, TMP_e.indexOf("]}.update()", TMP_e.indexOf("{display[")));
             while (get_name.contains("{display[")) {
                 get_name = get_name.substring(get_name.indexOf("{display[") + 9);
             }
 
-            TMP_e = createDefaultString("update", get_name, updateDisplay(get_name), TMP_e);
+            TMP_e = createDefaultString("update", get_name, updateDisplay(get_name, isAsync), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.clear()")) {
@@ -411,7 +451,7 @@ public class DisplayHandler {
                 get_name = get_name.substring(get_name.indexOf("{display[") + 9);
             }
 
-            TMP_e = createDefaultString("clear", get_name, deleteDisplay(get_name), TMP_e);
+            TMP_e = createDefaultString("clear", get_name, deleteDisplay(get_name), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.getX()")) {
@@ -420,7 +460,7 @@ public class DisplayHandler {
                 get_name = get_name.substring(get_name.indexOf("{display[") + 9);
             }
 
-            TMP_e = createDefaultString("getX", get_name, getDisplayX(get_name), TMP_e);
+            TMP_e = createDefaultString("getX", get_name, getDisplayX(get_name), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.getY()")) {
@@ -429,7 +469,7 @@ public class DisplayHandler {
                 get_name = get_name.substring(get_name.indexOf("{display[") + 9);
             }
 
-            TMP_e = createDefaultString("getY", get_name, getDisplayY(get_name), TMP_e);
+            TMP_e = createDefaultString("getY", get_name, getDisplayY(get_name), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.setX(") && TMP_e.contains(")")) {
@@ -444,9 +484,9 @@ public class DisplayHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
-            TMP_e = createDefaultString("setX", get_name, get_prevalue, setDisplayX(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("setX", get_name, get_prevalue, setDisplayX(get_name, get_value), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.setY(") && TMP_e.contains(")")) {
@@ -461,9 +501,9 @@ public class DisplayHandler {
                 get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
-            String get_value = StringHandler.stringFunctions(get_prevalue, null);
+            String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
-            TMP_e = createDefaultString("setY", get_name, get_prevalue, setDisplayY(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("setY", get_name, get_prevalue, setDisplayY(get_name, get_value), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.add(") && TMP_e.contains(")")) {
@@ -479,7 +519,7 @@ public class DisplayHandler {
             }
             get_value = get_value.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
 
-            TMP_e = createDefaultString("add", get_name, get_value, addToDisplay(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("add", get_name, get_value, addToDisplay(get_name, get_value), TMP_e, isAsync);
         }
 
         while (TMP_e.contains("{display[") && TMP_e.contains("]}.settings(") && TMP_e.contains(")")) {
@@ -495,24 +535,29 @@ public class DisplayHandler {
             }
             get_value = get_value.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
 
-            TMP_e = createDefaultString("settings", get_name, get_value, setDisplaySettings(get_name, get_value), TMP_e);
+            TMP_e = createDefaultString("settings", get_name, get_value, setDisplaySettings(get_name, get_value), TMP_e, isAsync);
         }
 
         return TMP_e;
     }
 
-    private static String createDefaultString(String function_name, String display_name, String arguments, String value, String TMP_e) {
-        List<String> temporary = new ArrayList<String>();
-        temporary.add("DisplayToString->"+display_name+function_name.toUpperCase()+"-"+(global.TMP_string.size()+1));
-        temporary.add(value);
-        global.TMP_string.add(temporary);
-        global.backupTMP_strings.add(temporary);
-
-        return TMP_e.replace("{display["+display_name+"]}."+function_name+"("+arguments+")","{string[DisplayToString->"+display_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
+    private static String createDefaultString(String function_name, String display_name, String arguments, String value, String TMP_e, Boolean isAsync) {
+        if (isAsync) {
+            global.Async_string.put("DisplayToString->" + display_name + function_name.toUpperCase() + "-" + (global.TMP_string.size() + 1), value);
+            global.backupAsync_string.put("DisplayToString->" + display_name + function_name.toUpperCase() + "-" + global.TMP_string.size(), value);
+            return TMP_e.replace("{display["+display_name+"]}."+function_name+"("+arguments+")","{string[AsyncDisplayToString->"+display_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
+        } else {
+            List<String> temporary = new ArrayList<String>();
+            temporary.add("DisplayToString->" + display_name + function_name.toUpperCase() + "-" + (global.TMP_string.size() + 1));
+            temporary.add(value);
+            global.TMP_string.add(temporary);
+            global.backupTMP_strings.add(temporary);
+            return TMP_e.replace("{display["+display_name+"]}."+function_name+"("+arguments+")","{string[DisplayToString->"+display_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
+        }
     }
 
-    private static String createDefaultString(String function_name, String display_name, String value, String TMP_e) {
-        return createDefaultString(function_name, display_name, "", value, TMP_e);
+    private static String createDefaultString(String function_name, String display_name, String value, String TMP_e, Boolean isAsync) {
+        return createDefaultString(function_name, display_name, "", value, TMP_e, isAsync);
     }
 
     public static void dumpDisplays() {

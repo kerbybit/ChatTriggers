@@ -142,7 +142,7 @@ public class FileHandler {
 			if (!value.equals("")) {
 				writer.println(">>" + value);
                 for (List<String> trig : trigger) {
-					if (trig.get(1).contains(value)) {
+					if (trig.get(1).contains(value) && !trig.get(1).contains("<imported>")) {
 					    if (Settings.oldFormatting) {
 					        writer.println("trigger:" + trig.get(1));
 					        writer.println("type:" + trig.get(0));
@@ -405,10 +405,19 @@ public class FileHandler {
 					String svo = "";
 					if (sn.toUpperCase().contains("ONCE WITH ")) {
 						svo = sn.substring(sn.toUpperCase().indexOf("ONCE WITH ")+10);
+                        if (svo.startsWith("\"") && svo.endsWith("\"") && svo.length() >= 2) {
+                            svo = svo.substring(1, svo.length()-2);
+                        }
 					} else if (sn.toUpperCase().contains("ONCEWITH ")) {
 						svo = sn.substring(sn.toUpperCase().indexOf("ONCEWITH ")+9);
+						if (svo.startsWith("\"") && svo.endsWith("\"") && svo.length() >= 2) {
+						    svo = svo.substring(1, svo.length()-2);
+                        }
 					} else if (sn.toUpperCase().contains("WITH ")) {
 						sv = sn.substring(sn.toUpperCase().indexOf("WITH ")+5);
+                        if (sv.startsWith("\"") && sv.endsWith("\"") && sv.length() >= 2) {
+                            sv = sv.substring(1, sv.length()-2);
+                        }
 					}
 					
 					if (sn.contains(" ")) {sn = sn.substring(0, sn.indexOf(" ")).trim();}
@@ -605,7 +614,6 @@ public class FileHandler {
                 } else {
                     global.fpslowcol = "&c";
                     global.fpslow = 50;
-                    throw new NumberFormatException();
                 }
             }
             if (l.startsWith("fpsmed:")) {
@@ -614,7 +622,6 @@ public class FileHandler {
                     global.fpsmedcol = get[0];
                 } else {
                     global.fpsmedcol = "&e";
-                    throw new NumberFormatException();
                 }
             }
             if (l.startsWith("fpshigh:")) {
@@ -625,7 +632,6 @@ public class FileHandler {
                 } else {
                     global.fpshighcol = "&a";
                     global.fpshigh = 60;
-                    throw new NumberFormatException();
                 }
             }
             if (l.startsWith("old formatting:")) {

@@ -79,7 +79,7 @@ public class GuiTriggerList extends GuiScreen {
 		if (inMenu==2) {
 			for (int i=0; i<tempTrig.size(); i++) {
 				if (mouseX>=5 && mouseX<fontRendererObj.getStringWidth(tempTrig.get(i))+10 && mouseY>=(i*10)+25 && mouseY<(i*10)+35) {
-					gotoTrig=tempTrig.get(i).substring(0, tempTrig.get(i).indexOf(" "+TextFormatting.DARK_GRAY.toString()+"("));
+					gotoTrig=tempTrig.get(i).substring(0, tempTrig.get(i).indexOf(" "+ TextFormatting.DARK_GRAY.toString()+"("));
 					for (int j=0; j<tempTrig.size(); j++) {
 						if (j<i) {tempTrigOffset.get(j).set(2, (float)-10);} 
 						else if (j>i) {tempTrigOffset.get(j).set(2, sHeight);}
