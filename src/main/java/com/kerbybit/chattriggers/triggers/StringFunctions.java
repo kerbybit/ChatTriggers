@@ -309,6 +309,14 @@ public class StringFunctions {
 
             ListHandler.getList("StringToList->"+stringName+"SPLIT-"+(ListHandler.getListsSize()+1), list.toString());
             return "{list[StringToList->"+stringName+"SPLIT-"+ListHandler.getListsSize()+"]}";
+        } else if (func.equals("REPLACEFIRSTREGEX")) {
+            Pattern regex = Pattern.compile(args);
+            Matcher matcher = regex.matcher(stringValue);
+            return matcher.replaceFirst(args);
+        } else if (func.equals("REPLACEALLREGEX")) {
+            Pattern regex = Pattern.compile(args);
+            Matcher matcher = regex.matcher(stringValue);
+            return matcher.replaceAll(args);
         }
 
         return null;
@@ -331,6 +339,9 @@ public class StringFunctions {
             return trimBool(stringValue.endsWith(args));
         } else if (func.equals("ENDSWITHIGNORECASE")) {
             return trimBool(stringValue.toUpperCase().endsWith(args.toUpperCase()));
+        } else if (func.equals("MATCHESREGEX") || func.equals("HASREGEX")) {
+            Pattern regex = Pattern.compile(args);
+            return trimBool(regex.matcher(stringValue).find());
         }
 
         Double stringValueNumber;
@@ -356,10 +367,7 @@ public class StringFunctions {
     }
 
     private static String trimBool(Boolean in) {
-        if (in) {
-            return "true";
-        }
-        return "false";
+        return in ? "true" : "false";
     }
 
     private static String doStringMathFunctions(String stringValue,String func, String args) {
