@@ -68,6 +68,7 @@ public class CommandReference {
             r.add("");
             r.add("onClientTick");
             r.add("onRightClickPlayer");
+            r.add("onSoundPlay");
             r.add("");
             r.add("function");
             r.add("onUnknownError");
@@ -84,6 +85,7 @@ public class CommandReference {
 		global.onServerChangeTrigger.clear();
 		global.onNewDayTrigger.clear();
 		global.onRightClickPlayerTrigger.clear();
+		global.onSoundPlayTrigger.clear();
         global.function.clear();
         global.onUnknownError.clear();
 	}
@@ -117,7 +119,9 @@ public class CommandReference {
 			global.onNewDayTrigger.add(tmp_list);
 		} else if (tmp_list.get(0).equalsIgnoreCase("ONRIGHTCLICKPLAYER")) {
 			global.onRightClickPlayerTrigger.add(tmp_list);
-		} else if (tmp_list.get(0).equalsIgnoreCase("FUNCTION")) {
+		} else if (tmp_list.get(0).equalsIgnoreCase("ONSOUNDPLAY")) {
+            global.onSoundPlayTrigger.add(tmp_list);
+        } else if (tmp_list.get(0).equalsIgnoreCase("FUNCTION")) {
             global.function.add(tmp_list);
         } else if (tmp_list.get(0).equalsIgnoreCase("ONUNKNOWNERROR")) {
             global.onUnknownError.add(tmp_list);

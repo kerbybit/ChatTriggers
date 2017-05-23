@@ -75,6 +75,8 @@ public class BugTracker {
 
     public static void show(Exception e, String type) {
         if (e != null) {
+            e.printStackTrace();
+
             for (StackTraceElement stack : e.getStackTrace()) {
                 global.bugReport.add(stack.toString());
             }
@@ -89,10 +91,6 @@ public class BugTracker {
         ChatHandler.warn(ChatHandler.color("darkred",getError(type)));
         ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitbugreport,Send a bug report) &4to submit a bug report");
 
-        if (e != null) {
-            e.printStackTrace();
-        }
-
         for (int i=0; i<global.onUnknownError.size(); i++) {
             //add all events to temp list
             List<String> TMP_events = new ArrayList<String>();
@@ -104,21 +102,24 @@ public class BugTracker {
     }
 
     private static String getError(String type) {
-        if (type.equalsIgnoreCase("command")) {
-            return "An unknown error occurred while performing this command";
-        } else if (type.equalsIgnoreCase("chat")) {
-            return "An unknown error has occured while executing \"&cchat&4\"";
-        } else if (type.equalsIgnoreCase("onRightClickPlayer")) {
-            return "An unknown error has occured while executing \"&conRightClickPlayer&4\"";
-        } else if (type.equalsIgnoreCase("onWorldLoad")) {
-            return "An unknown error has occured while executing \"&conWorldLoad&4\"";
-        } else if (type.equalsIgnoreCase("onClientTick")) {
-            return "An unknown error has occured while executing \"&conClientTick&4\"";
-        } else if (type.equalsIgnoreCase("async")) {
-            CommandTrigger.commandLoad();
-            return "An unknown error has occured while executing \"&casync&4\"";
-        } else {
-            return "An unknown error has occurred";
+        switch (type.toLowerCase()) {
+            case "command":
+                return "An unknown error occurred while performing this command";
+            case "chat":
+                return "An unknown error has occured while executing \"&cchat&4\"";
+            case "onrightclickplayer":
+                return "An unknown error has occured while executing \"&conRightClickPlayer&4\"";
+            case "onworldload":
+                return "An unknown error has occured while executing \"&conWorldLoad&4\"";
+            case "onclienttick":
+                return "An unknown error has occured while executing \"&conClientTick&4\"";
+            case "async":
+                CommandTrigger.commandLoad();
+                return "An unknown error has occured while executing \"&casync&4\"";
+            case "onsoundplay":
+                return "An unknown error has occured while executing \"&conSoundPlay&4\"";
+            default:
+                return "An unknown error has occurred";
         }
     }
 }

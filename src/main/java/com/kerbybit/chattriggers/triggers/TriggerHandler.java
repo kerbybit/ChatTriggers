@@ -12,6 +12,7 @@ import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 
 public class TriggerHandler {
@@ -226,6 +227,25 @@ public class TriggerHandler {
 			}
 		}
 	}
+
+	public static void onSoundPlay(PlaySoundEvent e) {
+        for (int i=0; i<global.onSoundPlayTrigger.size(); i++) {
+            //add all events to temp list
+            List<String> TMP_events = new ArrayList<String>();
+            for (int j=2; j<global.onSoundPlayTrigger.get(i).size(); j++) {
+                String toAdd = global.onSoundPlayTrigger.get(i).get(j);
+                if (toAdd.contains("{cancel}")) {
+                    e.result = null;
+                }
+                toAdd = toAdd.replace("{soundName}", e.sound.getSoundLocation().getResourcePath());
+                toAdd = toAdd.replace("{soundCategory}", e.category.getCategoryName());
+                TMP_events.add(toAdd);
+            }
+
+            //do events
+            EventsHandler.doEvents(TMP_events, null);
+        }
+    }
 	
 	public static void onRightClickPlayer(EntityInteractEvent e) {
 		for (int i=0; i<global.onRightClickPlayerTrigger.size(); i++) {

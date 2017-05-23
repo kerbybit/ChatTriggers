@@ -10,6 +10,7 @@ import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.overlay.KillfeedHandler;
 import com.kerbybit.chattriggers.overlay.NotifyHandler;
 import net.minecraftforge.client.event.MouseEvent;
+import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import org.lwjgl.input.Keyboard;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
@@ -89,6 +90,17 @@ public class ChatTriggers {
             BugTracker.show(exception, "onRightClickPlayer");
         }
 	}
+
+	@SubscribeEvent
+    public void onSoundPlay(PlaySoundEvent e) {
+	    try {
+            if (global.canUse) {
+                TriggerHandler.onSoundPlay(e);
+            }
+        } catch (Exception exception) {
+	        BugTracker.show(exception, "onSoundPlay");
+        }
+    }
 	
 	@SubscribeEvent
 	public void onChat(ClientChatReceivedEvent e) throws IOException, ClassNotFoundException {
