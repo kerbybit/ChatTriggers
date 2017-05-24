@@ -8,13 +8,17 @@ import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.objects.JsonHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.kerbybit.chattriggers.triggers.StringHandler.stringFunctions;
 import static java.lang.Math.abs;
@@ -309,14 +313,6 @@ public class StringFunctions {
 
             ListHandler.getList("StringToList->"+stringName+"SPLIT-"+(ListHandler.getListsSize()+1), list.toString());
             return "{list[StringToList->"+stringName+"SPLIT-"+ListHandler.getListsSize()+"]}";
-        } else if (func.equals("REPLACEFIRSTREGEX")) {
-            Pattern regex = Pattern.compile(args);
-            Matcher matcher = regex.matcher(stringValue);
-            return matcher.replaceFirst(args);
-        } else if (func.equals("REPLACEALLREGEX")) {
-            Pattern regex = Pattern.compile(args);
-            Matcher matcher = regex.matcher(stringValue);
-            return matcher.replaceAll(args);
         }
 
         return null;
@@ -340,8 +336,7 @@ public class StringFunctions {
         } else if (func.equals("ENDSWITHIGNORECASE")) {
             return trimBool(stringValue.toUpperCase().endsWith(args.toUpperCase()));
         } else if (func.equals("MATCHESREGEX") || func.equals("HASREGEX")) {
-            Pattern regex = Pattern.compile(args);
-            return trimBool(regex.matcher(stringValue).find());
+            return trimBool(stringValue.matches(args));
         }
 
         Double stringValueNumber;
