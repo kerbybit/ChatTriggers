@@ -232,10 +232,14 @@ public class TriggerHandler {
             }
 
             //do events
-            String[] extraStrings = new String[]{"{soundName}", "{soundCategory}"};
-            String[] extraStringValues = new String[]{e.sound.getSoundLocation().getResourcePath(),
-                    e.category.getCategoryName()};
-            EventsHandler.doEvents(TMP_events, e, extraStrings, extraStringValues);
+            try {
+                String[] extraStrings = new String[]{"{soundName}", "{soundCategory}"};
+                String[] extraStringValues = new String[]{e.sound.getSoundLocation().getResourcePath(),
+                        e.category.getCategoryName()};
+                EventsHandler.doEvents(TMP_events, e, extraStrings, extraStringValues);
+            } catch (NullPointerException exception) {
+                // do nothing //
+            }
         }
     }
 	
