@@ -9,6 +9,7 @@ import com.kerbybit.chattriggers.objects.ListHandler;
 import com.kerbybit.chattriggers.objects.JsonHandler;
 import com.kerbybit.chattriggers.references.Reference;
 import com.kerbybit.chattriggers.references.RomanNumber;
+import com.kerbybit.chattriggers.util.ScoreboardReader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -172,13 +173,30 @@ public class BuiltInStrings {
                 returnString.append(player.getName()).append(",");
             }
             if (returnString.toString().equals("[")) {
-                System.out.println("wrong one");
                 TMP_e = createDefaultString("playerlist", "[]", TMP_e, isAsync);
             } else {
-                System.out.println("right one");
                 System.out.println(returnString.substring(0, returnString.length()-1)+"]");
                 ListHandler.getList("DefaultList->PLAYERLIST-"+(ListHandler.getListsSize()+1), returnString.substring(0, returnString.length()-1)+"]");
                 TMP_e = TMP_e.replace("{playerlist}", "{list[DefaultList->PLAYERLIST-"+ListHandler.getListsSize()+"]}");
+                System.out.println(ListHandler.getListsSize());
+            }
+        }
+        if (TMP_e.contains("{scoreboardlines}")) {
+            StringBuilder returnString = new StringBuilder("[");
+            ScoreboardReader.resetCache();
+
+            ArrayList<String> scoreboardNames = ScoreboardReader.getScoreboardNames();
+            Collections.reverse(scoreboardNames);
+
+            for (String scoreboardLine : scoreboardNames) {
+                returnString.append(scoreboardLine).append(",");
+            }
+            if (returnString.toString().equals("[")) {
+                TMP_e = createDefaultString("scoreboardlines", "[]", TMP_e, isAsync);
+            } else {
+                System.out.println(returnString.substring(0, returnString.length()-1)+"]");
+                ListHandler.getList("DefaultList->PLAYERLIST-"+(ListHandler.getListsSize()+1), returnString.substring(0, returnString.length()-1)+"]");
+                TMP_e = TMP_e.replace("{scoreboardlines}", "{list[DefaultList->PLAYERLIST-"+ListHandler.getListsSize()+"]}");
                 System.out.println(ListHandler.getListsSize());
             }
         }
