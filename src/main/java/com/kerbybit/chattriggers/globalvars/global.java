@@ -1,5 +1,7 @@
 package com.kerbybit.chattriggers.globalvars;
 
+import net.minecraft.client.audio.ISound;
+
 import java.util.*;
 
 public class global {
@@ -75,6 +77,8 @@ public class global {
 	public static boolean showGUI = false;
 	public static boolean showAltInputGui = false;
     public static boolean showDisplayGui = false;
+
+    public static ArrayList<String> playedSounds = new ArrayList<>();
 	
 	//////////////////Trigger matrix////////////////////
 	// layout

@@ -174,6 +174,7 @@ public class EventsHandler {
 			if (TMP_c.equalsIgnoreCase("SOUND")) {
                 float real_v = ((float)TMP_v) / 100;
                 Minecraft.getMinecraft().thePlayer.playSound(removeStringReplacements(TMP_e), real_v, TMP_pi);}
+                global.playedSounds.add(removeStringReplacements(TMP_e));
 			if (TMP_c.equalsIgnoreCase("CANCEL")) {
 			    if (chatEvent != null) {
                     chatEvent.setCanceled(true);

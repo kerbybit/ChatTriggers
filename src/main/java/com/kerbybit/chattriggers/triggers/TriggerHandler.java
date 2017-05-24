@@ -11,9 +11,11 @@ import com.kerbybit.chattriggers.globalvars.global;
 
 import com.kerbybit.chattriggers.objects.DisplayHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 public class TriggerHandler {
     public static void onChat(String fmsg, String msg, ClientChatReceivedEvent e) {
@@ -231,14 +233,18 @@ public class TriggerHandler {
                 TMP_events.add(toAdd);
             }
 
+            if(global.playedSounds.contains(e.name)) {
+                return;
+            }
+
             //do events
             try {
                 String[] extraStrings = new String[]{"{soundName}", "{soundCategory}"};
-                String[] extraStringValues = new String[]{e.sound.getSoundLocation().getResourcePath(),
+                String[] extraStringValues = new String[]{e.name,
                         e.category.getCategoryName()};
                 EventsHandler.doEvents(TMP_events, e, extraStrings, extraStringValues);
             } catch (NullPointerException exception) {
-                // do nothing //
+
             }
         }
     }
