@@ -40,9 +40,9 @@ public class TriggerHandler {
         if (isActionbar) temp = new ArrayList<>(global.actionTrigger);
         else temp = new ArrayList<>(global.chatTrigger);
 
-        for (int i = 0; i < temp.size(); i++) {
+        for (List<String> trigger : temp) {
             //setup
-            String TMP_trig = temp.get(i).get(1);
+            String TMP_trig = trigger.get(1);
             String TMP_w;
             String[] TMP_server;
             String current_server;
@@ -98,19 +98,19 @@ public class TriggerHandler {
                 switch (TMP_w) {
                     case ("s"):
                         if (msg.startsWith(TMP_trig))
-                            doEvents(i, e);
+                            doEvents(trigger, e);
                         break;
                     case("c"):
                         if (msg.contains(TMP_trig))
-                            doEvents(i, e);
+                            doEvents(trigger, e);
                         break;
                     case("e"):
                         if (msg.endsWith(TMP_trig))
-                            doEvents(i, e);
+                            doEvents(trigger, e);
                         break;
                     default:
                         if (msg.equals(TMP_trig))
-                            doEvents(i, e);
+                            doEvents(trigger, e);
                         break;
                 }
                 clearTemporary();
@@ -148,11 +148,11 @@ public class TriggerHandler {
         return TMP_trig.replace("{me}", Minecraft.getMinecraft().thePlayer.getDisplayNameString());
     }
 
-    private static void doEvents(int i, ClientChatReceivedEvent e) {
+    private static void doEvents(List<String> trigger, ClientChatReceivedEvent e) {
         //add all events to temp list
         List<String> TMP_events = new ArrayList<>();
-        for (int j = 2; j < global.chatTrigger.get(i).size(); j++) {
-            TMP_events.add(global.chatTrigger.get(i).get(j));
+        for (int j = 2; j < trigger.size(); j++) {
+            TMP_events.add(trigger.get(j));
         }
 
         //do events

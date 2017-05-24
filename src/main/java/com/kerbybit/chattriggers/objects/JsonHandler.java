@@ -306,22 +306,13 @@ public class JsonHandler {
             TMP_e = createDefaultString("getValues", get_name, get_prevalue, getValues(get_name, get_value), TMP_e, isAsync);
         }
 
-
-
-
         while (TMP_e.contains("{json[") && TMP_e.contains("]}")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{json[")+6, TMP_e.indexOf("]}", TMP_e.indexOf("{json[")));
             while (get_name.contains("{json[")) {
                 get_name = get_name.substring(get_name.indexOf("{json[")+6);
             }
 
-            List<String> temporary = new ArrayList<>();
-            temporary.add("JsonToString->"+get_name+"GETVALUE-"+(global.TMP_string.size()+1));
-            temporary.add(getValue(get_name));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{json["+get_name+"]}", "{string[JsonToString->"+get_name+"GETVALUE-"+global.TMP_string.size()+"]}");
+            TMP_e = createDefaultString("getValue", get_name, getValue(get_name), TMP_e, isAsync);
         }
 
         return TMP_e;
@@ -340,6 +331,10 @@ public class JsonHandler {
             global.backupTMP_strings.add(temporary);
             return TMP_e.replace("{json["+json_name+"]}."+function+"("+arguments+")","{string[JsonToString->"+json_name+function.toUpperCase()+"-"+global.TMP_string.size()+"]}");
         }
+    }
+
+    private static String createDefaultString(String function, String json_name, String value, String TMP_e, Boolean isAsync) {
+        return createDefaultString(function, json_name, "", value, TMP_e, isAsync);
     }
 
     private static String createDefaultString(String json_name, String value, String TMP_e, Boolean isAsync) {
