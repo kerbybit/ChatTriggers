@@ -10,8 +10,6 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
-import static net.minecraft.realms.RealmsMth.floor;
-
 public class KillfeedHandler {
     private static Minecraft MC = Minecraft.getMinecraft();
     private static FontRenderer ren = MC.fontRendererObj;

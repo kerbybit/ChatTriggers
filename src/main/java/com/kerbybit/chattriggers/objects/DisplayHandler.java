@@ -23,10 +23,10 @@ import java.util.List;
 import static net.minecraft.realms.RealmsMth.floor;
 
 public class DisplayHandler {
-    private static HashMap<String,List<String>> displays = new HashMap<String,List<String>>();
-    private static HashMap<String,List<String>> shown_displays = new HashMap<String,List<String>>();
-    private static HashMap<String,Double[]> displays_xy = new HashMap<String,Double[]>();
-    private static HashMap<String,String> display_settings = new HashMap<String, String>();
+    private static HashMap<String,List<String>> displays = new HashMap<>();
+    private static HashMap<String,List<String>> shown_displays = new HashMap<>();
+    private static HashMap<String,Double[]> displays_xy = new HashMap<>();
+    private static HashMap<String,String> display_settings = new HashMap<>();
 
     private static String updateDisplay(String display_name, Boolean isAsync) {
         List<String> display;
@@ -36,7 +36,7 @@ public class DisplayHandler {
                 && shown_displays.containsKey(display_name)) {
             display = displays.get(display_name);
 
-            List<String> display_return = new ArrayList<String>();
+            List<String> display_return = new ArrayList<>();
 
             for (String value : display) {
                 //setup backup for functions so strings don't get overwritten
@@ -73,14 +73,14 @@ public class DisplayHandler {
         if (displays.containsKey(display_name)
                 && displays_xy.containsKey(display_name)
                 && shown_displays.containsKey(display_name)) {
-            ArrayList<String> display = new ArrayList<String>(displays.get(display_name));
+            ArrayList<String> display = new ArrayList<>(displays.get(display_name));
             display.add(value);
             displays.put(display_name, display);
             return "Added " + value + " to " + display_name;
         } else {
             displays.put(display_name, Collections.singletonList(value));
             displays_xy.put(display_name, new Double[]{0.0,0.0,1.0});
-            shown_displays.put(display_name, new ArrayList<String>());
+            shown_displays.put(display_name, new ArrayList<>());
             return "Created and added " + value + " to " + display_name;
         }
     }
@@ -190,9 +190,9 @@ public class DisplayHandler {
                 String bg = "none";
                 String bgc = "40000000";
 
-                List<String> display_texts = new ArrayList<String>();
-                List<Float> display_xs = new ArrayList<Float>();
-                List<Float> display_ys = new ArrayList<Float>();
+                List<String> display_texts = new ArrayList<>();
+                List<Float> display_xs = new ArrayList<>();
+                List<Float> display_ys = new ArrayList<>();
                 boolean up = false;
                 int align = 0;
 
@@ -547,7 +547,7 @@ public class DisplayHandler {
             global.backupAsync_string.put("DisplayToString->" + display_name + function_name.toUpperCase() + "-" + global.TMP_string.size(), value);
             return TMP_e.replace("{display["+display_name+"]}."+function_name+"("+arguments+")","{string[AsyncDisplayToString->"+display_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
         } else {
-            List<String> temporary = new ArrayList<String>();
+            List<String> temporary = new ArrayList<>();
             temporary.add("DisplayToString->" + display_name + function_name.toUpperCase() + "-" + (global.TMP_string.size() + 1));
             temporary.add(value);
             global.TMP_string.add(temporary);

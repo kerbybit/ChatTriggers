@@ -33,14 +33,14 @@ public class GuiTriggerList extends GuiScreen {
 	private String gotoList = "";
 	private String gotoTrig = "";
 	
-	private List<String> tempList = new ArrayList<String>();
-	private List<List<Float>> tempListOffset = new ArrayList<List<Float>>();
+	private List<String> tempList = new ArrayList<>();
+	private List<List<Float>> tempListOffset = new ArrayList<>();
 	
-	private List<String> tempTrig = new ArrayList<String>();
-	private List<List<Float>> tempTrigOffset = new ArrayList<List<Float>>();
+	private List<String> tempTrig = new ArrayList<>();
+	private List<List<Float>> tempTrigOffset = new ArrayList<>();
 	
-	private List<String> tempEvent = new ArrayList<String>();
-	private List<List<Float>> tempEventOffset = new ArrayList<List<Float>>();
+	private List<String> tempEvent = new ArrayList<>();
+	private List<List<Float>> tempEventOffset = new ArrayList<>();
 	
 	public static void openGui() {
 		if (global.showGUI) {
@@ -141,7 +141,7 @@ public class GuiTriggerList extends GuiScreen {
 				if (!isInList) {
 					tempList.add(whatList);
 					
-					List<Float> temporary = new ArrayList<Float>();
+					List<Float> temporary = new ArrayList<>();
 					temporary.add((float) 5); temporary.add((float) 0); temporary.add((float) (i*10)+5); temporary.add((float) (i*10)+5);
 					tempListOffset.add(temporary);
 					i++;
@@ -163,7 +163,7 @@ public class GuiTriggerList extends GuiScreen {
 				
 				if (whatList.equals(gotoList)) {
 					tempTrig.add(value.get(1).replace("<list=" + whatList + ">", "") + " "+EnumChatFormatting.DARK_GRAY.toString()+"("+value.get(0)+")");
-					List<Float> temporary = new ArrayList<Float>();
+					List<Float> temporary = new ArrayList<>();
 					temporary.add((float) 5); temporary.add((float) -fontRendererObj.getStringWidth(value.get(1).replace("<list=" + whatList + ">", ""))); temporary.add((float) (i*10)+25); temporary.add((float) (i*10)+25);
 					tempTrigOffset.add(temporary);
 					i++;
@@ -197,7 +197,7 @@ public class GuiTriggerList extends GuiScreen {
 						}
 						
 						tempEvent.add(value.get(j));
-						List<Float> temporary = new ArrayList<Float>();
+						List<Float> temporary = new ArrayList<>();
 						temporary.add((float) 5 + (tabbedLogic*5)); temporary.add((float) -fontRendererObj.getStringWidth(value.get(j))); temporary.add((float) (i*10)+25); temporary.add((float) (i*10)+25);
 						tempEventOffset.add(temporary);
 						i++;

@@ -24,7 +24,7 @@ public class CommandTR extends CommandBase {
         try {
             if (global.canUse) {
                 if (Settings.commandTR) {
-                    ArrayList<String> temporary = new ArrayList<String>();
+                    ArrayList<String> temporary = new ArrayList<>();
                     temporary.add("run");
                     temporary.addAll(Arrays.asList(args));
                     CommandTrigger.doCommand(temporary.toArray(new String[temporary.size()]), false);
@@ -38,7 +38,7 @@ public class CommandTR extends CommandBase {
                     BugTracker.show(null, "blacklisted");
                 } else {
                     if (Settings.commandTR) {
-                        ArrayList<String> temporary = new ArrayList<String>();
+                        ArrayList<String> temporary = new ArrayList<>();
                         temporary.add("run");
                         temporary.addAll(Arrays.asList(args));
                         CommandTrigger.doCommand(temporary.toArray(new String[temporary.size()]), false);

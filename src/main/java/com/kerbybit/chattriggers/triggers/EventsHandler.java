@@ -24,6 +24,7 @@ import com.kerbybit.chattriggers.references.AsyncHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.sound.PlaySoundEvent;
 
 import static com.kerbybit.chattriggers.triggers.TriggerHandler.onChat;
 
@@ -36,20 +37,28 @@ public class EventsHandler {
     }
 
     public static String doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, String[] toreplace, String[] replacement) {
-        return doEvents(tmp_tmp_event, chatEvent, toreplace, replacement, false);
+        return doEvents(tmp_tmp_event, chatEvent, null, toreplace, replacement, false);
+    }
+
+    static void doEvents(List<String> tmp_tmp_event, PlaySoundEvent soundEvent, String[] toreplace, String[] replacement) {
+        doEvents(tmp_tmp_event, null, soundEvent, toreplace, replacement, false);
     }
 
     public static String doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
-        return doEvents(tmp_tmp_event, chatEvent, null, null, isAsync);
+        return doEvents(tmp_tmp_event, chatEvent, null, null, null, isAsync);
     }
 
-	public static String doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent) {
-		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
-		return doEvents(tmp_event, chatEvent, null, null);
+    private static String doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, PlaySoundEvent soundEvent, Boolean isAsync) {
+        return doEvents(tmp_tmp_event, chatEvent, soundEvent, null, null, isAsync);
+    }
+
+	public static void doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent) {
+		List<String> tmp_event = new ArrayList<>(tmp_tmp_event);
+		doEvents(tmp_event, chatEvent, null, null, null, false);
 	}
 	
-	public static String doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, String[] toreplace, String[] replacement, Boolean isAsync) {
-		List<String> tmp_event = new ArrayList<String>(tmp_tmp_event);
+	private static String doEvents(List<String> tmp_tmp_event, ClientChatReceivedEvent chatEvent, PlaySoundEvent soundEvent, String[] toreplace, String[] replacement, Boolean isAsync) {
+		List<String> tmp_event = new ArrayList<>(tmp_tmp_event);
         String ret = "null";
 		
 		if (toreplace != null) {
@@ -60,7 +69,7 @@ public class EventsHandler {
                         tmp_event.set(j, tmp_event.get(j).replace(toreplace[i],"{string[TriggerAsyncArgument"+i+"-"+global.Async_string.size()+"]}"));
                     }
                 } else {
-                    List<String> temporary = new ArrayList<String>();
+                    List<String> temporary = new ArrayList<>();
                     temporary.add("TriggerArgument"+i+"-"+global.TMP_string.size());
                     temporary.add(replacement[i]);
                     for (int j=0; j<tmp_event.size(); j++) {
@@ -146,7 +155,7 @@ public class EventsHandler {
 			}
 			
 		//non-logic events
-			if (TMP_c.equalsIgnoreCase("TRIGGER")) {doTrigger(TMP_e, chatEvent, isAsync);}
+			if (TMP_c.equalsIgnoreCase("TRIGGER")) {doTrigger(TMP_e, chatEvent, soundEvent, isAsync);}
             if (TMP_c.equalsIgnoreCase("CHAT")) {
                 ChatHandler.warn(TMP_e);
             }
@@ -165,7 +174,13 @@ public class EventsHandler {
 			if (TMP_c.equalsIgnoreCase("SOUND")) {
                 float real_v = ((float)TMP_v) / 100;
                 Minecraft.getMinecraft().thePlayer.playSound(removeStringReplacements(TMP_e), real_v, TMP_pi);}
-			if (TMP_c.equalsIgnoreCase("CANCEL") && chatEvent!=null) {chatEvent.setCanceled(true);}
+			if (TMP_c.equalsIgnoreCase("CANCEL")) {
+			    if (chatEvent != null) {
+                    chatEvent.setCanceled(true);
+                } else if (soundEvent != null) {
+			        soundEvent.result = null;
+                }
+			}
 			if (TMP_c.equalsIgnoreCase("KILLFEED")) {
                 TMP_c = KillfeedHandler.addToKillfeed(TMP_e, TMP_t);
             }
@@ -189,7 +204,7 @@ public class EventsHandler {
 		//logic events
 			if (TMP_c.equalsIgnoreCase("ASYNC")) {
 				int tabbed_logic = 0;
-				List<String> eventsToAsync = new ArrayList<String>();
+				List<String> eventsToAsync = new ArrayList<>();
 				
 				if (i+1 < tmp_event.size()-1) {
 					for (int j=i; j<tmp_event.size(); j++) {
@@ -227,7 +242,7 @@ public class EventsHandler {
 			
 			if (TMP_c.equalsIgnoreCase("WAIT")) {
 				int tabbed_logic = 0;
-				List<String> eventsToWait = new ArrayList<String>();
+				List<String> eventsToWait = new ArrayList<>();
 				
 				if (i+1 < tmp_event.size()-1) { //check for events after if event
 					for (int j=i; j<tmp_event.size(); j++) {
@@ -331,7 +346,7 @@ public class EventsHandler {
 			
 			if (TMP_c.equalsIgnoreCase("FOR")) {
 				int tabbed_logic = 0;
-				List<String> eventsToFor = new ArrayList<String>();
+				List<String> eventsToFor = new ArrayList<>();
 
 				
 				if (i+1 < tmp_event.size()) {
@@ -374,7 +389,7 @@ public class EventsHandler {
                     String valin = "";
                     String valfrom = "";
                     String valwait = "";
-                    List<String> arrayto = new ArrayList<String>();
+                    List<String> arrayto = new ArrayList<>();
                     if (tmp_valuefor.length==2) {
                         valin = tmp_valuefor[0].trim();
                         valfrom = tmp_valuefor[1].trim();
@@ -394,7 +409,7 @@ public class EventsHandler {
                     } else {
                         for (List<String> array : ArrayHandler.getArrays()) {
                             if (array.get(0).equals(valfrom)) {
-                                List<String> copy = new ArrayList<String>(array);
+                                List<String> copy = new ArrayList<>(array);
                                 copy.remove(0);
                                 arrayto.addAll(copy);
                             }
@@ -407,13 +422,13 @@ public class EventsHandler {
                             for (String array : arrayto) {
                                 String[] first = {valin};
                                 String[] second = {array};
-                                ret = doEvents(eventsToFor, chatEvent, first, second, isAsync);
+                                ret = doEvents(eventsToFor, chatEvent, soundEvent, first, second, isAsync);
                             }
                         } else {
                             try {
                                 int intwait = Integer.parseInt(valwait.replace(",",""));
                                 for (int j=0; j<arrayto.size(); j++) {
-                                    List<String> eventsToForFin = new ArrayList<String>(eventsToFor);
+                                    List<String> eventsToForFin = new ArrayList<>(eventsToFor);
                                     global.Async_string.put("AsyncTriggerArgument"+j+"-"+(global.Async_string.size()+1), arrayto.get(j));
                                     for (int k=0; k<eventsToFor.size(); k++) {
                                         eventsToForFin.set(k, eventsToFor.get(k).replace(valin,"{string[AsyncTriggerArgument"+j+"-"+global.Async_string.size()+"]}"));
@@ -440,14 +455,14 @@ public class EventsHandler {
                                 for (int j=int_from; j<int_to+1; j++) {
                                     String[] first = {args[0].trim()};
                                     String[] second = {j + ""};
-                                    ret = doEvents(eventsToFor, chatEvent, first, second, isAsync);
+                                    ret = doEvents(eventsToFor, chatEvent, soundEvent, first, second, isAsync);
                                 }
                             } else {
                                 try {
                                     int intwait = Integer.parseInt(args[3].trim());
                                     int count = 0;
                                     for (int j=int_from; j<int_to+1; j++) {
-                                        List<String> eventsToForFin = new ArrayList<String>(eventsToFor);
+                                        List<String> eventsToForFin = new ArrayList<>(eventsToFor);
                                         global.Async_string.put("AsyncTriggerArgument"+j+"-"+(global.Async_string.size()+1), j+"");
                                         for (int k=0; k<eventsToFor.size(); k++) {
                                             eventsToForFin.set(k, eventsToFor.get(k).replace(args[0].trim(),"{string[AsyncTriggerArgument"+j+"-"+global.Async_string.size()+"]}"));
@@ -476,8 +491,8 @@ public class EventsHandler {
 			
 			if (TMP_c.equalsIgnoreCase("IF")) {
 				int tabbed_logic = 0;
-				List<String> eventsToIf = new ArrayList<String>();
-				List<String> eventsToElse = new ArrayList<String>();
+				List<String> eventsToIf = new ArrayList<>();
+				List<String> eventsToElse = new ArrayList<>();
 				Boolean gotoElse = false;
 				
 				if (i+1 < tmp_event.size()-1) { //check for events after if event
@@ -545,7 +560,7 @@ public class EventsHandler {
 					if (TMP_e.equalsIgnoreCase("TRUE") || TMP_e.equalsIgnoreCase("NOT FALSE")) {
 						if (eventsToIf.size()>0) {
 							eventsToIf.remove(0);
-							ret = doEvents(eventsToIf, chatEvent, isAsync);
+							ret = doEvents(eventsToIf, chatEvent, soundEvent, isAsync);
 						}
 					} else {
 						if (eventsToElse.size()>0) {
@@ -554,7 +569,7 @@ public class EventsHandler {
 								ret = doEvents(eventsToElse, chatEvent, isAsync);
 							} else {
 								eventsToElse.remove(0);
-								ret = doEvents(eventsToElse, chatEvent, isAsync);
+								ret = doEvents(eventsToElse, chatEvent, soundEvent, isAsync);
 							}
 						}
 					}
@@ -564,8 +579,8 @@ public class EventsHandler {
 			
 			if (TMP_c.equalsIgnoreCase("CHOOSE")) {
 				int tabbed_logic = 0;
-				List<List<String>> eventsToChoose = new ArrayList<List<String>>();
-				List<String> eventsToChooseSub = new ArrayList<String>();
+				List<List<String>> eventsToChoose = new ArrayList<>();
+				List<String> eventsToChooseSub = new ArrayList<>();
 				
 				if (i+1 < tmp_event.size()-1) {
 					for (int j=i; j<tmp_event.size(); j++) {
@@ -584,12 +599,12 @@ public class EventsHandler {
 							//check if first level event
 							if (tabbed_logic==1) {
 								if (eventsToChooseSub.size() > 0) { //add more than first level events
-									List<String> tmp_list2nd = new ArrayList<String>(eventsToChooseSub);
+									List<String> tmp_list2nd = new ArrayList<>(eventsToChooseSub);
 									eventsToChoose.add(tmp_list2nd);
 									eventsToChooseSub.clear(); //clears sub choice to add first level event
 								}
 								eventsToChooseSub.add(tmp_event.get(j));
-								List<String> tmp_list1st = new ArrayList<String>(eventsToChooseSub);
+								List<String> tmp_list1st = new ArrayList<>(eventsToChooseSub);
 								eventsToChoose.add(tmp_list1st); //add first level event
 								eventsToChooseSub.clear(); //clear sub choose
 							}
@@ -606,7 +621,7 @@ public class EventsHandler {
 							//check again for first level event
 							if (tabbed_logic==1) {
 								if (eventsToChooseSub.size() > 0) {//add more than first level events
-									List<String> tmp_list3rd = new ArrayList<String>(eventsToChooseSub);
+									List<String> tmp_list3rd = new ArrayList<>(eventsToChooseSub);
 									eventsToChoose.add(tmp_list3rd);
 									eventsToChooseSub.clear(); //clear sub choose
 								}
@@ -621,7 +636,7 @@ public class EventsHandler {
 					int rand = randInt(1,eventsToChoose.size()-2);
 					
 					//do events
-					ret = doEvents(eventsToChoose.get(rand), chatEvent, isAsync);
+					ret = doEvents(eventsToChoose.get(rand), chatEvent, soundEvent, isAsync);
 					
 					//move i to closing end
 					int moveEvents = 0;
@@ -637,13 +652,13 @@ public class EventsHandler {
         return ret;
 	}
 	
-	private static void doTrigger(String triggerName, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
+	private static void doTrigger(String triggerName, ClientChatReceivedEvent chatEvent, PlaySoundEvent soundEvent, Boolean isAsync) {
 		try {
 			//run trigger by number
 			int num = Integer.parseInt(triggerName);
 			if (num >= 0 && num < global.trigger.size()) {
 				//add all events to temp list
-				List<String> TMP_events = new ArrayList<String>();
+				List<String> TMP_events = new ArrayList<>();
 				for (int i=2; i<global.trigger.get(num).size(); i++) {TMP_events.add(global.trigger.get(num).get(i));}
 				
 				//do events
@@ -665,7 +680,7 @@ public class EventsHandler {
                 if (getCase) {
                     if (TMP_trig.equals(triggerName)) {
                         //add all events to temp list
-                        List<String> TMP_events = new ArrayList<String>();
+                        List<String> TMP_events = new ArrayList<>();
                         for (int i = 2; i < global.trigger.get(k).size(); i++) {
                             TMP_events.add(global.trigger.get(k).get(i));
                         }
@@ -681,11 +696,11 @@ public class EventsHandler {
                                 String[] argsIn = TMP_argsIn.split(",");
                                 String[] argsOut = TMP_argsOut.split(",");
                                 if (argsIn.length == argsOut.length) {
-                                    List<String> TMP_events = new ArrayList<String>();
+                                    List<String> TMP_events = new ArrayList<>();
                                     for (int j = 2; j < global.trigger.get(k).size(); j++) {
                                         TMP_events.add(global.trigger.get(k).get(j));
                                     }
-                                    doEvents(TMP_events, chatEvent, argsOut, argsIn, isAsync);
+                                    doEvents(TMP_events, chatEvent, soundEvent, argsOut, argsIn, isAsync);
                                 }
                             }
                         }
@@ -693,7 +708,7 @@ public class EventsHandler {
                 } else {
                     if (TMP_trig.equalsIgnoreCase(triggerName)) {
                         //add all events to temp list
-                        List<String> TMP_events = new ArrayList<String>();
+                        List<String> TMP_events = new ArrayList<>();
                         for (int i = 2; i < global.trigger.get(k).size(); i++) {
                             TMP_events.add(global.trigger.get(k).get(i));
                         }
@@ -709,11 +724,11 @@ public class EventsHandler {
                                 String[] argsIn = TMP_argsIn.split(",");
                                 String[] argsOut = TMP_argsOut.split(",");
                                 if (argsIn.length == argsOut.length) {
-                                    List<String> TMP_events = new ArrayList<String>();
+                                    List<String> TMP_events = new ArrayList<>();
                                     for (int j = 2; j < global.trigger.get(k).size(); j++) {
                                         TMP_events.add(global.trigger.get(k).get(j));
                                     }
-                                    doEvents(TMP_events, chatEvent, argsOut, argsIn, isAsync);
+                                    doEvents(TMP_events, chatEvent, soundEvent, argsOut, argsIn, isAsync);
                                 }
                             }
                         }

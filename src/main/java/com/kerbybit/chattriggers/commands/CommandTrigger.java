@@ -413,7 +413,7 @@ public class CommandTrigger extends CommandBase {
 
     private static void commandImport(String args[]) {
         if (args.length>=2) {
-            ArrayList<String> temp = new ArrayList<String>(Arrays.asList(args));
+            ArrayList<String> temp = new ArrayList<>(Arrays.asList(args));
             temp.remove(0);
             global.neededImports.addAll(temp);
         } else {ChatHandler.warn(ChatHandler.color("red", "/trigger import <import name>"));}
@@ -514,8 +514,8 @@ public class CommandTrigger extends CommandBase {
     private static void commandRun(String args[]) {
         if (args.length < 2) {
             ChatHandler.warn(ChatHandler.color("red", "/tr <trigger>"));
-            ArrayList<List<String>> listCommands = new ArrayList<List<String>>();
-            ArrayList<List<String>> showCommands = new ArrayList<List<String>>();
+            ArrayList<List<String>> listCommands = new ArrayList<>();
+            ArrayList<List<String>> showCommands = new ArrayList<>();
             for (int i=0; i<global.trigger.size(); i++) {
                 if (global.trigger.get(i).get(1).contains("<imported>") && global.trigger.get(i).get(1).contains("<list=")) {
                     if (global.trigger.get(i).get(0).trim().toUpperCase().startsWith("OTHER ")) {
@@ -523,7 +523,7 @@ public class CommandTrigger extends CommandBase {
                         toShow = toShow.substring(toShow.toUpperCase().indexOf("OTHER ")+6);
                         String inList = global.trigger.get(i).get(1);
                         inList = inList.substring(inList.indexOf("<list=")+6, inList.indexOf(">", inList.indexOf("<list=")));
-                        ArrayList<String> temporary = new ArrayList<String>();
+                        ArrayList<String> temporary = new ArrayList<>();
                         temporary.add(inList);
                         temporary.add(toShow);
                         listCommands.add(temporary);
@@ -542,7 +542,7 @@ public class CommandTrigger extends CommandBase {
                         if (isInList == -1) {isNewList = true;}
                     } else {isNewList = true;}
                     if (isNewList) {
-                        ArrayList<String> temporary = new ArrayList<String>();
+                        ArrayList<String> temporary = new ArrayList<>();
                         temporary.add(listCommand.get(0));
                         temporary.add(listCommand.get(1));
                         showCommands.add(temporary);
@@ -564,7 +564,7 @@ public class CommandTrigger extends CommandBase {
             try {
                 int num = Integer.parseInt(args[1]);
                 if (num >= 0 && num < global.trigger.size()) {
-                    List<String> TMP_events = new ArrayList<String>();
+                    List<String> TMP_events = new ArrayList<>();
                     for (int i=2; i<global.trigger.get(num).size(); i++) {
                         TMP_events.add(global.trigger.get(num).get(i));
                     }
@@ -584,7 +584,7 @@ public class CommandTrigger extends CommandBase {
 
                     if (getCase) {
                         if (TMP_trig.equals(TMP_e.toString())) {
-                            List<String> TMP_events = new ArrayList<String>();
+                            List<String> TMP_events = new ArrayList<>();
                             for (int i=2; i<global.trigger.get(k).size(); i++) {
                                 TMP_events.add(global.trigger.get(k).get(i));
                             }
@@ -600,7 +600,7 @@ public class CommandTrigger extends CommandBase {
                                         String[] argsIn = TMP_argsIn.split(",");
                                         String[] argsOut = TMP_argsOut.split(",");
                                         if (argsIn.length == argsOut.length) {
-                                            List<String> TMP_events = new ArrayList<String>();
+                                            List<String> TMP_events = new ArrayList<>();
                                             for (int j = 2; j < global.trigger.get(k).size(); j++) {
                                                 TMP_events.add(global.trigger.get(k).get(j));
                                             }
@@ -613,7 +613,7 @@ public class CommandTrigger extends CommandBase {
                                         String[] argsOut = TMP_argsOut.split(",");
 
                                         if (argsIn.length == argsOut.length) {
-                                            List<String> TMP_events = new ArrayList<String>();
+                                            List<String> TMP_events = new ArrayList<>();
                                             for (int j = 2; j < global.trigger.get(k).size(); j++) {
                                                 TMP_events.add(global.trigger.get(k).get(j));
                                             }
@@ -625,7 +625,7 @@ public class CommandTrigger extends CommandBase {
                         }
                     } else {
                         if (TMP_trig.equalsIgnoreCase(TMP_e.toString())) {
-                            List<String> TMP_events = new ArrayList<String>();
+                            List<String> TMP_events = new ArrayList<>();
                             for (int i=2; i<global.trigger.get(k).size(); i++) {
                                 TMP_events.add(global.trigger.get(k).get(i));
                             }
@@ -641,7 +641,7 @@ public class CommandTrigger extends CommandBase {
                                         String[] argsIn = TMP_argsIn.split(",");
                                         String[] argsOut = TMP_argsOut.split(",");
                                         if (argsIn.length == argsOut.length) {
-                                            List<String> TMP_events = new ArrayList<String>();
+                                            List<String> TMP_events = new ArrayList<>();
                                             for (int j = 2; j < global.trigger.get(k).size(); j++) {
                                                 TMP_events.add(global.trigger.get(k).get(j));
                                             }
@@ -672,7 +672,7 @@ public class CommandTrigger extends CommandBase {
                 if (i==args.length-1) {TMP_trig.append(args[i]);}
                 else {TMP_trig.append(args[i]).append(" ");}
             }
-            List<String> TMP_l = new ArrayList<String>();
+            List<String> TMP_l = new ArrayList<>();
             TMP_l.add(TMP_type);
             TMP_l.add(TMP_trig.toString());
             if (CommandReference.isTriggerType(TMP_type)) {
@@ -829,7 +829,7 @@ public class CommandTrigger extends CommandBase {
                         if (isString) {
                             ChatHandler.warn(ChatHandler.color("red", TMP_sn + " already exists!"));
                         } else {
-                            List<String> TMP_l = new ArrayList<String>();
+                            List<String> TMP_l = new ArrayList<>();
                             TMP_l.add(TMP_sn);
                             TMP_l.add("");
                             if (!TMP_list.equals("")) {TMP_l.add(TMP_list);}
@@ -902,7 +902,7 @@ public class CommandTrigger extends CommandBase {
                         ChatHandler.warnUnformatted(ChatHandler.color("red", "No strings created"));
                         ChatHandler.warnUnformatted(ChatHandler.color("red", "Do </trigger string> to get started"));
                     } else {
-                        List<String> STR_lists = new ArrayList<String>();
+                        List<String> STR_lists = new ArrayList<>();
                         for (int i=0; i<global.USR_string.size(); i++) {
                             if (global.USR_string.get(i).size()!=3) {
                                 String TMP_sn = global.USR_string.get(i).get(0);
@@ -967,7 +967,7 @@ public class CommandTrigger extends CommandBase {
                 ChatHandler.warn(ChatHandler.color("red", "No triggers created"));
                 ChatHandler.warn(ChatHandler.color("red", "Do </trigger> to get started"));
             } else {
-                List<String> TMP_lists = new ArrayList<String>();
+                List<String> TMP_lists = new ArrayList<>();
                 for (int i=0; i<global.trigger.size(); i++) {
                     String TMP_type = global.trigger.get(i).get(0);
                     String TMP_trig = global.trigger.get(i).get(1);
@@ -1048,7 +1048,7 @@ public class CommandTrigger extends CommandBase {
                         }
                     }
                 }
-                Set<String> uniqueTMP_lists = new HashSet<String>(TMP_lists);
+                Set<String> uniqueTMP_lists = new HashSet<>(TMP_lists);
                 for (String value : uniqueTMP_lists) {
                     if (!value.equals("")) {
                         ChatHandler.warn("clickable(&7List>,run_command,/trigger list "+value+") "+Settings.col[0]+value);
@@ -1384,7 +1384,7 @@ public class CommandTrigger extends CommandBase {
                                 .replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket");
                         ChatHandler.warn("clickable("+tmp_outfin+",run_command,/t copy CopyFromDebugChat "+(global.copyText.size()-1)+",Click to copy\n"+tmp_out+")");*/
                         tmp_out = tmp_out.replace("'", "\\'");
-                        List<String> TMP_eventout = new ArrayList<String>();
+                        List<String> TMP_eventout = new ArrayList<>();
                         TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size()-1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
                         ChatHandler.sendJson(TMP_eventout);
                     }
@@ -1403,7 +1403,7 @@ public class CommandTrigger extends CommandBase {
                                         .replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket");
                                 ChatHandler.warn("clickable("+tmp_outfin+",run_command,/t copy CopyFromDebugChat "+(global.copyText.size()-1)+",Click to copy\n"+tmp_out+")");*/
                                 tmp_out = tmp_out.replace("'", "\\'");
-                                List<String> TMP_eventout = new ArrayList<String>();
+                                List<String> TMP_eventout = new ArrayList<>();
                                 TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size() - 1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
                                 ChatHandler.sendJson(TMP_eventout);
                             }
@@ -1430,22 +1430,22 @@ public class CommandTrigger extends CommandBase {
                                 NotifyHandler.showNotifyHistory();
                             }
                         } else if (args[2].equalsIgnoreCase("ASYNC")) {
-                            Map<String, String> temp = new HashMap<String, String>(global.Async_string);
+                            Map<String, String> temp = new HashMap<>(global.Async_string);
                             for (Map.Entry<String, String> entry : temp.entrySet()) {
                                 ChatHandler.warn(entry.getKey() + " - " + entry.getValue());
                             }
                         } else if (args[2].equalsIgnoreCase("TEMP")) {
-                            List<List<String>> temp = new ArrayList<List<String>>(global.TMP_string);
+                            List<List<String>> temp = new ArrayList<>(global.TMP_string);
                             for (List<String> string : temp) {
                                 ChatHandler.warn(string.get(0) + " - " + string.get(1));
                             }
                         } else if (args[2].equalsIgnoreCase("STRINGS")) {
-                            List<List<String>> temp = new ArrayList<List<String>>(global.USR_string);
+                            List<List<String>> temp = new ArrayList<>(global.USR_string);
                             for (List<String> string : temp) {
                                 ChatHandler.warn(string.get(0) + " - " + string.get(1));
                             }
                         } else if (args[2].equalsIgnoreCase("ACTIONBAR")) {
-                            List<String> temp = new ArrayList<String>(global.actionHistory);
+                            List<String> temp = new ArrayList<>(global.actionHistory);
                             for (String action : temp) {
                                 String tmp_out = ChatHandler.removeFormatting(action);
                                 global.copyText.add(tmp_out.replace("\n", "\\n"));
@@ -1454,7 +1454,7 @@ public class CommandTrigger extends CommandBase {
                                         .replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket");
                                 ChatHandler.warn("clickable("+tmp_outfin+",run_command,/t copy CopyFromDebugChat "+(global.copyText.size()-1)+",Click to copy\n"+tmp_out+")");*/
                                 tmp_out = tmp_out.replace("'", "\\'");
-                                List<String> TMP_eventout = new ArrayList<String>();
+                                List<String> TMP_eventout = new ArrayList<>();
                                 TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size() - 1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
                                 ChatHandler.sendJson(TMP_eventout);
                             }

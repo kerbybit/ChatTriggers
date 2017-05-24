@@ -14,7 +14,7 @@ import com.kerbybit.chattriggers.triggers.StringHandler;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class ArrayHandler {
-    private static List<List<String>> USR_array = new ArrayList<List<String>>();
+    private static List<List<String>> USR_array = new ArrayList<>();
 
     public static List<List<String>> getArrays() {
         return USR_array;
@@ -34,7 +34,7 @@ public class ArrayHandler {
 
 	        for (List<String> value : USR_array) {
 	            if (value.get(0).equals(get_name)) {
-                    List<String> temporary = new ArrayList<String>();
+                    List<String> temporary = new ArrayList<>();
                     temporary.add("ArrayToString->"+get_name+"GETR"+"-"+(global.TMP_string.size()+1));
                     temporary.add(value.get(EventsHandler.randInt(1, value.size()-1)));
                     global.TMP_string.add(temporary);
@@ -47,7 +47,7 @@ public class ArrayHandler {
             }
 
             if (!isArray) {
-                List<String> temporary = new ArrayList<String>();
+                List<String> temporary = new ArrayList<>();
                 temporary.add("ArrayToString->"+get_name+"GETR"+"-"+(global.TMP_string.size()+1));
                 temporary.add(get_name + " is not currently an array");
                 global.TMP_string.add(temporary);
@@ -72,7 +72,7 @@ public class ArrayHandler {
 				for (int j=0; j<USR_array.size(); j++) {
 					if (USR_array.get(j).get(0).equals(checkFrom)) {
 						String[] moreargs = args[0].split(args[1]);
-						List<String> temporary = new ArrayList<String>();
+						List<String> temporary = new ArrayList<>();
 						temporary.addAll(Arrays.asList(moreargs));
 						returnString = new StringBuilder("[");
 						for (String value : temporary) {returnString.append(value).append(" ");}
@@ -83,9 +83,9 @@ public class ArrayHandler {
 				}
 				if (!isArray) {
 					String[] moreargs = args[0].split(args[1]);
-					List<String> temporary = new ArrayList<String>();
+					List<String> temporary = new ArrayList<>();
 					temporary.add(checkFrom);
-					List<String> temp = new ArrayList<String>();
+					List<String> temp = new ArrayList<>();
 					temporary.addAll(Arrays.asList(moreargs));
 					returnString = new StringBuilder("[");
 					for (String value : temp) {returnString.append(value).append(" ");}
@@ -95,7 +95,7 @@ public class ArrayHandler {
 				}
 			} else {returnString = new StringBuilder("setSplit formatted wrong! use .setSplit(value,split)");}
 			
-			List<String> temporary = new ArrayList<String>();
+			List<String> temporary = new ArrayList<>();
 			temporary.add("ArrayToString->"+checkFrom+"SETSPLIT"+checkTo+"-"+(global.TMP_string.size()+1));
 			temporary.add(returnString.toString());
 			global.TMP_string.add(temporary);
@@ -135,13 +135,13 @@ public class ArrayHandler {
 			}
 			
 			if (!isArray) {
-				List<String> prearray = new ArrayList<String>();
+				List<String> prearray = new ArrayList<>();
 				prearray.add(checkFrom);
 				prearray.add(fin_checkTo);
                 USR_array.add(prearray);
 			}
 			
-			List<String> temporary = new ArrayList<String>();
+			List<String> temporary = new ArrayList<>();
 			temporary.add("ArrayToString->"+checkFrom+"ADD"+checkTo+"-"+(global.TMP_string.size()+1));
 			temporary.add(checkTo);
 			global.TMP_string.add(temporary);
@@ -158,21 +158,21 @@ public class ArrayHandler {
                 checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
             }
 
-            for (int j=0; j<USR_array.size(); j++) {
-                if (USR_array.get(j).get(0).equals(checkFrom)) {
-                    USR_array.get(j).add(1, checkTo);
+            for (List<String> array : USR_array) {
+                if (array.get(0).equals(checkFrom)) {
+                    array.add(1, checkTo);
                     isArray = true;
                 }
             }
 
             if (!isArray) {
-                List<String> prearray = new ArrayList<String>();
+                List<String> prearray = new ArrayList<>();
                 prearray.add(checkFrom);
                 prearray.add(checkTo);
                 USR_array.add(prearray);
             }
 
-            List<String> temporary = new ArrayList<String>();
+            List<String> temporary = new ArrayList<>();
             temporary.add("ArrayToString->"+checkFrom+"PREPEND"+checkTo+"-"+(global.TMP_string.size()+1));
             temporary.add(checkTo);
             global.TMP_string.add(temporary);
@@ -195,7 +195,7 @@ public class ArrayHandler {
 				}
 			}
 			
-			List<String> temporary = new ArrayList<String>();
+			List<String> temporary = new ArrayList<>();
 			temporary.add("ArrayToString->"+checkFrom+"CLEAR"+"-"+(global.USR_string.size()+1));
 			temporary.add(returnString);
 			global.TMP_string.add(temporary);
@@ -211,16 +211,16 @@ public class ArrayHandler {
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
 				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
-			
-			for (int j=0; j<USR_array.size(); j++) {
-				if (USR_array.get(j).get(0).equals(checkFrom)) {
-					for (int k=1; k<USR_array.get(j).size(); k++) {
-						if (USR_array.get(j).get(k).equals(checkTo)) {checkThis = "true";}
+
+			for (List<String> array : USR_array) {
+				if (array.get(0).equals(checkFrom)) {
+					for (int k=1; k<array.size(); k++) {
+						if (array.get(k).equals(checkTo)) {checkThis = "true";}
 					}
 				}
 			}
 			
-			List<String> temporary = new ArrayList<String>();
+			List<String> temporary = new ArrayList<>();
 			temporary.add("ArrayToString->"+checkFrom+"HAS"+checkTo+"-"+(global.TMP_string.size()+1));
 			temporary.add(checkThis);
 			global.TMP_string.add(temporary);
@@ -236,16 +236,16 @@ public class ArrayHandler {
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
 				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
-			
-			for (int j=0; j<USR_array.size(); j++) {
-				if (USR_array.get(j).get(0).equals(checkFrom)) {
-					for (int k=1; k<USR_array.get(j).size(); k++) {
-						if (USR_array.get(j).get(k).equalsIgnoreCase(checkTo)) {checkThis = "true";}
+
+			for (List<String> array : USR_array) {
+				if (array.get(0).equals(checkFrom)) {
+					for (int k=1; k<array.size(); k++) {
+						if (array.get(k).equalsIgnoreCase(checkTo)) {checkThis = "true";}
 					}
 				}
 			}
 			
-			List<String> temporary = new ArrayList<String>();
+			List<String> temporary = new ArrayList<>();
 			temporary.add("ArrayToString->"+checkFrom+"HASIGNORECASE"+checkTo+"-"+(global.TMP_string.size()+1));
 			temporary.add(checkThis);
 			global.TMP_string.add(temporary);
@@ -294,7 +294,7 @@ public class ArrayHandler {
 			
 			if (toRemoveArray != -1) {USR_array.remove(toRemoveArray);}
 			
-			List<String> temporary = new ArrayList<String>();
+			List<String> temporary = new ArrayList<>();
 			temporary.add("ArrayToString->"+checkFrom+"REMOVE"+checkTo+"-"+(global.TMP_string.size()+1));
 			temporary.add(returnString);
 			global.TMP_string.add(temporary);
@@ -326,11 +326,11 @@ public class ArrayHandler {
 					}
 				} else {returnString = "Value under bounds! (index "+toGet+" - expecting 1)";}
 			} catch (NumberFormatException e) {
-				for (int j=0; j<USR_array.size(); j++) {
-					if (USR_array.get(j).get(0).equals(checkFrom)) {
+			    for (List<String> array : USR_array) {
+					if (array.get(0).equals(checkFrom)) {
 						returnString = "-1";
-						for (int k=1; k<USR_array.get(j).size(); k++) {
-							if (USR_array.get(j).get(k).equals(checkTo)) {
+						for (int k=1; k<array.size(); k++) {
+							if (array.get(k).equals(checkTo)) {
 								returnString = k +"";
 							}
 						}
@@ -338,7 +338,7 @@ public class ArrayHandler {
 				}
 			}
 			
-			List<String> temporary = new ArrayList<String>();
+			List<String> temporary = new ArrayList<>();
 			temporary.add("ArrayToString->"+checkFrom+"GET"+checkTo+"-"+(global.TMP_string.size()+1));
 			temporary.add(returnString);
 			global.TMP_string.add(temporary);
@@ -353,12 +353,12 @@ public class ArrayHandler {
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
 				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
-			
-			for (int j=0; j<USR_array.size(); j++) {
-				if (USR_array.get(j).get(0).equals(checkFrom)) {arraysize = USR_array.get(j).size()-1;}
+
+			for (List<String> array : USR_array) {
+				if (array.get(0).equals(checkFrom)) {arraysize = array.size()-1;}
 			}
 			
-			List<String> temporary = new ArrayList<String>();
+			List<String> temporary = new ArrayList<>();
 			temporary.add("ArrayToString->"+checkFrom+"SIZE"+"-"+(global.TMP_string.size()+1));
 			temporary.add(arraysize+"");
 			global.TMP_string.add(temporary);
@@ -377,7 +377,7 @@ public class ArrayHandler {
 			
 			String checkJson = importJsonFile("array",checkFile, checkFrom+"=>"+checkTo);
 			
-			List<String> temporary = new ArrayList<String>();
+			List<String> temporary = new ArrayList<>();
 			temporary.add("ArrayToString->"+checkFrom+"IMPORTJSONFILE"+checkTo+"FROM"+checkFile+"-"+(global.TMP_string.size()+1));
 			temporary.add(checkJson);
 			global.TMP_string.add(temporary);
@@ -396,7 +396,7 @@ public class ArrayHandler {
 			
 			String checkJson = importJsonURL("array",checkFile, checkFrom + "=>" + checkTo);
 			
-			List<String> temporary = new ArrayList<String>();
+			List<String> temporary = new ArrayList<>();
 			temporary.add("ArrayToString->"+checkFrom+"IMPORTJSONURL"+checkTo+"FROM"+checkFile+"-"+(global.TMP_string.size()+1));
 			temporary.add(checkJson);
 			global.TMP_string.add(temporary);
@@ -416,11 +416,10 @@ public class ArrayHandler {
 			if (checkTo.contains(",")) {
 				try {returnString = exportJsonFile(checkTo.substring(0, checkTo.indexOf(",")), checkFrom, checkTo.substring(checkTo.indexOf(",")+1));}
 				catch (FileNotFoundException e) {returnString = "File not found and could not be created!";} 
-				catch (UnsupportedEncodingException e) {returnString = "File could not be saved!";} 
-				catch (IOException e) {returnString = "File could not be saved!";}
+				catch (Exception e) {returnString = "File could not be saved!";}
 			} else {returnString = "Invalid arguments! expected .exportJson(fileName,nodeName)";}
 			
-			List<String> temporary = new ArrayList<String>();
+			List<String> temporary = new ArrayList<>();
 			temporary.add("ArrayToString->"+checkFrom+"EXPORTJSON"+checkTo+"-"+(global.TMP_string.size()+1));
 			temporary.add(returnString);
 			global.TMP_string.add(temporary);
@@ -433,7 +432,7 @@ public class ArrayHandler {
 
     public static HashMap<String, String> jsonURL = new HashMap<String, String>();
 
-    public static String exportJsonFile(String fileName, String arrayName, String nodeName) throws IOException {
+    private static String exportJsonFile(String fileName, String arrayName, String nodeName) throws IOException {
         StringBuilder returnString = new StringBuilder();
         int arrayNum = -1;
 
@@ -476,10 +475,10 @@ public class ArrayHandler {
         return returnString.toString();
     }
 
-    public static String importJsonFile(String type, String fileName, String toImport) {
+    private static String importJsonFile(String type, String fileName, String toImport) {
         StringBuilder returnString = new StringBuilder("Something went wrong!");
         try {
-            List<String> lines = new ArrayList<String>();
+            List<String> lines = new ArrayList<>();
             String line;
             BufferedReader bufferedReader;
             bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName),"UTF-8"));
@@ -505,7 +504,7 @@ public class ArrayHandler {
                     }
 
                     if (whatArray == -1) {
-                        List<String> temporary = new ArrayList<String>();
+                        List<String> temporary = new ArrayList<>();
                         temporary.add(arrayToSave);
                         ArrayHandler.USR_array.add(temporary);
                         whatArray = ArrayHandler.USR_array.size()-1;
@@ -571,7 +570,7 @@ public class ArrayHandler {
         return returnString.toString();
     }
 
-    public static String importJsonURL(String type, String url, String toImport) {
+    private static String importJsonURL(String type, String url, String toImport) {
         StringBuilder returnString = new StringBuilder("Something went wrong!");
         StringBuilder jsonStringBuilder = new StringBuilder();
 
@@ -581,7 +580,7 @@ public class ArrayHandler {
             try {
                 URL web = new URL(url);
                 InputStream fis = web.openStream();
-                List<String> lines = new ArrayList<String>();
+                List<String> lines = new ArrayList<>();
                 String line;
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
                 while ((line = bufferedReader.readLine()) != null) {
@@ -620,7 +619,7 @@ public class ArrayHandler {
                 }
 
                 if (whatArray == -1) {
-                    List<String> temporary = new ArrayList<String>();
+                    List<String> temporary = new ArrayList<>();
                     temporary.add(arrayToSave);
                     ArrayHandler.USR_array.add(temporary);
                     whatArray = ArrayHandler.USR_array.size()-1;

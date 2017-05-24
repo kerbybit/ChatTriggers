@@ -27,7 +27,7 @@ import com.kerbybit.chattriggers.globalvars.global;
 
 public class FileHandler {
     private static List<String> loadFile(String fileName) throws IOException {
-        List<String> lines = new ArrayList<String>();
+        List<String> lines = new ArrayList<>();
         String line;
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName),"UTF-8"));
         while ((line = bufferedReader.readLine()) != null) {
@@ -60,65 +60,63 @@ public class FileHandler {
 		global.importURL = filename;
 		if (global.canImport) {
 			global.canImport=false;
-			Thread t1 = new Thread(new Runnable() {
-			     public void run() {
-			    	ChatHandler.warn(ChatHandler.color("gray", "Getting import..."));
-			 		try {
-			 		    String importName = global.importURL.replace("http://chattriggers.kerbybit.com/exports/","").replace(".txt","");
-			 		    String currentVersion = "null";
+			Thread t1 = new Thread(() -> {
+                ChatHandler.warn(ChatHandler.color("gray", "Getting import..."));
+                try {
+                    String importName = global.importURL.replace("http://chattriggers.kerbybit.com/exports/","").replace(".txt","");
+                    String currentVersion = "null";
 
-			 			String url = global.importURL;
-			 			String file = new File(global.importURL).getName();
-			 			URL web = new URL(url);
-			 			if (global.debug) {ChatHandler.warn(ChatHandler.color("&7", "Getting import from "+global.importURL));}
-			 			InputStream fis = web.openStream();
-			 			List<String> lines = new ArrayList<String>();
-			 			String line;
-			 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
-			 			while ((line = bufferedReader.readLine()) != null) {
-			 				lines.add(line);
-			 			}
-			 			bufferedReader.close();
+                    String url = global.importURL;
+                    String file = new File(global.importURL).getName();
+                    URL web = new URL(url);
+                    if (global.debug) {ChatHandler.warn(ChatHandler.color("&7", "Getting import from "+global.importURL));}
+                    InputStream fis = web.openStream();
+                    List<String> lines = new ArrayList<>();
+                    String line;
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
+                    while ((line = bufferedReader.readLine()) != null) {
+                        lines.add(line);
+                    }
+                    bufferedReader.close();
 
-                        web = new URL("http://ct.kerbybit.com/exports/meta/"+importName+".json");
-                        fis = web.openStream();
-                        bufferedReader = new BufferedReader(new InputStreamReader(fis, "UTF-8"));
-                        String check = "\"packVersion\":\"";
-                        while ((line = bufferedReader.readLine()) != null) {
-                            if (line.contains(check)) {
-                                currentVersion = line.substring(line.indexOf(check)+check.length(), line.length()-2);
-                            }
+                    web = new URL("http://ct.kerbybit.com/exports/meta/"+importName+".json");
+                    fis = web.openStream();
+                    bufferedReader = new BufferedReader(new InputStreamReader(fis, "UTF-8"));
+                    String check = "\"packVersion\":\"";
+                    while ((line = bufferedReader.readLine()) != null) {
+                        if (line.contains(check)) {
+                            currentVersion = line.substring(line.indexOf(check)+check.length(), line.length()-2);
                         }
+                    }
 
-			 			if (global.debug) {ChatHandler.warn(ChatHandler.color("&7", "Setting up files to save"));}
-			 			File dir = new File("./mods/ChatTriggers/Imports/");
-			 			if (!dir.exists()) {if (!dir.mkdir()) {ChatHandler.warn(ChatHandler.color("red", "Unable to create file!"));}}
-			 			File fin = new File("./mods/ChatTriggers/Imports/"+file);
-			 			if (!fin.exists()) {if (!fin.createNewFile()) {ChatHandler.warn(ChatHandler.color("red", "Unable to create file!"));}}
-			 			
-			 			if (global.debug) {ChatHandler.warn(ChatHandler.color("&7", "Saving file to "+fin.getName()));}
-			 			PrintWriter writer = new PrintWriter(fin,"UTF-8");
-			 			for (String value : lines) {writer.println(value);}
-			 			writer.println("!VERSION " + currentVersion);
-			 			writer.close();
-			 			if (global.debug) {ChatHandler.warn(ChatHandler.color("&7", "Loading imports into triggers"));}
+                    if (global.debug) {ChatHandler.warn(ChatHandler.color("&7", "Setting up files to save"));}
+                    File dir = new File("./mods/ChatTriggers/Imports/");
+                    if (!dir.exists()) {if (!dir.mkdir()) {ChatHandler.warn(ChatHandler.color("red", "Unable to create file!"));}}
+                    File fin = new File("./mods/ChatTriggers/Imports/"+file);
+                    if (!fin.exists()) {if (!fin.createNewFile()) {ChatHandler.warn(ChatHandler.color("red", "Unable to create file!"));}}
 
-						File fcheck = new File("./mods/ChatTriggers/Imports/DisabledImports/"+file);
-						if (fcheck.exists()) {if (!fcheck.delete()) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while deleting the disabled import " + file + "!"));}}
+                    if (global.debug) {ChatHandler.warn(ChatHandler.color("&7", "Saving file to "+fin.getName()));}
+                    PrintWriter writer = new PrintWriter(fin,"UTF-8");
+                    for (String value : lines) {writer.println(value);}
+                    writer.println("!VERSION " + currentVersion);
+                    writer.close();
+                    if (global.debug) {ChatHandler.warn(ChatHandler.color("&7", "Loading imports into triggers"));}
 
-			 			try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while loading the files after an import!"));}
-			 			
-			 			ChatHandler.warn(ChatHandler.color(Settings.col[0], "Got "+file+" successfully!"));
-			 		} catch (MalformedURLException e) {
-			 			ChatHandler.warn(ChatHandler.color("red", "Not a valid import! bad URL"));
-			 			e.printStackTrace();
-			 		} catch (IOException e) {
-			 			ChatHandler.warn(ChatHandler.color("red", "Not a valid import! IO exception"));
-			 			e.printStackTrace();
-			 		}
-			 		global.canImport=true;
-			 		global.worldLoaded = true;
-			     }
+                    File fcheck = new File("./mods/ChatTriggers/Imports/DisabledImports/"+file);
+                    if (fcheck.exists()) {if (!fcheck.delete()) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while deleting the disabled import " + file + "!"));}}
+
+                    try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while loading the files after an import!"));}
+
+                    ChatHandler.warn(ChatHandler.color(Settings.col[0], "Got "+file+" successfully!"));
+                } catch (MalformedURLException e) {
+                    ChatHandler.warn(ChatHandler.color("red", "Not a valid import! bad URL"));
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    ChatHandler.warn(ChatHandler.color("red", "Not a valid import! IO exception"));
+                    e.printStackTrace();
+                }
+                global.canImport=true;
+                global.worldLoaded = true;
 			});
 			t1.start();
 		} else {
@@ -128,7 +126,7 @@ public class FileHandler {
 	
 	private static void saveTriggers(List<List<String>> trigger) throws IOException {
 		PrintWriter writer = new PrintWriter("./mods/ChatTriggers/triggers.txt","UTF-8");
-		List<String> lists = new ArrayList<String>();
+		List<String> lists = new ArrayList<>();
 
         for (List<String> value : trigger) {
 			if (value.get(1).contains("<list=") && value.get(1).contains(">") && !value.get(1).contains("<imported>")) {
@@ -137,7 +135,7 @@ public class FileHandler {
 		}
 		
 		writer.println("");
-		Set<String> uniqueLists = new HashSet<String>(lists);
+		Set<String> uniqueLists = new HashSet<>(lists);
 		for (String value : uniqueLists) {
 			if (!value.equals("")) {
 				writer.println(">>" + value);
@@ -287,13 +285,13 @@ public class FileHandler {
 	}
 	
 	public static List<List<String>> loadTriggers(String fileName, Boolean isImport, String importName) throws IOException {
-		List<List<String>> tmp_triggers = new ArrayList<List<String>>();
+		List<List<String>> tmp_triggers = new ArrayList<>();
 		List<String> lines = loadFile(fileName);
 
 		int j=-1;
 		for (int i=0; i<lines.size(); i++) {
 			if (lines.get(i).startsWith("trigger:")) {
-				List<String> tmp_list = new ArrayList<String>();
+				List<String> tmp_list = new ArrayList<>();
 				if (i < lines.size()-1) {
 					if (lines.get(i+1).startsWith("type:")) {
 						tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("type:") + 5, lines.get(i+1).length()));
@@ -331,7 +329,7 @@ public class FileHandler {
                     }
                 }
 
-                List<String> tmp_list = new ArrayList<String>();
+                List<String> tmp_list = new ArrayList<>();
                 tmp_list.add(type+typeExtra);
 			    tmp_list.add(importTag+trigger);
 
@@ -351,7 +349,7 @@ public class FileHandler {
                     importTag="<imported>";
                 }
 
-                List<String> tmp_list = new ArrayList<String>();
+                List<String> tmp_list = new ArrayList<>();
                 tmp_list.add(type);
                 tmp_list.add(importTag+trigger);
                 tmp_list.add(event);
@@ -456,7 +454,7 @@ public class FileHandler {
 						}
 					}
 					if (canCreate) {
-						List<String> temporary = new ArrayList<String>();
+						List<String> temporary = new ArrayList<>();
 						temporary.add(sn);
 						if (sv.equals("") && !svo.equals("")) {temporary.add(svo);} 
 						else {temporary.add(sv);}
@@ -516,27 +514,27 @@ public class FileHandler {
 	}
 	
 	public static List<List<String>> loadStrings() throws IOException {
-		List<List<String>> tmp_strings = new ArrayList<List<String>>();
+		List<List<String>> tmp_strings = new ArrayList<>();
 		List<String> lines = loadFile("./mods/ChatTriggers/strings.txt");
 		
 		for (int i=0; i<lines.size(); i++) {
 			try {
 				if (i<=lines.size()-3) {
 					if (lines.get(i).contains("string:") && lines.get(i+1).startsWith("  value:") && lines.get(i+2).startsWith("  list:")) {
-						List<String> tmp_list = new ArrayList<String>();
+						List<String> tmp_list = new ArrayList<>();
 						tmp_list.add(lines.get(i).substring(lines.get(i).indexOf("string:") + 7));
 						tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("  value:") + 8));
 						tmp_list.add(lines.get(i+2).substring(lines.get(i+2).indexOf("  list:")+7));
 						tmp_strings.add(tmp_list);
 					} else if (lines.get(i).contains("string:") && lines.get(i+1).startsWith("  value:")) {
-						List<String> tmp_list = new ArrayList<String>();
+						List<String> tmp_list = new ArrayList<>();
 						tmp_list.add(lines.get(i).substring(lines.get(i).indexOf("string:") + 7));
 						tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("  value:") + 8));
 						tmp_strings.add(tmp_list);
 					}
 				} else {
 					if (lines.get(i).contains("string:") && lines.get(i+1).startsWith("  value:")) {
-						List<String> tmp_list = new ArrayList<String>();
+						List<String> tmp_list = new ArrayList<>();
 						tmp_list.add(lines.get(i).substring(lines.get(i).indexOf("string:") + 7));
 						tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("  value:") + 8));
 						tmp_strings.add(tmp_list);

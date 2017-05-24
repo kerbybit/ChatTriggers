@@ -24,6 +24,7 @@ public class CommandReference {
         global.killfeedDelay.clear();
         global.notify.clear();
         global.notifyAnimation.clear();
+        global.notifySize = 0;
         DisplayHandler.clearDisplays();
     }
 
@@ -41,7 +42,7 @@ public class CommandReference {
 	
 	static boolean isTriggerType(String TMP_type) {
 
-        List<String> check = new ArrayList<String>(getTriggerTypes());
+        List<String> check = new ArrayList<>(getTriggerTypes());
 
         for (String value : check) {
             if (!value.equals("")) {
@@ -55,7 +56,7 @@ public class CommandReference {
 	}
 
     static List<String> getTriggerTypes() {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
 
             r.add("chat");
             r.add("onChat");
@@ -129,7 +130,7 @@ public class CommandReference {
 	}
 	
 	static Boolean isEventType(String TMP_etype) {
-        List<String> check = new ArrayList<String>(getEventTypes());
+        List<String> check = new ArrayList<>(getEventTypes());
         for (String value : check) {
             if (!value.equals("")) {
                 if (TMP_etype.equalsIgnoreCase(value)) {
@@ -142,7 +143,7 @@ public class CommandReference {
 	}
 
     static List<String> getEventTypes() {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
 
             r.add("chat");
             r.add("actionbar");
@@ -174,7 +175,7 @@ public class CommandReference {
     }
 
     public static List<String> getAllEventTypes() {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
 
         r.add("chat");
         r.add("cancel");
@@ -204,7 +205,7 @@ public class CommandReference {
     }
 
     static List<String> getStrings() {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
 
             r.add("{msg} {msg[$number]}");
             r.add("{br}");
@@ -240,7 +241,7 @@ public class CommandReference {
     }
 
     static List<String> getStringFunctions() {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
 
             r.add(".set($value) .set(~)");
             r.add(".save($value) .save(~)");
@@ -286,7 +287,7 @@ public class CommandReference {
     }
 
     static List<String> getArrayFunctions() {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
 
             r.add(".clear()");
             r.add(".add($v)");
@@ -303,7 +304,7 @@ public class CommandReference {
     }
 
     static List<String> getListFunctions() {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
 
             r.add(".load($v) .load($file) .load($URL)");
             r.add(".export($file)");
@@ -319,7 +320,7 @@ public class CommandReference {
     }
 
     static List<String> getJsonFunctions() {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
 
             r.add(".clear()");
             r.add(".load($v) .load($file) .load($URL)");
@@ -331,7 +332,7 @@ public class CommandReference {
     }
 
     static List<String> getDisplayFunctions() {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
 
             r.add(".add($v)");
             r.add(".clear()");

@@ -30,15 +30,15 @@ public class TriggerHandler {
             String tmp_out = ChatHandler.removeFormatting(fmsg);
             global.copyText.add(tmp_out);
             tmp_out = tmp_out.replace("'", "\\'");
-            List<String> TMP_eventout = new ArrayList<String>();
+            List<String> TMP_eventout = new ArrayList<>();
             TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size()-1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
             ChatHandler.sendJson(TMP_eventout);
         }
 
         //get trigger list if chat or actionbar
         List<List<String>> temp;
-        if (isActionbar) temp = new ArrayList<List<String>>(global.actionTrigger);
-        else temp = new ArrayList<List<String>>(global.chatTrigger);
+        if (isActionbar) temp = new ArrayList<>(global.actionTrigger);
+        else temp = new ArrayList<>(global.chatTrigger);
 
         for (int i = 0; i < temp.size(); i++) {
             //setup
@@ -95,31 +95,25 @@ public class TriggerHandler {
             if (correct_server) {
                 TMP_trig = setTrigStrings(msg, TMP_trig);
 
-                if (TMP_w.equals("s")) { //startWith
-                    if (msg.startsWith(TMP_trig)) {
-                        doEvents(i, e);
-                    } else {
-                        clearTemporary();
-                    }
-                } else if (TMP_w.equals("c")) { //contains
-                    if (msg.contains(TMP_trig)) {
-                        doEvents(i, e);
-                    } else {
-                        clearTemporary();
-                    }
-                } else if (TMP_w.equals("e")) { //endsWith
-                    if (msg.endsWith(TMP_trig)) {
-                        doEvents(i, e);
-                    } else {
-                        clearTemporary();
-                    }
-                } else { //equals
-                    if (msg.equals(TMP_trig)) {
-                        doEvents(i, e);
-                    } else {
-                        clearTemporary();
-                    }
+                switch (TMP_w) {
+                    case ("s"):
+                        if (msg.startsWith(TMP_trig))
+                            doEvents(i, e);
+                        break;
+                    case("c"):
+                        if (msg.contains(TMP_trig))
+                            doEvents(i, e);
+                        break;
+                    case("e"):
+                        if (msg.endsWith(TMP_trig))
+                            doEvents(i, e);
+                        break;
+                    default:
+                        if (msg.equals(TMP_trig))
+                            doEvents(i, e);
+                        break;
                 }
+                clearTemporary();
             }
         }
     }
@@ -156,7 +150,7 @@ public class TriggerHandler {
 
     private static void doEvents(int i, ClientChatReceivedEvent e) {
         //add all events to temp list
-        List<String> TMP_events = new ArrayList<String>();
+        List<String> TMP_events = new ArrayList<>();
         for (int j = 2; j < global.chatTrigger.get(i).size(); j++) {
             TMP_events.add(global.chatTrigger.get(i).get(j));
         }
@@ -180,7 +174,7 @@ public class TriggerHandler {
             //onChat
             for (int i=0; i<global.onChatTrigger.size(); i++) {
                 //add all events to temp list
-                List<String> TMP_events = new ArrayList<String>();
+                List<String> TMP_events = new ArrayList<>();
                 for (int j=2; j<global.onChatTrigger.get(i).size(); j++) {TMP_events.add(global.onChatTrigger.get(i).get(j));}
 
                 //do events
@@ -218,7 +212,7 @@ public class TriggerHandler {
 			for (int i=0; i<global.tickTrigger.size(); i++) {
 				if (global.ticksElapsed % global.tickTriggerTime.get(i) == 0) {
 					//add all events to temp list
-					List<String> TMP_events = new ArrayList<String>();
+					List<String> TMP_events = new ArrayList<>();
 					for (int j=2; j<global.tickTrigger.get(i).size(); j++) {TMP_events.add(global.tickTrigger.get(i).get(j));}
 					
 					//do events
@@ -231,26 +225,24 @@ public class TriggerHandler {
 	public static void onSoundPlay(PlaySoundEvent e) {
         for (int i=0; i<global.onSoundPlayTrigger.size(); i++) {
             //add all events to temp list
-            List<String> TMP_events = new ArrayList<String>();
+            List<String> TMP_events = new ArrayList<>();
             for (int j=2; j<global.onSoundPlayTrigger.get(i).size(); j++) {
                 String toAdd = global.onSoundPlayTrigger.get(i).get(j);
-                if (toAdd.contains("{cancel}")) {
-                    e.result = null;
-                }
-                toAdd = toAdd.replace("{soundName}", e.sound.getSoundLocation().getResourcePath());
-                toAdd = toAdd.replace("{soundCategory}", e.category.getCategoryName());
                 TMP_events.add(toAdd);
             }
 
             //do events
-            EventsHandler.doEvents(TMP_events, null);
+            String[] extraStrings = new String[]{"{soundName}", "{soundCategory}"};
+            String[] extraStringValues = new String[]{e.sound.getSoundLocation().getResourcePath(),
+                    e.category.getCategoryName()};
+            EventsHandler.doEvents(TMP_events, e, extraStrings, extraStringValues);
         }
     }
 	
 	public static void onRightClickPlayer(EntityInteractEvent e) {
 		for (int i=0; i<global.onRightClickPlayerTrigger.size(); i++) {
 			//add all events to temp list
-			List<String> TMP_events = new ArrayList<String>();
+			List<String> TMP_events = new ArrayList<>();
 			for (int j=2; j<global.onRightClickPlayerTrigger.get(i).size(); j++) {TMP_events.add(global.onRightClickPlayerTrigger.get(i).get(j).replace("{player}", e.target.getName()));}
 			
 			//do events
@@ -264,7 +256,7 @@ public class TriggerHandler {
 			for (int i=0; i<global.onWorldFirstLoadTrigger.size(); i++) {
 				if (global.worldFirstLoad) {
 					//add all events to temp list
-					List<String> TMP_events = new ArrayList<String>();
+					List<String> TMP_events = new ArrayList<>();
 					for (int j=2; j<global.onWorldFirstLoadTrigger.get(i).size(); j++) {TMP_events.add(global.onWorldFirstLoadTrigger.get(i).get(j));}
 					
 					//do events
@@ -274,7 +266,7 @@ public class TriggerHandler {
 				
 			for (int i=0; i<global.onWorldLoadTrigger.size(); i++) {
 				//add all events to temp list
-				List<String> TMP_events = new ArrayList<String>();
+				List<String> TMP_events = new ArrayList<>();
 				for (int j=2; j<global.onWorldLoadTrigger.get(i).size(); j++) {TMP_events.add(global.onWorldLoadTrigger.get(i).get(j));}
 				
 				//do events
@@ -288,7 +280,7 @@ public class TriggerHandler {
 				
 				if (!currentServer.equals(global.connectedToServer)) {
 					//add all events to temp list
-					List<String> TMP_events = new ArrayList<String>();
+					List<String> TMP_events = new ArrayList<>();
 					for (int j=2; j<global.onServerChangeTrigger.get(i).size(); j++) {TMP_events.add(global.onServerChangeTrigger.get(i).get(j));}
 					
 					//do events
@@ -312,7 +304,7 @@ public class TriggerHandler {
 				global.currentDate = dateFormat.format(date);
 				for (int i=0; i<global.onNewDayTrigger.size(); i++) {
 					//add all events to temp list
-					List<String> TMP_events = new ArrayList<String>();
+					List<String> TMP_events = new ArrayList<>();
 					for (int j=2; j<global.onNewDayTrigger.get(i).size(); j++) {TMP_events.add(global.onNewDayTrigger.get(i).get(j));}
 					
 					//do events
