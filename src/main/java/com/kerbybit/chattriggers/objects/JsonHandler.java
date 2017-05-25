@@ -324,11 +324,8 @@ public class JsonHandler {
             global.backupAsync_string.put("AsyncJsonToString->"+json_name+function.toUpperCase()+"-"+global.Async_string.size(), value);
             return TMP_e.replace("{json["+json_name+"]}."+function+"("+arguments+")","{string[AsyncJsonToString->"+json_name+function.toUpperCase()+"-"+global.Async_string.size()+"]}");
         } else {
-            List<String> temporary = new ArrayList<>();
-            temporary.add("JsonToString->"+json_name+function.toUpperCase()+"-"+(global.TMP_string.size()+1));
-            temporary.add(value);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+            global.TMP_string.put("JsonToString->"+json_name+function.toUpperCase()+"-"+(global.TMP_string.size()+1), value);
+            global.backupTMP_strings.put("JsonToString->"+json_name+function.toUpperCase()+"-"+global.TMP_string.size(), value);
             return TMP_e.replace("{json["+json_name+"]}."+function+"("+arguments+")","{string[JsonToString->"+json_name+function.toUpperCase()+"-"+global.TMP_string.size()+"]}");
         }
     }

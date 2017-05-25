@@ -8,20 +8,15 @@ import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.objects.JsonHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.kerbybit.chattriggers.triggers.StringHandler.stringFunctions;
-import static java.lang.Math.abs;
 import static net.minecraft.realms.RealmsMth.floor;
 
 public class StringFunctions {
@@ -63,7 +58,7 @@ public class StringFunctions {
                     if (stringPos >= 0) {
                         global.USR_string.get(floor(stringPos)).set(1, returnString);
                     } else {
-                        global.TMP_string.get(floor(abs(stringPos) - 1)).set(1, returnString);
+                        global.TMP_string.put(stringName, returnString);
                     }
                 }
             }
@@ -91,8 +86,8 @@ public class StringFunctions {
                         global.backupUSR_strings.get(floor(stringPos)).set(1, set);
                         return set;
                     } else {
-                        String set = addExtras(global.TMP_string.get(floor(abs(stringPos)-1)).get(1));
-                        global.backupTMP_strings.get(floor(abs(stringPos)-1)).set(1, set);
+                        String set = addExtras(global.TMP_string.get(stringName));
+                        global.backupTMP_strings.put(stringName, args);
                         return set;
                     }
                 }
@@ -107,8 +102,8 @@ public class StringFunctions {
                         global.backupUSR_strings.get(floor(stringPos)).set(1, args);
                         return args;
                     } else {
-                        global.TMP_string.get(floor(abs(stringPos) - 1)).set(1, args);
-                        global.backupTMP_strings.get(floor(abs(stringPos) - 1)).set(1, args);
+                        global.TMP_string.put(stringName, args);
+                        global.backupTMP_strings.put(stringName, args);
                         return args;
                     }
                 }
@@ -126,8 +121,8 @@ public class StringFunctions {
                         global.backupUSR_strings.get(floor(stringPos)).set(1, set);
                         ret = set;
                     } else {
-                        String set = addExtras(global.TMP_string.get(floor(abs(stringPos)-1)).get(1));
-                        global.backupTMP_strings.get(floor(abs(stringPos)-1)).set(1, set);
+                        String set = addExtras(global.TMP_string.get(stringName));
+                        global.backupTMP_strings.put(stringName, args);
                         ret = set;
                     }
                 }
@@ -142,8 +137,8 @@ public class StringFunctions {
                         global.backupUSR_strings.get(floor(stringPos)).set(1, args);
                         ret = args;
                     } else {
-                        global.TMP_string.get(floor(abs(stringPos) - 1)).set(1, args);
-                        global.backupTMP_strings.get(floor(abs(stringPos) - 1)).set(1, args);
+                        global.TMP_string.put(stringName, args);
+                        global.backupTMP_strings.put(stringName, args);
                         ret = args;
                     }
                 }
@@ -319,24 +314,28 @@ public class StringFunctions {
     }
 
     private static String doStringComparatorFunctions(String stringValue, String func, String args) {
-        if (func.equals("EQUALS") || func.equals("=") || func.equals("==")) {
-            return trimBool(stringValue.equals(args));
-        } else if (func.equals("EQUALSIGNORECASE")) {
-            return trimBool(stringValue.equalsIgnoreCase(args));
-        } else if (func.equals("STARTSWITH")) {
-            return trimBool(stringValue.startsWith(args));
-        } else if (func.equals("STARTSWITHIGNORECASE")) {
-            return trimBool(stringValue.toUpperCase().startsWith(args.toUpperCase()));
-        } else if (func.equals("CONTAINS")) {
-            return trimBool(stringValue.contains(args));
-        } else if (func.equals("CONTAINSIGNORECASE")) {
-            return trimBool(stringValue.toUpperCase().contains(args.toUpperCase()));
-        } else if (func.equals("ENDSWITH")) {
-            return trimBool(stringValue.endsWith(args));
-        } else if (func.equals("ENDSWITHIGNORECASE")) {
-            return trimBool(stringValue.toUpperCase().endsWith(args.toUpperCase()));
-        } else if (func.equals("MATCHESREGEX") || func.equals("HASREGEX")) {
-            return trimBool(stringValue.matches(args));
+        switch (func) {
+            case "EQUALS":
+            case "=":
+            case "==":
+                return trimBool(stringValue.equals(args));
+            case "EQUALSIGNORECASE":
+                return trimBool(stringValue.equalsIgnoreCase(args));
+            case "STARTSWITH":
+                return trimBool(stringValue.startsWith(args));
+            case "STARTSWITHIGNORECASE":
+                return trimBool(stringValue.toUpperCase().startsWith(args.toUpperCase()));
+            case "CONTAINS":
+                return trimBool(stringValue.contains(args));
+            case "CONTAINSIGNORECASE":
+                return trimBool(stringValue.toUpperCase().contains(args.toUpperCase()));
+            case "ENDSWITH":
+                return trimBool(stringValue.endsWith(args));
+            case "ENDSWITHIGNORECASE":
+                return trimBool(stringValue.toUpperCase().endsWith(args.toUpperCase()));
+            case "MATCHESREGEX":
+            case "HASREGEX":
+                return trimBool(stringValue.matches(args));
         }
 
         Double stringValueNumber;
@@ -348,14 +347,23 @@ public class StringFunctions {
             return null;
         }
 
-        if (func.equals("LESSTHAN") || func.equals("LT") || func.equals("<")) {
-            return trimBool(stringValueNumber<argsValueNumber);
-        } else if (func.equals("LESSTHANOREQUALTO") || func.equals("LTE") || func.equals("<=")) {
-            return trimBool(stringValueNumber<=argsValueNumber);
-        } else if (func.equals("GREATORTHAN") || func.equals("GT") || func.equals(">")) {
-            return trimBool(stringValueNumber>argsValueNumber);
-        } else if (func.equals("GREATORTHANOREQUALTO") || func.equals("GTE") || func.equals(">=")) {
-            return trimBool(stringValueNumber>=argsValueNumber);
+        switch (func) {
+            case "LESSTHAN":
+            case "LT":
+            case "<":
+                return trimBool(stringValueNumber < argsValueNumber);
+            case "LESSTHANOREQUALTO":
+            case "LTE":
+            case "<=":
+                return trimBool(stringValueNumber <= argsValueNumber);
+            case "GREATORTHAN":
+            case "GT":
+            case ">":
+                return trimBool(stringValueNumber > argsValueNumber);
+            case "GREATORTHANOREQUALTO":
+            case "GTE":
+            case ">=":
+                return trimBool(stringValueNumber >= argsValueNumber);
         }
 
         return null;
@@ -387,35 +395,50 @@ public class StringFunctions {
         }
 
         if (argsValueNumber != null) {
-            if (func.equals("ADD") || func.equals("+")) {
-                return trimNumber(stringValueNumber + argsValueNumber);
-            } else if (func.equals("SUBTRACT") || func.equals("MINUS") || func.equals("-")) {
-                return trimNumber(stringValueNumber - argsValueNumber);
-            } else if (func.equals("MULTIPLY") || func.equals("TIMES") || func.equals("*")) {
-                return trimNumber(stringValueNumber * argsValueNumber);
-            } else if (func.equals("DIVIDE") || func.equals("/")) {
-                return trimNumber(stringValueNumber / argsValueNumber);
-            } else if (func.equals("DIVIDEGETPERCENT") || func.equals("DIVPERCENT") || func.equals("/%")) {
-                return trimNumber((stringValueNumber / argsValueNumber) * 100);
-            } else if (func.equals("POW") || func.equals("POWER") || func.equals("^")) {
-                return trimNumber(Math.pow(stringValueNumber, argsValueNumber));
-            } else if (func.equals("MOD") || func.equals("MODULUS") || func.equals("%")) {
-                return trimNumber(stringValueNumber % argsValueNumber);
-            } else if (func.equals("ABSOLUTE") || func.equals("ABS")) {
-                return trimNumber(Math.abs(stringValueNumber));
+            switch (func) {
+                case "ADD":
+                case "+":
+                    return trimNumber(stringValueNumber + argsValueNumber);
+                case "SUBTRACT":
+                case "MINUS":
+                case "-":
+                    return trimNumber(stringValueNumber - argsValueNumber);
+                case "MULTIPLY":
+                case "TIMES":
+                case "*":
+                    return trimNumber(stringValueNumber * argsValueNumber);
+                case "DIVIDE":
+                case "/":
+                    return trimNumber(stringValueNumber / argsValueNumber);
+                case "DIVIDEGETPERCENT":
+                case "DIVPERCENT":
+                case "/%":
+                    return trimNumber((stringValueNumber / argsValueNumber) * 100);
+                case "POW":
+                case "POWER":
+                case "^":
+                    return trimNumber(Math.pow(stringValueNumber, argsValueNumber));
+                case "MOD":
+                case "MODULUS":
+                case "%":
+                    return trimNumber(stringValueNumber % argsValueNumber);
+                case "ABSOLUTE":
+                case "ABS":
+                    return trimNumber(Math.abs(stringValueNumber));
             }
         }
 
-        if (func.equals("ROUND")) {
-            if (argsValueNumber == null) {
-                return trimNumber(Math.round(stringValueNumber));
-            } else {
-                return trimNumber(Math.round(stringValueNumber * Math.pow(10, argsValueNumber)) / Math.pow(10, argsValueNumber));
-            }
-        } else if (func.equals("FLOOR")) {
-            return trimNumber(Math.floor(stringValueNumber));
-        } else if (func.equals("CEIL")) {
-            return trimNumber(Math.ceil(stringValueNumber));
+        switch (func) {
+            case "ROUND":
+                if (argsValueNumber == null) {
+                    return trimNumber(Math.round(stringValueNumber));
+                } else {
+                    return trimNumber(Math.round(stringValueNumber * Math.pow(10, argsValueNumber)) / Math.pow(10, argsValueNumber));
+                }
+            case "FLOOR":
+                return trimNumber(Math.floor(stringValueNumber));
+            case "CEIL":
+                return trimNumber(Math.ceil(stringValueNumber));
         }
 
         return null;
@@ -445,7 +468,7 @@ public class StringFunctions {
                             String[] func_args = func_arg.split(",");
                             String[] func_args_to = args.split(",");
                             if (func_args.length == func_args_to.length) {
-                                List<String> TMP_events = new ArrayList<String>();
+                                List<String> TMP_events = new ArrayList<>();
                                 for (int j = 2; j < function.size(); j++) {
                                     TMP_events.add(function.get(j));
                                 }
@@ -453,7 +476,7 @@ public class StringFunctions {
                             }
                         } else {
                             if (args.equals("")) {
-                                List<String> TMP_events = new ArrayList<String>();
+                                List<String> TMP_events = new ArrayList<>();
                                 for (int j = 2; j < function.size(); j++) {
                                     TMP_events.add(function.get(j));
                                 }
@@ -481,10 +504,8 @@ public class StringFunctions {
                 }
             }
 
-            for (List<String> string : global.TMP_string) {
-                if (stringName.equals(string.get(0))) {
-                    return string.get(1);
-                }
+            if (global.TMP_string.containsKey(stringName)) {
+                return global.TMP_string.get(stringName);
             }
         }
 
@@ -502,13 +523,7 @@ public class StringFunctions {
         }
 
         if (!isAsync) {
-            i = 1.0;
-            for (List<String> string : global.TMP_string) {
-                if (stringName.equals(string.get(0))) {
-                    return -i;
-                }
-                i++;
-            }
+            return -1.0;
         }
         return null;
     }
@@ -519,11 +534,8 @@ public class StringFunctions {
             global.backupAsync_string.put(stringName, "");
             return "";
         } else {
-            List<String> temp = new ArrayList<String>();
-            temp.add(stringName);
-            temp.add("");
-            global.TMP_string.add(temp);
-            global.backupTMP_strings.add(temp);
+            global.TMP_string.put(stringName, "");
+            global.backupTMP_strings.put(stringName, "");
             return "";
         }
     }

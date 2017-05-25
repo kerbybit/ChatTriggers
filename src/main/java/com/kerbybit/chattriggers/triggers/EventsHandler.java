@@ -69,13 +69,10 @@ public class EventsHandler {
                         tmp_event.set(j, tmp_event.get(j).replace(toreplace[i],"{string[TriggerAsyncArgument"+i+"-"+global.Async_string.size()+"]}"));
                     }
                 } else {
-                    List<String> temporary = new ArrayList<>();
-                    temporary.add("TriggerArgument"+i+"-"+global.TMP_string.size());
-                    temporary.add(replacement[i]);
+                    global.TMP_string.put("TriggerArgument"+i+"-"+(global.TMP_string.size()+1), replacement[i]);
                     for (int j=0; j<tmp_event.size(); j++) {
                         tmp_event.set(j, tmp_event.get(j).replace(toreplace[i],"{string[TriggerArgument"+i+"-"+global.TMP_string.size()+"]}"));
                     }
-                    global.TMP_string.add(temporary);
 			    }
 			}
 		}

@@ -1435,9 +1435,9 @@ public class CommandTrigger extends CommandBase {
                                 ChatHandler.warn(entry.getKey() + " - " + entry.getValue());
                             }
                         } else if (args[2].equalsIgnoreCase("TEMP")) {
-                            List<List<String>> temp = new ArrayList<>(global.TMP_string);
-                            for (List<String> string : temp) {
-                                ChatHandler.warn(string.get(0) + " - " + string.get(1));
+                            Map<String, String> temp = new HashMap<>(global.TMP_string);
+                            for (Map.Entry<String, String> string : temp.entrySet()) {
+                                ChatHandler.warn(string.getKey() + " - " + string.getValue());
                             }
                         } else if (args[2].equalsIgnoreCase("STRINGS")) {
                             List<List<String>> temp = new ArrayList<>(global.USR_string);

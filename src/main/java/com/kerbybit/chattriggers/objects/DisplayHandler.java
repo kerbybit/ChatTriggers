@@ -547,11 +547,8 @@ public class DisplayHandler {
             global.backupAsync_string.put("DisplayToString->" + display_name + function_name.toUpperCase() + "-" + global.TMP_string.size(), value);
             return TMP_e.replace("{display["+display_name+"]}."+function_name+"("+arguments+")","{string[AsyncDisplayToString->"+display_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
         } else {
-            List<String> temporary = new ArrayList<>();
-            temporary.add("DisplayToString->" + display_name + function_name.toUpperCase() + "-" + (global.TMP_string.size() + 1));
-            temporary.add(value);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+            global.TMP_string.put("DisplayToString->" + display_name + function_name.toUpperCase() + "-" + (global.TMP_string.size() + 1), value);
+            global.backupTMP_strings.put("DisplayToString->" + display_name + function_name.toUpperCase() + "-" + global.TMP_string.size(), value);
             return TMP_e.replace("{display["+display_name+"]}."+function_name+"("+arguments+")","{string[DisplayToString->"+display_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
         }
     }

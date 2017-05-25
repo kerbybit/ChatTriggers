@@ -29,9 +29,8 @@ import static java.lang.StrictMath.round;
 public class BuiltInStrings {
     public static String builtInStrings(String TMP_e, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
         while (TMP_e.contains("{imported(") && TMP_e.contains(")}")) {
-            List<String> temporary = new ArrayList<String>();
+            String temporary;
             String imp = TMP_e.substring(TMP_e.indexOf("{imported(")+10, TMP_e.indexOf(")}", TMP_e.indexOf("{imported(")));
-            temporary.add("DefaultString->IMPORTED"+imp+"-"+(global.TMP_string.size()+1));
             Boolean isImported = false;
 
             File dir = new File("./mods/ChatTriggers/Imports/");
@@ -51,20 +50,19 @@ public class BuiltInStrings {
             }
 
             if (isImported) {
-                temporary.add("true");
+                temporary = "true";
             } else {
-                temporary.add("false");
+                temporary = "false";
             }
 
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+            global.TMP_string.put("DefaultString->IMPORTED"+imp+"-"+(global.TMP_string.size()+1), temporary);
+            global.backupTMP_strings.put("DefaultString->IMPORTED"+imp+"-"+global.TMP_string.size(), temporary);
 
             TMP_e = TMP_e.replace("{imported("+imp+")}", "{string[DefaultString->IMPORTED"+imp+"-"+global.TMP_string.size()+"]}");
         }
         while (TMP_e.contains("{random(") && TMP_e.contains(")}")) {
-            List<String> temporary = new ArrayList<String>();
+            String temporary;
             String lowhigh = TMP_e.substring(TMP_e.indexOf("{random(")+8, TMP_e.indexOf(")}", TMP_e.indexOf("{random(")));
-            temporary.add("DefaultString->RANDOM"+lowhigh+"-"+(global.TMP_string.size()+1));
 
             try {
                 int low = 0;
@@ -80,41 +78,38 @@ public class BuiltInStrings {
                     high = Integer.parseInt(strhigh);
                 }
 
-                temporary.add(EventsHandler.randInt(low,high) + "");
+                temporary = EventsHandler.randInt(low,high) + "";
             } catch (NumberFormatException e) {
-                temporary.add("Not a number!");
+                temporary = "Not a number!";
             }
 
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+            global.TMP_string.put("DefaultString->RANDOM"+lowhigh+"-"+(global.TMP_string.size()+1), temporary);
+            global.backupTMP_strings.put("DefaultString->RANDOM"+lowhigh+"-"+global.TMP_string.size(), temporary);
 
             TMP_e = TMP_e.replace("{random("+lowhigh+")}", "{string[DefaultString->RANDOM"+lowhigh+"-"+global.TMP_string.size()+"]}");
         }
         while (TMP_e.contains("{msg(") && TMP_e.contains(")}")) {
             String strnum = TMP_e.substring(TMP_e.indexOf("{msg(")+5, TMP_e.indexOf(")}", TMP_e.indexOf("{msg(")));
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->MSGHISTORY"+strnum+"-"+(global.TMP_string.size()+1));
+            String temporary;
             String get_number = StringFunctions.nestedArgs(strnum, chatEvent, isAsync);
 
             try {
                 int num = Integer.parseInt(get_number);
                 if (num>=0) {
-                    if (num<global.chatHistory.size()) {temporary.add(ChatHandler.removeFormatting(global.chatHistory.get(global.chatHistory.size()-(num+1))));}
-                    else {temporary.add("Number must be less than the chat history size! ("+global.chatHistory.size()+")");}
-                } else {temporary.add("Number must be greater than or equal to 0!");}
-            } catch (NumberFormatException e) {temporary.add("Not a number!");}
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+                    if (num<global.chatHistory.size()) {temporary = ChatHandler.removeFormatting(global.chatHistory.get(global.chatHistory.size()-(num+1)));}
+                    else {temporary = "Number must be less than the chat history size! ("+global.chatHistory.size()+")";}
+                } else {temporary = "Number must be greater than or equal to 0!";}
+            } catch (NumberFormatException e) {temporary = "Not a number!";}
+
+            global.TMP_string.put("DefaultString->MSGHISTORY"+strnum+"-"+(global.TMP_string.size()+1), temporary);
+            global.backupTMP_strings.put("DefaultString->MSGHISTORY"+strnum+"-"+global.TMP_string.size(), temporary);
 
             TMP_e = TMP_e.replace("{msg("+strnum+")}", "{string[DefaultString->MSGHISTORY"+strnum+"-"+global.TMP_string.size()+"]}");
         }
         if (chatEvent!=null) {
             if (TMP_e.contains("{msg}.meta()")) {
-                List<String> temporary = new ArrayList<String>();
-                temporary.add("DefaultString->MSGMETA-"+(global.TMP_string.size()+1));
-                temporary.add(ChatHandler.removeFormatting(chatEvent.message.getChatStyle().toString()));
-                global.TMP_string.add(temporary);
-                global.backupTMP_strings.add(temporary);
+                global.TMP_string.put("DefaultString->MSGMETA-"+(global.TMP_string.size()+1), ChatHandler.removeFormatting(chatEvent.message.getChatStyle().toString()));
+                global.backupTMP_strings.put("DefaultString->MSGMETA-"+global.TMP_string.size(), ChatHandler.removeFormatting(chatEvent.message.getChatStyle().toString()));
                 TMP_e = TMP_e.replace("{msg}.meta()", "{string[DefaultString->MSGMETA-"+global.TMP_string.size()+"]}");
             }
             if (TMP_e.contains("{msg}")) {
@@ -590,11 +585,8 @@ public class BuiltInStrings {
             global.backupAsync_string.put("AsyncDefaultString->" + string_name.toUpperCase() + "-" + global.Async_string.size(), string_value);
             return TMP_e.replace("{" + string_name + "}", "{string[AsyncDefaultString->" + string_name.toUpperCase() + "-" + global.Async_string.size() + "]}");
         } else {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->" + string_name.toUpperCase() + "-" + (global.TMP_string.size() + 1));
-            temporary.add(string_value);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+            global.TMP_string.put("DefaultString->" + string_name.toUpperCase() + "-" + (global.TMP_string.size() + 1), string_value);
+            global.backupTMP_strings.put("DefaultString->" + string_name.toUpperCase() + "-" + global.TMP_string.size(), string_value);
             return TMP_e.replace("{" + string_name + "}", "{string[DefaultString->" + string_name.toUpperCase() + "-" + global.TMP_string.size() + "]}");
         }
     }
@@ -606,11 +598,8 @@ public class BuiltInStrings {
             return TMP_e.replace("{" + string_name1 + "}", "{string[AsyncDefaultString->" + string_name1.toUpperCase() + "-" + global.Async_string.size() + "]}")
                     .replace("{" + string_name2 + "}", "{string[AsyncDefaultString->" + string_name1.toUpperCase() + "-" + global.Async_string.size() + "]}");
         } else {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->" + string_name1.toUpperCase() + "-" + (global.TMP_string.size() + 1));
-            temporary.add(string_value);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+            global.TMP_string.put("DefaultString->" + string_name1.toUpperCase() + "-" + (global.TMP_string.size() + 1), string_value);
+            global.backupTMP_strings.put("DefaultString->" + string_name1.toUpperCase() + "-" + global.TMP_string.size(), string_value);
             return TMP_e.replace("{" + string_name1 + "}", "{string[DefaultString->" + string_name1.toUpperCase() + "-" + global.TMP_string.size() + "]}")
                     .replace("{" + string_name2 + "}", "{string[DefaultString->" + string_name1.toUpperCase() + "-" + global.TMP_string.size() + "]}");
         }

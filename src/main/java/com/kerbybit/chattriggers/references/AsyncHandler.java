@@ -7,6 +7,7 @@ import com.kerbybit.chattriggers.triggers.EventsHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AsyncHandler {
     private static HashMap<Integer, String> asyncsStatus = new HashMap<>();
@@ -60,8 +61,8 @@ public class AsyncHandler {
             global.Async_string.put(string.get(0), string.get(1));
         }
 
-        for (List<String> string : global.backupTMP_strings) {
-            global.Async_string.put(string.get(0), string.get(1));
+        for (Map.Entry<String, String> string : global.backupTMP_strings.entrySet()) {
+            global.Async_string.put(string.getKey(), string.getValue());
         }
     }
 

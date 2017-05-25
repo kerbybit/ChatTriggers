@@ -542,13 +542,11 @@ public class ListHandler {
     private static String createDefaultString(String function_name, String list_name, String arguments, String value, String TMP_e, Boolean isAsync) {
         if (isAsync) {
             global.Async_string.put("AsyncListToString->" + list_name + function_name.toUpperCase() + "-" + (global.Async_string.size() + 1), value);
+            global.backupAsync_string.put("AsyncListToString->" + list_name + function_name.toUpperCase() + "-" + global.Async_string.size(), value);
             return TMP_e.replace("{list["+list_name+"]}."+function_name+"("+arguments+")", "{string[AsyncListToString->"+list_name+function_name.toUpperCase()+"-"+global.Async_string.size()+"]}");
         } else {
-            List<String> temporary = new ArrayList<>();
-            temporary.add("ListToString->" + list_name + function_name.toUpperCase() + "-" + (global.TMP_string.size() + 1));
-            temporary.add(value);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+            global.TMP_string.put("ListToString->" + list_name + function_name.toUpperCase() + "-" + (global.TMP_string.size() + 1), value);
+            global.backupTMP_strings.put("ListToString->" + list_name + function_name.toUpperCase() + "-" + global.TMP_string.size(), value);
             return TMP_e.replace("{list["+list_name+"]}."+function_name+"("+arguments+")", "{string[ListToString->"+list_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
         }
     }
@@ -563,11 +561,8 @@ public class ListHandler {
             global.backupAsync_string.put("AsyncListToString->" + list_name + "LITERAL" + "-" + global.Async_string.size(), getList(list_name));
             return TMP_e.replace("{list[" + list_name + "]}", "{string[AsyncListToString->" + list_name + "LITERAL" + "-" + global.Async_string.size() + "]}");
         } else {
-            List<String> temporary = new ArrayList<>();
-            temporary.add("ListToString->" + list_name + "LITERAL" + "-" + (global.TMP_string.size() + 1));
-            temporary.add(getList(list_name));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+            global.TMP_string.put("ListToString->" + list_name + "LITERAL" + "-" + (global.TMP_string.size() + 1), getList(list_name));
+            global.backupTMP_strings.put("ListToString->" + list_name + "LITERAL" + "-" + global.TMP_string.size(), getList(list_name));
             return TMP_e.replace("{list[" + list_name + "]}", "{string[ListToString->" + list_name + "LITERAL" + "-" + global.TMP_string.size() + "]}");
         }
     }
