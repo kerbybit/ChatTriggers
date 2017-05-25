@@ -165,6 +165,13 @@ public class DisplayHandler {
         display_settings.clear();
     }
 
+    private static String removeExtras(String in, String... replace) {
+        for (String string : replace) {
+            in = in.replace(string, "");
+        }
+        return in;
+    }
+
     public static void drawDisplays(RenderGameOverlayEvent event) {
         if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
         GL11.glColor4f(1, 1, 1, 1);
@@ -236,7 +243,10 @@ public class DisplayHandler {
                         rainbow_string = display_text.substring(display_text.indexOf("<rainbow="), display_text.indexOf(">", display_text.indexOf("<rainbow="))+1);
                     }
 
-
+                    String shadow_string = "";
+                    if (display_text.contains("<shadow=") && display_text.contains(">")) {
+                        shadow_string = display_text.substring(display_text.indexOf("<shadow="), display_text.indexOf(">", display_text.indexOf("<shadow="))+1);
+                    }
 
                     if (display_text.contains("<up>")) {
                         up = true;
@@ -244,13 +254,13 @@ public class DisplayHandler {
                         if (display_text.contains("<center>")) {
                             align = 1;
                             display_text = display_text.replace("<center>","");
-                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","").replace(rainbow_string,"")));
+                            int text_width = ren.getStringWidth(removeExtras(IconHandler.removeIconString(display_text), "<rainbow>", rainbow_string, shadow_string));
                             display_x = ((display_xy[0].floatValue() * width) / 100) - text_width/2;
                             display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
                         } else if (display_text.contains("<right>")) {
                             align = 2;
                             display_text = display_text.replace("<right>","");
-                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","").replace(rainbow_string,"")));
+                            int text_width = ren.getStringWidth(removeExtras(IconHandler.removeIconString(display_text), "<rainbow>", rainbow_string, shadow_string));
                             display_x = ((display_xy[0].floatValue() * width) / 100) - text_width;
                             display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
                         } else {
@@ -263,13 +273,13 @@ public class DisplayHandler {
                         if (display_text.contains("<center>")) {
                             align = 1;
                             display_text = display_text.replace("<center>","");
-                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","").replace(rainbow_string,"")));
+                            int text_width = ren.getStringWidth(removeExtras(IconHandler.removeIconString(display_text), "<rainbow>", rainbow_string, shadow_string));
                             display_x = ((display_xy[0].floatValue() * width) / 100) - text_width/2;
                             display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
                         } else if (display_text.contains("<right>")) {
                             align = 2;
                             display_text = display_text.replace("<right>","");
-                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","").replace(rainbow_string,"")));
+                            int text_width = ren.getStringWidth(removeExtras(IconHandler.removeIconString(display_text), "<rainbow>", rainbow_string, shadow_string));
                             display_x = ((display_xy[0].floatValue() * width) / 100) - text_width;
                             display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
                         } else {
@@ -278,10 +288,13 @@ public class DisplayHandler {
                             display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
                         }
                     }
-                    display_text = IconHandler.drawIcons(display_text, floor(display_x), floor(display_y));
 
-                    if (ren.getStringWidth(display_text) > max_width) {
-                        max_width = ren.getStringWidth(display_text);
+                    String trimmed_display_text = removeExtras(display_text, "<rainbow>", rainbow_string, shadow_string);
+
+
+
+                    if (ren.getStringWidth(trimmed_display_text) > max_width) {
+                        max_width = ren.getStringWidth(trimmed_display_text);
                     }
 
                     display_texts.add(display_text);
@@ -390,6 +403,13 @@ public class DisplayHandler {
                 color = 0xffffff;
             }
 
+            Boolean shadow = true;
+            if (display_text.contains("<shadow=") && display_text.contains(">")) {
+                String shadow_string = display_text.substring(display_text.indexOf("<shadow=")+8, display_text.indexOf(">", display_text.indexOf("<shadow=")));
+                display_text = display_text.replace("<shadow="+shadow_string+">", "");
+                shadow = shadow_string.equals("true");
+            }
+
             if (!display_text.equals("") && bg.equalsIgnoreCase("line")) {
                 try {
                     drawRect(display_x, display_y, display_x + ren.getStringWidth(display_text), display_y + 10, (int) Long.parseLong(bgc, 16));
@@ -398,7 +418,8 @@ public class DisplayHandler {
                 }
             }
 
-            ren.drawStringWithShadow(display_text, display_x, display_y, color);
+            display_text = IconHandler.drawIcons(display_text, floor(display_x), floor(display_y));
+            ren.drawString(display_text, display_x, display_y, color, shadow);
         }
     }
 
