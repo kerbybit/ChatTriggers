@@ -252,7 +252,8 @@ public class StringHandler {
 								global.temporary_replace.add("{string["+stringName+"]");
 								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]"); 
 								global.temporary_replace.add("{string<"+stringName+">");
-								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]"); 
+								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]");
+								stringName = "TEMP-USER-STRING"+tmpnum+"->"+stringName;
 							}
 							
 							
@@ -327,6 +328,7 @@ public class StringHandler {
 								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]");
 								global.temporary_replace.add("{string<"+stringName+">");
 								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]");
+                                stringName = "TEMP-USER-STRING"+tmpnum+"->"+stringName;
 							}
 							
 							String set_string = msg.substring(msg.indexOf(split_trig[i-1])+split_trig[i-1].length(), msg.length());
@@ -402,6 +404,7 @@ public class StringHandler {
 								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]");
 								global.temporary_replace.add("{string<"+stringName+">");
 								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]");
+                                stringName = "TEMP-USER-STRING"+tmpnum+"->"+stringName;
 							}
 							
 							int checkbefore = msg.indexOf(split_trig[i-1])+split_trig[i-1].length();

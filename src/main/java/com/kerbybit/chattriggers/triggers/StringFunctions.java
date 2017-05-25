@@ -87,7 +87,7 @@ public class StringFunctions {
                         return set;
                     } else {
                         String set = addExtras(global.TMP_string.get(stringName));
-                        global.backupTMP_strings.put(stringName, args);
+                        global.backupTMP_strings.put(stringName, set);
                         return set;
                     }
                 }
@@ -122,7 +122,7 @@ public class StringFunctions {
                         ret = set;
                     } else {
                         String set = addExtras(global.TMP_string.get(stringName));
-                        global.backupTMP_strings.put(stringName, args);
+                        global.backupTMP_strings.put(stringName, set);
                         ret = set;
                     }
                 }
