@@ -184,7 +184,7 @@ public class BuiltInStrings {
             Collections.reverse(scoreboardNames);
 
             for (String scoreboardLine : scoreboardNames) {
-                returnString.append(scoreboardLine).append(",");
+                returnString.append(scoreboardLine.replace(",","")).append(",");
             }
             if (returnString.toString().equals("[")) {
                 TMP_e = createDefaultString("scoreboardlines", "[]", TMP_e, isAsync);
