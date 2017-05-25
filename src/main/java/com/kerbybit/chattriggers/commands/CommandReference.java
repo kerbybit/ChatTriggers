@@ -236,6 +236,10 @@ public class CommandReference {
             r.add("");
             r.add("{random($low,$high)} {random($high)}");
             r.add("{time} {date} {unixtime}");
+            r.add("{titletext}");
+            r.add("{subtitletext}");
+            r.add("{actionbartext}");
+            r.add("{bossbartext}");
 
         return r;
     }

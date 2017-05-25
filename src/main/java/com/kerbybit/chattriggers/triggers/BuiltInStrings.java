@@ -11,14 +11,21 @@ import com.kerbybit.chattriggers.references.Reference;
 import com.kerbybit.chattriggers.references.RomanNumber;
 import com.kerbybit.chattriggers.util.ScoreboardReader;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiIngame;
+import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import org.lwjgl.Sys;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -197,6 +204,45 @@ public class BuiltInStrings {
         }
         if (TMP_e.contains("{debug}")) {
             TMP_e = createDefaultString("debug", global.debug + "", TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{titletext}")) {
+            String titleText = ReflectionHelper.getPrivateValue(
+                    GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "displayedTitle");
+
+            if (titleText == null) {
+                titleText = "null";
+            }
+
+            TMP_e = createDefaultString("titletext", titleText, TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{subtitletext}")) {
+            String subtitleText = ReflectionHelper.getPrivateValue(
+                    GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "displayedSubTitle");
+
+            if (subtitleText == null) {
+                subtitleText = "null";
+            }
+
+            TMP_e = createDefaultString("subtitletext", subtitleText, TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{actionbartext}")) {
+            String recordPlaying = ReflectionHelper.getPrivateValue(
+                    GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "recordPlaying");
+
+            if (recordPlaying == null) {
+                recordPlaying = "null";
+            }
+
+            TMP_e = createDefaultString("actionbartext", recordPlaying, TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{bossbartext}")) {
+            String bossName = BossStatus.bossName;
+
+            if (bossName == null) {
+                bossName = "";
+            }
+
+            TMP_e = createDefaultString("bossbartext", bossName, TMP_e, isAsync);
         }
         if (TMP_e.contains("{setcol}")) {
             TMP_e = createDefaultString("setcol", Settings.col[0], TMP_e, isAsync);
