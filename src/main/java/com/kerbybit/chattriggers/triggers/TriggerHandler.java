@@ -10,12 +10,16 @@ import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
 import com.kerbybit.chattriggers.objects.DisplayHandler;
+import com.kerbybit.chattriggers.references.BugTracker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import org.lwjgl.Sys;
 
 public class TriggerHandler {
     public static void onChat(String fmsg, String msg, ClientChatReceivedEvent e) {
@@ -239,9 +243,27 @@ public class TriggerHandler {
 
             //do events
             try {
-                String[] extraStrings = new String[]{"{soundName}", "{soundCategory}"};
-                String[] extraStringValues = new String[]{e.name,
-                        e.category.getCategoryName()};
+                String[] extraStrings = new String[]{
+                        "{soundName}", "{soundCategory}", "{soundDistance}",
+                        "{soundX}", "{soundY}", "{soundZ}",
+                        "{soundVol}", "{soundPitch}"
+                };
+
+                String soundName = e.sound.getSoundLocation().getResourcePath();
+                String categoryName = e.category.getCategoryName();
+                String soundDistance = String.valueOf(getDistanceFromPlayer(e.sound));
+                String xPos = String.valueOf(e.sound.getXPosF());
+                String yPos = String.valueOf(e.sound.getYPosF());
+                String zPos = String.valueOf(e.sound.getZPosF());
+                String soundVolume = String.valueOf(e.sound.getVolume());
+                String soundPitch = String.valueOf(e.sound.getPitch());
+
+                String[] extraStringValues = new String[]{
+                        soundName, categoryName, soundDistance,
+                        xPos, yPos, zPos,
+                        soundVolume, soundPitch
+                };
+
                 EventsHandler.doEvents(TMP_events, e, extraStrings, extraStringValues);
             } catch (NullPointerException exception) {
 
@@ -323,4 +345,18 @@ public class TriggerHandler {
 			}
 		}
 	}
+
+	private static double getDistanceFromPlayer(ISound sound) {
+        EntityPlayerSP p = FMLClientHandler.instance().getClientPlayerEntity();
+
+        float x = sound.getXPosF();
+        float y = sound.getYPosF();
+        float z = sound.getZPosF();
+
+        return Math.sqrt(
+                Math.pow(x - p.getPosition().getX(), 2)
+                + Math.pow(y - p.getPosition().getY(), 2)
+                + Math.pow(z - p.getPosition().getZ(), 2)
+        );
+    }
 }
