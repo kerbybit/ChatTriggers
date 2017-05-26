@@ -172,15 +172,16 @@ public class BuiltInStrings {
         if (TMP_e.contains("{playerlist}")) {
             StringBuilder returnString = new StringBuilder("[");
             for (EntityPlayer player : Minecraft.getMinecraft().theWorld.playerEntities) {
-                returnString.append(player.getName()).append(",");
+                String playerName = player.getName();
+                if (!playerName.equals("")) {
+                    returnString.append(player.getName()).append(",");
+                }
             }
             if (returnString.toString().equals("[")) {
                 TMP_e = createDefaultString("playerlist", "[]", TMP_e, isAsync);
             } else {
-                System.out.println(returnString.substring(0, returnString.length()-1)+"]");
                 ListHandler.getList("DefaultList->PLAYERLIST-"+(ListHandler.getListsSize()+1), returnString.substring(0, returnString.length()-1)+"]");
                 TMP_e = TMP_e.replace("{playerlist}", "{list[DefaultList->PLAYERLIST-"+ListHandler.getListsSize()+"]}");
-                System.out.println(ListHandler.getListsSize());
             }
         }
         if (TMP_e.contains("{scoreboardlines}")) {
@@ -196,10 +197,8 @@ public class BuiltInStrings {
             if (returnString.toString().equals("[")) {
                 TMP_e = createDefaultString("scoreboardlines", "[]", TMP_e, isAsync);
             } else {
-                System.out.println(returnString.substring(0, returnString.length()-1)+"]");
                 ListHandler.getList("DefaultList->PLAYERLIST-"+(ListHandler.getListsSize()+1), returnString.substring(0, returnString.length()-1)+"]");
                 TMP_e = TMP_e.replace("{scoreboardlines}", "{list[DefaultList->PLAYERLIST-"+ListHandler.getListsSize()+"]}");
-                System.out.println(ListHandler.getListsSize());
             }
         }
         if (TMP_e.contains("{debug}")) {
