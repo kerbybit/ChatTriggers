@@ -397,6 +397,7 @@ public class StringFunctions {
         if (argsValueNumber != null) {
             switch (func) {
                 case "ADD":
+                case "PLUS":
                 case "+":
                     return trimNumber(stringValueNumber + argsValueNumber);
                 case "SUBTRACT":
