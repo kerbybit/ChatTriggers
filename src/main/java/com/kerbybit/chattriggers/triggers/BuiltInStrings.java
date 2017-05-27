@@ -162,6 +162,12 @@ public class BuiltInStrings {
 
             TMP_e = createDefaultString("ping", returnString, TMP_e, isAsync);
         }
+        if (TMP_e.contains("{yaw}")) {
+            TMP_e = createDefaultString("yaw", String.valueOf(Minecraft.getMinecraft().thePlayer.rotationYaw), TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{pitch}")) {
+            TMP_e = createDefaultString("pitch", String.valueOf(Minecraft.getMinecraft().thePlayer.rotationPitch), TMP_e, isAsync);
+        }
         if (TMP_e.contains("{serverversion}")) {
             String returnString;
             if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "1.8";}
