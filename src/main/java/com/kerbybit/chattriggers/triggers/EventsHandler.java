@@ -162,7 +162,7 @@ public class EventsHandler {
             if (TMP_c.equalsIgnoreCase("DEBUG") || TMP_c.equalsIgnoreCase("DO")) {if (global.debug) {ChatHandler.warn(TMP_e);}}
             if (TMP_c.equalsIgnoreCase("LOG")) {System.out.println(removeStringReplacements(TMP_e));}
             if (TMP_c.equalsIgnoreCase("SIMULATE")) {
-                ClientChatReceivedEvent ce = new ClientChatReceivedEvent((byte)0, IChatComponent.Serializer.jsonToComponent("{text:'"+TMP_e+"'}"));
+                ClientChatReceivedEvent ce = new ClientChatReceivedEvent((byte)0, IChatComponent.Serializer.jsonToComponent("{text:'"+TMP_e.replace("'","\\'")+"'}"));
                 onChat(TMP_e, ChatHandler.deleteFormatting(TMP_e), ce);
                 if (!ce.isCanceled()) {
                     ChatHandler.warn(TMP_e);

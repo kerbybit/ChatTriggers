@@ -198,7 +198,7 @@ public class CommandTrigger extends CommandBase {
             TMP_e.append(args[i]).append(" ");
         }
         //ChatHandler.warn(TMP_e);
-        ClientChatReceivedEvent chatEvent = new ClientChatReceivedEvent((byte)0, IChatComponent.Serializer.jsonToComponent("{text:'"+TMP_e.toString().trim()+"'}"));
+        ClientChatReceivedEvent chatEvent = new ClientChatReceivedEvent((byte)0, IChatComponent.Serializer.jsonToComponent("{text:'"+TMP_e.toString().replace("'", "\\'").trim()+"'}"));
         onChat(TMP_e.toString().trim(), ChatHandler.deleteFormatting(TMP_e.toString().trim()), chatEvent);
         if (!chatEvent.isCanceled()) {
             ChatHandler.warn(TMP_e.toString().trim());
