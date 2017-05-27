@@ -8,10 +8,9 @@ import com.kerbybit.chattriggers.gui.IconHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
 import com.kerbybit.chattriggers.objects.JsonHandler;
 import com.kerbybit.chattriggers.references.Reference;
-import com.kerbybit.chattriggers.references.RomanNumber;
+import com.kerbybit.chattriggers.util.RomanNumber;
 import com.kerbybit.chattriggers.util.ScoreboardReader;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,10 +23,8 @@ import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import org.lwjgl.Sys;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -341,19 +338,19 @@ public class BuiltInStrings {
         	if(yaw < 22.5 && yaw > -22.5) {
         		direction = "SOUTH";
 			} else if (yaw < 67.5 && yaw > 22.5) {
-        		direction = "SOUTHWEST";
+        		direction = "SOUTH WEST";
 			} else if (yaw < 112.5 && yaw > 67.5) {
         		direction = "WEST";
 			} else if (yaw < 157.5 && yaw > 112.5) {
-        		direction = "NORTHWEST";
+        		direction = "NORTH WEST";
 			} else if (yaw < -157.5 || yaw > 157.5) {
         		direction = "NORTH";
 			} else if (yaw > -157.5 && yaw < -112.5) {
-				direction = "NORTHEAST";
+				direction = "NORTH EAST";
 			} else if (yaw > -112.5 && yaw < -67.5) {
         		direction = "EAST";
 			} else if (yaw > -67.5 && yaw < -22.5) {
-        		direction = "SOUTHEAST";
+        		direction = "SOUTH EAST";
 			}
 
             TMP_e = createDefaultString("facing", direction, TMP_e, isAsync);
