@@ -301,7 +301,7 @@ public class CommandReference {
             r.add("");
             r.add(".setSplit($v,$split)");
             r.add(".importJsonFile($file,$node)");
-            r.add(".improtJsonURL($URL,$node)");
+            r.add(".importJsonURL($URL,$node)");
             r.add(".exportJson($file,$node)");
 
         return r;

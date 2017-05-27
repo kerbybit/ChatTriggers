@@ -19,6 +19,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.MathHelper;
+import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -162,6 +164,12 @@ public class BuiltInStrings {
 
             TMP_e = createDefaultString("ping", returnString, TMP_e, isAsync);
         }
+        if (TMP_e.contains("{yaw}")) {
+            TMP_e = createDefaultString("yaw", String.valueOf(MathHelper.wrapAngleTo180_float(Minecraft.getMinecraft().thePlayer.rotationYaw)), TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{pitch}")) {
+            TMP_e = createDefaultString("pitch", String.valueOf(MathHelper.wrapAngleTo180_float(Minecraft.getMinecraft().thePlayer.rotationPitch)), TMP_e, isAsync);
+        }
         if (TMP_e.contains("{serverversion}")) {
             String returnString;
             if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "1.8";}
@@ -205,8 +213,10 @@ public class BuiltInStrings {
             TMP_e = createDefaultString("debug", global.debug + "", TMP_e, isAsync);
         }
         if (TMP_e.contains("{titletext}")) {
-            String titleText = ReflectionHelper.getPrivateValue(
-                    GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "displayedTitle");
+			String titleText;
+
+			titleText = ReflectionHelper.getPrivateValue(
+					GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "field_175200_x");
 
             if (titleText == null) {
                 titleText = "null";
@@ -215,8 +225,10 @@ public class BuiltInStrings {
             TMP_e = createDefaultString("titletext", titleText, TMP_e, isAsync);
         }
         if (TMP_e.contains("{subtitletext}")) {
-            String subtitleText = ReflectionHelper.getPrivateValue(
-                    GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "displayedSubTitle");
+			String subtitleText;
+
+			subtitleText = ReflectionHelper.getPrivateValue(
+					GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "field_175201_y");
 
             if (subtitleText == null) {
                 subtitleText = "null";
@@ -226,11 +238,19 @@ public class BuiltInStrings {
         }
         if (TMP_e.contains("{actionbartext}")) {
             String recordPlaying = ReflectionHelper.getPrivateValue(
-                    GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "recordPlaying");
+                    GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "field_73838_g");
+
+            Boolean isRecordPlaying = ReflectionHelper.getPrivateValue(
+            		GuiIngame.class, Minecraft.getMinecraft().ingameGUI, "field_73844_j"
+			);
 
             if (recordPlaying == null) {
                 recordPlaying = "null";
             }
+
+            if (!isRecordPlaying) {
+            	recordPlaying = "";
+			}
 
             TMP_e = createDefaultString("actionbartext", recordPlaying, TMP_e, isAsync);
         }
@@ -238,8 +258,16 @@ public class BuiltInStrings {
             String bossName = BossStatus.bossName;
 
             if (bossName == null) {
-                bossName = "";
+				bossName = "";
             }
+
+			if (TMP_e.contains("{bossbartext}.hide()")) {
+				GuiIngameForge.renderBossHealth = false;
+			}
+
+			if (TMP_e.contains("{bossbartext}.show()")) {
+				GuiIngameForge.renderBossHealth = true;
+			}
 
             TMP_e = createDefaultString("bossbartext", bossName, TMP_e, isAsync);
         }
