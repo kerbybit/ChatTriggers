@@ -334,7 +334,29 @@ public class BuiltInStrings {
             TMP_e = createDefaultString("fpscol", col, TMP_e, isAsync);
         }
         if (TMP_e.contains("{facing}")) {
-            TMP_e = createDefaultString("facing", Minecraft.getMinecraft().thePlayer.getHorizontalFacing().toString(), TMP_e, isAsync);
+        	float yaw = MathHelper.wrapAngleTo180_float(Minecraft.getMinecraft().thePlayer.rotationYaw);
+
+        	String direction = "";
+
+        	if(yaw < 22.5 && yaw > -22.5) {
+        		direction = "SOUTH";
+			} else if (yaw < 67.5 && yaw > 22.5) {
+        		direction = "SOUTHWEST";
+			} else if (yaw < 112.5 && yaw > 67.5) {
+        		direction = "WEST";
+			} else if (yaw < 157.5 && yaw > 112.5) {
+        		direction = "NORTHWEST";
+			} else if (yaw < -157.5 || yaw > 157.5) {
+        		direction = "NORTH";
+			} else if (yaw > -157.5 && yaw < -112.5) {
+				direction = "NORTHEAST";
+			} else if (yaw > -112.5 && yaw < -67.5) {
+        		direction = "EAST";
+			} else if (yaw > -67.5 && yaw < -22.5) {
+        		direction = "SOUTHEAST";
+			}
+
+            TMP_e = createDefaultString("facing", direction, TMP_e, isAsync);
         }
         if (TMP_e.contains("{time}")) {
             Calendar cal = Calendar.getInstance();
