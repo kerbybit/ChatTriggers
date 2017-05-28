@@ -11,11 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.kerbybit.chattriggers.globalvars.Settings;
 import net.minecraft.client.Minecraft;
@@ -237,14 +233,11 @@ public class FileHandler {
 		writer.close();
 	}
 	
-	private static void saveStrings(List<List<String>> listName) throws IOException {
+	private static void saveStrings(Map<String, String> listName) throws IOException {
 		PrintWriter writer = new PrintWriter("./mods/ChatTriggers/strings.txt","UTF-8");
-        for (List<String> string : listName) {
-			writer.println("string:"+string.get(0));
-			writer.println("  value:"+string.get(1));
-			if (string.size()==3) {
-				writer.println("  list:"+string.get(2));
-			}
+        for (Map.Entry<String, String> string : listName.entrySet()) {
+			writer.println("string:"+string.getKey());
+			writer.println("  value:"+string.getValue());
 		}
 		writer.close();
 	}
@@ -391,7 +384,6 @@ public class FileHandler {
 				String importFunction = lines.get(i).trim().substring(lines.get(i).trim().indexOf("!")+1);
 				if (importFunction.toUpperCase().startsWith("CREATE STRING ") || importFunction.toUpperCase().startsWith("CREATESTRING ")) {
 					String sn;
-					String ln = "";
 					if (importFunction.toUpperCase().startsWith("CREATE STRING ")) {
 						sn = importFunction.substring(importFunction.toUpperCase().indexOf("CREATE STRING ")+14);
 					} else {
@@ -424,42 +416,24 @@ public class FileHandler {
 						else {ChatHandler.warn(ChatHandler.color("gray", "Importing string "+sn+" with no value"));}
 					}
 					
-					if (sn.contains("<list=") && sn.contains(">")) {
-						ln = sn.substring(sn.indexOf("<list=")+6, sn.indexOf(">",sn.indexOf("<list=")));
-						sn = sn.replace("<list="+ln+">", "");
-					}
-					
 					Boolean canCreate = true;
-					for (int k=0; k<global.USR_string.size(); k++) {
-						if (global.USR_string.get(k).get(0).equals(sn)) {
-							canCreate=false;
-							if (!sv.equals("")) {
-								global.USR_string.get(k).set(1, sv);
-								if (!ln.equals("")) {
-									if (global.USR_string.get(k).size()==3) {global.USR_string.get(k).set(2, ln);}
-									else {global.USR_string.get(k).add(ln);}
-								}
-								if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Set value "+sv+" in string "+sn));}
-							} else {if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "String already exists"));}}
-							if (!svo.equals("")) {
-								if (global.USR_string.get(k).get(1).equals("")) {
-									global.USR_string.get(k).set(1, svo);
-									if (!ln.equals("")) {
-										if (global.USR_string.get(k).size()==3) {global.USR_string.get(k).set(2, ln);}
-										else {global.USR_string.get(k).add(ln);}
-									}
-									if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Set value "+sv+" in string "+sn));}
-								} else {if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "String already has value"));}}
-							}
-						}
-					}
+                    if (global.USR_string.containsKey(sn)) {
+                        canCreate=false;
+                        if (!sv.equals("")) {
+                            global.USR_string.put(sn, sv);
+                            if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Set value "+sv+" in string "+sn));}
+                        } else {if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "String already exists"));}}
+                        if (!svo.equals("")) {
+                            if (global.USR_string.get(sn).equals("")) {
+                                global.USR_string.put(sn, svo);
+                                if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Set value "+sv+" in string "+sn));}
+                            } else {if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "String already has value"));}}
+                        }
+                    }
+
 					if (canCreate) {
-						List<String> temporary = new ArrayList<>();
-						temporary.add(sn);
-						if (sv.equals("") && !svo.equals("")) {temporary.add(svo);} 
-						else {temporary.add(sv);}
-						if (!ln.equals("")) {temporary.add(ln);}
-						global.USR_string.add(temporary);
+						if (sv.equals("") && !svo.equals("")) {sv = svo;}
+						global.USR_string.put(sn, sv);
 						if (global.debug) {
 							if (!sv.equals("")) {ChatHandler.warn(ChatHandler.color("gray", "Created string "+sn+" with value "+sv));}
 							else {ChatHandler.warn(ChatHandler.color("gray", "Created string "+sn+" with no value"));}
@@ -475,7 +449,7 @@ public class FileHandler {
 						if (!dir.exists()) {
 							global.neededImports.add(value);
 						} else {
-							if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Import already exsists"));}
+							if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Import already exists"));}
 						}
 					}
 				} else if (importFunction.toUpperCase().startsWith("DELETE STRING ") || importFunction.toUpperCase().startsWith("DELETESTRING")) {
@@ -486,15 +460,9 @@ public class FileHandler {
 						sn = importFunction.substring(importFunction.toUpperCase().indexOf("DELETESTRING ")+13);
 					}
 					sn = sn.trim();
-					int toRemove = -1;
-					for (int k=0; k<global.USR_string.size(); k++) {
-						if (sn.equals(global.USR_string.get(k).get(0))) {
-							toRemove = k;
-						}
-					}
-					if (toRemove!=-1) {
-						if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Removing "+global.USR_string.get(toRemove)));}
-						global.USR_string.remove(toRemove);
+					if (global.USR_string.containsKey(sn)) {
+						if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Removing "+sn));}
+						global.USR_string.remove(sn);
 					}
 				} else if (importFunction.toUpperCase().startsWith("VERSION ")) {
 				    String version = importFunction.substring(importFunction.toUpperCase().indexOf("VERSION ")+8);
@@ -513,36 +481,20 @@ public class FileHandler {
 		return tmp_triggers;
 	}
 	
-	public static List<List<String>> loadStrings() throws IOException {
-		List<List<String>> tmp_strings = new ArrayList<>();
+	public static Map<String, String> loadStrings() throws IOException {
+		Map<String, String> tmp_strings = new HashMap<>();
 		List<String> lines = loadFile("./mods/ChatTriggers/strings.txt");
 		
-		for (int i=0; i<lines.size(); i++) {
+		for (int i=0; i<lines.size()-1; i++) {
 			try {
-				if (i<=lines.size()-3) {
-					if (lines.get(i).contains("string:") && lines.get(i+1).startsWith("  value:") && lines.get(i+2).startsWith("  list:")) {
-						List<String> tmp_list = new ArrayList<>();
-						tmp_list.add(lines.get(i).substring(lines.get(i).indexOf("string:") + 7));
-						tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("  value:") + 8));
-						tmp_list.add(lines.get(i+2).substring(lines.get(i+2).indexOf("  list:")+7));
-						tmp_strings.add(tmp_list);
-					} else if (lines.get(i).contains("string:") && lines.get(i+1).startsWith("  value:")) {
-						List<String> tmp_list = new ArrayList<>();
-						tmp_list.add(lines.get(i).substring(lines.get(i).indexOf("string:") + 7));
-						tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("  value:") + 8));
-						tmp_strings.add(tmp_list);
-					}
-				} else {
-					if (lines.get(i).contains("string:") && lines.get(i+1).startsWith("  value:")) {
-						List<String> tmp_list = new ArrayList<>();
-						tmp_list.add(lines.get(i).substring(lines.get(i).indexOf("string:") + 7));
-						tmp_list.add(lines.get(i+1).substring(lines.get(i+1).indexOf("  value:") + 8));
-						tmp_strings.add(tmp_list);
-					}
-				}
+                if (lines.get(i).contains("string:") && lines.get(i+1).startsWith("  value:")) {
+                    String stringName = lines.get(i).substring(lines.get(i).indexOf("string:") + 7);
+                    String stringValue = lines.get(i+1).substring(lines.get(i+1).indexOf("  value:") + 8);
+                    tmp_strings.put(stringName, stringValue);
+                }
 			} catch (Exception e) {e.printStackTrace(); ChatHandler.warn(ChatHandler.color("red", "something went wrong while loading strings!"));}
 		}
-		
+
 		return tmp_strings;
 	}
 	

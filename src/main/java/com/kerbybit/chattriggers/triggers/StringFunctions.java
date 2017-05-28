@@ -56,7 +56,7 @@ public class StringFunctions {
                     global.Async_string.put(stringName, returnString);
                 } else {
                     if (stringPos >= 0) {
-                        global.USR_string.get(floor(stringPos)).set(1, returnString);
+                        global.USR_string.put(stringName, returnString);
                     } else {
                         global.TMP_string.put(stringName, returnString);
                     }
@@ -82,8 +82,8 @@ public class StringFunctions {
                     return set;
                 } else {
                     if (stringPos >= 0) {
-                        String set = addExtras(global.USR_string.get(floor(stringPos)).get(1));
-                        global.backupUSR_strings.get(floor(stringPos)).set(1, set);
+                        String set = addExtras(global.USR_string.get(stringName));
+                        global.backupUSR_strings.put(stringName, set);
                         return set;
                     } else {
                         String set = addExtras(global.TMP_string.get(stringName));
@@ -98,8 +98,8 @@ public class StringFunctions {
                     return args;
                 } else {
                     if (stringPos >= 0) {
-                        global.USR_string.get(floor(stringPos)).set(1, args);
-                        global.backupUSR_strings.get(floor(stringPos)).set(1, args);
+                        global.USR_string.put(stringName, args);
+                        global.backupUSR_strings.put(stringName, args);
                         return args;
                     } else {
                         global.TMP_string.put(stringName, args);
@@ -117,8 +117,8 @@ public class StringFunctions {
                     ret = set;
                 } else {
                     if (stringPos >= 0) {
-                        String set = addExtras(global.USR_string.get(floor(stringPos)).get(1));
-                        global.backupUSR_strings.get(floor(stringPos)).set(1, set);
+                        String set = addExtras(global.USR_string.get(stringName));
+                        global.backupUSR_strings.put(stringName, set);
                         ret = set;
                     } else {
                         String set = addExtras(global.TMP_string.get(stringName));
@@ -133,8 +133,8 @@ public class StringFunctions {
                     ret = args;
                 } else {
                     if (stringPos >= 0) {
-                        global.USR_string.get(floor(stringPos)).set(1, args);
-                        global.backupUSR_strings.get(floor(stringPos)).set(1, args);
+                        global.USR_string.put(stringName, args);
+                        global.backupUSR_strings.put(stringName, args);
                         ret = args;
                     } else {
                         global.TMP_string.put(stringName, args);
@@ -499,10 +499,8 @@ public class StringFunctions {
                 }
             }
         } else {
-            for (List<String> string : global.USR_string) {
-                if (stringName.equals(string.get(0))) {
-                    return string.get(1);
-                }
+            if (global.USR_string.containsKey(stringName)) {
+                return global.USR_string.get(stringName);
             }
 
             if (global.TMP_string.containsKey(stringName)) {
@@ -514,13 +512,8 @@ public class StringFunctions {
     }
 
     private static Double getStringPos(String stringName, Boolean isAsync) {
-
-        Double i = 0.0;
-        for (List<String> string : global.USR_string) {
-            if (stringName.equals(string.get(0))) {
-                return i;
-            }
-            i++;
+        if (global.USR_string.containsKey(stringName)) {
+            return 1.0;
         }
 
         if (!isAsync) {

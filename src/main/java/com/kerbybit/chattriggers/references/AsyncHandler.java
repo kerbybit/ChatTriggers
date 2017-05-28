@@ -57,8 +57,8 @@ public class AsyncHandler {
     }
 
     public static void preloadAsyncStrings() {
-        for (List<String> string : global.backupUSR_strings) {
-            global.Async_string.put(string.get(0), string.get(1));
+        for (Map.Entry<String, String> string : global.backupUSR_strings.entrySet()) {
+            global.Async_string.put(string.getKey(), string.getValue());
         }
 
         for (Map.Entry<String, String> string : global.backupTMP_strings.entrySet()) {

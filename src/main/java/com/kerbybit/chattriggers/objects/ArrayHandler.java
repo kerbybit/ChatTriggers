@@ -499,16 +499,14 @@ public class ArrayHandler {
                 } else if (type.equalsIgnoreCase("STRING")) {
                     String stringToSave = toImport.substring(0,toImport.indexOf("=>"));
 
-                    for (int i=0; i<global.USR_string.size(); i++) {
-                        if (stringToSave.equals(global.USR_string.get(i).get(0))) {
-                            String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+                    if (global.USR_string.containsKey(stringToSave)) {
+                        String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
 
-                            String check = "\""+jsonGet+"\":\"";
-                            if (jsonString.contains(check)) {
-                                String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
-                                global.USR_string.get(i).set(1, jsonGot);
-                                returnString = new StringBuilder(jsonGot);
-                            }
+                        String check = "\""+jsonGet+"\":\"";
+                        if (jsonString.contains(check)) {
+                            String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+                            global.USR_string.put(stringToSave, jsonGot);
+                            returnString = new StringBuilder(jsonGot);
                         }
                     }
 
@@ -614,16 +612,14 @@ public class ArrayHandler {
             } else if (type.equalsIgnoreCase("STRING")) {
                 String stringToSave = toImport.substring(0,toImport.indexOf("=>"));
 
-                for (int i=0; i<global.USR_string.size(); i++) {
-                    if (stringToSave.equals(global.USR_string.get(i).get(0))) {
-                        String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+                if (global.USR_string.containsKey(stringToSave)) {
+                    String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
 
-                        String check = "\""+jsonGet+"\":\"";
-                        if (jsonString.contains(check)) {
-                            String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
-                            global.USR_string.get(i).set(1, jsonGot);
-                            returnString = new StringBuilder(jsonGot);
-                        }
+                    String check = "\""+jsonGet+"\":\"";
+                    if (jsonString.contains(check)) {
+                        String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+                        global.USR_string.put(stringToSave, jsonGot);
+                        returnString = new StringBuilder(jsonGot);
                     }
                 }
 

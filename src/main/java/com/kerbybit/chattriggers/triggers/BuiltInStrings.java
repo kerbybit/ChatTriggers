@@ -336,21 +336,21 @@ public class BuiltInStrings {
         	String direction = "";
 
         	if(yaw < 22.5 && yaw > -22.5) {
-        		direction = "SOUTH";
+        		direction = "south";
 			} else if (yaw < 67.5 && yaw > 22.5) {
-        		direction = "SOUTH WEST";
+        		direction = "south west";
 			} else if (yaw < 112.5 && yaw > 67.5) {
-        		direction = "WEST";
+        		direction = "west";
 			} else if (yaw < 157.5 && yaw > 112.5) {
-        		direction = "NORTH WEST";
+        		direction = "north west";
 			} else if (yaw < -157.5 || yaw > 157.5) {
-        		direction = "NORTH";
+        		direction = "north";
 			} else if (yaw > -157.5 && yaw < -112.5) {
-				direction = "NORTH EAST";
+				direction = "north east";
 			} else if (yaw > -112.5 && yaw < -67.5) {
-        		direction = "EAST";
+        		direction = "east";
 			} else if (yaw > -67.5 && yaw < -22.5) {
-        		direction = "SOUTH EAST";
+        		direction = "south east";
 			}
 
             TMP_e = createDefaultString("facing", direction, TMP_e, isAsync);

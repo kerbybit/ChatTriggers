@@ -140,12 +140,10 @@ public class TriggerHandler {
         while (TMP_trig.contains("{string<") && TMP_trig.contains(">}")) {
             Boolean  isString = false;
             String TMP_sn = TMP_trig.substring(TMP_trig.indexOf("{string<") + 8, TMP_trig.indexOf(">}"));
-            for (int j = 0; j < global.USR_string.size(); j++) {
-                if (global.USR_string.get(j).get(0).equals(TMP_sn)) {
-                    String TMP_s = global.USR_string.get(j).get(1);
-                    TMP_trig = TMP_trig.replace("{string<" + TMP_sn + ">}", TMP_s);
-                    isString = true;
-                }
+            if (global.USR_string.containsKey(TMP_sn)) {
+                String TMP_s = global.USR_string.get(TMP_sn);
+                TMP_trig = TMP_trig.replace("{string<" + TMP_sn + ">}", TMP_s);
+                isString = true;
             }
             if (!isString) {
                 TMP_trig = TMP_trig.replace("{string<" + TMP_sn + ">}", "not a string!");
