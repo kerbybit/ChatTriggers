@@ -805,23 +805,33 @@ public class CommandTrigger extends CommandBase {
             ChatHandler.warn(ChatHandler.color("red", "/trigger string <string name>"));
         } else {
             if (args[1].equalsIgnoreCase("CREATE")) {
-                if (args.length != 3) {
+                if (args.length < 2) {
                     ChatHandler.warn(ChatHandler.color("red", "/trigger string create <string name>"));
                 } else {
                     if (global.canSave) {
-                        String TMP_sn = args[2];
+                        String stringName = args[2];
 
-                        Boolean isString = false;
-                        if (global.USR_string.containsKey(TMP_sn)) {
-                            isString = true;
+                        StringBuilder stringValueBuilder = new StringBuilder();
+                        if (args.length > 2) {
+                            for (int i=3; i<args.length; i++) {
+                                stringValueBuilder.append(args[i]).append(" ");
+                            }
                         }
-                        if (isString) {
-                            ChatHandler.warn(ChatHandler.color("red", TMP_sn + " already exists!"));
+                        String stringValue = stringValueBuilder.toString().trim();
+
+                        if (global.USR_string.containsKey(stringName)) {
+                            stringName = stringName.replace("(","LeftParF6cyUQp9LeftPar").replace(")","RightParF6cyUQp9RightPar").replace("&","AmpF6cyUQp9Amp").replace("\\", "BackslashF6cyUQp9Backslash");
+                            stringValue = stringValue.replace("(","LeftParF6cyUQp9LeftPar").replace(")","RightParF6cyUQp9RightPar").replace("&","AmpF6cyUQp9Amp").replace("\\", "BackslashF6cyUQp9Backslash");
+                            ChatHandler.warn(ChatHandler.color("red", "hover(" + Settings.col[0] + stringName + ",&7Value: &f" + stringValue.replace(" ", " &f") + ") already exists!"));
                         } else {
-                            global.USR_string.put(TMP_sn, "");
+                            global.USR_string.put(stringName, stringValue);
                             if (!silent) {
-                                TMP_sn = TMP_sn.replace("(","LeftParF6cyUQp9LeftPar").replace(")","RightParF6cyUQp9RightPar").replace("&","AmpF6cyUQp9Amp").replace("\\", "BackslashF6cyUQp9Backslash");
-                                ChatHandler.warn("&7Created string clickable("+Settings.col[0]+TMP_sn+",suggest_command,/trigger string set "+TMP_sn+" ,Set "+TMP_sn+")");
+                                stringName = stringName.replace("(","LeftParF6cyUQp9LeftPar").replace(")","RightParF6cyUQp9RightPar").replace("&","AmpF6cyUQp9Amp").replace("\\", "BackslashF6cyUQp9Backslash");
+                                if (stringValue.equals("")) {
+                                    ChatHandler.warn("&7Created string clickable("+Settings.col[0]+stringName+",suggest_command,/trigger string set "+stringName+" ,Set "+stringName+")");
+                                } else {
+                                    ChatHandler.warn("&7Created string clickable("+Settings.col[0]+stringName+",suggest_command,/trigger string set "+stringName+" ,Set "+stringName+") &7with value " + Settings.col[0] + stringValue);
+                                }
                             }
                             try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         }
@@ -1333,10 +1343,6 @@ public class CommandTrigger extends CommandBase {
                             for (int i=global.chatHistory.size() - get; i < global.chatHistory.size(); i++) {
                                 String tmp_out = ChatHandler.removeFormatting(global.chatHistory.get(i));
                                 global.copyText.add(tmp_out.replace("\n", "\\n"));
-                                /*String tmp_outfin = tmp_out.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
-                                        .replace("(", "stringOpenBracketF6cyUQp9stringOpenBracket")
-                                        .replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket");
-                                ChatHandler.warn("clickable("+tmp_outfin+",run_command,/t copy CopyFromDebugChat "+(global.copyText.size()-1)+",Click to copy\n"+tmp_out+")");*/
                                 tmp_out = tmp_out.replace("'", "\\'");
                                 List<String> TMP_eventout = new ArrayList<>();
                                 TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size() - 1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
@@ -1389,25 +1395,19 @@ public class CommandTrigger extends CommandBase {
                             for (Map.Entry<String, String> string : temp.entrySet()) {
                                 ChatHandler.warn(string.getKey() + " - " + string.getValue());
                             }
-                        } else {
-                            if (args[2].equalsIgnoreCase("ACTIONBAR")) {
-                                List<String> temp = new ArrayList<>(global.actionHistory);
-                                for (String action : temp) {
-                                    String tmp_out = ChatHandler.removeFormatting(action);
-                                    global.copyText.add(tmp_out.replace("\n", "\\n"));
-                                /*String tmp_outfin = tmp_out.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
-                                        .replace("(", "stringOpenBracketF6cyUQp9stringOpenBracket")
-                                        .replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket");
-                                ChatHandler.warn("clickable("+tmp_outfin+",run_command,/t copy CopyFromDebugChat "+(global.copyText.size()-1)+",Click to copy\n"+tmp_out+")");*/
-                                    tmp_out = tmp_out.replace("'", "\\'");
-                                    List<String> TMP_eventout = new ArrayList<>();
-                                    TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size() - 1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
-                                    ChatHandler.sendJson(TMP_eventout);
-                                }
-                            } else {
-                                ChatHandler.warn(ChatHandler.color("red", "/trigger settings dump [number]"));
-                                ChatHandler.warn(ChatHandler.color("red", args[2] + " is not a number!"));
+                        } else if (args[2].equalsIgnoreCase("ACTIONBAR")) {
+                            List<String> temp = new ArrayList<>(global.actionHistory);
+                            for (String action : temp) {
+                                String tmp_out = ChatHandler.removeFormatting(action);
+                                global.copyText.add(tmp_out.replace("\n", "\\n"));
+                                tmp_out = tmp_out.replace("'", "\\'");
+                                List<String> TMP_eventout = new ArrayList<>();
+                                TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size() - 1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
+                                ChatHandler.sendJson(TMP_eventout);
                             }
+                        } else {
+                            ChatHandler.warn(ChatHandler.color("red", "/trigger settings dump [number]"));
+                            ChatHandler.warn(ChatHandler.color("red", args[2] + " is not a number!"));
                         }
                     }
                 }

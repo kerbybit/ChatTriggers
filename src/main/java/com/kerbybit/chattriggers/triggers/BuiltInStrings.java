@@ -300,8 +300,11 @@ public class BuiltInStrings {
         if (TMP_e.contains("{hp}") || TMP_e.contains("{HP}")) {
             TMP_e = createDefaultString("hp", global.playerHealth + "", TMP_e, isAsync);
         }
-        if (TMP_e.contains("{sneak}")) {
-            TMP_e = createDefaultString("sneak", Minecraft.getMinecraft().thePlayer.isSneaking()+"", TMP_e, isAsync);
+        if (TMP_e.contains("{sneak}") || TMP_e.contains("{sneaking}")) {
+            TMP_e = createDefaultString("sneak", "sneaking", Minecraft.getMinecraft().thePlayer.isSneaking()+"", TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{sprint}") || TMP_e.contains("{sprinting}")) {
+            TMP_e = createDefaultString("sprint", "sprinting", Minecraft.getMinecraft().thePlayer.isSprinting()+"", TMP_e, isAsync);
         }
         if (TMP_e.contains("{inchat}")) {
             TMP_e = createDefaultString("inchat", Minecraft.getMinecraft().ingameGUI.getChatGUI().getChatOpen() + "", TMP_e, isAsync);
