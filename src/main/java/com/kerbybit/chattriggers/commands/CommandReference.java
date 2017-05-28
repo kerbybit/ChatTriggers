@@ -151,6 +151,7 @@ public class CommandReference {
             r.add("killfeed");
             r.add("notify");
             r.add("sound");
+            r.add("title");
             r.add("");
             r.add("trigger");
             r.add("copy");
@@ -183,6 +184,7 @@ public class CommandReference {
         r.add("notify");
         r.add("sound");
         r.add("trigger");
+        r.add("title");
         r.add("copy");
         r.add("url");
         r.add("do");

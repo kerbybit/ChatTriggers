@@ -1,6 +1,6 @@
-package com.kerbybit.chattriggers.variables;
+package com.kerbybit.chattriggers.core.variables;
 
-public class CTBoolean extends Variable {
+public class CTBoolean implements Variable {
 
     private Boolean value;
 

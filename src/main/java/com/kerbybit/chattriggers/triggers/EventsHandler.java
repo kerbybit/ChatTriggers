@@ -22,6 +22,8 @@ import com.kerbybit.chattriggers.overlay.KillfeedHandler;
 import com.kerbybit.chattriggers.overlay.NotifyHandler;
 import com.kerbybit.chattriggers.references.AsyncHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
@@ -91,6 +93,9 @@ public class EventsHandler {
 			int TMP_p = global.notifySize;
 			int TMP_v = 100;
 			int TMP_pi = 1;
+			int TMP_fi = 20;
+			int TMP_fo = 20;
+			String TMP_st = "";
 
 		//setup backup for functions so strings don't get overwritten
 			StringHandler.resetBackupStrings();
@@ -136,13 +141,32 @@ public class EventsHandler {
 					TMP_e = TMP_e.replace("<vol="+TMP_v+">", "");
 				}
 			} catch (NumberFormatException e1) {ChatHandler.warn(ChatHandler.color("red", "<vol=v> v must be an integer!"));}
-			
+
 			try {
 				if (TMP_e.contains("<pitch=") && TMP_e.contains(">")) {
 					TMP_pi = Integer.parseInt(TagHandler.eventTags(4, TMP_e));
 					TMP_e = TMP_e.replace("<pitch="+TMP_pi+">", "");
 				}
 			} catch (NumberFormatException e1) {ChatHandler.warn(ChatHandler.color("red", "<pitch=p> p must be an integer!"));}
+
+			try {
+				if (TMP_e.contains("<fadein=") && TMP_e.contains(">")) {
+					TMP_fi = Integer.parseInt(TagHandler.eventTags(5, TMP_e));
+					TMP_e = TMP_e.replace("<fadein="+TMP_fi+">", "");
+				}
+			} catch (NumberFormatException e1) {ChatHandler.warn(ChatHandler.color("red", "<fadein=f> f must be an integer!"));}
+
+			try {
+				if (TMP_e.contains("<fadeout=") && TMP_e.contains(">")) {
+					TMP_fo = Integer.parseInt(TagHandler.eventTags(6, TMP_e));
+					TMP_e = TMP_e.replace("<fadeout="+TMP_fo+">", "");
+				}
+			} catch (NumberFormatException e1) {ChatHandler.warn(ChatHandler.color("red", "<fadeout=f> f must be an integer!"));}
+
+			if (TMP_e.contains("<subtitle=") && TMP_e.contains(">")) {
+				TMP_st = TagHandler.eventTags(7, TMP_e);
+				TMP_e = TMP_e.replace("<subtitle="+TMP_st+">", "");
+			}
 			
 			
 		//add formatting where needed
@@ -169,9 +193,17 @@ public class EventsHandler {
                 }
             }
 			if (TMP_c.equalsIgnoreCase("SOUND")) {
-                float real_v = ((float)TMP_v) / 100;
-                Minecraft.getMinecraft().thePlayer.playSound(removeStringReplacements(TMP_e), real_v, TMP_pi);}
-                global.playedSounds.add(removeStringReplacements(TMP_e));
+				float real_v = ((float) TMP_v) / 100;
+				Minecraft.getMinecraft().thePlayer.playSound(removeStringReplacements(TMP_e), real_v, TMP_pi);
+				global.playedSounds.add(removeStringReplacements(TMP_e));
+			}
+
+			if (TMP_c.equalsIgnoreCase("TITLE")) {
+				Minecraft.getMinecraft().ingameGUI.displayTitle(null, null, TMP_fi, TMP_t, TMP_fo);
+				Minecraft.getMinecraft().ingameGUI.displayTitle(null, TMP_st, TMP_fi, TMP_t, TMP_fo);
+				Minecraft.getMinecraft().ingameGUI.displayTitle(removeStringReplacements(TMP_e), TMP_st, TMP_fi, TMP_t, TMP_fo);
+			}
+
 			if (TMP_c.equalsIgnoreCase("CANCEL")) {
 			    if (chatEvent != null) {
                     chatEvent.setCanceled(true);

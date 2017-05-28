@@ -446,9 +446,6 @@ public class StringFunctions {
                 case "MODULUS":
                 case "%":
                     return trimNumber(stringValueNumber % argsValueNumber);
-                case "ABSOLUTE":
-                case "ABS":
-                    return trimNumber(Math.abs(stringValueNumber));
 				case "ATAN2":
 				case "ATANTWO":
 					return trimNumber(Math.toDegrees(Math.atan2(stringValueNumber, argsValueNumber)));
@@ -478,6 +475,9 @@ public class StringFunctions {
 				return trimNumber(Math.toDegrees(Math.acos(stringValueNumber)));
 			case "ATAN":
 				return trimNumber(Math.toDegrees(Math.atan(stringValueNumber)));
+            case "ABSOLUTE":
+            case "ABS":
+                return trimNumber(Math.abs(stringValueNumber));
         }
 
         return null;

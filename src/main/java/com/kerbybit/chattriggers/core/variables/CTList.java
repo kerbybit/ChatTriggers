@@ -1,8 +1,8 @@
-package com.kerbybit.chattriggers.variables;
+package com.kerbybit.chattriggers.core.variables;
 
 import java.util.ArrayList;
 
-public class CTList extends Variable {
+public class CTList implements Variable {
 
     private ArrayList<Variable> values;
 
