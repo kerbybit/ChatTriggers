@@ -9,12 +9,56 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class StringHandler {
 
+    //run on main thread every tick
+    public static void updateMarkedStrings() {
+        for (Map.Entry<String, String> string : global.USR_string_mark.entrySet()) {
+            if (!global.USR_string_markdel.containsKey(string.getKey())) {
+                if (global.USR_string.containsKey(string.getKey())) {
+                    global.USR_string.put(string.getKey(), string.getValue());
+                    global.USR_string_markdel.put(string.getKey(), string.getValue());
+                }
+            }
+        }
+
+        for (Map.Entry<String, String> string : global.backupUSR_strings_mark.entrySet()) {
+            if (!global.backupUSR_strings_markdel.containsKey(string.getKey())) {
+                if (global.backupUSR_strings.containsKey(string.getKey())) {
+                    global.backupUSR_strings.put(string.getKey(), string.getValue());
+                    global.backupUSR_strings_markdel.put(string.getKey(), string.getValue());
+                }
+            }
+        }
+
+        deleteMarkedStrings();
+    }
+
+    private static void deleteMarkedStrings() {
+        try {
+            for (String key : global.USR_string_markdel.keySet()) {
+                global.USR_string_markdel.remove(key);
+                global.USR_string_mark.remove(key);
+            }
+        } catch (ConcurrentModificationException exception) {
+            // thrown if async is still messing with strings out of time
+            // clearing marked strings will attempt to run next game tick
+        }
+
+        try {
+            for (String key : global.backupUSR_strings_markdel.keySet()) {
+                global.backupUSR_strings_markdel.remove(key);
+                global.backupUSR_strings_mark.remove(key);
+            }
+        } catch (ConcurrentModificationException exception) {
+            // thrown if async is still messing with strings out of time
+            // clearing marked strings will attempt to run next game tick
+        }
+    }
 	
 	public static void resetBackupStrings() {
         global.backupUSR_strings.clear();
         Map<String, String> tmpUSR = new HashMap<>(global.USR_string);
         for (Map.Entry<String, String> entry : tmpUSR.entrySet()) {
-            global.USR_string.put(entry.getKey(), entry.getValue());
+            global.backupUSR_strings.put(entry.getKey(), entry.getValue());
         }
 
         global.backupTMP_strings.clear();
@@ -29,13 +73,6 @@ public class StringHandler {
             global.backupAsync_string.put(entry.getKey(), entry.getValue());
         }
 		
-	}
-	
-	public static int getStringNum(String sn) {
-        if (global.USR_string.containsKey(sn)) {
-            return 1;
-        }
-		return -1;
 	}
 	
 	public static String stringFunctions(String TMP_e, ClientChatReceivedEvent chatEvent, Boolean isAsync) {

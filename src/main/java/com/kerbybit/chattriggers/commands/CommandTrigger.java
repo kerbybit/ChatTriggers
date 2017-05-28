@@ -875,7 +875,7 @@ public class CommandTrigger extends CommandBase {
                             String TMP_sn = entry.getKey();
                             TMP_sn = TMP_sn.replace("(","LeftParF6cyUQp9LeftPar").replace(")","RightParF6cyUQp9RightPar").replace("&","AmpF6cyUQp9Amp");
                             ChatHandler.warn("clickable(&7>,suggest_command,/trigger string set "+TMP_sn+" ,Set string) "+Settings.col[0]+TMP_sn+" clickable(&c-,suggest_command,/trigger string delete "+TMP_sn+" [enter to confirm],Delete string)");
-                            ChatHandler.warnUnformatted(ChatHandler.color("gray", "  " + entry.getKey()));
+                            ChatHandler.warnUnformatted(ChatHandler.color("gray", "  " + entry.getValue()));
                         }
                     }
                     ChatHandler.warnBreak(1);
@@ -883,9 +883,9 @@ public class CommandTrigger extends CommandBase {
             } else {
                 if (args.length==2) {
                     if (global.USR_string.containsKey(args[1])) {
-                        ChatHandler.warn(ChatHandler.color("red", "Not a string!"));
-                    } else {
                         ChatHandler.warnUnformatted(ChatHandler.color("gray","value:") + " " + ChatHandler.color(Settings.col[0], global.USR_string.get(args[1])));
+                    } else {
+                        ChatHandler.warn(ChatHandler.color("red", "Not a string!"));
                     }
                 } else {
                     ChatHandler.warn(ChatHandler.color("red", "/trigger string [create/set/list] <...>"));
@@ -1379,23 +1379,35 @@ public class CommandTrigger extends CommandBase {
                             for (Map.Entry<String, String> string : temp.entrySet()) {
                                 ChatHandler.warn(string.getKey() + " - " + string.getValue());
                             }
-                        } else if (args[2].equalsIgnoreCase("ACTIONBAR")) {
-                            List<String> temp = new ArrayList<>(global.actionHistory);
-                            for (String action : temp) {
-                                String tmp_out = ChatHandler.removeFormatting(action);
-                                global.copyText.add(tmp_out.replace("\n", "\\n"));
+                        } else if (args[2].equalsIgnoreCase("MARKEDSTRINGS")) {
+                            Map<String, String> temp = new HashMap<>(global.USR_string_mark);
+                            for (Map.Entry<String, String> string : temp.entrySet()) {
+                                ChatHandler.warn(string.getKey() + " - " + string.getValue());
+                            }
+                        } else if (args[2].equalsIgnoreCase("MARKEDDELSTRINGS")) {
+                            Map<String, String> temp = new HashMap<>(global.USR_string_markdel);
+                            for (Map.Entry<String, String> string : temp.entrySet()) {
+                                ChatHandler.warn(string.getKey() + " - " + string.getValue());
+                            }
+                        } else {
+                            if (args[2].equalsIgnoreCase("ACTIONBAR")) {
+                                List<String> temp = new ArrayList<>(global.actionHistory);
+                                for (String action : temp) {
+                                    String tmp_out = ChatHandler.removeFormatting(action);
+                                    global.copyText.add(tmp_out.replace("\n", "\\n"));
                                 /*String tmp_outfin = tmp_out.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
                                         .replace("(", "stringOpenBracketF6cyUQp9stringOpenBracket")
                                         .replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket");
                                 ChatHandler.warn("clickable("+tmp_outfin+",run_command,/t copy CopyFromDebugChat "+(global.copyText.size()-1)+",Click to copy\n"+tmp_out+")");*/
-                                tmp_out = tmp_out.replace("'", "\\'");
-                                List<String> TMP_eventout = new ArrayList<>();
-                                TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size() - 1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
-                                ChatHandler.sendJson(TMP_eventout);
+                                    tmp_out = tmp_out.replace("'", "\\'");
+                                    List<String> TMP_eventout = new ArrayList<>();
+                                    TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size() - 1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
+                                    ChatHandler.sendJson(TMP_eventout);
+                                }
+                            } else {
+                                ChatHandler.warn(ChatHandler.color("red", "/trigger settings dump [number]"));
+                                ChatHandler.warn(ChatHandler.color("red", args[2] + " is not a number!"));
                             }
-                        } else {
-                            ChatHandler.warn(ChatHandler.color("red", "/trigger settings dump [number]"));
-                            ChatHandler.warn(ChatHandler.color("red", args[2] + " is not a number!"));
                         }
                     }
                 }

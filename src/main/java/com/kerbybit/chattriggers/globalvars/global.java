@@ -110,6 +110,12 @@ public class global {
 	public static Map<String, String> USR_string = new HashMap<>();
     public static Map<String, String> backupUSR_strings = new HashMap<>();
 
+    //marked user strings in async for change during main thread
+    public static Map<String, String> USR_string_mark = new HashMap<>();
+    public static Map<String, String> backupUSR_strings_mark = new HashMap<>();
+    public static Map<String, String> USR_string_markdel = new HashMap<>();
+    public static Map<String, String> backupUSR_strings_markdel = new HashMap<>();
+
 	public static Map<String, String> TMP_string = new HashMap<>();
 	public static Map<String, String> backupTMP_strings = new HashMap<>();
 

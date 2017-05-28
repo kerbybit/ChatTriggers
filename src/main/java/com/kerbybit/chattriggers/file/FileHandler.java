@@ -415,10 +415,8 @@ public class FileHandler {
 						if (!sv.equals("")) {ChatHandler.warn(ChatHandler.color("gray", "Importing string "+sn+" with value "+sv));}
 						else {ChatHandler.warn(ChatHandler.color("gray", "Importing string "+sn+" with no value"));}
 					}
-					
-					Boolean canCreate = true;
+
                     if (global.USR_string.containsKey(sn)) {
-                        canCreate=false;
                         if (!sv.equals("")) {
                             global.USR_string.put(sn, sv);
                             if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Set value "+sv+" in string "+sn));}
@@ -429,9 +427,7 @@ public class FileHandler {
                                 if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Set value "+sv+" in string "+sn));}
                             } else {if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "String already has value"));}}
                         }
-                    }
-
-					if (canCreate) {
+                    } else {
 						if (sv.equals("") && !svo.equals("")) {sv = svo;}
 						global.USR_string.put(sn, sv);
 						if (global.debug) {
@@ -439,7 +435,7 @@ public class FileHandler {
 							else {ChatHandler.warn(ChatHandler.color("gray", "Created string "+sn+" with no value"));}
 						}
 					}
-					//try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+
 				} else if (importFunction.toUpperCase().startsWith("REQUIRES ")) {
 					String importValue = importFunction.substring(importFunction.indexOf("REQUIRES ")+9);
 					String[] importValues = importValue.trim().split(" ");
@@ -451,18 +447,6 @@ public class FileHandler {
 						} else {
 							if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Import already exists"));}
 						}
-					}
-				} else if (importFunction.toUpperCase().startsWith("DELETE STRING ") || importFunction.toUpperCase().startsWith("DELETESTRING")) {
-					String sn;
-					if (importFunction.toUpperCase().startsWith("DELETE STRING ")) {
-						sn = importFunction.substring(importFunction.toUpperCase().indexOf("DELETE STRING ")+14);
-					} else {
-						sn = importFunction.substring(importFunction.toUpperCase().indexOf("DELETESTRING ")+13);
-					}
-					sn = sn.trim();
-					if (global.USR_string.containsKey(sn)) {
-						if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Removing "+sn));}
-						global.USR_string.remove(sn);
 					}
 				} else if (importFunction.toUpperCase().startsWith("VERSION ")) {
 				    String version = importFunction.substring(importFunction.toUpperCase().indexOf("VERSION ")+8);

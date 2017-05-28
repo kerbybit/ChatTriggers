@@ -9,6 +9,7 @@ import com.kerbybit.chattriggers.references.BugTracker;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.overlay.KillfeedHandler;
 import com.kerbybit.chattriggers.overlay.NotifyHandler;
+import com.kerbybit.chattriggers.triggers.StringHandler;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import org.lwjgl.input.Keyboard;
@@ -166,6 +167,8 @@ public class ChatTriggers {
 	    global.playedSounds.clear();
 
 		if (global.canUse) {
+
+		    StringHandler.updateMarkedStrings();
 
 			KillfeedHandler.tickKillfeed();
 
