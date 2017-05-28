@@ -426,6 +426,9 @@ public class StringFunctions {
                 case "ABSOLUTE":
                 case "ABS":
                     return trimNumber(Math.abs(stringValueNumber));
+				case "ATAN2":
+				case "ATANTWO":
+					return trimNumber(Math.toDegrees(Math.atan2(stringValueNumber, argsValueNumber)));
             }
         }
 
@@ -440,6 +443,18 @@ public class StringFunctions {
                 return trimNumber(Math.floor(stringValueNumber));
             case "CEIL":
                 return trimNumber(Math.ceil(stringValueNumber));
+			case "SIN":
+				return trimNumber(Math.sin(Math.toRadians(stringValueNumber)));
+			case "COS":
+				return trimNumber(Math.cos(Math.toRadians(stringValueNumber)));
+			case "TAN":
+				return trimNumber(Math.tan(Math.toRadians(stringValueNumber)));
+			case "ASIN":
+				return trimNumber(Math.toDegrees(Math.asin(stringValueNumber)));
+			case "ACOS":
+				return trimNumber(Math.toDegrees(Math.acos(stringValueNumber)));
+			case "ATAN":
+				return trimNumber(Math.toDegrees(Math.atan(stringValueNumber)));
         }
 
         return null;
