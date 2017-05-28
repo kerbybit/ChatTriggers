@@ -1,6 +1,6 @@
-package com.kerbybit.chattriggers.variables;
+package com.kerbybit.chattriggers.core.variables;
 
-public class CTString extends Variable {
+public class CTString implements Variable {
 
     private String value;
 

@@ -1,6 +1,6 @@
-package com.kerbybit.chattriggers.variables;
+package com.kerbybit.chattriggers.core.variables;
 
-public class CTInteger extends Variable {
+public class CTInteger implements Variable {
 
     private Integer value;
 
