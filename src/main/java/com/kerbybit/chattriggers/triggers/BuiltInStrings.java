@@ -213,7 +213,7 @@ public class BuiltInStrings {
 			String titleText;
 
 			titleText = ReflectionHelper.getPrivateValue(
-					GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "field_175200_x");
+					GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "field_175201_x");
 
             if (titleText == null) {
                 titleText = "null";
@@ -225,7 +225,7 @@ public class BuiltInStrings {
 			String subtitleText;
 
 			subtitleText = ReflectionHelper.getPrivateValue(
-					GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "field_175201_y");
+					GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "field_175200_y");
 
             if (subtitleText == null) {
                 subtitleText = "null";
