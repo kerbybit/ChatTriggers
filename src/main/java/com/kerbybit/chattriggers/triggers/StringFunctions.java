@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.kerbybit.chattriggers.triggers.StringHandler.stringFunctions;
-import static net.minecraft.realms.RealmsMth.floor;
 
 public class StringFunctions {
     static String doStringFunctions(String stringName, String func, String args, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
@@ -33,7 +32,7 @@ public class StringFunctions {
 
         String returnString;
 
-        returnString = doStringSetFunctions(stringPos, stringName, func, args);
+        returnString = doStringSetFunctions(stringPos, stringName, func, args, isAsync);
 
         if (returnString == null) {
             returnString = doStringModifyFunctions(stringName, stringValue, func, args);
@@ -52,11 +51,16 @@ public class StringFunctions {
             return returnString;
         } else {
             if (returnString != null) {
-                if (isAsync || stringPos == null) {
+                if (stringPos == null) {
                     global.Async_string.put(stringName, returnString);
                 } else {
                     if (stringPos >= 0) {
-                        global.USR_string.put(stringName, returnString);
+                        if (isAsync) {
+                            global.USR_string_mark.put(stringName, returnString);
+                            global.Async_string.put(stringName, returnString);
+                        } else {
+                            global.USR_string.put(stringName, returnString);
+                        }
                     } else {
                         global.TMP_string.put(stringName, returnString);
                     }
@@ -71,7 +75,7 @@ public class StringFunctions {
                 || in.startsWith("{display[") || in.startsWith("{json[");
     }
 
-    private static String doStringSetFunctions(Double stringPos,String stringName, String func, String args) {
+    private static String doStringSetFunctions(Double stringPos,String stringName, String func, String args, Boolean isAsync) {
         args = addExtras(args);
 
         if (func.equals("SET")) {
@@ -83,7 +87,12 @@ public class StringFunctions {
                 } else {
                     if (stringPos >= 0) {
                         String set = addExtras(global.USR_string.get(stringName));
-                        global.backupUSR_strings.put(stringName, set);
+                        if (isAsync) {
+                            global.backupUSR_strings_mark.put(stringName, set);
+                        } else {
+                            global.backupUSR_strings.put(stringName, set);
+                        }
+
                         return set;
                     } else {
                         String set = addExtras(global.TMP_string.get(stringName));
@@ -98,8 +107,13 @@ public class StringFunctions {
                     return args;
                 } else {
                     if (stringPos >= 0) {
-                        global.USR_string.put(stringName, args);
-                        global.backupUSR_strings.put(stringName, args);
+                        if (isAsync) {
+                            global.USR_string_mark.put(stringName, args);
+                            global.backupUSR_strings_mark.put(stringName, args);
+                        } else {
+                            global.USR_string.put(stringName, args);
+                            global.backupUSR_strings.put(stringName, args);
+                        }
                         return args;
                     } else {
                         global.TMP_string.put(stringName, args);
@@ -118,7 +132,11 @@ public class StringFunctions {
                 } else {
                     if (stringPos >= 0) {
                         String set = addExtras(global.USR_string.get(stringName));
-                        global.backupUSR_strings.put(stringName, set);
+                        if (isAsync) {
+                            global.backupUSR_strings_mark.put(stringName, set);
+                        } else {
+                            global.backupUSR_strings.put(stringName, set);
+                        }
                         ret = set;
                     } else {
                         String set = addExtras(global.TMP_string.get(stringName));
@@ -133,8 +151,13 @@ public class StringFunctions {
                     ret = args;
                 } else {
                     if (stringPos >= 0) {
-                        global.USR_string.put(stringName, args);
-                        global.backupUSR_strings.put(stringName, args);
+                        if (isAsync) {
+                            global.USR_string_mark.put(stringName, args);
+                            global.backupUSR_strings_mark.put(stringName, args);
+                        } else {
+                            global.USR_string.put(stringName, args);
+                            global.backupUSR_strings.put(stringName, args);
+                        }
                         ret = args;
                     } else {
                         global.TMP_string.put(stringName, args);
@@ -232,35 +255,35 @@ public class StringFunctions {
                 Boolean endAlwaysNumber = false;
                 if (subargs[0].toUpperCase().contains("<START>") || subargs[0].toUpperCase().contains("<S>")) {
                     getStart = true;
-                    subargs[0] = subargs[0].replaceAll("(?i)<start>", "").replaceAll("(?i)<s>", "");
+                    subargs[0] = subargs[0].replaceAll("(?i)<start>|<s>", "");
                 }
                 if (subargs[0].toUpperCase().contains("<INCLUDE>") || subargs[0].toUpperCase().contains("<I>")) {
                     startContain = true;
-                    subargs[0] = subargs[0].replaceAll("(?i)<include>", "").replaceAll("(?i)<i>", "");
+                    subargs[0] = subargs[0].replaceAll("(?i)<include>|<i>", "");
                 }
                 if (subargs[0].toUpperCase().contains("<NUMBER>") || subargs[0].toUpperCase().contains("<N>")) {
                     startAlwaysNumber = true;
-                    subargs[0] = subargs[0].replaceAll("(?i)<number>", "").replaceAll("(?i)<n>", "");
+                    subargs[0] = subargs[0].replaceAll("(?i)<number>|<n>", "");
                 }
                 if (subargs[0].toUpperCase().contains("<TEXT>") || subargs[0].toUpperCase().contains("<T>")) {
-                    subargs[0] = subargs[0].replaceAll("(?i)<text>", "").replaceAll("(?i)<t>", "");
+                    subargs[0] = subargs[0].replaceAll("(?i)<text>|<t>", "");
                 }
 
 
                 if (subargs[1].toUpperCase().contains("<END>") || subargs[1].toUpperCase().contains("<E>")) {
                     getEnd = true;
-                    subargs[1] = subargs[1].replaceAll("(?i)<end>", "").replaceAll("(?i)<e>", "");
+                    subargs[1] = subargs[1].replaceAll("(?i)<end>|<e>", "");
                 }
                 if (subargs[1].toUpperCase().contains("<INCLUDE>") || subargs[1].toUpperCase().contains("<I>")) {
                     endContain = true;
-                    subargs[1] = subargs[1].replaceAll("(?i)<include>", "").replaceAll("(?i)<i>", "");
+                    subargs[1] = subargs[1].replaceAll("(?i)<include>|<i>", "");
                 }
                 if (subargs[1].toUpperCase().contains("<NUMBER>") || subargs[1].toUpperCase().contains("<N>")) {
                     endAlwaysNumber = true;
-                    subargs[1] = subargs[1].replaceAll("(?i)<number>", "").replaceAll("(?i)<n>", "");
+                    subargs[1] = subargs[1].replaceAll("(?i)<number>|<n>", "");
                 }
                 if (subargs[1].toUpperCase().contains("<TEXT>") || subargs[1].toUpperCase().contains("<T>")) {
-                    subargs[1] = subargs[1].replaceAll("(?i)<text>", "").replaceAll("(?i)<t>", "");
+                    subargs[1] = subargs[1].replaceAll("(?i)<text>|<t>", "");
                 }
 
                 String temp = removeExtras(stringValue);
