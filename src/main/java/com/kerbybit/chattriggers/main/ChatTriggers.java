@@ -164,7 +164,6 @@ public class ChatTriggers {
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent e) throws ClassNotFoundException {
-	    global.playedSounds.clear();
 
 		if (global.canUse) {
 

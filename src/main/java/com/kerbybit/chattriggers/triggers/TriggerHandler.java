@@ -227,44 +227,44 @@ public class TriggerHandler {
 	}
 
 	public static void onSoundPlay(PlaySoundEvent e) {
-        for (int i=0; i<global.onSoundPlayTrigger.size(); i++) {
-            //add all events to temp list
-            List<String> TMP_events = new ArrayList<>();
-            for (int j=2; j<global.onSoundPlayTrigger.get(i).size(); j++) {
-                String toAdd = global.onSoundPlayTrigger.get(i).get(j);
-                TMP_events.add(toAdd);
-            }
+        if (global.ignoreNextSound) {
+            global.ignoreNextSound = false;
+        } else {
+            for (int i = 0; i < global.onSoundPlayTrigger.size(); i++) {
+                //add all events to temp list
+                List<String> TMP_events = new ArrayList<>();
+                for (int j = 2; j < global.onSoundPlayTrigger.get(i).size(); j++) {
+                    String toAdd = global.onSoundPlayTrigger.get(i).get(j);
+                    TMP_events.add(toAdd);
+                }
 
-            if(global.playedSounds.contains(e.name)) {
-                return;
-            }
+                //do events
+                try {
+                    String[] extraStrings = new String[]{
+                            "{soundName}", "{soundCategory}", "{soundDistance}",
+                            "{soundX}", "{soundY}", "{soundZ}",
+                            "{soundVol}", "{soundPitch}"
+                    };
 
-            //do events
-            try {
-                String[] extraStrings = new String[]{
-                        "{soundName}", "{soundCategory}", "{soundDistance}",
-                        "{soundX}", "{soundY}", "{soundZ}",
-                        "{soundVol}", "{soundPitch}"
-                };
+                    String soundName = e.sound.getSoundLocation().getResourcePath();
+                    String categoryName = e.category.getCategoryName();
+                    String soundDistance = String.valueOf(getDistanceFromPlayer(e.sound));
+                    String xPos = String.valueOf(e.sound.getXPosF());
+                    String yPos = String.valueOf(e.sound.getYPosF());
+                    String zPos = String.valueOf(e.sound.getZPosF());
+                    String soundVolume = String.valueOf(e.sound.getVolume());
+                    String soundPitch = String.valueOf(e.sound.getPitch());
 
-                String soundName = e.sound.getSoundLocation().getResourcePath();
-                String categoryName = e.category.getCategoryName();
-                String soundDistance = String.valueOf(getDistanceFromPlayer(e.sound));
-                String xPos = String.valueOf(e.sound.getXPosF());
-                String yPos = String.valueOf(e.sound.getYPosF());
-                String zPos = String.valueOf(e.sound.getZPosF());
-                String soundVolume = String.valueOf(e.sound.getVolume());
-                String soundPitch = String.valueOf(e.sound.getPitch());
+                    String[] extraStringValues = new String[]{
+                            soundName, categoryName, soundDistance,
+                            xPos, yPos, zPos,
+                            soundVolume, soundPitch
+                    };
 
-                String[] extraStringValues = new String[]{
-                        soundName, categoryName, soundDistance,
-                        xPos, yPos, zPos,
-                        soundVolume, soundPitch
-                };
-
-                EventsHandler.doEvents(TMP_events, e, extraStrings, extraStringValues);
-            } catch (NullPointerException exception) {
-
+                    EventsHandler.doEvents(TMP_events, e, extraStrings, extraStringValues);
+                } catch (NullPointerException exception) {
+                    // do nothing //
+                }
             }
         }
     }
