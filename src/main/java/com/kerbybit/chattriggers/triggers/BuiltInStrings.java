@@ -68,20 +68,20 @@ public class BuiltInStrings {
         }
         while (TMP_e.contains("{random(") && TMP_e.contains(")}")) {
             String temporary;
-            String lowhigh = TMP_e.substring(TMP_e.indexOf("{random(")+8, TMP_e.indexOf(")}", TMP_e.indexOf("{random(")));
+            String temp_lowhigh = TMP_e.substring(TMP_e.indexOf("{random(")+8, TMP_e.indexOf(")}", TMP_e.indexOf("{random(")));
+            String lowhigh = StringFunctions.nestedArgs(temp_lowhigh, chatEvent, isAsync);
 
             try {
                 int low = 0;
                 int high;
                 if (lowhigh.contains(",")) {
                     String[] tmp_lowhigh = lowhigh.split(",");
-                    String strlow = StringFunctions.nestedArgs(tmp_lowhigh[0].trim(), chatEvent, isAsync);
-                    String strhigh = StringFunctions.nestedArgs(tmp_lowhigh[1].trim(), chatEvent, isAsync);
+                    String strlow = tmp_lowhigh[0].trim();
+                    String strhigh = tmp_lowhigh[1].trim();
                     low = Integer.parseInt(strlow);
                     high = Integer.parseInt(strhigh);
                 } else {
-                    String strhigh = StringFunctions.nestedArgs(lowhigh, chatEvent, isAsync);
-                    high = Integer.parseInt(strhigh);
+                    high = Integer.parseInt(lowhigh);
                 }
 
                 temporary = EventsHandler.randInt(low,high) + "";
@@ -89,15 +89,18 @@ public class BuiltInStrings {
                 temporary = "Not a number!";
             }
 
-            global.TMP_string.put("DefaultString->RANDOM"+lowhigh+"-"+(global.TMP_string.size()+1), temporary);
-            global.backupTMP_strings.put("DefaultString->RANDOM"+lowhigh+"-"+global.TMP_string.size(), temporary);
+            String stringName = "DefaultString->RANDOM"+lowhigh+"-"+(global.TMP_string.size()+1);
+            global.TMP_string.put(stringName, temporary);
+            global.backupTMP_strings.put(stringName, temporary);
 
-            TMP_e = TMP_e.replace("{random("+lowhigh+")}", "{string[DefaultString->RANDOM"+lowhigh+"-"+global.TMP_string.size()+"]}");
+            TMP_e = TMP_e.replace("{random("+temp_lowhigh+")}", "{string["+stringName+"]}");
         }
         while (TMP_e.contains("{msg(") && TMP_e.contains(")}")) {
             String strnum = TMP_e.substring(TMP_e.indexOf("{msg(")+5, TMP_e.indexOf(")}", TMP_e.indexOf("{msg(")));
             String temporary;
             String get_number = StringFunctions.nestedArgs(strnum, chatEvent, isAsync);
+            System.out.println(strnum);
+            System.out.println(get_number);
 
             try {
                 int num = Integer.parseInt(get_number);
@@ -107,10 +110,13 @@ public class BuiltInStrings {
                 } else {temporary = "Number must be greater than or equal to 0!";}
             } catch (NumberFormatException e) {temporary = "Not a number!";}
 
-            global.TMP_string.put("DefaultString->MSGHISTORY"+strnum+"-"+(global.TMP_string.size()+1), temporary);
-            global.backupTMP_strings.put("DefaultString->MSGHISTORY"+strnum+"-"+global.TMP_string.size(), temporary);
+            String stringName = "DefaultString->MSGHISTORY"+get_number+"-"+(global.TMP_string.size()+1);
+            global.TMP_string.put(stringName, temporary);
+            global.backupTMP_strings.put(stringName, temporary);
 
-            TMP_e = TMP_e.replace("{msg("+strnum+")}", "{string[DefaultString->MSGHISTORY"+strnum+"-"+global.TMP_string.size()+"]}");
+            TMP_e = TMP_e.replace("{msg("+strnum+")}", "{string["+stringName+"]}");
+            System.out.println(stringName);
+            System.out.println(TMP_e);
         }
         if (chatEvent!=null) {
             if (TMP_e.contains("{msg}.meta()")) {
