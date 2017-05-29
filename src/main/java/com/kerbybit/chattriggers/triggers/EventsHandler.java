@@ -22,8 +22,6 @@ import com.kerbybit.chattriggers.overlay.KillfeedHandler;
 import com.kerbybit.chattriggers.overlay.NotifyHandler;
 import com.kerbybit.chattriggers.references.AsyncHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
@@ -194,14 +192,15 @@ public class EventsHandler {
             }
 			if (TMP_c.equalsIgnoreCase("SOUND")) {
 				float real_v = ((float) TMP_v) / 100;
+				global.ignoreNextSound = true;
 				Minecraft.getMinecraft().thePlayer.playSound(removeStringReplacements(TMP_e), real_v, TMP_pi);
-				global.playedSounds.add(removeStringReplacements(TMP_e));
+
 			}
 
 			if (TMP_c.equalsIgnoreCase("TITLE")) {
 				Minecraft.getMinecraft().ingameGUI.displayTitle(null, null, TMP_fi, TMP_t, TMP_fo);
-				Minecraft.getMinecraft().ingameGUI.displayTitle(null, TMP_st, TMP_fi, TMP_t, TMP_fo);
-				Minecraft.getMinecraft().ingameGUI.displayTitle(removeStringReplacements(TMP_e), TMP_st, TMP_fi, TMP_t, TMP_fo);
+				Minecraft.getMinecraft().ingameGUI.displayTitle(null, ChatHandler.addFormatting(TMP_st), TMP_fi, TMP_t, TMP_fo);
+				Minecraft.getMinecraft().ingameGUI.displayTitle(ChatHandler.addFormatting(removeStringReplacements(TMP_e)), TMP_st, TMP_fi, TMP_t, TMP_fo);
 			}
 
 			if (TMP_c.equalsIgnoreCase("CANCEL")) {
