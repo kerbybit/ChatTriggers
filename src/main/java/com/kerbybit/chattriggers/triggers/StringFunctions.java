@@ -475,9 +475,9 @@ public class StringFunctions {
 				return trimNumber(Math.toDegrees(Math.acos(stringValueNumber)));
 			case "ATAN":
 				return trimNumber(Math.toDegrees(Math.atan(stringValueNumber)));
-            case "ABSOLUTE":
-            case "ABS":
-                return trimNumber(Math.abs(stringValueNumber));
+			case "ABSOLUTE":
+			case "ABS":
+				return trimNumber(Math.abs(stringValueNumber));
         }
 
         return null;
