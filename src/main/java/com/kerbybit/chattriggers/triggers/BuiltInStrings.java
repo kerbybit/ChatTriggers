@@ -237,17 +237,9 @@ public class BuiltInStrings {
             String recordPlaying = ReflectionHelper.getPrivateValue(
                     GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "field_73838_g");
 
-            Boolean isRecordPlaying = ReflectionHelper.getPrivateValue(
-            		GuiIngame.class, Minecraft.getMinecraft().ingameGUI, "field_73844_j"
-			);
-
             if (recordPlaying == null) {
                 recordPlaying = "null";
             }
-
-            if (!isRecordPlaying) {
-            	recordPlaying = "";
-			}
 
             TMP_e = createDefaultString("actionbartext", recordPlaying, TMP_e, isAsync);
         }
