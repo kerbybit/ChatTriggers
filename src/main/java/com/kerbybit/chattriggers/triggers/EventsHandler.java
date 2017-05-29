@@ -796,13 +796,13 @@ public class EventsHandler {
 					if (global.waitTime.get(i)>0) {
 						global.waitTime.set(i, global.waitTime.get(i)-1);
 					} else {
-						doEvents(global.waitEvents.get(i), null, true);
+						doEvents(global.waitEvents.get(i), null);
 						global.waitEvents.remove(i);
 						global.waitTime.remove(i);
 					}
 				}
 			} else {
-				ChatHandler.warn(ChatHandler.color("red","ERR: wait events and wait time unsynced"));
+				ChatHandler.warn(ChatHandler.color("red","ERR: wait events and wait time not synced"));
 				global.waitEvents.clear();
 				global.waitTime.clear();
 			}
