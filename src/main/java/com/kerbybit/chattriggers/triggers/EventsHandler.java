@@ -228,6 +228,9 @@ public class EventsHandler {
             if (TMP_c.equalsIgnoreCase("RETURN")) {
                 ret = removeStringReplacements(TMP_e);
             }
+            if (TMP_c.equalsIgnoreCase("BREAK")) {
+			    return "breakOutOfBlock";
+            }
 			
 			
 		//logic events
@@ -452,6 +455,7 @@ public class EventsHandler {
                                 String[] first = {valin};
                                 String[] second = {array};
                                 ret = doEvents(eventsToFor, chatEvent, soundEvent, first, second, isAsync);
+                                if (ret.equals("breakOutOfBlock")) break;
                             }
                         } else {
                             try {

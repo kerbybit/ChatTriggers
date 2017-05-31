@@ -166,6 +166,7 @@ public class CommandReference {
             r.add("choose");
             r.add("async");
             r.add("end");
+            r.add("break");
             r.add("return");
             r.add("");
             r.add("debug");
@@ -176,30 +177,8 @@ public class CommandReference {
     }
 
     public static List<String> getAllEventTypes() {
-        List<String> r = new ArrayList<>();
+        List<String> r = new ArrayList<>(getEventTypes());
 
-        r.add("chat");
-        r.add("cancel");
-        r.add("killfeed");
-        r.add("notify");
-        r.add("sound");
-        r.add("trigger");
-        r.add("title");
-        r.add("copy");
-        r.add("url");
-        r.add("do");
-        r.add("if");
-        r.add("else");
-        r.add("elseif");
-        r.add("for");
-        r.add("wait");
-        r.add("choose");
-        r.add("async");
-        r.add("end");
-        r.add("return");
-        r.add("debug");
-        r.add("log");
-        r.add("simulate");
         r.add("say");
         r.add("command");
 

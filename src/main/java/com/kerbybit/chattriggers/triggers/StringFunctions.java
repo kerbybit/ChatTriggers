@@ -34,18 +34,14 @@ public class StringFunctions {
 
         returnString = doStringSetFunctions(stringPos, stringName, func, args, isAsync);
 
-        if (returnString == null) {
+        if (returnString == null)
             returnString = doStringModifyFunctions(stringName, stringValue, func, args);
-        }
-        if (returnString == null) {
+        if (returnString == null)
             returnString = doStringComparatorFunctions(stringValue, func, args);
-        }
-        if (returnString == null) {
+        if (returnString == null)
             returnString = doStringMathFunctions(stringValue, func, args);
-        }
-        if (returnString == null) {
+        if (returnString == null)
             returnString = doStringUserFunctions(stringValue, func, args, chatEvent);
-        }
 
         if (returnString != null && getIsObject(returnString)) {
             return returnString;
@@ -87,11 +83,8 @@ public class StringFunctions {
                 } else {
                     if (stringPos >= 0) {
                         String set = addExtras(global.USR_string.get(stringName));
-                        if (isAsync) {
-                            global.backupUSR_strings_mark.put(stringName, set);
-                        } else {
-                            global.backupUSR_strings.put(stringName, set);
-                        }
+                        if (isAsync) global.backupUSR_strings_mark.put(stringName, set);
+                        else global.backupUSR_strings.put(stringName, set);
 
                         return set;
                     } else {
@@ -132,11 +125,8 @@ public class StringFunctions {
                 } else {
                     if (stringPos >= 0) {
                         String set = addExtras(global.USR_string.get(stringName));
-                        if (isAsync) {
-                            global.backupUSR_strings_mark.put(stringName, set);
-                        } else {
-                            global.backupUSR_strings.put(stringName, set);
-                        }
+                        if (isAsync) global.backupUSR_strings_mark.put(stringName, set);
+                        else global.backupUSR_strings.put(stringName, set);
                         ret = set;
                     } else {
                         String set = addExtras(global.TMP_string.get(stringName));
@@ -196,144 +186,159 @@ public class StringFunctions {
     }
 
     private static String doStringModifyFunctions(String stringName, String stringValue, String func, String args) {
-        if (func.equals("REPLACE")) {
-            args = removeExcludedExtras(args);
-            if (args.contains(",") && args.split(",").length == 2) {
-                return stringValue.replace(args.split(",")[0], args.split(",")[1]);
-            } else {
-                return stringValue.replace(args,"");
-            }
-        } else if (func.equals("REPLACEIGNORECASE")) {
-            args = removeExcludedExtras(args);
-            if (args.contains(",") && args.split(",").length == 2) {
-                return stringValue.replaceAll("(?i)"+args.split(",")[0], args.split(",")[1]);
-            } else {
-                return stringValue.replaceAll("(?i)"+args, "");
-            }
-        } else if (func.equals("TRIM")) {
-            return stringValue.trim();
-        } else if (func.equals("PREFIX")) {
-            return args + stringValue;
-        } else if (func.equals("SUFFIX")) {
-            return stringValue + args;
-        } else if (func.equals("TOUPPER") || func.equals("TOUPPERCASE")) {
-            return stringValue.toUpperCase();
-        } else if (func.equals("TOLOWER") || func.equals("TOLOWERCASE")) {
-            return stringValue.toLowerCase();
-        } else if (func.equals("REMOVEFORMATTING") || func.equalsIgnoreCase("REMFORM")) {
-            return stringValue.replaceAll("&[1-r]", "");
-        } else if (func.equals("CAPITALIZEFIRSTWORD") || func.equals("CAPFIRST")) {
-            if (stringValue.equals("")) return stringValue;
-            else return stringValue.substring(0,1).toUpperCase()+stringValue.substring(1);
-        } else if (func.equals("CAPITALIZEALLWORDS") || func.equals("CAPALL")) {
-            return WordUtils.capitalizeFully(stringValue);
-        } else if (func.equals("IGNOREESCAPE")) {
-            return stringValue.replace("\\", "\\\\");
-        } else if (func.equals("FIXLINKS")) {
-            for (String value : stringValue.split(" ")) {
-                String newvalue = ChatHandler.deleteFormatting(value);
-                value = value.replace("...","TripleDotF6cyUQp9TripleDot");
-                if (value.contains(".")) {
-                    if (!(newvalue.toUpperCase().startsWith("HTTP://") || newvalue.toUpperCase().startsWith("HTTPS://"))) {
-                        newvalue = "http://"+value;
+        switch (func) {
+            case("REPLACE"):
+                args = removeExcludedExtras(args);
+                if (args.contains(",") && args.split(",").length == 2) {
+                    return stringValue.replace(args.split(",")[0], args.split(",")[1]);
+                } else {
+                    return stringValue.replace(args,"");
+                }
+            case("REPLACEIGNORECASE"):
+                args = removeExcludedExtras(args);
+                if (args.contains(",") && args.split(",").length == 2) {
+                    return stringValue.replaceAll("(?i)"+args.split(",")[0], args.split(",")[1]);
+                } else {
+                    return stringValue.replaceAll("(?i)"+args, "");
+                }
+            case("TRIM"):
+                return stringValue.trim();
+            case("PREFIX"):
+                return args + stringValue;
+            case("SUFFIX"):
+                return stringValue + args;
+            case("TOUPPER"):
+            case("TOUPPERCASE"):
+                return stringValue.toUpperCase();
+            case("TOLOWER"):
+            case("TOLOWERCASE"):
+                return stringValue.toLowerCase();
+            case("REMOVEFORMATTING"):
+            case("REMFORM"):
+                return stringValue.replaceAll("&[1-r]", "");
+            case("CAPITALIZEFIRSTWORD"):
+            case("CAPFIRST"):
+                if (stringValue.equals("")) return stringValue;
+                else return stringValue.substring(0,1).toUpperCase()+stringValue.substring(1);
+            case("CAPITALIZEALLWORDS"):
+            case("CAPALL"):
+                return WordUtils.capitalizeFully(stringValue);
+            case("IGNOREESCAPE"):
+                return stringValue.replace("\\", "\\\\");
+            case("FIXLINKS"):
+                for (String value : stringValue.split(" ")) {
+                    String newvalue = ChatHandler.deleteFormatting(value);
+                    value = value.replace("...","TripleDotF6cyUQp9TripleDot");
+                    if (value.contains(".")) {
+                        if (!(newvalue.toUpperCase().startsWith("HTTP://") || newvalue.toUpperCase().startsWith("HTTPS://"))) {
+                            newvalue = "http://"+value;
+                        }
+                        stringValue = stringValue.replace(value.replace("...","TripleDotF6cyUQp9TripleDot"), "{link[" + value + "],[" + newvalue + "]}");
                     }
-                    stringValue = stringValue.replace(value.replace("...","TripleDotF6cyUQp9TripleDot"), "{link[" + value + "],[" + newvalue + "]}");
                 }
-            }
-            return stringValue;
-        } else if (func.equals("SUBSTRING")) {
-            args = removeExcludedExtras(args);
-            String[] subargs = args.split(",");
-            if (subargs.length == 2) {
-                int first = -1;
-                int last = -1;
-                Boolean getStart = false;
-                Boolean startContain = false;
-                Boolean startAlwaysNumber = false;
-                Boolean getEnd = false;
-                Boolean endContain = false;
-                Boolean endAlwaysNumber = false;
-                if (subargs[0].toUpperCase().contains("<START>") || subargs[0].toUpperCase().contains("<S>")) {
-                    getStart = true;
-                    subargs[0] = subargs[0].replaceAll("(?i)<start>|<s>", "");
+                return stringValue;
+            case("SPLIT"):
+                String[] splitString = stringValue.split(args);
+                StringBuilder list = new StringBuilder("[");
+                for (String value : splitString) {
+                    list.append(value).append(",");
                 }
-                if (subargs[0].toUpperCase().contains("<INCLUDE>") || subargs[0].toUpperCase().contains("<I>")) {
-                    startContain = true;
-                    subargs[0] = subargs[0].replaceAll("(?i)<include>|<i>", "");
-                }
-                if (subargs[0].toUpperCase().contains("<NUMBER>") || subargs[0].toUpperCase().contains("<N>")) {
-                    startAlwaysNumber = true;
-                    subargs[0] = subargs[0].replaceAll("(?i)<number>|<n>", "");
-                }
-                if (subargs[0].toUpperCase().contains("<TEXT>") || subargs[0].toUpperCase().contains("<T>")) {
-                    subargs[0] = subargs[0].replaceAll("(?i)<text>|<t>", "");
-                }
+                list = new StringBuilder(list.substring(0, list.length()-1) + "]");
 
+                ListHandler.getList("StringToList->"+stringName+"SPLIT-"+(ListHandler.getListsSize()+1), list.toString());
+                return "{list[StringToList->"+stringName+"SPLIT-"+ListHandler.getListsSize()+"]}";
+            case("SUBSTRING"):
+                args = removeExcludedExtras(args);
+                String[] subargs = args.split(",");
+                if (subargs.length == 2) {
+                    int first = -1;
+                    int last = -1;
+                    Boolean getStart = false;
+                    Boolean startContain = false;
+                    Boolean startAlwaysNumber = false;
+                    Boolean startAlwaysText = false;
+                    Boolean getEnd = false;
+                    Boolean endContain = false;
+                    Boolean endAlwaysNumber = false;
+                    Boolean endAlwaysText = false;
+                    if (subargs[0].toUpperCase().contains("<START>") || subargs[0].toUpperCase().contains("<S>"))
+                        getStart = true;
+                    if (subargs[0].toUpperCase().contains("<INCLUDE>") || subargs[0].toUpperCase().contains("<I>"))
+                        startContain = true;
+                    if (subargs[0].toUpperCase().contains("<NUMBER>") || subargs[0].toUpperCase().contains("<N>"))
+                        startAlwaysNumber = true;
+                    if (subargs[0].toUpperCase().contains("<TEXT>") || subargs[0].toUpperCase().contains("<T>"))
+                        startAlwaysText = true;
+                    subargs[0] = subargs[0].replaceAll("(?i)<start>|<s>|<include>|<i>|<number>|<n>|<text>|<t>", "");
 
-                if (subargs[1].toUpperCase().contains("<END>") || subargs[1].toUpperCase().contains("<E>")) {
-                    getEnd = true;
-                    subargs[1] = subargs[1].replaceAll("(?i)<end>|<e>", "");
-                }
-                if (subargs[1].toUpperCase().contains("<INCLUDE>") || subargs[1].toUpperCase().contains("<I>")) {
-                    endContain = true;
-                    subargs[1] = subargs[1].replaceAll("(?i)<include>|<i>", "");
-                }
-                if (subargs[1].toUpperCase().contains("<NUMBER>") || subargs[1].toUpperCase().contains("<N>")) {
-                    endAlwaysNumber = true;
-                    subargs[1] = subargs[1].replaceAll("(?i)<number>|<n>", "");
-                }
-                if (subargs[1].toUpperCase().contains("<TEXT>") || subargs[1].toUpperCase().contains("<T>")) {
-                    subargs[1] = subargs[1].replaceAll("(?i)<text>|<t>", "");
-                }
+                    if (subargs[1].toUpperCase().contains("<END>") || subargs[1].toUpperCase().contains("<E>"))
+                        getEnd = true;
+                    if (subargs[1].toUpperCase().contains("<INCLUDE>") || subargs[1].toUpperCase().contains("<I>"))
+                        endContain = true;
+                    if (subargs[1].toUpperCase().contains("<NUMBER>") || subargs[1].toUpperCase().contains("<N>"))
+                        endAlwaysNumber = true;
+                    if (subargs[1].toUpperCase().contains("<TEXT>") || subargs[1].toUpperCase().contains("<T>"))
+                        endAlwaysText = true;
+                    subargs[1] = subargs[1].replaceAll("(?i)<end>|<e>|<include>|<i>|<number>|<n>|<text>|<t>", "");
 
-                String temp = removeExtras(stringValue);
-                if (getStart) first = 0;
-                if (getEnd) last = temp.length();
-                if (first == -1) {
-                    if (temp.contains(subargs[0]) && !startAlwaysNumber) {
-                        if (startContain) first = temp.indexOf(subargs[0]);
-                        else first = temp.indexOf(subargs[0]) + subargs[0].length();
-                    } else {
-                        try {
-                            first = Integer.parseInt(subargs[0]);
-                        } catch (NumberFormatException e) {
-                            if (global.debug) ChatHandler.warn(ChatHandler.color("gray", "Did not find " + subargs[0] + " in string"));
-                            return null;
+                    String temp = removeExtras(stringValue);
+                    if (getStart) {
+                        first = 0;
+                        if (!subargs[0].equals("")) {
+                            try {
+                                int indexFromStart = Integer.parseInt(subargs[0]);
+                                if (indexFromStart > 0) first = indexFromStart;
+                            } catch (NumberFormatException exception) {
+                                // do nothing //
+                            }
                         }
                     }
-                }
-                if (last == -1) {
-                    if (temp.contains(subargs[1]) && !endAlwaysNumber) {
-                        if (endContain) last = temp.indexOf(subargs[1]) + subargs[1].length();
-                        else last = temp.indexOf(subargs[1]);
-                    } else {
-                        try {
-                            last = Integer.parseInt(subargs[1]);
-                        } catch (NumberFormatException e) {
-                            if (global.debug) ChatHandler.warn(ChatHandler.color("gray", "Did not find " + subargs[1] + " in string"));
-                            return null;
+                    if (getEnd) {
+                        last = temp.length();
+                        if (!subargs[1].equals("")) {
+                            try {
+                                int indexFromEnd = Integer.parseInt(subargs[1]);
+                                if (indexFromEnd < 0) last = temp.length()+indexFromEnd;
+                            } catch (NumberFormatException exception) {
+                                // do nothing //
+                            }
                         }
                     }
-                }
+                    if (first == -1) {
+                        if (temp.contains(subargs[0]) && !startAlwaysNumber) {
+                            if (startContain) first = temp.indexOf(subargs[0]);
+                            else first = temp.indexOf(subargs[0]) + subargs[0].length();
+                        } else if (!startAlwaysText) {
+                            try {
+                                first = Integer.parseInt(subargs[0]);
+                            } catch (NumberFormatException e) {
+                                if (global.debug) ChatHandler.warn(ChatHandler.color("gray", "Did not find " + subargs[0] + " in string"));
+                                return null;
+                            }
+                        }
+                    }
+                    if (last == -1) {
+                        if (temp.contains(subargs[1]) && !endAlwaysNumber) {
+                            if (endContain) last = temp.indexOf(subargs[1]) + subargs[1].length();
+                            else last = temp.indexOf(subargs[1]);
+                        } else if (!endAlwaysText) {
+                            try {
+                                last = Integer.parseInt(subargs[1]);
+                            } catch (NumberFormatException e) {
+                                if (global.debug) ChatHandler.warn(ChatHandler.color("gray", "Did not find " + subargs[1] + " in string"));
+                                return null;
+                            }
+                        }
+                    }
 
-                if (first != -1 && last != -1) {
-                    temp = temp.substring(first, last);
-                    return addExtras(temp);
+                    if (first != -1 && last != -1) {
+                        temp = temp.substring(first, last);
+                        return addExtras(temp);
+                    }
                 }
-            }
-        } else if (func.equals("SPLIT")) {
-            String[] splitString = stringValue.split(args);
-            StringBuilder list = new StringBuilder("[");
-            for (String value : splitString) {
-                list.append(value).append(",");
-            }
-            list = new StringBuilder(list.substring(0, list.length()-1) + "]");
-
-            ListHandler.getList("StringToList->"+stringName+"SPLIT-"+(ListHandler.getListsSize()+1), list.toString());
-            return "{list[StringToList->"+stringName+"SPLIT-"+ListHandler.getListsSize()+"]}";
+            default:
+                return null;
         }
-
-        return null;
     }
 
     private static String doStringComparatorFunctions(String stringValue, String func, String args) {

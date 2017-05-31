@@ -186,7 +186,6 @@ public class DisplayHandler {
                 Double[] display_xy;
                 String settings = getDisplaySettings(display_name);
                 int max_width = 0;
-                int color = 0x00ffffff;
 
                 if (displays_xy.containsKey(display_name)) {
                     display_xy = displays_xy.get(display_name);
@@ -303,13 +302,13 @@ public class DisplayHandler {
                 }
 
                 if (display_texts.size() > 0) {
-                    drawDisplay(display_texts, display_xs, display_ys, color, bg, bgc, max_width, up, align);
+                    drawDisplay(display_texts, display_xs, display_ys, bg, bgc, max_width, up, align);
                 }
             }
         }
     }
 
-    private static void drawDisplay(List<String> display_texts, List<Float> display_xs, List<Float> display_ys, int color, String bg, String bgc, int max_width, boolean up, int align) {
+    private static void drawDisplay(List<String> display_texts, List<Float> display_xs, List<Float> display_ys, String bg, String bgc, int max_width, boolean up, int align) {
         FontRenderer ren = Minecraft.getMinecraft().fontRendererObj;
 
         if (bg.equalsIgnoreCase("full")) {
@@ -374,6 +373,7 @@ public class DisplayHandler {
             float display_x = display_xs.get(i);
             float display_y = display_ys.get(i);
 
+            int color;
             if (display_text.contains("<rainbow>") || (display_text.contains("<rainbow=") && display_text.contains(">"))) {
                 display_text = display_text.replace("<rainbow>", "");
                 float speed = 5;
