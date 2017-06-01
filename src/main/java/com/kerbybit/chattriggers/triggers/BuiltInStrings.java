@@ -10,6 +10,8 @@ import com.kerbybit.chattriggers.objects.JsonHandler;
 import com.kerbybit.chattriggers.references.Reference;
 import com.kerbybit.chattriggers.util.RomanNumber;
 import com.kerbybit.chattriggers.util.ScoreboardReader;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.entity.boss.BossStatus;
@@ -19,6 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -493,6 +496,41 @@ public class BuiltInStrings {
 
             TMP_e = TMP_e.replace("{heldItem}", "{json[DefaultJson->HELDITEM-"+ JsonHandler.getJsonsSize()+"]}");
         }
+
+		if (TMP_e.contains("{lookingat}")) {
+			MovingObjectPosition mop = Minecraft.getMinecraft().objectMouseOver;
+			String jsonString;
+
+			try {
+				if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
+					jsonString = "{\"type\":\"entity\"}";
+				} else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.MISS) {
+					jsonString = "{\"type\":\"null\"}";
+				} else {
+					IBlockState blockState = Minecraft.getMinecraft().theWorld.getBlockState(mop.getBlockPos());
+					Block block = blockState.getBlock();
+
+					if (block == null) {
+						jsonString = "{\"type\":\"null\"}";
+					} else {
+						jsonString = "{\"type\":\"block\",";
+						jsonString += "\"block\":{";
+						jsonString += "\"xPos\":" + mop.getBlockPos().getX() + ",";
+						jsonString += "\"yPos\":" + mop.getBlockPos().getY() + ",";
+						jsonString += "\"zPos\":" + mop.getBlockPos().getZ() + ",";
+						jsonString += "\"metadata\":" + block.getMetaFromState(blockState) + ",";
+						jsonString += "\"name\":" + block.getUnlocalizedName();
+						jsonString += "}}";
+					}
+				}
+			} catch (Exception e) {
+				jsonString = "{}";
+			}
+
+			JsonHandler.getJson("DefaultJson->LOOKINGAT-" + (JsonHandler.getJsonsSize() + 1), jsonString);
+			TMP_e = TMP_e.replace("{lookingat}", "{json[DefaultJson->LOOKINGAT-" + JsonHandler.getJsonsSize() + "]}");
+		}
+
         if (TMP_e.contains("{arrows}")) {
             ItemStack[] inventory = Minecraft.getMinecraft().thePlayer.inventory.mainInventory;
             int arrows = 0;
