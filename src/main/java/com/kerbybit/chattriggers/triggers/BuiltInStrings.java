@@ -14,12 +14,15 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.client.GuiIngameForge;
@@ -503,7 +506,22 @@ public class BuiltInStrings {
 
 			try {
 				if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
-					jsonString = "{\"type\":\"entity\"}";
+					Entity entity = mop.entityHit;
+					NBTTagCompound nbt = entity.getEntityData();
+
+					jsonString = "{\"type\":\"entity\",";
+					jsonString += "\"entity\":{";
+					jsonString += "\"name\":\"" + entity.getName() + "\",";
+					jsonString += "\"displayName\":\"" + entity.getCustomNameTag() + EnumChatFormatting.RESET + "\",";
+					jsonString += "\"metadata\":{";
+
+					for (String key : nbt.getKeySet()) {
+						jsonString += "\"" + key + "\":\"" + nbt.getTag(key).toString() + "\",";
+					}
+
+					if (jsonString.endsWith(",")) jsonString = jsonString.substring(0, jsonString.length() - 1);
+
+					jsonString += "}}}";
 				} else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.MISS) {
 					jsonString = "{\"type\":\"null\"}";
 				} else {
@@ -520,7 +538,8 @@ public class BuiltInStrings {
 						jsonString += "\"zPos\":" + mop.getBlockPos().getZ() + ",";
 						jsonString += "\"metadata\":" + block.getMetaFromState(blockState) + ",";
 						jsonString += "\"name\":\"" + block.getLocalizedName() + "\",";
-						jsonString += "\"unlocalizedName\":\"" + block.getUnlocalizedName().replace("tile.","") + "\"";
+						jsonString += "\"unlocalizedName\":\"" + block.getUnlocalizedName().replace("tile.","") + "\",";
+						jsonString += "\"registryName\":\"" + block.getRegistryName() + "\"";
 						jsonString += "}}";
 					}
 				}
