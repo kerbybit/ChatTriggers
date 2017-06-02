@@ -15,6 +15,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -520,8 +521,19 @@ public class BuiltInStrings {
 					}
 
 					if (jsonString.endsWith(",")) jsonString = jsonString.substring(0, jsonString.length() - 1);
+					jsonString += "}";
+					if (entity instanceof EntityLivingBase) {
 
-					jsonString += "}}}";
+					    jsonString += ",\"teamName\":\"";
+
+					    if (((EntityLivingBase) entity).getTeam() == null) {
+                            jsonString += "null\"";
+                        } else {
+					        jsonString += ((EntityLivingBase) entity).getTeam().getRegisteredName() + "\"";
+                        }
+                    }
+
+                    jsonString += "}}";
 				} else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.MISS) {
 					jsonString = "{\"type\":\"null\"}";
 				} else {
