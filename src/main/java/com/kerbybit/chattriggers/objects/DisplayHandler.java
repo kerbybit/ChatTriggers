@@ -292,8 +292,8 @@ public class DisplayHandler {
 
 
 
-                    if (ren.getStringWidth(trimmed_display_text) > max_width) {
-                        max_width = ren.getStringWidth(trimmed_display_text);
+                    if (ren.getStringWidth(IconHandler.removeIconString(trimmed_display_text)) > max_width) {
+                        max_width = ren.getStringWidth(IconHandler.removeIconString(trimmed_display_text));
                     }
 
                     display_texts.add(display_text);
@@ -314,56 +314,20 @@ public class DisplayHandler {
         if (bg.equalsIgnoreCase("full")) {
             int bg_y = floor(display_ys.get(0));
             if (up) {
-                if (align == 0) {
-                    int bg_x = floor(display_xs.get(0));
-                    int bg_h = floor(display_ys.get(display_ys.size()-1));
-                    try {
-                        drawRect(bg_x, bg_y+10, bg_x+max_width, bg_h, (int) Long.parseLong(bgc, 16));
-                    } catch (NumberFormatException e) {
-                        drawRect(bg_x, bg_y+10, bg_x+max_width, bg_h, 0x40000000);
-                    }
-                } else if (align == 1) {
-                    int bg_x = floor(display_xs.get(0)) + 3;
-                    int bg_h = floor(display_ys.get(display_ys.size()-1));
-                    try {
-                        drawRect(bg_x-max_width/4, bg_y+10, bg_x+(max_width-max_width/4), bg_h, (int) Long.parseLong(bgc, 16));
-                    } catch (NumberFormatException e) {
-                        drawRect(bg_x-max_width/4, bg_y+10, bg_x+(max_width-max_width/4), bg_h, 0x40000000);
-                    }
-                } else if (align == 2) {
-                    int bg_x = floor(display_xs.get(0)) + 9;
-                    int bg_h = floor(display_ys.get(display_ys.size()-1));
-                    try {
-                        drawRect(bg_x - max_width/2, bg_y+10, bg_x + max_width/2, bg_h, (int) Long.parseLong(bgc, 16));
-                    } catch (NumberFormatException e) {
-                        drawRect(bg_x - max_width/2, bg_y+10, bg_x + max_width/2, bg_h, 0x40000000);
-                    }
+                int bg_x = floor(display_xs.get(0));
+                int bg_h = floor(display_ys.get(display_ys.size()-1));
+                try {
+                    drawRect(bg_x, bg_y+10, bg_x+max_width, bg_h, (int) Long.parseLong(bgc, 16));
+                } catch (NumberFormatException e) {
+                    drawRect(bg_x, bg_y+10, bg_x+max_width, bg_h, 0x40000000);
                 }
             } else {
-                if (align == 0) {
-                    int bg_x = floor(display_xs.get(0));
-                    int bg_h = floor(display_ys.get(display_ys.size()-1))+10;
-                    try {
-                        drawRect(bg_x, bg_y, bg_x+max_width, bg_h, (int) Long.parseLong(bgc, 16));
-                    } catch (NumberFormatException e) {
-                        drawRect(bg_x, bg_y, bg_x+max_width, bg_h, 0x40000000);
-                    }
-                } else if (align == 1) {
-                    int bg_x = floor(display_xs.get(0)) + 3;
-                    int bg_h = floor(display_ys.get(display_ys.size()-1))+10;
-                    try {
-                        drawRect(bg_x-max_width/4, bg_y, bg_x+(max_width-max_width/4), bg_h, (int) Long.parseLong(bgc, 16));
-                    } catch (NumberFormatException e) {
-                        drawRect(bg_x-max_width/4, bg_y, bg_x+(max_width-max_width/4), bg_h, 0x40000000);
-                    }
-                } else if (align == 2) {
-                    int bg_x = floor(display_xs.get(0)) + 9;
-                    int bg_h = floor(display_ys.get(display_ys.size()-1)) + 10;
-                    try {
-                        drawRect(bg_x - max_width/2, bg_y, bg_x + max_width/2, bg_h, (int) Long.parseLong(bgc, 16));
-                    } catch (NumberFormatException e) {
-                        drawRect(bg_x - max_width/2, bg_y, bg_x + max_width/2, bg_h, 0x40000000);
-                    }
+                int bg_x = floor(display_xs.get(0));
+                int bg_h = floor(display_ys.get(display_ys.size()-1))+10;
+                try {
+                    drawRect(bg_x, bg_y, bg_x+max_width, bg_h, (int) Long.parseLong(bgc, 16));
+                } catch (NumberFormatException e) {
+                    drawRect(bg_x, bg_y, bg_x+max_width, bg_h, 0x40000000);
                 }
             }
         }
@@ -412,9 +376,9 @@ public class DisplayHandler {
 
             if (!display_text.equals("") && bg.equalsIgnoreCase("line")) {
                 try {
-                    drawRect(display_x, display_y, display_x + ren.getStringWidth(display_text), display_y + 10, (int) Long.parseLong(bgc, 16));
+                    drawRect(display_x, display_y, display_x + ren.getStringWidth(IconHandler.removeIconString(display_text)), display_y + 10, (int) Long.parseLong(bgc, 16));
                 } catch (NumberFormatException e) {
-                    drawRect(display_x, display_y, display_x + ren.getStringWidth(display_text), display_y + 10, 0x40000000);
+                    drawRect(display_x, display_y, display_x + ren.getStringWidth(IconHandler.removeIconString(display_text)), display_y + 10, 0x40000000);
                 }
             }
 

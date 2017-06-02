@@ -34,20 +34,36 @@ public class ArrayHandler {
 
 	        for (List<String> value : USR_array) {
 	            if (value.get(0).equals(get_name)) {
-                    global.TMP_string.put("ArrayToString->"+get_name+"GETR"+"-"+(global.TMP_string.size()+1), value.get(EventsHandler.randInt(1, value.size()-1)));
-                    global.backupTMP_strings.put("ArrayToString->"+get_name+"GETR"+"-"+global.TMP_string.size(), value.get(EventsHandler.randInt(1, value.size()-1)));
+                    String stringName;
+                    if (isAsync) {
+                        stringName = "AsyncArrayToString->" + get_name + "GETR-" + (global.Async_string.size() + 1);
+                        global.Async_string.put(stringName, value.get(EventsHandler.randInt(1, value.size()-1)));
+                        global.backupAsync_string.put(stringName, value.get(EventsHandler.randInt(1, value.size()-1)));
+                    } else {
+                        stringName = "ArrayToString->" + get_name + "GETR-" + (global.TMP_string.size() + 1);
+                        global.TMP_string.put(stringName, value.get(EventsHandler.randInt(1, value.size()-1)));
+                        global.backupTMP_strings.put(stringName, value.get(EventsHandler.randInt(1, value.size()-1)));
+                    }
 
-                    TMP_e = TMP_e.replace("{array["+get_name+"]}.getRandom()","{string[ArrayToString->"+get_name+"GETR"+"-"+global.TMP_string.size()+"]}");
+                    TMP_e = TMP_e.replace("{array["+get_name+"]}.getRandom()","{string["+stringName+"]}");
 
 	                isArray = true;
                 }
             }
 
             if (!isArray) {
-                global.TMP_string.put("ArrayToString->"+get_name+"GETR"+"-"+(global.TMP_string.size()+1), get_name + " is not currently an array");
-                global.backupTMP_strings.put("ArrayToString->"+get_name+"GETR"+"-"+global.TMP_string.size(), get_name + " is not currently an array");
+                String stringName;
+                if (isAsync) {
+                    stringName = "AsyncArrayToString->" + get_name + "GETR-" + (global.Async_string.size() + 1);
+                    global.Async_string.put(stringName, get_name + " is not currently an array");
+                    global.backupAsync_string.put(stringName, get_name + " is not currently an array");
+                } else {
+                    stringName = "ArrayToString->" + get_name + "GETR-" + (global.TMP_string.size() + 1);
+                    global.TMP_string.put(stringName, get_name + " is not currently an array");
+                    global.backupTMP_strings.put(stringName, get_name + " is not currently an array");
+                }
 
-                TMP_e = TMP_e.replace("{array["+get_name+"]}.getRandom()","{string[ArrayToString->"+get_name+"GETR"+"-"+global.TMP_string.size()+"]}");
+                TMP_e = TMP_e.replace("{array["+get_name+"]}.getRandom()","{string["+stringName+"]}");
             }
         }
 
@@ -89,10 +105,18 @@ public class ArrayHandler {
 				}
 			} else {returnString = new StringBuilder("setSplit formatted wrong! use .setSplit(value,split)");}
 
-			global.TMP_string.put("ArrayToString->"+checkFrom+"SETSPLIT"+checkTo+"-"+(global.TMP_string.size()+1), returnString.toString());
-            global.backupTMP_strings.put("ArrayToString->"+checkFrom+"SETSPLIT"+checkTo+"-"+global.TMP_string.size(), returnString.toString());
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "SETSPLIT-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, returnString.toString());
+                global.backupAsync_string.put(stringName, returnString.toString());
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "SETSPLIT-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, returnString.toString());
+                global.backupTMP_strings.put(stringName, returnString.toString());
+            }
 
-			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.setSplit(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"SETSPLIT"+checkTo+"-"+global.TMP_string.size()+"]}");
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.setSplit(" + checkTo + ")", "{string["+stringName+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.add(") && TMP_e.contains(")")) {
@@ -133,10 +157,18 @@ public class ArrayHandler {
                 USR_array.add(prearray);
 			}
 
-			global.TMP_string.put("ArrayToString->"+checkFrom+"ADD"+checkTo+"-"+(global.TMP_string.size()+1), checkTo);
-			global.backupTMP_strings.put("ArrayToString->"+checkFrom+"ADD"+checkTo+"-"+global.TMP_string.size(), checkTo);
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "ADD-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, checkTo);
+                global.backupAsync_string.put(stringName, checkTo);
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "ADD-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, checkTo);
+                global.backupTMP_strings.put(stringName, checkTo);
+            }
 
-			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.add(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"ADD"+checkTo+"-"+global.TMP_string.size()+"]}");
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.add(" + checkTo + ")", "{string["+stringName+"]}");
 		}
 
         while (TMP_e.contains("{array[") && TMP_e.contains("]}.prepend(") && TMP_e.contains(")")) {
@@ -162,10 +194,18 @@ public class ArrayHandler {
                 USR_array.add(prearray);
             }
 
-            global.TMP_string.put("ArrayToString->"+checkFrom+"PREPEND"+checkTo+"-"+(global.TMP_string.size()+1), checkTo);
-            global.backupTMP_strings.put("ArrayToString->"+checkFrom+"PREPEND"+checkTo+"-"+global.TMP_string.size(), checkTo);
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "PREPEND-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, checkTo);
+                global.backupAsync_string.put(stringName, checkTo);
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "PREPEND-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, checkTo);
+                global.backupTMP_strings.put(stringName, checkTo);
+            }
 
-            TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.prepend(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"PREPEND"+checkTo+"-"+global.TMP_string.size()+"]}");
+            TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.prepend(" + checkTo + ")", "{string["+stringName+"]}");
         }
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.clear()")) {
@@ -183,10 +223,18 @@ public class ArrayHandler {
 				}
 			}
 
-			global.TMP_string.put("ArrayToString->"+checkFrom+"CLEAR"+"-"+(global.USR_string.size()+1), returnString);
-			global.backupTMP_strings.put("ArrayToString->"+checkFrom+"CLEAR"+"-"+global.USR_string.size(), returnString);
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "CLEAR-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, returnString);
+                global.backupAsync_string.put(stringName, returnString);
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "CLEAR-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, returnString);
+                global.backupTMP_strings.put(stringName, returnString);
+            }
 
-			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.clear()", "{string[ArrayToString->"+checkFrom+"CLEAR"+"-"+global.TMP_string.size()+"]}");
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.clear()", "{string["+stringName+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.has(") && TMP_e.contains(")")) {
@@ -206,10 +254,18 @@ public class ArrayHandler {
 				}
 			}
 
-			global.TMP_string.put("ArrayToString->"+checkFrom+"HAS"+checkTo+"-"+(global.TMP_string.size()+1), checkThis);
-			global.backupTMP_strings.put("ArrayToString->"+checkFrom+"HAS"+checkTo+"-"+global.TMP_string.size(), checkThis);
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "HAS-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, checkThis);
+                global.backupAsync_string.put(stringName, checkThis);
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "HAS-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, checkThis);
+                global.backupTMP_strings.put(stringName, checkThis);
+            }
 
-			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.has("+checkTo+")", "{string[ArrayToString->"+checkFrom+"HAS"+checkTo+"-"+global.TMP_string.size()+"]}");
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.has("+checkTo+")", "{string["+stringName+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.hasIgnoreCase(") && TMP_e.contains(")")) {
@@ -229,10 +285,18 @@ public class ArrayHandler {
 				}
 			}
 
-			global.TMP_string.put("ArrayToString->"+checkFrom+"HASIGNORECASE"+checkTo+"-"+(global.TMP_string.size()+1), checkThis);
-			global.backupTMP_strings.put("ArrayToString->"+checkFrom+"HASIGNORECASE"+checkTo+"-"+global.TMP_string.size(), checkThis);
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "HASIGNORECASE-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, checkThis);
+                global.backupAsync_string.put(stringName, checkThis);
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "HASIGNORECASE-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, checkThis);
+                global.backupTMP_strings.put(stringName, checkThis);
+            }
 
-			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.hasIgnoreCase("+checkTo+")", "{string[ArrayToString->"+checkFrom+"HASIGNORECASE"+checkTo+"-"+global.TMP_string.size()+"]}");
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.hasIgnoreCase("+checkTo+")", "{string["+stringName+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.remove(") && TMP_e.contains(")")) {
@@ -276,10 +340,18 @@ public class ArrayHandler {
 			
 			if (toRemoveArray != -1) {USR_array.remove(toRemoveArray);}
 
-			global.TMP_string.put("ArrayToString->"+checkFrom+"REMOVE"+checkTo+"-"+(global.TMP_string.size()+1), returnString);
-			global.backupTMP_strings.put("ArrayToString->"+checkFrom+"REMOVE"+checkTo+"-"+global.TMP_string.size(), returnString);
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "REMOVE-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, returnString);
+                global.backupAsync_string.put(stringName, returnString);
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "REMOVE-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, returnString);
+                global.backupTMP_strings.put(stringName, returnString);
+            }
 
-			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.remove(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"REMOVE"+checkTo+"-"+global.TMP_string.size()+"]}");
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.remove(" + checkTo + ")", "{string["+stringName+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) {
@@ -318,10 +390,18 @@ public class ArrayHandler {
 				}
 			}
 
-			global.TMP_string.put("ArrayToString->"+checkFrom+"GET"+checkTo+"-"+(global.TMP_string.size()+1), returnString);
-			global.backupTMP_strings.put("ArrayToString->"+checkFrom+"GET"+checkTo+"-"+global.TMP_string.size(), returnString);
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "GET-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, returnString);
+                global.backupAsync_string.put(stringName, returnString);
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "GET-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, returnString);
+                global.backupTMP_strings.put(stringName, returnString);
+            }
 
-			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.get(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"GET"+checkTo+"-"+global.TMP_string.size()+"]}");
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.get(" + checkTo + ")", "{string["+stringName+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.size()")) {
@@ -336,10 +416,18 @@ public class ArrayHandler {
 				if (array.get(0).equals(checkFrom)) {arraysize = array.size()-1;}
 			}
 
-			global.TMP_string.put("ArrayToString->"+checkFrom+"SIZE"+"-"+(global.TMP_string.size()+1), arraysize+"");
-			global.backupTMP_strings.put("ArrayToString->"+checkFrom+"SIZE"+"-"+global.TMP_string.size(), arraysize+"");
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "SIZE-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, arraysize+"");
+                global.backupAsync_string.put(stringName, arraysize+"");
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "SIZE-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, arraysize+"");
+                global.backupTMP_strings.put(stringName, arraysize+"");
+            }
 
-			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.size()", "{string[ArrayToString->"+checkFrom+"SIZE"+"-"+global.TMP_string.size()+"]}");
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.size()", "{string["+stringName+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.importJsonFile(") && TMP_e.contains(",") && TMP_e.contains(")")) {
@@ -353,10 +441,18 @@ public class ArrayHandler {
 			
 			String checkJson = importJsonFile("array",checkFile, checkFrom+"=>"+checkTo);
 
-			global.TMP_string.put("ArrayToString->"+checkFrom+"IMPORTJSONFILE"+checkTo+"FROM"+checkFile+"-"+(global.TMP_string.size()+1), checkJson);
-            global.backupTMP_strings.put("ArrayToString->"+checkFrom+"IMPORTJSONFILE"+checkTo+"FROM"+checkFile+"-"+global.TMP_string.size(), checkJson);
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "IMPORTJSONFILE-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, checkJson);
+                global.backupAsync_string.put(stringName, checkJson);
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "IMPORTJSONFILE-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, checkJson);
+                global.backupTMP_strings.put(stringName, checkJson);
+            }
 
-			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonFile("+checkFile+","+checkTo+")", "{string[ArrayToString->"+checkFrom+"IMPORTJSONFILE"+checkTo+"FROM"+checkFile+"-"+global.TMP_string.size()+"]}");
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonFile("+checkFile+","+checkTo+")", "{string["+stringName+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.importJsonURL(") && TMP_e.contains(",") && TMP_e.contains(")")) {
@@ -368,13 +464,11 @@ public class ArrayHandler {
 				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
-			String checkJson = importJsonURL("array",checkFile, checkFrom + "=>" + checkTo);
+			importJsonURL("array",checkFile, checkFrom + "=>" + checkTo);
 
-			global.TMP_string.put("ArrayToString->"+checkFrom+"IMPORTJSONURL"+checkTo+"FROM"+checkFile+"-"+(global.TMP_string.size()+1), checkJson);
-            global.backupTMP_strings.put("ArrayToString->"+checkFrom+"IMPORTJSONURL"+checkTo+"FROM"+checkFile+"-"+global.TMP_string.size(), checkJson);
-
-			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonURL("+checkFile+","+checkTo+")", "{string[ArrayToString->"+checkFrom+"IMPORTJSONURL"+checkTo+"FROM"+checkFile+"-"+global.TMP_string.size()+"]}");
-		}
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonURL("+checkFile+","+checkTo+")", "{array["+checkFrom+"]}");
+		    System.out.println(TMP_e);
+	    }
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.exportJson(") && TMP_e.contains(")")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.exportJson(", TMP_e.indexOf("{array[")));
@@ -391,11 +485,53 @@ public class ArrayHandler {
 				catch (Exception e) {returnString = "File could not be saved!";}
 			} else {returnString = "Invalid arguments! expected .exportJson(fileName,nodeName)";}
 
-			global.TMP_string.put("ArrayToString->"+checkFrom+"EXPORTJSON"+checkTo+"-"+(global.TMP_string.size()+1), returnString);
-			global.backupTMP_strings.put("ArrayToString->"+checkFrom+"EXPORTJSON"+checkTo+"-"+global.TMP_string.size(), returnString);
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "EXPORTJSON-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, returnString);
+                global.backupAsync_string.put(stringName, returnString);
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "EXPORTJSON-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, returnString);
+                global.backupTMP_strings.put(stringName, returnString);
+            }
 
-			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.exportJson("+checkTo+")", "{string[ArrayToString->"+checkFrom+"EXPORTJSON"+checkTo+"-"+global.TMP_string.size()+"]}");
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.exportJson("+checkTo+")", "{string["+stringName+"]}");
 		}
+
+		while (TMP_e.contains("{array[") && TMP_e.contains("]}")) {
+	        String arrayName = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}", TMP_e.indexOf("{array[")));
+            StringBuilder getArray = new StringBuilder("[");
+            String gotArray = "";
+
+            for (List<String> array : USR_array) {
+	            if (array.get(0).equals(arrayName)) {
+	                for (int i=1; i<array.size(); i++) {
+	                    getArray.append(array.get(i)).append(",");
+                    }
+                }
+
+                if (getArray.toString().equals("[")) {
+	                gotArray = "[]";
+                } else {
+                    gotArray = getArray.substring(0, getArray.length()-1) + "]";
+                }
+            }
+
+
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + arrayName + "LITERAL-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, gotArray);
+                global.backupAsync_string.put(stringName, gotArray);
+            } else {
+                stringName = "ArrayToString->" + arrayName + "LITERAL-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, gotArray);
+                global.backupTMP_strings.put(stringName, gotArray);
+            }
+
+            TMP_e = TMP_e.replace("{array["+arrayName+"]}", "{string["+stringName+"]}");
+        }
 		
 		return TMP_e;
 	}
@@ -588,8 +724,8 @@ public class ArrayHandler {
                 if (whatArray == -1) {
                     List<String> temporary = new ArrayList<>();
                     temporary.add(arrayToSave);
-                    ArrayHandler.USR_array.add(temporary);
-                    whatArray = ArrayHandler.USR_array.size()-1;
+                    USR_array.add(temporary);
+                    whatArray = USR_array.size()-1;
                 }
 
                 String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());

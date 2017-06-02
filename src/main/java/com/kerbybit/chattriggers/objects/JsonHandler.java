@@ -312,7 +312,15 @@ public class JsonHandler {
                 get_name = get_name.substring(get_name.indexOf("{json[")+6);
             }
 
-            TMP_e = createDefaultString("getValue", get_name, getValue(get_name), TMP_e, isAsync);
+            if (isAsync) {
+                global.Async_string.put("AsyncJsonToString->"+get_name+"-"+(global.Async_string.size()+1), getValue(get_name));
+                global.backupAsync_string.put("AsyncJsonToString->"+get_name+"-"+global.Async_string.size(), getValue(get_name));
+                TMP_e = TMP_e.replace("{json["+get_name+"]}","{string[AsyncJsonToString->"+get_name+"-"+global.Async_string.size()+"]}");
+            } else {
+                global.TMP_string.put("JsonToString->"+get_name+"-"+(global.TMP_string.size()+1), getValue(get_name));
+                global.backupTMP_strings.put("JsonToString->"+get_name+"-"+global.TMP_string.size(), getValue(get_name));
+                TMP_e = TMP_e.replace("{json["+get_name+"]}","{string[JsonToString->"+get_name+"-"+global.TMP_string.size()+"]}");
+            }
         }
 
         return TMP_e;

@@ -497,7 +497,7 @@ public class BuiltInStrings {
             TMP_e = TMP_e.replace("{heldItem}", "{json[DefaultJson->HELDITEM-"+ JsonHandler.getJsonsSize()+"]}");
         }
 
-		if (TMP_e.contains("{lookingat}")) {
+		if (TMP_e.contains("{lookingAt}")) {
 			MovingObjectPosition mop = Minecraft.getMinecraft().objectMouseOver;
 			String jsonString;
 
@@ -519,7 +519,8 @@ public class BuiltInStrings {
 						jsonString += "\"yPos\":" + mop.getBlockPos().getY() + ",";
 						jsonString += "\"zPos\":" + mop.getBlockPos().getZ() + ",";
 						jsonString += "\"metadata\":" + block.getMetaFromState(blockState) + ",";
-						jsonString += "\"name\":" + block.getUnlocalizedName();
+						jsonString += "\"name\":\"" + block.getLocalizedName() + "\",";
+						jsonString += "\"unlocalizedName\":\"" + block.getUnlocalizedName().replace("tile.","") + "\"";
 						jsonString += "}}";
 					}
 				}
@@ -528,7 +529,7 @@ public class BuiltInStrings {
 			}
 
 			JsonHandler.getJson("DefaultJson->LOOKINGAT-" + (JsonHandler.getJsonsSize() + 1), jsonString);
-			TMP_e = TMP_e.replace("{lookingat}", "{json[DefaultJson->LOOKINGAT-" + JsonHandler.getJsonsSize() + "]}");
+			TMP_e = TMP_e.replace("{lookingAt}", "{json[DefaultJson->LOOKINGAT-" + JsonHandler.getJsonsSize() + "]}");
 		}
 
         if (TMP_e.contains("{arrows}")) {

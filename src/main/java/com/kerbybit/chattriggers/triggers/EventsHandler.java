@@ -455,7 +455,10 @@ public class EventsHandler {
                                 String[] first = {valin};
                                 String[] second = {array};
                                 ret = doEvents(eventsToFor, chatEvent, soundEvent, first, second, isAsync);
-                                if (ret.equals("breakOutOfBlock")) break;
+                                if (ret.equals("breakOutOfBlock")) {
+                                    ret = "";
+                                    break;
+                                }
                             }
                         } else {
                             try {
@@ -496,9 +499,9 @@ public class EventsHandler {
                                     int count = 0;
                                     for (int j=int_from; j<int_to+1; j++) {
                                         List<String> eventsToForFin = new ArrayList<>(eventsToFor);
-                                        global.Async_string.put("AsyncTriggerArgument"+j+"-"+(global.Async_string.size()+1), j+"");
+                                        global.TMP_string.put("TriggerArgument"+j+"-"+(global.TMP_string.size()+1), j+"");
                                         for (int k=0; k<eventsToFor.size(); k++) {
-                                            eventsToForFin.set(k, eventsToFor.get(k).replace(args[0].trim(),"{string[AsyncTriggerArgument"+j+"-"+global.Async_string.size()+"]}"));
+                                            eventsToForFin.set(k, eventsToFor.get(k).replace(args[0].trim(),"{string[TriggerArgument"+j+"-"+global.TMP_string.size()+"]}"));
                                         }
 
                                         global.waitEvents.add(eventsToForFin);
