@@ -519,8 +519,9 @@ public class DisplayHandler {
                 get_value = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_value = get_value.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
+            String fin_value = StringFunctions.nestedArgs(get_value, null, isAsync);
 
-            TMP_e = createDefaultString("settings", get_name, get_value, setDisplaySettings(get_name, get_value), TMP_e, isAsync);
+            TMP_e = createDefaultString("settings", get_name, get_value, setDisplaySettings(get_name, fin_value), TMP_e, isAsync);
         }
 
         return TMP_e;
