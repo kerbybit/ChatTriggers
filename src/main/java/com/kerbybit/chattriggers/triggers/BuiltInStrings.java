@@ -14,17 +14,24 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
+import net.minecraft.client.multiplayer.PlayerControllerMP;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.io.File;
@@ -460,42 +467,24 @@ public class BuiltInStrings {
         }
         if (TMP_e.contains("{heldItem}")) {
             ItemStack item = Minecraft.getMinecraft().thePlayer.getHeldItem();
-            String held;
-            try {
-                float itemMaxDamage = item.getMaxDamage();
-                float itemDamage = itemMaxDamage - item.getItemDamage();
-                float itemPercent = (itemDamage / itemMaxDamage) * 100;
-                String itemData = item.getMetadata() + "";
-                NBTTagCompound armorNBT = item.getTagCompound();
-                if (armorNBT != null) {
-                    if (armorNBT.hasKey("display")) {
-                        String armorNBTbase = armorNBT.getTag("display").toString();
-                        String armorColor = null;
-                        if (armorNBTbase.startsWith("{color:")) {
-                            armorColor = armorNBTbase.substring(7, armorNBTbase.indexOf("}"));
-                            if (armorColor.contains(",")) {
-                                armorColor = armorColor.substring(0, armorColor.indexOf(","));
-                            }
-                        }
 
-                        if (itemData.equals("0") && armorColor != null) {
-                            itemData = "#" + armorColor;
-                        }
-                    }
-                }
-                held = "{\"" + item.getItem().getRegistryName().replace("minecraft:", "")
-                        + "\":{\"displayName\":\"" + JsonHandler.getForJson(item.getDisplayName())
-                        + "\",\"maxDurability\":" + (int) floor(itemMaxDamage)
-                        + ",\"durability\":" + (int) floor(itemDamage)
-                        + ",\"durabilityPercent\":" + (int) floor(itemPercent)
-                        + ",\"data\":" + itemData + "}}";
-            } catch (Exception e) {
-                held = "{}";
-            }
-            JsonHandler.getJson("DefaultJson->HELDITEM-"+(JsonHandler.getJsonsSize()+1), held);
+            JsonHandler.getJson("DefaultJson->HELDITEM-"+(JsonHandler.getJsonsSize()+1), getItemJson(item));
 
             TMP_e = TMP_e.replace("{heldItem}", "{json[DefaultJson->HELDITEM-"+ JsonHandler.getJsonsSize()+"]}");
         }
+
+		if (TMP_e.contains("{hotbar(")) {
+        	int beginIndex = TMP_e.indexOf("{hotbar(") + 8;
+        	int slot = Integer.parseInt(TMP_e.substring(beginIndex, beginIndex + 1));
+
+        	if (slot <= 8) {
+				ItemStack itemStack = Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(slot);
+
+				JsonHandler.getJson("DefaultJson->HOTBAR-" + (JsonHandler.getJsonsSize() + 1), getItemJson(itemStack));
+				TMP_e = TMP_e.replace("{hotbar(" + slot + ")}",
+						"{json[DefaultJson->HOTBAR-" + JsonHandler.getJsonsSize() + "]}");
+			}
+		}
 
 		if (TMP_e.contains("{lookingAt}")) {
 			MovingObjectPosition mop = Minecraft.getMinecraft().objectMouseOver;
@@ -503,7 +492,33 @@ public class BuiltInStrings {
 
 			try {
 				if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
-					jsonString = "{\"type\":\"entity\"}";
+					Entity entity = mop.entityHit;
+					NBTTagCompound nbt = entity.getEntityData();
+
+					jsonString = "{\"type\":\"entity\",";
+					jsonString += "\"entity\":{";
+					jsonString += "\"name\":\"" + entity.getName() + "\",";
+					jsonString += "\"displayName\":\"" + entity.getCustomNameTag() + EnumChatFormatting.RESET + "\",";
+					jsonString += "\"metadata\":{";
+
+					for (String key : nbt.getKeySet()) {
+						jsonString += "\"" + key + "\":\"" + nbt.getTag(key).toString() + "\",";
+					}
+
+					if (jsonString.endsWith(",")) jsonString = jsonString.substring(0, jsonString.length() - 1);
+					jsonString += "}";
+					if (entity instanceof EntityLivingBase) {
+
+					    jsonString += ",\"teamName\":\"";
+
+					    if (((EntityLivingBase) entity).getTeam() == null) {
+                            jsonString += "null\"";
+                        } else {
+					        jsonString += ((EntityLivingBase) entity).getTeam().getRegisteredName() + "\"";
+                        }
+                    }
+
+                    jsonString += "}}";
 				} else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.MISS) {
 					jsonString = "{\"type\":\"null\"}";
 				} else {
@@ -520,7 +535,9 @@ public class BuiltInStrings {
 						jsonString += "\"zPos\":" + mop.getBlockPos().getZ() + ",";
 						jsonString += "\"metadata\":" + block.getMetaFromState(blockState) + ",";
 						jsonString += "\"name\":\"" + block.getLocalizedName() + "\",";
-						jsonString += "\"unlocalizedName\":\"" + block.getUnlocalizedName().replace("tile.","") + "\"";
+						jsonString += "\"unlocalizedName\":\"" + block.getUnlocalizedName().replace("tile.","") + "\",";
+						jsonString += "\"registryName\":\"" + block.getRegistryName() + "\",";
+						jsonString += "\"id\":" + Block.getIdFromBlock(block);
 						jsonString += "}}";
 					}
 				}
@@ -710,6 +727,44 @@ public class BuiltInStrings {
 
         return TMP_e;
     }
+
+	private static String getItemJson(ItemStack item) {
+    	String held;
+
+		try {
+			float itemMaxDamage = item.getMaxDamage();
+			float itemDamage = itemMaxDamage - item.getItemDamage();
+			float itemPercent = (itemDamage / itemMaxDamage) * 100;
+			String itemData = item.getMetadata() + "";
+			NBTTagCompound armorNBT = item.getTagCompound();
+			if (armorNBT != null) {
+				if (armorNBT.hasKey("display")) {
+					String armorNBTbase = armorNBT.getTag("display").toString();
+					String armorColor = null;
+					if (armorNBTbase.startsWith("{color:")) {
+						armorColor = armorNBTbase.substring(7, armorNBTbase.indexOf("}"));
+						if (armorColor.contains(",")) {
+							armorColor = armorColor.substring(0, armorColor.indexOf(","));
+						}
+					}
+
+					if (itemData.equals("0") && armorColor != null) {
+						itemData = "#" + armorColor;
+					}
+				}
+			}
+			held = "{\"" + item.getItem().getRegistryName().replace("minecraft:", "")
+					+ "\":{\"displayName\":\"" + JsonHandler.getForJson(item.getDisplayName())
+					+ "\",\"maxDurability\":" + (int) floor(itemMaxDamage)
+					+ ",\"durability\":" + (int) floor(itemDamage)
+					+ ",\"durabilityPercent\":" + (int) floor(itemPercent)
+					+ ",\"data\":" + itemData + "}}";
+		} catch (Exception e) {
+			held = "{}";
+		}
+
+		return held;
+	}
 
     private static String createDefaultString(String string_name, String string_value, String TMP_e, Boolean isAsync) {
         if (isAsync) {
