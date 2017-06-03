@@ -14,14 +14,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
-import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -31,7 +28,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.io.File;
@@ -487,15 +483,17 @@ public class BuiltInStrings {
             TMP_e = TMP_e.replace("{heldItem}", "{json[DefaultJson->HELDITEM-"+ JsonHandler.getJsonsSize()+"]}");
         }
 
-		if (TMP_e.contains("{hotbar(")) {
+		if (TMP_e.contains("{hotbar(") && TMP_e.contains(")}")) {
         	int beginIndex = TMP_e.indexOf("{hotbar(") + 8;
-        	int slot = Integer.parseInt(TMP_e.substring(beginIndex, beginIndex + 1));
+        	int endIndex = TMP_e.indexOf(")}", beginIndex);
+        	String slotString = TMP_e.substring(beginIndex, endIndex);
+        	int slot = Integer.parseInt(StringFunctions.nestedArgs(slotString, chatEvent, isAsync));
 
         	if (slot <= 8) {
 				ItemStack itemStack = Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(slot);
 
 				JsonHandler.getJson("DefaultJson->HOTBAR-" + (JsonHandler.getJsonsSize() + 1), getItemJson(itemStack));
-				TMP_e = TMP_e.replace("{hotbar(" + slot + ")}",
+				TMP_e = TMP_e.replace("{hotbar(" + slotString + ")}",
 						"{json[DefaultJson->HOTBAR-" + JsonHandler.getJsonsSize() + "]}");
 			}
 		}
@@ -542,15 +540,91 @@ public class BuiltInStrings {
 					if (block == null) {
 						jsonString = "{\"type\":\"null\"}";
 					} else {
+                        int itemData = block.getMetaFromState(blockState);
+                        String registryName = block.getRegistryName().replace("minecraft:", "");
+                        if (registryName.startsWith("double_") && (registryName.endsWith("_slab") || registryName.endsWith("_slab2"))) {
+                            registryName = registryName.substring(7);
+                        }
+                        if (registryName.startsWith("lit_") && !registryName.endsWith("pumpkin")) {
+                            registryName = registryName.substring(4);
+                        }
+                        if (registryName.equals("anvil")) {
+                            if (itemData > 5) itemData = 2;
+                            else if (itemData < 4) itemData = 0;
+                            else itemData = 1;
+                        } else if (registryName.endsWith("_slab")
+                                || registryName.endsWith("_slab2")
+                                || registryName.equals("sapling")
+                                || registryName.equals("leaves")) {
+                            if (itemData > 7) {
+                                itemData -= 8;
+                            }
+                        } else if (registryName.equals("log")) {
+                            itemData %= 4;
+                        } else if (registryName.equals("ender_chest")
+                                || registryName.equals("chest")
+                                || registryName.equals("trapped_chest")
+                                || registryName.equals("vine")
+                                || registryName.equals("tripwire_hook")
+                                || registryName.equals("dropper")
+                                || registryName.equals("dispenser")
+                                || registryName.equals("bed")
+                                || registryName.equals("ladder")
+                                || registryName.equals("end_portal_frame")
+                                || registryName.equals("daylight_detector")
+                                || registryName.equals("hay_block")
+                                || registryName.equals("brewing_stand")
+                                || registryName.equals("furnace")
+                                || registryName.equals("lever")
+                                || registryName.equals("pumpkin")
+                                || registryName.equals("lit_pumpkin")
+                                || registryName.endsWith("_button")
+                                || registryName.endsWith("_pressure_plate")
+                                || registryName.endsWith("_door")
+                                || registryName.endsWith("_fence_gate")
+                                || registryName.endsWith("_stairs")
+                                || registryName.endsWith("torch")
+                                || registryName.endsWith("piston")
+                                || registryName.endsWith("trapdoor")
+                                || registryName.endsWith("rail")) {
+                            itemData = 0;
+                        } else if (registryName.endsWith("_repeater")) {
+                            registryName = "repeater";
+                            itemData = 0;
+                        } else if (registryName.endsWith("_comparator")) {
+                            registryName = "comparator";
+                            itemData = 0;
+                        } else if (registryName.equals("redstone_wire")) {
+                            registryName = "redstone";
+                            itemData = 0;
+                        } else if (registryName.equals("piston_head")) {
+                            registryName = "piston";
+                            itemData = 0;
+                        } else if (registryName.equals("tripwire")) {
+                            registryName = "string";
+                            itemData = 0;
+                        } else if (registryName.equals("standing_banner")) {
+                            registryName = "banner";
+                            itemData = 15;
+                        } else if (registryName.equals("double_plant")) {
+                            registryName = "tallgrass";
+                            itemData = 1;
+                        } else if (registryName.equals("quartz_block")) {
+                            if (itemData > 2) {
+                                itemData = 2;
+                            }
+                        }
+
 						jsonString = "{\"type\":\"block\",";
 						jsonString += "\"block\":{";
 						jsonString += "\"xPos\":" + mop.getBlockPos().getX() + ",";
 						jsonString += "\"yPos\":" + mop.getBlockPos().getY() + ",";
 						jsonString += "\"zPos\":" + mop.getBlockPos().getZ() + ",";
+						jsonString += "\"data\":" + itemData + ",";
 						jsonString += "\"metadata\":" + block.getMetaFromState(blockState) + ",";
 						jsonString += "\"name\":\"" + block.getLocalizedName() + "\",";
 						jsonString += "\"unlocalizedName\":\"" + block.getUnlocalizedName().replace("tile.","") + "\",";
-						jsonString += "\"registryName\":\"" + block.getRegistryName() + "\",";
+						jsonString += "\"registryName\":\"" + registryName + "\",";
 						jsonString += "\"id\":" + Block.getIdFromBlock(block);
 						jsonString += "}}";
 					}
