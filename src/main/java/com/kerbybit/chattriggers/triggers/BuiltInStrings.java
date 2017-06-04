@@ -386,6 +386,20 @@ public class BuiltInStrings {
             Date date = new Date();
             TMP_e = createDefaultString("date", dateFormat.format(date), TMP_e, isAsync);
         }
+
+		/*if (TMP_e.contains("{gamemode}")) {
+			PlayerControllerMP pc = Minecraft.getMinecraft().playerController;
+			String gamemode;
+
+			try {
+				gamemode = ReflectionHelper.getPrivateValue(PlayerControllerMP.class, pc, 8);
+			} catch (Exception e) {
+				gamemode = "null";
+			}
+
+			TMP_e = createDefaultString("gamemode", gamemode, TMP_e, isAsync);
+		}*/ //BROKEN - HAD TO USE REFLECTION, BUT IS NOT WORKING CORRECTLY!
+
         if (TMP_e.contains("{unixtime}")) {
             Date date = new Date();
             TMP_e = createDefaultString("unixtime", date.getTime()+"", TMP_e, isAsync);
@@ -832,6 +846,7 @@ public class BuiltInStrings {
 					+ "\",\"maxDurability\":" + (int) floor(itemMaxDamage)
 					+ ",\"durability\":" + (int) floor(itemDamage)
 					+ ",\"durabilityPercent\":" + (int) floor(itemPercent)
+					+ ",\"itemCount\":" + item.stackSize
 					+ ",\"data\":" + itemData + "}}";
 		} catch (Exception e) {
 			held = "{}";
