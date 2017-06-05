@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
+import com.kerbybit.chattriggers.commands.CommandTrigger;
 import com.kerbybit.chattriggers.objects.ArrayHandler;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
@@ -225,6 +226,26 @@ public class EventsHandler {
 				try {Desktop.getDesktop().browse(URI.create(removeStringReplacements(TMP_e)));}
 				catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Unable to open URL! IOExeption"));}
 			}
+			if (TMP_c.equalsIgnoreCase("ENABLEIMPORT")) {
+			    List<String> args = new ArrayList<>();
+			    args.add("enableimport");
+			    args.addAll(Arrays.asList(removeStringReplacements(TMP_e).split(" ")));
+			    if (global.debug) {
+                    CommandTrigger.doCommand(args.toArray(new String[args.size()]), false);
+                } else {
+                    CommandTrigger.doCommand(args.toArray(new String[args.size()]), true);
+                }
+            }
+            if (TMP_c.equalsIgnoreCase("DISABLEIMPORT")) {
+                List<String> args = new ArrayList<>();
+                args.add("disableimport");
+                args.addAll(Arrays.asList(removeStringReplacements(TMP_e).split(" ")));
+                if (global.debug) {
+                    CommandTrigger.doCommand(args.toArray(new String[args.size()]), false);
+                } else {
+                    CommandTrigger.doCommand(args.toArray(new String[args.size()]), true);
+                }
+            }
             if (TMP_c.equalsIgnoreCase("RETURN")) {
                 ret = removeStringReplacements(TMP_e);
             }

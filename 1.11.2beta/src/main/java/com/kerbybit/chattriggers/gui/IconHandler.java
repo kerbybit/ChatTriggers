@@ -134,107 +134,110 @@ public class IconHandler {
     }
 
     private static Potion getPotionByName(String name) {
-        if (name.equals("speed")) {
-            return Potion.getPotionById(1);
-        } else if (name.equals("slowness")) {
-            return Potion.getPotionById(2);
-        } else if (name.equals("regeneration")) {
-            return Potion.getPotionById(10);
-        } else if (name.equals("fire resistance")) {
-            return Potion.getPotionById(12);
-        } else if (name.equals("poison")) {
-            return Potion.getPotionById(19);
-        } else if (name.equals("night vision")) {
-            return Potion.getPotionById(16);
-        } else if (name.equals("weakness")) {
-            return Potion.getPotionById(18);
-        } else if (name.equals("strength")) {
-            return Potion.getPotionById(5);
-        } else if (name.equals("jump boost")) {
-            return Potion.getPotionById(8);
-        } else if (name.equals("water breathing")) {
-            return Potion.getPotionById(13);
-        } else if (name.equals("invisibility")) {
-            return Potion.getPotionById(14);
-        } else if (name.equals("hunger")) {
-            return Potion.getPotionById(17);
-        } else if (name.equals("blindness")) {
-            return Potion.getPotionById(15);
-        } else if (name.equals("saturation")) {
-            return Potion.getPotionById(23);
-        } else if (name.equals("absorption")) {
-            return Potion.getPotionById(22);
-        } else if (name.equals("health boost")) {
-            return Potion.getPotionById(21);
-        } else if (name.equals("mining fatigue")) {
-            return Potion.getPotionById(4);
-        } else if (name.equals("wither")) {
-            return Potion.getPotionById(20);
-        } else if (name.equals("resistance")) {
-            return Potion.getPotionById(11);
+        switch (name) {
+            case "speed":
+                return Potion.getPotionById(1);
+            case "slowness":
+                return Potion.getPotionById(2);
+            case "regeneration":
+                return Potion.getPotionById(10);
+            case "fire resistance":
+                return Potion.getPotionById(12);
+            case "poison":
+                return Potion.getPotionById(19);
+            case "night vision":
+                return Potion.getPotionById(16);
+            case "weakness":
+                return Potion.getPotionById(18);
+            case "strength":
+                return Potion.getPotionById(5);
+            case "jump boost":
+                return Potion.getPotionById(8);
+            case "water breathing":
+                return Potion.getPotionById(13);
+            case "invisibility":
+                return Potion.getPotionById(14);
+            case "hunger":
+                return Potion.getPotionById(17);
+            case "blindness":
+                return Potion.getPotionById(15);
+            case "saturation":
+                return Potion.getPotionById(23);
+            case "absorption":
+                return Potion.getPotionById(22);
+            case "health boost":
+                return Potion.getPotionById(21);
+            case "mining fatigue":
+                return Potion.getPotionById(4);
+            case "wither":
+                return Potion.getPotionById(20);
+            case "resistance":
+                return Potion.getPotionById(11);
         }
         return null;
     }
 
     public static String getPotionColors(String name) {
-        if (name.equals("speed")) {
-            return "&b";
-        } else if (name.equals("slowness")) {
-            return "&9";
-        } else if (name.equals("strength")) {
-            return "&4";
-        } else if (name.equals("weakness")) {
-            return "&5";
-        } else if (name.equals("jump boost")) {
-            return "&a";
-        } else if (name.equals("poison")) {
-            return "&2";
-        } else if (name.equals("fire resistance")
-                || name.equals("health boost")) {
-            return "&c";
-        } else if (name.equals("water breathing")) {
-            return "&3";
-        } else if (name.equals("regeneration")) {
-            return "&d";
-        } else if (name.equals("night vision")) {
-            return "&1";
-        } else if (name.equals("invisibility")
-                || name.equals("resistance")) {
-            return "&7";
-        } else if (name.equals("hunger")) {
-            return "&2";
-        } else if (name.equals("nausea")
-                || name.equals("wither")
-                || name.equals("mining fatigue")) {
-            return "&8";
-        } else if (name.equals("saturation")
-                || name.equals("absorption")) {
-            return "&6";
+        switch (name) {
+            case "speed":
+                return "&b";
+            case "slowness":
+                return "&9";
+            case "strength":
+                return "&4";
+            case "weakness":
+                return "&5";
+            case "jump boost":
+                return "&a";
+            case "poison":
+                return "&2";
+            case "fire resistance":
+            case "health boost":
+                return "&c";
+            case "water breathing":
+                return "&3";
+            case "regeneration":
+                return "&d";
+            case "night vision":
+                return "&1";
+            case "invisibility":
+            case "resistance":
+                return "&7";
+            case "hunger":
+                return "&2";
+            case "nausea":
+            case "wither":
+            case "mining fatigue":
+                return "&8";
+            case "saturation":
+            case "absorption":
+                return "&6";
         }
         return "&r";
     }
 
     public static String simplifyPotionName(String name) {
-        if (name.equals("moveSpeed")) {
-            return "speed";
-        } else if (name.equals("fireResistance")) {
-            return "fire resistance";
-        } else if (name.equals("nightVision")) {
-            return "night vision";
-        } else if (name.equals("moveSlowdown")) {
-            return "slowness";
-        } else if (name.equals("damageBoost")) {
-            return "strength";
-        } else if (name.equals("jump")) {
-            return "jump boost";
-        } else if (name.equals("waterBreathing")) {
-            return "water breathing";
-        } else if (name.equals("confusion")) {
-            return "nausea";
-        } else if (name.equals("digSlowDown")) {
-            return "mining fatigue";
-        } else if (name.equals("healthBoost")) {
-            return "health boost";
+        switch (name) {
+            case "moveSpeed":
+                return "speed";
+            case "fireResistance":
+                return "fire resistance";
+            case "nightVision":
+                return "night vision";
+            case "moveSlowdown":
+                return "slowness";
+            case "damageBoost":
+                return "strength";
+            case "jump":
+                return "jump boost";
+            case "waterBreathing":
+                return "water breathing";
+            case "confusion":
+                return "nausea";
+            case "digSlowDown":
+                return "mining fatigue";
+            case "healthBoost":
+                return "health boost";
         }
         return name;
     }

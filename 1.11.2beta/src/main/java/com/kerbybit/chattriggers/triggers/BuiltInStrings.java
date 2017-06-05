@@ -8,16 +8,25 @@ import com.kerbybit.chattriggers.gui.IconHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
 import com.kerbybit.chattriggers.objects.JsonHandler;
 import com.kerbybit.chattriggers.references.Reference;
-import com.kerbybit.chattriggers.references.RomanNumber;
+import com.kerbybit.chattriggers.util.RomanNumber;
+import com.kerbybit.chattriggers.util.ScoreboardReader;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiIngame;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionType;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -30,9 +39,8 @@ import static java.lang.StrictMath.round;
 public class BuiltInStrings {
     public static String builtInStrings(String TMP_e, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
         while (TMP_e.contains("{imported(") && TMP_e.contains(")}")) {
-            List<String> temporary = new ArrayList<String>();
+            String temporary;
             String imp = TMP_e.substring(TMP_e.indexOf("{imported(")+10, TMP_e.indexOf(")}", TMP_e.indexOf("{imported(")));
-            temporary.add("DefaultString->IMPORTED"+imp+"-"+(global.TMP_string.size()+1));
             Boolean isImported = false;
 
             File dir = new File("./mods/ChatTriggers/Imports/");
@@ -52,70 +60,72 @@ public class BuiltInStrings {
             }
 
             if (isImported) {
-                temporary.add("true");
+                temporary = "true";
             } else {
-                temporary.add("false");
+                temporary = "false";
             }
 
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+            global.TMP_string.put("DefaultString->IMPORTED"+imp+"-"+(global.TMP_string.size()+1), temporary);
+            global.backupTMP_strings.put("DefaultString->IMPORTED"+imp+"-"+global.TMP_string.size(), temporary);
 
             TMP_e = TMP_e.replace("{imported("+imp+")}", "{string[DefaultString->IMPORTED"+imp+"-"+global.TMP_string.size()+"]}");
         }
         while (TMP_e.contains("{random(") && TMP_e.contains(")}")) {
-            List<String> temporary = new ArrayList<String>();
-            String lowhigh = TMP_e.substring(TMP_e.indexOf("{random(")+8, TMP_e.indexOf(")}", TMP_e.indexOf("{random(")));
-            temporary.add("DefaultString->RANDOM"+lowhigh+"-"+(global.TMP_string.size()+1));
+            String temporary;
+            String temp_lowhigh = TMP_e.substring(TMP_e.indexOf("{random(")+8, TMP_e.indexOf(")}", TMP_e.indexOf("{random(")));
+            String lowhigh = StringFunctions.nestedArgs(temp_lowhigh, chatEvent, isAsync);
 
             try {
                 int low = 0;
                 int high;
                 if (lowhigh.contains(",")) {
                     String[] tmp_lowhigh = lowhigh.split(",");
-                    String strlow = StringFunctions.nestedArgs(tmp_lowhigh[0].trim(), chatEvent, isAsync);
-                    String strhigh = StringFunctions.nestedArgs(tmp_lowhigh[1].trim(), chatEvent, isAsync);
+                    String strlow = tmp_lowhigh[0].trim();
+                    String strhigh = tmp_lowhigh[1].trim();
                     low = Integer.parseInt(strlow);
                     high = Integer.parseInt(strhigh);
                 } else {
-                    String strhigh = StringFunctions.nestedArgs(lowhigh, chatEvent, isAsync);
-                    high = Integer.parseInt(strhigh);
+                    high = Integer.parseInt(lowhigh);
                 }
 
-                temporary.add(EventsHandler.randInt(low,high) + "");
+                temporary = EventsHandler.randInt(low,high) + "";
             } catch (NumberFormatException e) {
-                temporary.add("Not a number!");
+                temporary = "Not a number!";
             }
 
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+            String stringName = "DefaultString->RANDOM"+lowhigh+"-"+(global.TMP_string.size()+1);
+            global.TMP_string.put(stringName, temporary);
+            global.backupTMP_strings.put(stringName, temporary);
 
-            TMP_e = TMP_e.replace("{random("+lowhigh+")}", "{string[DefaultString->RANDOM"+lowhigh+"-"+global.TMP_string.size()+"]}");
+            TMP_e = TMP_e.replace("{random("+temp_lowhigh+")}", "{string["+stringName+"]}");
         }
         while (TMP_e.contains("{msg(") && TMP_e.contains(")}")) {
             String strnum = TMP_e.substring(TMP_e.indexOf("{msg(")+5, TMP_e.indexOf(")}", TMP_e.indexOf("{msg(")));
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->MSGHISTORY"+strnum+"-"+(global.TMP_string.size()+1));
+            String temporary;
             String get_number = StringFunctions.nestedArgs(strnum, chatEvent, isAsync);
+            System.out.println(strnum);
+            System.out.println(get_number);
 
             try {
                 int num = Integer.parseInt(get_number);
                 if (num>=0) {
-                    if (num<global.chatHistory.size()) {temporary.add(ChatHandler.removeFormatting(global.chatHistory.get(global.chatHistory.size()-(num+1))));}
-                    else {temporary.add("Number must be less than the chat history size! ("+global.chatHistory.size()+")");}
-                } else {temporary.add("Number must be greater than or equal to 0!");}
-            } catch (NumberFormatException e) {temporary.add("Not a number!");}
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+                    if (num<global.chatHistory.size()) {temporary = ChatHandler.removeFormatting(global.chatHistory.get(global.chatHistory.size()-(num+1)));}
+                    else {temporary = "Number must be less than the chat history size! ("+global.chatHistory.size()+")";}
+                } else {temporary = "Number must be greater than or equal to 0!";}
+            } catch (NumberFormatException e) {temporary = "Not a number!";}
 
-            TMP_e = TMP_e.replace("{msg("+strnum+")}", "{string[DefaultString->MSGHISTORY"+strnum+"-"+global.TMP_string.size()+"]}");
+            String stringName = "DefaultString->MSGHISTORY"+get_number+"-"+(global.TMP_string.size()+1);
+            global.TMP_string.put(stringName, temporary);
+            global.backupTMP_strings.put(stringName, temporary);
+
+            TMP_e = TMP_e.replace("{msg("+strnum+")}", "{string["+stringName+"]}");
+            System.out.println(stringName);
+            System.out.println(TMP_e);
         }
         if (chatEvent!=null) {
             if (TMP_e.contains("{msg}.meta()")) {
-                List<String> temporary = new ArrayList<String>();
-                temporary.add("DefaultString->MSGMETA-"+(global.TMP_string.size()+1));
-                temporary.add(ChatHandler.removeFormatting(chatEvent.getMessage().getStyle().toString()));
-                global.TMP_string.add(temporary);
-                global.backupTMP_strings.add(temporary);
+                global.TMP_string.put("DefaultString->MSGMETA-"+(global.TMP_string.size()+1), ChatHandler.removeFormatting(chatEvent.getMessage().getStyle().toString()));
+                global.backupTMP_strings.put("DefaultString->MSGMETA-"+global.TMP_string.size(), ChatHandler.removeFormatting(chatEvent.getMessage().getStyle().toString()));
                 TMP_e = TMP_e.replace("{msg}.meta()", "{string[DefaultString->MSGMETA-"+global.TMP_string.size()+"]}");
             }
             if (TMP_e.contains("{msg}")) {
@@ -161,6 +171,12 @@ public class BuiltInStrings {
 
             TMP_e = createDefaultString("ping", returnString, TMP_e, isAsync);
         }
+        if (TMP_e.contains("{yaw}")) {
+            TMP_e = createDefaultString("yaw", String.valueOf(MathHelper.wrapDegrees(Minecraft.getMinecraft().player.rotationYaw)), TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{pitch}")) {
+            TMP_e = createDefaultString("pitch", String.valueOf(MathHelper.wrapDegrees(Minecraft.getMinecraft().player.rotationPitch)), TMP_e, isAsync);
+        }
         if (TMP_e.contains("{serverversion}")) {
             String returnString;
             if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "1.8";}
@@ -171,22 +187,89 @@ public class BuiltInStrings {
         if (TMP_e.contains("{playerlist}")) {
             StringBuilder returnString = new StringBuilder("[");
             for (EntityPlayer player : Minecraft.getMinecraft().world.playerEntities) {
-                returnString.append(player.getName()).append(",");
+                String playerName = player.getName();
+                if (!playerName.equals("")) {
+                    returnString.append(player.getName()).append(",");
+                }
             }
             if (returnString.toString().equals("[")) {
-                System.out.println("wrong one");
                 TMP_e = createDefaultString("playerlist", "[]", TMP_e, isAsync);
             } else {
-                System.out.println("right one");
-                System.out.println(returnString.substring(0, returnString.length()-1)+"]");
                 ListHandler.getList("DefaultList->PLAYERLIST-"+(ListHandler.getListsSize()+1), returnString.substring(0, returnString.length()-1)+"]");
                 TMP_e = TMP_e.replace("{playerlist}", "{list[DefaultList->PLAYERLIST-"+ListHandler.getListsSize()+"]}");
-                System.out.println(ListHandler.getListsSize());
+            }
+        }
+        if (TMP_e.contains("{scoreboardlines}")) {
+            StringBuilder returnString = new StringBuilder("[");
+            ScoreboardReader.resetCache();
+
+            ArrayList<String> scoreboardNames = ScoreboardReader.getScoreboardNames();
+            Collections.reverse(scoreboardNames);
+
+            for (String scoreboardLine : scoreboardNames) {
+                returnString.append(scoreboardLine.replace(",","")).append(",");
+            }
+            if (returnString.toString().equals("[")) {
+                TMP_e = createDefaultString("scoreboardlines", "[]", TMP_e, isAsync);
+            } else {
+                ListHandler.getList("DefaultList->PLAYERLIST-"+(ListHandler.getListsSize()+1), returnString.substring(0, returnString.length()-1)+"]");
+                TMP_e = TMP_e.replace("{scoreboardlines}", "{list[DefaultList->PLAYERLIST-"+ListHandler.getListsSize()+"]}");
             }
         }
         if (TMP_e.contains("{debug}")) {
             TMP_e = createDefaultString("debug", global.debug + "", TMP_e, isAsync);
         }
+        if (TMP_e.contains("{titletext}")) {
+			String titleText;
+
+			titleText = ReflectionHelper.getPrivateValue(
+					GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "field_175201_x");
+
+            if (titleText == null) {
+                titleText = "null";
+            }
+
+            TMP_e = createDefaultString("titletext", titleText, TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{subtitletext}")) {
+			String subtitleText;
+
+			subtitleText = ReflectionHelper.getPrivateValue(
+					GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "field_175200_y");
+
+            if (subtitleText == null) {
+                subtitleText = "null";
+            }
+
+            TMP_e = createDefaultString("subtitletext", subtitleText, TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{actionbartext}")) {
+            String recordPlaying = ReflectionHelper.getPrivateValue(
+                    GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "field_73838_g");
+
+            if (recordPlaying == null) {
+                recordPlaying = "null";
+            }
+
+            TMP_e = createDefaultString("actionbartext", recordPlaying, TMP_e, isAsync);
+        }
+        /*if (TMP_e.contains("{bossbartext}")) { //TODO fix
+            String bossName = BossStatus.bossName;
+
+            if (bossName == null) {
+				bossName = "";
+            }
+
+			if (TMP_e.contains("{bossbartext}.hide()")) {
+				GuiIngameForge.renderBossHealth = false;
+			}
+
+			if (TMP_e.contains("{bossbartext}.show()")) {
+				GuiIngameForge.renderBossHealth = true;
+			}
+
+            TMP_e = createDefaultString("bossbartext", bossName, TMP_e, isAsync);
+        }*/
         if (TMP_e.contains("{setcol}")) {
             TMP_e = createDefaultString("setcol", Settings.col[0], TMP_e, isAsync);
         }
@@ -219,8 +302,11 @@ public class BuiltInStrings {
         if (TMP_e.contains("{hp}") || TMP_e.contains("{HP}")) {
             TMP_e = createDefaultString("hp", global.playerHealth + "", TMP_e, isAsync);
         }
-        if (TMP_e.contains("{sneak}")) {
-            TMP_e = createDefaultString("sneak", Minecraft.getMinecraft().player.isSneaking()+"", TMP_e, isAsync);
+        if (TMP_e.contains("{sneak}") || TMP_e.contains("{sneaking}")) {
+            TMP_e = createDefaultString("sneak", "sneaking", Minecraft.getMinecraft().player.isSneaking()+"", TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{sprint}") || TMP_e.contains("{sprinting}")) {
+            TMP_e = createDefaultString("sprint", "sprinting", Minecraft.getMinecraft().player.isSprinting()+"", TMP_e, isAsync);
         }
         if (TMP_e.contains("{inchat}")) {
             TMP_e = createDefaultString("inchat", Minecraft.getMinecraft().ingameGUI.getChatGUI().getChatOpen() + "", TMP_e, isAsync);
@@ -250,7 +336,29 @@ public class BuiltInStrings {
             TMP_e = createDefaultString("fpscol", col, TMP_e, isAsync);
         }
         if (TMP_e.contains("{facing}")) {
-            TMP_e = createDefaultString("facing", Minecraft.getMinecraft().player.getHorizontalFacing().toString(), TMP_e, isAsync);
+        	float yaw = MathHelper.wrapDegrees(Minecraft.getMinecraft().player.rotationYaw);
+
+        	String direction = "";
+
+        	if(yaw < 22.5 && yaw > -22.5) {
+        		direction = "south";
+			} else if (yaw < 67.5 && yaw > 22.5) {
+        		direction = "south west";
+			} else if (yaw < 112.5 && yaw > 67.5) {
+        		direction = "west";
+			} else if (yaw < 157.5 && yaw > 112.5) {
+        		direction = "north west";
+			} else if (yaw < -157.5 || yaw > 157.5) {
+        		direction = "north";
+			} else if (yaw > -157.5 && yaw < -112.5) {
+				direction = "north east";
+			} else if (yaw > -112.5 && yaw < -67.5) {
+        		direction = "east";
+			} else if (yaw > -67.5 && yaw < -22.5) {
+        		direction = "south east";
+			}
+
+            TMP_e = createDefaultString("facing", direction, TMP_e, isAsync);
         }
         if (TMP_e.contains("{time}")) {
             Calendar cal = Calendar.getInstance();
@@ -276,6 +384,20 @@ public class BuiltInStrings {
             Date date = new Date();
             TMP_e = createDefaultString("date", dateFormat.format(date), TMP_e, isAsync);
         }
+
+		/*if (TMP_e.contains("{gamemode}")) {
+			PlayerControllerMP pc = Minecraft.getMinecraft().playerController;
+			String gamemode;
+
+			try {
+				gamemode = ReflectionHelper.getPrivateValue(PlayerControllerMP.class, pc, 8);
+			} catch (Exception e) {
+				gamemode = "null";
+			}
+
+			TMP_e = createDefaultString("gamemode", gamemode, TMP_e, isAsync);
+		}*/ //BROKEN - HAD TO USE REFLECTION, BUT IS NOT WORKING CORRECTLY!
+
         if (TMP_e.contains("{unixtime}")) {
             Date date = new Date();
             TMP_e = createDefaultString("unixtime", date.getTime()+"", TMP_e, isAsync);
@@ -367,42 +489,174 @@ public class BuiltInStrings {
         }
         if (TMP_e.contains("{heldItem}")) {
             ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
-            String held;
-            try {
-                float itemMaxDamage = item.getMaxDamage();
-                float itemDamage = itemMaxDamage - item.getItemDamage();
-                float itemPercent = (itemDamage / itemMaxDamage) * 100;
-                String itemData = item.getMetadata() + "";
-                NBTTagCompound armorNBT = item.getTagCompound();
-                if (armorNBT != null) {
-                    if (armorNBT.hasKey("display")) {
-                        String armorNBTbase = armorNBT.getTag("display").toString();
-                        String armorColor = null;
-                        if (armorNBTbase.startsWith("{color:")) {
-                            armorColor = armorNBTbase.substring(7, armorNBTbase.indexOf("}"));
-                            if (armorColor.contains(",")) {
-                                armorColor = armorColor.substring(0, armorColor.indexOf(","));
-                            }
-                        }
 
-                        if (itemData.equals("0") && armorColor != null) {
-                            itemData = "#" + armorColor;
-                        }
-                    }
-                }
-                held = "{\"" + item.getItem().getRegistryName().toString().replace("minecraft:", "")
-                        + "\":{\"displayName\":\"" + JsonHandler.getForJson(item.getDisplayName())
-                        + "\",\"maxDurability\":" + (int) floor(itemMaxDamage)
-                        + ",\"durability\":" + (int) floor(itemDamage)
-                        + ",\"durabilityPercent\":" + (int) floor(itemPercent)
-                        + ",\"data\":" + itemData + "}}";
-            } catch (Exception e) {
-                held = "{}";
-            }
-            JsonHandler.getJson("DefaultJson->HELDITEM-"+(JsonHandler.getJsonsSize()+1), held);
+            JsonHandler.getJson("DefaultJson->HELDITEM-"+(JsonHandler.getJsonsSize()+1), getItemJson(item));
 
             TMP_e = TMP_e.replace("{heldItem}", "{json[DefaultJson->HELDITEM-"+ JsonHandler.getJsonsSize()+"]}");
         }
+        if (TMP_e.contains("{heldItemOffhand}")) {
+            ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.OFF_HAND);
+
+            JsonHandler.getJson("DefaultJson->HELDITEMOFFHAND-"+(JsonHandler.getJsonsSize()+1), getItemJson(item));
+
+            TMP_e = TMP_e.replace("{heldItem}", "{json[DefaultJson->HELDITEM-"+ JsonHandler.getJsonsSize()+"]}");
+        }
+
+		if (TMP_e.contains("{hotbar(") && TMP_e.contains(")}")) {
+        	int beginIndex = TMP_e.indexOf("{hotbar(") + 8;
+        	int endIndex = TMP_e.indexOf(")}", beginIndex);
+        	String slotString = TMP_e.substring(beginIndex, endIndex);
+        	int slot = Integer.parseInt(StringFunctions.nestedArgs(slotString, chatEvent, isAsync));
+
+        	if (slot <= 8) {
+				ItemStack itemStack = Minecraft.getMinecraft().player.inventory.getStackInSlot(slot);
+
+				JsonHandler.getJson("DefaultJson->HOTBAR-" + (JsonHandler.getJsonsSize() + 1), getItemJson(itemStack));
+				TMP_e = TMP_e.replace("{hotbar(" + slotString + ")}",
+						"{json[DefaultJson->HOTBAR-" + JsonHandler.getJsonsSize() + "]}");
+			}
+		}
+
+		if (TMP_e.contains("{lookingAt}")) {
+			RayTraceResult mop = Minecraft.getMinecraft().objectMouseOver;
+			String jsonString;
+
+			try {
+				if (mop.typeOfHit == RayTraceResult.Type.ENTITY) {
+					Entity entity = mop.entityHit;
+					NBTTagCompound nbt = entity.getEntityData();
+
+					jsonString = "{\"type\":\"entity\",";
+					jsonString += "\"entity\":{";
+					jsonString += "\"name\":\"" + entity.getName() + "\",";
+					jsonString += "\"displayName\":\"" + entity.getCustomNameTag() + TextFormatting.RESET + "\",";
+					jsonString += "\"metadata\":{";
+
+					for (String key : nbt.getKeySet()) {
+						jsonString += "\"" + key + "\":\"" + nbt.getTag(key).toString() + "\",";
+					}
+
+					if (jsonString.endsWith(",")) jsonString = jsonString.substring(0, jsonString.length() - 1);
+					jsonString += "}";
+					if (entity instanceof EntityLivingBase) {
+
+					    jsonString += ",\"teamName\":\"";
+
+					    if (((EntityLivingBase) entity).getTeam() == null) {
+                            jsonString += "null\"";
+                        } else {
+					        jsonString += ((EntityLivingBase) entity).getTeam().getRegisteredName() + "\"";
+                        }
+                    }
+
+                    jsonString += "}}";
+				} else if (mop.typeOfHit == RayTraceResult.Type.MISS) {
+					jsonString = "{\"type\":\"null\"}";
+				} else {
+					IBlockState blockState = Minecraft.getMinecraft().world.getBlockState(mop.getBlockPos());
+					Block block = blockState.getBlock();
+
+					if (block == null) {
+						jsonString = "{\"type\":\"null\"}";
+					} else {
+                        int itemData = block.getMetaFromState(blockState);
+                        String registryName = block.getRegistryName().toString().replace("minecraft:", "");
+                        if (registryName.startsWith("double_") && (registryName.endsWith("_slab") || registryName.endsWith("_slab2"))) {
+                            registryName = registryName.substring(7);
+                        }
+                        if (registryName.startsWith("lit_") && !registryName.endsWith("pumpkin")) {
+                            registryName = registryName.substring(4);
+                        }
+                        if (registryName.equals("anvil")) {
+                            if (itemData > 5) itemData = 2;
+                            else if (itemData < 4) itemData = 0;
+                            else itemData = 1;
+                        } else if (registryName.endsWith("_slab")
+                                || registryName.endsWith("_slab2")
+                                || registryName.equals("sapling")
+                                || registryName.equals("leaves")) {
+                            if (itemData > 7) {
+                                itemData -= 8;
+                            }
+                        } else if (registryName.equals("log")) {
+                            itemData %= 4;
+                        } else if (registryName.equals("ender_chest")
+                                || registryName.equals("chest")
+                                || registryName.equals("trapped_chest")
+                                || registryName.equals("vine")
+                                || registryName.equals("tripwire_hook")
+                                || registryName.equals("dropper")
+                                || registryName.equals("dispenser")
+                                || registryName.equals("bed")
+                                || registryName.equals("ladder")
+                                || registryName.equals("end_portal_frame")
+                                || registryName.equals("daylight_detector")
+                                || registryName.equals("hay_block")
+                                || registryName.equals("brewing_stand")
+                                || registryName.equals("furnace")
+                                || registryName.equals("lever")
+                                || registryName.equals("pumpkin")
+                                || registryName.equals("lit_pumpkin")
+                                || registryName.equals("hopper")
+                                || registryName.endsWith("_button")
+                                || registryName.endsWith("_pressure_plate")
+                                || registryName.endsWith("_door")
+                                || registryName.endsWith("_fence_gate")
+                                || registryName.endsWith("_stairs")
+                                || registryName.endsWith("torch")
+                                || registryName.endsWith("piston")
+                                || registryName.endsWith("trapdoor")
+                                || registryName.endsWith("rail")) {
+                            itemData = 0;
+                        } else if (registryName.endsWith("_repeater")) {
+                            registryName = "repeater";
+                            itemData = 0;
+                        } else if (registryName.endsWith("_comparator")) {
+                            registryName = "comparator";
+                            itemData = 0;
+                        } else if (registryName.equals("redstone_wire")) {
+                            registryName = "redstone";
+                            itemData = 0;
+                        } else if (registryName.equals("piston_head")) {
+                            registryName = "piston";
+                            itemData = 0;
+                        } else if (registryName.equals("tripwire")) {
+                            registryName = "string";
+                            itemData = 0;
+                        } else if (registryName.equals("standing_banner")) {
+                            registryName = "banner";
+                            itemData = 15;
+                        } else if (registryName.equals("double_plant")) {
+                            registryName = "tallgrass";
+                            itemData = 1;
+                        } else if (registryName.equals("quartz_block")) {
+                            if (itemData > 2) {
+                                itemData = 2;
+                            }
+                        }
+
+						jsonString = "{\"type\":\"block\",";
+						jsonString += "\"block\":{";
+						jsonString += "\"xPos\":" + mop.getBlockPos().getX() + ",";
+						jsonString += "\"yPos\":" + mop.getBlockPos().getY() + ",";
+						jsonString += "\"zPos\":" + mop.getBlockPos().getZ() + ",";
+						jsonString += "\"data\":" + itemData + ",";
+						jsonString += "\"metadata\":" + block.getMetaFromState(blockState) + ",";
+						jsonString += "\"name\":\"" + block.getLocalizedName() + "\",";
+						jsonString += "\"unlocalizedName\":\"" + block.getUnlocalizedName().replace("tile.","") + "\",";
+						jsonString += "\"registryName\":\"" + registryName + "\",";
+						jsonString += "\"id\":" + Block.getIdFromBlock(block);
+						jsonString += "}}";
+					}
+				}
+			} catch (Exception e) {
+				jsonString = "{}";
+			}
+
+			JsonHandler.getJson("DefaultJson->LOOKINGAT-" + (JsonHandler.getJsonsSize() + 1), jsonString);
+			TMP_e = TMP_e.replace("{lookingAt}", "{json[DefaultJson->LOOKINGAT-" + JsonHandler.getJsonsSize() + "]}");
+		}
+
         if (TMP_e.contains("{arrows}")) {
             List<ItemStack> inventory = Minecraft.getMinecraft().player.inventory.mainInventory;
             int arrows = 0;
@@ -582,17 +836,53 @@ public class BuiltInStrings {
         return TMP_e;
     }
 
+	private static String getItemJson(ItemStack item) {
+    	String held;
+
+		try {
+			float itemMaxDamage = item.getMaxDamage();
+			float itemDamage = itemMaxDamage - item.getItemDamage();
+			float itemPercent = (itemDamage / itemMaxDamage) * 100;
+			String itemData = item.getMetadata() + "";
+			NBTTagCompound armorNBT = item.getTagCompound();
+			if (armorNBT != null) {
+				if (armorNBT.hasKey("display")) {
+					String armorNBTbase = armorNBT.getTag("display").toString();
+					String armorColor = null;
+					if (armorNBTbase.startsWith("{color:")) {
+						armorColor = armorNBTbase.substring(7, armorNBTbase.indexOf("}"));
+						if (armorColor.contains(",")) {
+							armorColor = armorColor.substring(0, armorColor.indexOf(","));
+						}
+					}
+
+					if (itemData.equals("0") && armorColor != null) {
+						itemData = "#" + armorColor;
+					}
+				}
+			}
+			held = "{\"" + item.getItem().getRegistryName().toString().replace("minecraft:", "")
+					+ "\":{\"displayName\":\"" + JsonHandler.getForJson(item.getDisplayName())
+					+ "\",\"maxDurability\":" + (int) floor(itemMaxDamage)
+					+ ",\"durability\":" + (int) floor(itemDamage)
+					+ ",\"durabilityPercent\":" + (int) floor(itemPercent)
+					+ ",\"itemCount\":" + item.getCount()
+					+ ",\"data\":" + itemData + "}}";
+		} catch (Exception e) {
+			held = "{}";
+		}
+
+		return held;
+	}
+
     private static String createDefaultString(String string_name, String string_value, String TMP_e, Boolean isAsync) {
         if (isAsync) {
             global.Async_string.put("AsyncDefaultString->" + string_name.toUpperCase() + "-" + (global.Async_string.size() + 1), string_value);
             global.backupAsync_string.put("AsyncDefaultString->" + string_name.toUpperCase() + "-" + global.Async_string.size(), string_value);
             return TMP_e.replace("{" + string_name + "}", "{string[AsyncDefaultString->" + string_name.toUpperCase() + "-" + global.Async_string.size() + "]}");
         } else {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->" + string_name.toUpperCase() + "-" + (global.TMP_string.size() + 1));
-            temporary.add(string_value);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+            global.TMP_string.put("DefaultString->" + string_name.toUpperCase() + "-" + (global.TMP_string.size() + 1), string_value);
+            global.backupTMP_strings.put("DefaultString->" + string_name.toUpperCase() + "-" + global.TMP_string.size(), string_value);
             return TMP_e.replace("{" + string_name + "}", "{string[DefaultString->" + string_name.toUpperCase() + "-" + global.TMP_string.size() + "]}");
         }
     }
@@ -604,11 +894,8 @@ public class BuiltInStrings {
             return TMP_e.replace("{" + string_name1 + "}", "{string[AsyncDefaultString->" + string_name1.toUpperCase() + "-" + global.Async_string.size() + "]}")
                     .replace("{" + string_name2 + "}", "{string[AsyncDefaultString->" + string_name1.toUpperCase() + "-" + global.Async_string.size() + "]}");
         } else {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DefaultString->" + string_name1.toUpperCase() + "-" + (global.TMP_string.size() + 1));
-            temporary.add(string_value);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+            global.TMP_string.put("DefaultString->" + string_name1.toUpperCase() + "-" + (global.TMP_string.size() + 1), string_value);
+            global.backupTMP_strings.put("DefaultString->" + string_name1.toUpperCase() + "-" + global.TMP_string.size(), string_value);
             return TMP_e.replace("{" + string_name1 + "}", "{string[DefaultString->" + string_name1.toUpperCase() + "-" + global.TMP_string.size() + "]}")
                     .replace("{" + string_name2 + "}", "{string[DefaultString->" + string_name1.toUpperCase() + "-" + global.TMP_string.size() + "]}");
         }

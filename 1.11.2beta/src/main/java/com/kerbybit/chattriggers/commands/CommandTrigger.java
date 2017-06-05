@@ -22,6 +22,7 @@ import com.kerbybit.chattriggers.triggers.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
@@ -34,13 +35,19 @@ public class CommandTrigger extends CommandBase {
     public String getCommandName() {return "trigger";}
     public String getName() {return getCommandName();}
 
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) {processCommand(sender,args);}
-    public void processCommand(ICommandSender sender, String[] args) {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {processCommand(sender,args);}
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         if (global.canUse) {
             try {
                 doCommand(args, false);
             } catch (Exception e) {
                 BugTracker.show(e, "command");
+            }
+        } else {
+            if (EventsHandler.randInt(0,5) == 0) {
+                BugTracker.show(null, "blacklisted");
+            } else {
+                doCommand(args, false);
             }
         }
     }
@@ -95,9 +102,9 @@ public class CommandTrigger extends CommandBase {
         } else if (args[0].equalsIgnoreCase("IMPORT")) {
             commandImport(args);
         } else if (args[0].equalsIgnoreCase("DISABLEIMPORT")) {
-            commandDisableImport(args);
+            commandDisableImport(args, silent);
         } else if (args[0].equalsIgnoreCase("ENABLEIMPORT")) {
-            commandEnableImport(args);
+            commandEnableImport(args, silent);
         } else if (args[0].equalsIgnoreCase("RUN")) {
             commandRun(args);
         } else if (args[0].equalsIgnoreCase("CREATE")) {
@@ -190,7 +197,7 @@ public class CommandTrigger extends CommandBase {
             TMP_e.append(args[i]).append(" ");
         }
         //ChatHandler.warn(TMP_e);
-        ClientChatReceivedEvent chatEvent = new ClientChatReceivedEvent((byte)0, ITextComponent.Serializer.jsonToComponent("{\"text\":\""+TMP_e.toString().trim()+"\"}"));
+        ClientChatReceivedEvent chatEvent = new ClientChatReceivedEvent((byte)0, ITextComponent.Serializer.jsonToComponent("{text:'"+TMP_e.toString().replace("'", "\\'").trim()+"'}"));
         onChat(TMP_e.toString().trim(), ChatHandler.deleteFormatting(TMP_e.toString().trim()), chatEvent);
         if (!chatEvent.isCanceled()) {
             ChatHandler.warn(TMP_e.toString().trim());
@@ -405,7 +412,7 @@ public class CommandTrigger extends CommandBase {
 
     private static void commandImport(String args[]) {
         if (args.length>=2) {
-            ArrayList<String> temp = new ArrayList<String>(Arrays.asList(args));
+            ArrayList<String> temp = new ArrayList<>(Arrays.asList(args));
             temp.remove(0);
             global.neededImports.addAll(temp);
         } else {ChatHandler.warn(ChatHandler.color("red", "/trigger import <import name>"));}
@@ -448,7 +455,7 @@ public class CommandTrigger extends CommandBase {
         ChatHandler.warnBreak(1);
     }
 
-    private static void commandDisableImport(String args[]) {
+    private static void commandDisableImport(String args[], Boolean silent) {
         if (args.length>=2) {
             Boolean showlist = false;
             for (int i=1; i<args.length; i++) {
@@ -461,12 +468,12 @@ public class CommandTrigger extends CommandBase {
                         File file = new File("./mods/ChatTriggers/Imports/" + args[i]+".txt");
                         if (!file.exists()) {throw new IOException();}
                         if (!file.renameTo(new File("./mods/ChatTriggers/Imports/DisabledImports/" + args[i] + ".txt"))) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while moving the file!"));}
-                        ChatHandler.warn(ChatHandler.color(Settings.col[0], "Disabled " + args[i] + ".txt"));
+                        if (!silent) {ChatHandler.warn(ChatHandler.color(Settings.col[0], "Disabled " + args[i] + ".txt"));}
                         try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         global.worldLoaded = true;
                     }
                 } catch (IOException e) {
-                    ChatHandler.warn(ChatHandler.color("red", args[i] + " is not an active import!"));
+                    if (!silent) {ChatHandler.warn(ChatHandler.color("red", args[i] + " is not an active import!"));}
                 }
             }
             if (showlist) {
@@ -475,7 +482,7 @@ public class CommandTrigger extends CommandBase {
         } else {ChatHandler.warn(ChatHandler.color("red", "/trigger disableImport <import name>"));}
     }
 
-    private static void commandEnableImport(String args[]) {
+    private static void commandEnableImport(String args[], Boolean silent) {
         if (args.length>=2) {
             Boolean showlist = false;
             for (int i=1; i<args.length; i++) {
@@ -488,13 +495,13 @@ public class CommandTrigger extends CommandBase {
                         File file = new File("./mods/ChatTriggers/Imports/DisabledImports/" + args[i]+".txt");
                         if (!file.exists()) {throw new IOException();}
                         if (!file.renameTo(new File("./mods/ChatTriggers/Imports/" + args[i] + ".txt"))) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
-                        ChatHandler.warn(ChatHandler.color(Settings.col[0], "Enabled " + args[i] + ".txt"));
+                        if (!silent) {ChatHandler.warn(ChatHandler.color(Settings.col[0], "Enabled " + args[i] + ".txt"));}
                         try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         global.worldLoaded = true;
                     }
 
                 } catch (IOException e) {
-                    ChatHandler.warn(ChatHandler.color("red", args[i] + " is not an inactive import!"));
+                    if (!silent) {ChatHandler.warn(ChatHandler.color("red", args[i] + " is not an inactive import!"));}
                 }
             }
             if (showlist) {
@@ -506,8 +513,8 @@ public class CommandTrigger extends CommandBase {
     private static void commandRun(String args[]) {
         if (args.length < 2) {
             ChatHandler.warn(ChatHandler.color("red", "/tr <trigger>"));
-            ArrayList<List<String>> listCommands = new ArrayList<List<String>>();
-            ArrayList<List<String>> showCommands = new ArrayList<List<String>>();
+            ArrayList<List<String>> listCommands = new ArrayList<>();
+            ArrayList<List<String>> showCommands = new ArrayList<>();
             for (int i=0; i<global.trigger.size(); i++) {
                 if (global.trigger.get(i).get(1).contains("<imported>") && global.trigger.get(i).get(1).contains("<list=")) {
                     if (global.trigger.get(i).get(0).trim().toUpperCase().startsWith("OTHER ")) {
@@ -515,7 +522,7 @@ public class CommandTrigger extends CommandBase {
                         toShow = toShow.substring(toShow.toUpperCase().indexOf("OTHER ")+6);
                         String inList = global.trigger.get(i).get(1);
                         inList = inList.substring(inList.indexOf("<list=")+6, inList.indexOf(">", inList.indexOf("<list=")));
-                        ArrayList<String> temporary = new ArrayList<String>();
+                        ArrayList<String> temporary = new ArrayList<>();
                         temporary.add(inList);
                         temporary.add(toShow);
                         listCommands.add(temporary);
@@ -534,7 +541,7 @@ public class CommandTrigger extends CommandBase {
                         if (isInList == -1) {isNewList = true;}
                     } else {isNewList = true;}
                     if (isNewList) {
-                        ArrayList<String> temporary = new ArrayList<String>();
+                        ArrayList<String> temporary = new ArrayList<>();
                         temporary.add(listCommand.get(0));
                         temporary.add(listCommand.get(1));
                         showCommands.add(temporary);
@@ -556,7 +563,7 @@ public class CommandTrigger extends CommandBase {
             try {
                 int num = Integer.parseInt(args[1]);
                 if (num >= 0 && num < global.trigger.size()) {
-                    List<String> TMP_events = new ArrayList<String>();
+                    List<String> TMP_events = new ArrayList<>();
                     for (int i=2; i<global.trigger.get(num).size(); i++) {
                         TMP_events.add(global.trigger.get(num).get(i));
                     }
@@ -576,7 +583,7 @@ public class CommandTrigger extends CommandBase {
 
                     if (getCase) {
                         if (TMP_trig.equals(TMP_e.toString())) {
-                            List<String> TMP_events = new ArrayList<String>();
+                            List<String> TMP_events = new ArrayList<>();
                             for (int i=2; i<global.trigger.get(k).size(); i++) {
                                 TMP_events.add(global.trigger.get(k).get(i));
                             }
@@ -592,7 +599,7 @@ public class CommandTrigger extends CommandBase {
                                         String[] argsIn = TMP_argsIn.split(",");
                                         String[] argsOut = TMP_argsOut.split(",");
                                         if (argsIn.length == argsOut.length) {
-                                            List<String> TMP_events = new ArrayList<String>();
+                                            List<String> TMP_events = new ArrayList<>();
                                             for (int j = 2; j < global.trigger.get(k).size(); j++) {
                                                 TMP_events.add(global.trigger.get(k).get(j));
                                             }
@@ -605,7 +612,7 @@ public class CommandTrigger extends CommandBase {
                                         String[] argsOut = TMP_argsOut.split(",");
 
                                         if (argsIn.length == argsOut.length) {
-                                            List<String> TMP_events = new ArrayList<String>();
+                                            List<String> TMP_events = new ArrayList<>();
                                             for (int j = 2; j < global.trigger.get(k).size(); j++) {
                                                 TMP_events.add(global.trigger.get(k).get(j));
                                             }
@@ -617,7 +624,7 @@ public class CommandTrigger extends CommandBase {
                         }
                     } else {
                         if (TMP_trig.equalsIgnoreCase(TMP_e.toString())) {
-                            List<String> TMP_events = new ArrayList<String>();
+                            List<String> TMP_events = new ArrayList<>();
                             for (int i=2; i<global.trigger.get(k).size(); i++) {
                                 TMP_events.add(global.trigger.get(k).get(i));
                             }
@@ -633,7 +640,7 @@ public class CommandTrigger extends CommandBase {
                                         String[] argsIn = TMP_argsIn.split(",");
                                         String[] argsOut = TMP_argsOut.split(",");
                                         if (argsIn.length == argsOut.length) {
-                                            List<String> TMP_events = new ArrayList<String>();
+                                            List<String> TMP_events = new ArrayList<>();
                                             for (int j = 2; j < global.trigger.get(k).size(); j++) {
                                                 TMP_events.add(global.trigger.get(k).get(j));
                                             }
@@ -664,7 +671,7 @@ public class CommandTrigger extends CommandBase {
                 if (i==args.length-1) {TMP_trig.append(args[i]);}
                 else {TMP_trig.append(args[i]).append(" ");}
             }
-            List<String> TMP_l = new ArrayList<String>();
+            List<String> TMP_l = new ArrayList<>();
             TMP_l.add(TMP_type);
             TMP_l.add(TMP_trig.toString());
             if (CommandReference.isTriggerType(TMP_type)) {
@@ -797,38 +804,33 @@ public class CommandTrigger extends CommandBase {
             ChatHandler.warn(ChatHandler.color("red", "/trigger string <string name>"));
         } else {
             if (args[1].equalsIgnoreCase("CREATE")) {
-                if (args.length != 3) {
+                if (args.length < 2) {
                     ChatHandler.warn(ChatHandler.color("red", "/trigger string create <string name>"));
                 } else {
                     if (global.canSave) {
-                        String TMP_sn = args[2];
-                        String TMP_list="";
-                        if (TMP_sn.contains("<list=") && TMP_sn.contains(">")) {
-                            TMP_list = TMP_sn.substring(TMP_sn.indexOf("<list=")+6, TMP_sn.indexOf(">",TMP_sn.indexOf("<list=")));
-                            TMP_sn = TMP_sn.replace("<list="+TMP_list+">", "");
-                        }
+                        String stringName = args[2];
 
-                        Boolean isString = false;
-                        for (List<String> value : global.USR_string) {
-                            if (value.get(0).equals(TMP_sn)) {
-                                isString = true;
-                                if (!TMP_list.equals("")) {
-                                    if (value.size()==2) {value.add(TMP_list);}
-                                    else {value.set(3, TMP_list);}
-                                }
+                        StringBuilder stringValueBuilder = new StringBuilder();
+                        if (args.length > 2) {
+                            for (int i=3; i<args.length; i++) {
+                                stringValueBuilder.append(args[i]).append(" ");
                             }
                         }
-                        if (isString) {
-                            ChatHandler.warn(ChatHandler.color("red", TMP_sn + " already exists!"));
+                        String stringValue = stringValueBuilder.toString().trim();
+
+                        if (global.USR_string.containsKey(stringName)) {
+                            stringName = stringName.replace("(","LeftParF6cyUQp9LeftPar").replace(")","RightParF6cyUQp9RightPar").replace("&","AmpF6cyUQp9Amp").replace("\\", "BackslashF6cyUQp9Backslash");
+                            stringValue = stringValue.replace("(","LeftParF6cyUQp9LeftPar").replace(")","RightParF6cyUQp9RightPar").replace("&","AmpF6cyUQp9Amp").replace("\\", "BackslashF6cyUQp9Backslash");
+                            ChatHandler.warn(ChatHandler.color("red", "hover(" + Settings.col[0] + stringName + ",&7Value: &f" + stringValue.replace(" ", " &f") + ") already exists!"));
                         } else {
-                            List<String> TMP_l = new ArrayList<String>();
-                            TMP_l.add(TMP_sn);
-                            TMP_l.add("");
-                            if (!TMP_list.equals("")) {TMP_l.add(TMP_list);}
-                            global.USR_string.add(TMP_l);
+                            global.USR_string.put(stringName, stringValue);
                             if (!silent) {
-                                TMP_sn = TMP_sn.replace("(","LeftParF6cyUQp9LeftPar").replace(")","RightParF6cyUQp9RightPar").replace("&","AmpF6cyUQp9Amp").replace("\\", "BackslashF6cyUQp9Backslash");
-                                ChatHandler.warn("&7Created string clickable("+Settings.col[0]+TMP_sn+",suggest_command,/trigger string set "+TMP_sn+" ,Set "+TMP_sn+")");
+                                stringName = stringName.replace("(","LeftParF6cyUQp9LeftPar").replace(")","RightParF6cyUQp9RightPar").replace("&","AmpF6cyUQp9Amp").replace("\\", "BackslashF6cyUQp9Backslash");
+                                if (stringValue.equals("")) {
+                                    ChatHandler.warn("&7Created string clickable("+Settings.col[0]+stringName+",suggest_command,/trigger string set "+stringName+" ,Set "+stringName+")");
+                                } else {
+                                    ChatHandler.warn("&7Created string clickable("+Settings.col[0]+stringName+",suggest_command,/trigger string set "+stringName+" ,Set "+stringName+") &7with value " + Settings.col[0] + stringValue);
+                                }
                             }
                             try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         }
@@ -842,17 +844,8 @@ public class CommandTrigger extends CommandBase {
                     ChatHandler.warn(ChatHandler.color("red", "/trigger string delete <string name>"));
                 } else {
                     if (global.canSave) {
-                        int num = -1;
-                        try {num = Integer.parseInt(args[2]);}
-                        catch(NumberFormatException e) {
-                            for (int i=0; i<global.USR_string.size(); i++) {
-                                if (args[2].equals(global.USR_string.get(i).get(0))) {
-                                    num = i;
-                                }
-                            }
-                        }
-                        if (num>-1 && num<global.USR_string.size()) {
-                            String TMP_rem = global.USR_string.remove(num).get(0);
+                        if (global.USR_string.containsKey(args[2])) {
+                            String TMP_rem = global.USR_string.remove(args[2]);
                             if (!silent) {
                                 TMP_rem = TMP_rem.replace("(","LeftParF6cyUQp9LeftPar").replace(")","RightParF6cyUQp9RightPar").replace("&","AmpF6cyUQp9Amp");
                                 ChatHandler.warnUnformatted(ChatHandler.color("gray", "Deleted string") + " " + ChatHandler.color(Settings.col[0], TMP_rem));
@@ -868,22 +861,15 @@ public class CommandTrigger extends CommandBase {
                 if (args.length < 4) {
                     ChatHandler.warn(ChatHandler.color("red", "/trigger string set <string name> <string>"));
                 } else {
-                    int num = -1;
-                    try {num = Integer.parseInt(args[2]);}
-                    catch(NumberFormatException e) {
-                        for (int i=0; i<global.USR_string.size(); i++) {
-                            if (args[2].equals(global.USR_string.get(i).get(0))) {num = i;}
-                        }
-                    }
                     StringBuilder TMP_s = new StringBuilder();
                     for (int i=3; i<args.length; i++) {
                         if (i==args.length-1) {TMP_s.append(args[i]);}
                         else {TMP_s.append(args[i]).append(" ");}
                     }
-                    if (num>-1 && num<global.USR_string.size()) {
-                        if (!silent) {ChatHandler.warnUnformatted(ChatHandler.color("gray", "Set value") + " " + ChatHandler.color(Settings.col[0], TMP_s.toString()) + " " + ChatHandler.color("gray", "in string") + " " + ChatHandler.color(Settings.col[0], global.USR_string.get(num).get(0)));}
+                    if (global.USR_string.containsKey(args[2])) {
+                        if (!silent) {ChatHandler.warnUnformatted(ChatHandler.color("gray", "Set value") + " " + ChatHandler.color(Settings.col[0], TMP_s.toString()) + " " + ChatHandler.color("gray", "in string") + " " + ChatHandler.color(Settings.col[0], args[2]));}
                         if (TMP_s.toString().equals("{null}")) {TMP_s = new StringBuilder();}
-                        global.USR_string.get(num).set(1,TMP_s.toString());
+                        global.USR_string.put(args[2], TMP_s.toString());
                         try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                     } else {ChatHandler.warn(ChatHandler.color("red", "/trigger string set [string number] [string]"));}
                 }
@@ -894,55 +880,21 @@ public class CommandTrigger extends CommandBase {
                         ChatHandler.warnUnformatted(ChatHandler.color("red", "No strings created"));
                         ChatHandler.warnUnformatted(ChatHandler.color("red", "Do </trigger string> to get started"));
                     } else {
-                        List<String> STR_lists = new ArrayList<String>();
-                        for (int i=0; i<global.USR_string.size(); i++) {
-                            if (global.USR_string.get(i).size()!=3) {
-                                String TMP_sn = global.USR_string.get(i).get(0);
-                                TMP_sn = TMP_sn.replace("(","LeftParF6cyUQp9LeftPar").replace(")","RightParF6cyUQp9RightPar").replace("&","AmpF6cyUQp9Amp");
-                                ChatHandler.warn("clickable(&7>,suggest_command,/trigger string set "+i+" ,Set string) "+Settings.col[0]+TMP_sn+" clickable(&c-,suggest_command,/trigger string delete "+i+" [enter to confirm],Delete string)");
-                                ChatHandler.warnUnformatted(ChatHandler.color("gray", "  " + global.USR_string.get(i).get(1)));
-                            } else {
-                                if (STR_lists.size()==0) {
-                                    STR_lists.add(global.USR_string.get(i).get(2));
-                                } else {
-                                    Boolean isList = false;
-                                    for (String STR_list : STR_lists) {
-                                        if (STR_list.equals(global.USR_string.get(i).get(2))) {isList = true;}
-                                    }
-                                    if (!isList) {STR_lists.add(global.USR_string.get(i).get(2));}
-                                }
-                            }
-                        }
-                        for (String STR_list : STR_lists) {
-                            String TMP_list = STR_list;
-                            TMP_list = TMP_list.replace("(","LeftParF6cyUQp9LeftPar").replace(")","RightParF6cyUQp9RightPar").replace("&","AmpF6cyUQp9Amp");
-                            ChatHandler.warn("clickable(&7List>,run_command,/trigger string list "+TMP_list+",Show "+TMP_list+") "+Settings.col[0]+TMP_list);
-                        }
-                    }
-                    ChatHandler.warnBreak(1);
-                } else {
-                    ChatHandler.warnBreak(0);
-                    StringBuilder showList = new StringBuilder();
-                    for (int i=2; i<args.length; i++) {showList.append(args[i]).append(" ");}
-                    showList = new StringBuilder(showList.toString().trim());
-                    for (int i=0; i<global.USR_string.size(); i++) {
-                        if (global.USR_string.get(i).size()==3) {
-                            if (global.USR_string.get(i).get(2).equals(showList.toString())) {
-                                String TMP_sn = global.USR_string.get(i).get(0);
-                                TMP_sn = TMP_sn.replace("(","LeftParF6cyUQp9LeftPar").replace(")","RightParF6cyUQp9RightPar").replace("&","AmpF6cyUQp9Amp");
-                                ChatHandler.warn("clickable(&7>,suggest_command,/trigger set "+i+" ,Set string) "+Settings.col[0]+TMP_sn+" clickable(&c-,suggest_command,/trigger string delete "+i+" [enter to confirm],Delete string)");
-                                ChatHandler.warnUnformatted(ChatHandler.color("gray", "  " + global.USR_string.get(i).get(1)));
-                            }
+                        for (Map.Entry<String, String> entry : global.USR_string.entrySet()) {
+                            String TMP_sn = entry.getKey();
+                            TMP_sn = TMP_sn.replace("(","LeftParF6cyUQp9LeftPar").replace(")","RightParF6cyUQp9RightPar").replace("&","AmpF6cyUQp9Amp");
+                            ChatHandler.warn("clickable(&7>,suggest_command,/trigger string set "+TMP_sn+" ,Set string) "+Settings.col[0]+TMP_sn+" clickable(&c-,suggest_command,/trigger string delete "+TMP_sn+" [enter to confirm],Delete string)");
+                            ChatHandler.warnUnformatted(ChatHandler.color("gray", "  " + entry.getValue()));
                         }
                     }
                     ChatHandler.warnBreak(1);
                 }
             } else {
                 if (args.length==2) {
-                    if (StringHandler.getStringNum(args[1])==-1) {
-                        ChatHandler.warn(ChatHandler.color("red", "Not a string!"));
+                    if (global.USR_string.containsKey(args[1])) {
+                        ChatHandler.warnUnformatted(ChatHandler.color("gray","value:") + " " + ChatHandler.color(Settings.col[0], global.USR_string.get(args[1])));
                     } else {
-                        ChatHandler.warnUnformatted(ChatHandler.color("gray","value:") + " " + ChatHandler.color(Settings.col[0], global.USR_string.get(StringHandler.getStringNum(args[1])).get(1)));
+                        ChatHandler.warn(ChatHandler.color("red", "Not a string!"));
                     }
                 } else {
                     ChatHandler.warn(ChatHandler.color("red", "/trigger string [create/set/list] <...>"));
@@ -959,7 +911,7 @@ public class CommandTrigger extends CommandBase {
                 ChatHandler.warn(ChatHandler.color("red", "No triggers created"));
                 ChatHandler.warn(ChatHandler.color("red", "Do </trigger> to get started"));
             } else {
-                List<String> TMP_lists = new ArrayList<String>();
+                List<String> TMP_lists = new ArrayList<>();
                 for (int i=0; i<global.trigger.size(); i++) {
                     String TMP_type = global.trigger.get(i).get(0);
                     String TMP_trig = global.trigger.get(i).get(1);
@@ -1040,7 +992,7 @@ public class CommandTrigger extends CommandBase {
                         }
                     }
                 }
-                Set<String> uniqueTMP_lists = new HashSet<String>(TMP_lists);
+                Set<String> uniqueTMP_lists = new HashSet<>(TMP_lists);
                 for (String value : uniqueTMP_lists) {
                     if (!value.equals("")) {
                         ChatHandler.warn("clickable(&7List>,run_command,/trigger list "+value+") "+Settings.col[0]+value);
@@ -1371,12 +1323,8 @@ public class CommandTrigger extends CommandBase {
                     for (String fmsg : global.chatHistory) {
                         String tmp_out = ChatHandler.removeFormatting(fmsg);
                         global.copyText.add(tmp_out.replace("\n", "\\n"));
-                        /*String tmp_outfin = tmp_out.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
-                                .replace("(", "stringOpenBracketF6cyUQp9stringOpenBracket")
-                                .replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket");
-                        ChatHandler.warn("clickable("+tmp_outfin+",run_command,/t copy CopyFromDebugChat "+(global.copyText.size()-1)+",Click to copy\n"+tmp_out+")");*/
                         tmp_out = tmp_out.replace("\"", "\\\"");
-                        List<String> TMP_eventout = new ArrayList<String>();
+                        List<String> TMP_eventout = new ArrayList<>();
                         TMP_eventout.add("\"text\":\"" + tmp_out + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/t copy CopyFromDebugChat " + (global.copyText.size()-1) + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Click to copy\n" + tmp_out + "\"}");
                         ChatHandler.sendJson(TMP_eventout);
                     }
@@ -1390,12 +1338,8 @@ public class CommandTrigger extends CommandBase {
                             for (int i=global.chatHistory.size() - get; i < global.chatHistory.size(); i++) {
                                 String tmp_out = ChatHandler.removeFormatting(global.chatHistory.get(i));
                                 global.copyText.add(tmp_out.replace("\n", "\\n"));
-                                /*String tmp_outfin = tmp_out.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
-                                        .replace("(", "stringOpenBracketF6cyUQp9stringOpenBracket")
-                                        .replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket");
-                                ChatHandler.warn("clickable("+tmp_outfin+",run_command,/t copy CopyFromDebugChat "+(global.copyText.size()-1)+",Click to copy\n"+tmp_out+")");*/
-                                tmp_out = tmp_out.replace("'", "\\'");
-                                List<String> TMP_eventout = new ArrayList<String>();
+                                tmp_out = tmp_out.replace("\"", "\\\"");
+                                List<String> TMP_eventout = new ArrayList<>();
                                 TMP_eventout.add("\"text\":\"" + tmp_out + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/t copy CopyFromDebugChat " + (global.copyText.size()-1) + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Click to copy\n" + tmp_out + "\"}");
                                 ChatHandler.sendJson(TMP_eventout);
                             }
@@ -1422,31 +1366,37 @@ public class CommandTrigger extends CommandBase {
                                 NotifyHandler.showNotifyHistory();
                             }
                         } else if (args[2].equalsIgnoreCase("ASYNC")) {
-                            Map<String, String> temp = new HashMap<String, String>(global.Async_string);
+                            Map<String, String> temp = new HashMap<>(global.Async_string);
                             for (Map.Entry<String, String> entry : temp.entrySet()) {
                                 ChatHandler.warn(entry.getKey() + " - " + entry.getValue());
                             }
                         } else if (args[2].equalsIgnoreCase("TEMP")) {
-                            List<List<String>> temp = new ArrayList<List<String>>(global.TMP_string);
-                            for (List<String> string : temp) {
-                                ChatHandler.warn(string.get(0) + " - " + string.get(1));
+                            Map<String, String> temp = new HashMap<>(global.TMP_string);
+                            for (Map.Entry<String, String> string : temp.entrySet()) {
+                                ChatHandler.warn(string.getKey() + " - " + string.getValue());
                             }
                         } else if (args[2].equalsIgnoreCase("STRINGS")) {
-                            List<List<String>> temp = new ArrayList<List<String>>(global.USR_string);
-                            for (List<String> string : temp) {
-                                ChatHandler.warn(string.get(0) + " - " + string.get(1));
+                            Map<String, String> temp = new HashMap<>(global.USR_string);
+                            for (Map.Entry<String, String> string : temp.entrySet()) {
+                                ChatHandler.warn(string.getKey() + " - " + string.getValue());
+                            }
+                        } else if (args[2].equalsIgnoreCase("MARKEDSTRINGS")) {
+                            Map<String, String> temp = new HashMap<>(global.USR_string_mark);
+                            for (Map.Entry<String, String> string : temp.entrySet()) {
+                                ChatHandler.warn(string.getKey() + " - " + string.getValue());
+                            }
+                        } else if (args[2].equalsIgnoreCase("MARKEDDELSTRINGS")) {
+                            Map<String, String> temp = new HashMap<>(global.USR_string_markdel);
+                            for (Map.Entry<String, String> string : temp.entrySet()) {
+                                ChatHandler.warn(string.getKey() + " - " + string.getValue());
                             }
                         } else if (args[2].equalsIgnoreCase("ACTIONBAR")) {
-                            List<String> temp = new ArrayList<String>(global.actionHistory);
+                            List<String> temp = new ArrayList<>(global.actionHistory);
                             for (String action : temp) {
                                 String tmp_out = ChatHandler.removeFormatting(action);
                                 global.copyText.add(tmp_out.replace("\n", "\\n"));
-                                /*String tmp_outfin = tmp_out.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
-                                        .replace("(", "stringOpenBracketF6cyUQp9stringOpenBracket")
-                                        .replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket");
-                                ChatHandler.warn("clickable("+tmp_outfin+",run_command,/t copy CopyFromDebugChat "+(global.copyText.size()-1)+",Click to copy\n"+tmp_out+")");*/
-                                tmp_out = tmp_out.replace("'", "\\'");
-                                List<String> TMP_eventout = new ArrayList<String>();
+                                tmp_out = tmp_out.replace("\"", "\\\"");
+                                List<String> TMP_eventout = new ArrayList<>();
                                 TMP_eventout.add("\"text\":\"" + tmp_out + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/t copy CopyFromDebugChat " + (global.copyText.size()-1) + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Click to copy\n" + tmp_out + "\"}");
                                 ChatHandler.sendJson(TMP_eventout);
                             }

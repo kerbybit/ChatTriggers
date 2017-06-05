@@ -172,6 +172,8 @@ public class CommandReference {
             r.add("debug");
             r.add("log");
             r.add("simulate");
+            r.add("enableimport");
+            r.add("disableimport");
 
         return r;
     }

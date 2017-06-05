@@ -24,6 +24,7 @@ public class CommandReference {
         global.killfeedDelay.clear();
         global.notify.clear();
         global.notifyAnimation.clear();
+        global.notifySize = 0;
         DisplayHandler.clearDisplays();
     }
 
@@ -41,7 +42,7 @@ public class CommandReference {
 	
 	static boolean isTriggerType(String TMP_type) {
 
-        List<String> check = new ArrayList<String>(getTriggerTypes());
+        List<String> check = new ArrayList<>(getTriggerTypes());
 
         for (String value : check) {
             if (!value.equals("")) {
@@ -55,7 +56,7 @@ public class CommandReference {
 	}
 
     static List<String> getTriggerTypes() {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
 
             r.add("chat");
             r.add("onChat");
@@ -68,6 +69,7 @@ public class CommandReference {
             r.add("");
             r.add("onClientTick");
             r.add("onRightClickPlayer");
+            r.add("onSoundPlay");
             r.add("");
             r.add("function");
             r.add("onUnknownError");
@@ -84,6 +86,7 @@ public class CommandReference {
 		global.onServerChangeTrigger.clear();
 		global.onNewDayTrigger.clear();
 		global.onRightClickPlayerTrigger.clear();
+		global.onSoundPlayTrigger.clear();
         global.function.clear();
         global.onUnknownError.clear();
 	}
@@ -117,7 +120,9 @@ public class CommandReference {
 			global.onNewDayTrigger.add(tmp_list);
 		} else if (tmp_list.get(0).equalsIgnoreCase("ONRIGHTCLICKPLAYER")) {
 			global.onRightClickPlayerTrigger.add(tmp_list);
-		} else if (tmp_list.get(0).equalsIgnoreCase("FUNCTION")) {
+		} else if (tmp_list.get(0).equalsIgnoreCase("ONSOUNDPLAY")) {
+            global.onSoundPlayTrigger.add(tmp_list);
+        } else if (tmp_list.get(0).equalsIgnoreCase("FUNCTION")) {
             global.function.add(tmp_list);
         } else if (tmp_list.get(0).equalsIgnoreCase("ONUNKNOWNERROR")) {
             global.onUnknownError.add(tmp_list);
@@ -125,7 +130,7 @@ public class CommandReference {
 	}
 	
 	static Boolean isEventType(String TMP_etype) {
-        List<String> check = new ArrayList<String>(getEventTypes());
+        List<String> check = new ArrayList<>(getEventTypes());
         for (String value : check) {
             if (!value.equals("")) {
                 if (TMP_etype.equalsIgnoreCase(value)) {
@@ -138,7 +143,7 @@ public class CommandReference {
 	}
 
     static List<String> getEventTypes() {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
 
             r.add("chat");
             r.add("actionbar");
@@ -146,6 +151,7 @@ public class CommandReference {
             r.add("killfeed");
             r.add("notify");
             r.add("sound");
+            r.add("title");
             r.add("");
             r.add("trigger");
             r.add("copy");
@@ -160,39 +166,21 @@ public class CommandReference {
             r.add("choose");
             r.add("async");
             r.add("end");
+            r.add("break");
             r.add("return");
             r.add("");
             r.add("debug");
             r.add("log");
             r.add("simulate");
+            r.add("enableimport");
+            r.add("disableimport");
 
         return r;
     }
 
     public static List<String> getAllEventTypes() {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>(getEventTypes());
 
-        r.add("chat");
-        r.add("cancel");
-        r.add("killfeed");
-        r.add("notify");
-        r.add("sound");
-        r.add("trigger");
-        r.add("copy");
-        r.add("url");
-        r.add("do");
-        r.add("if");
-        r.add("else");
-        r.add("elseif");
-        r.add("for");
-        r.add("wait");
-        r.add("choose");
-        r.add("async");
-        r.add("end");
-        r.add("return");
-        r.add("debug");
-        r.add("log");
-        r.add("simulate");
         r.add("say");
         r.add("command");
 
@@ -200,7 +188,7 @@ public class CommandReference {
     }
 
     static List<String> getStrings() {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
 
             r.add("{msg} {msg[$number]}");
             r.add("{br}");
@@ -231,12 +219,16 @@ public class CommandReference {
             r.add("");
             r.add("{random($low,$high)} {random($high)}");
             r.add("{time} {date} {unixtime}");
+            r.add("{titletext}");
+            r.add("{subtitletext}");
+            r.add("{actionbartext}");
+            r.add("{bossbartext}");
 
         return r;
     }
 
     static List<String> getStringFunctions() {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
 
             r.add(".set($value) .set(~)");
             r.add(".save($value) .save(~)");
@@ -282,7 +274,7 @@ public class CommandReference {
     }
 
     static List<String> getArrayFunctions() {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
 
             r.add(".clear()");
             r.add(".add($v)");
@@ -292,14 +284,14 @@ public class CommandReference {
             r.add("");
             r.add(".setSplit($v,$split)");
             r.add(".importJsonFile($file,$node)");
-            r.add(".improtJsonURL($URL,$node)");
+            r.add(".importJsonURL($URL,$node)");
             r.add(".exportJson($file,$node)");
 
         return r;
     }
 
     static List<String> getListFunctions() {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
 
             r.add(".load($v) .load($file) .load($URL)");
             r.add(".export($file)");
@@ -315,7 +307,7 @@ public class CommandReference {
     }
 
     static List<String> getJsonFunctions() {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
 
             r.add(".clear()");
             r.add(".load($v) .load($file) .load($URL)");
@@ -327,7 +319,7 @@ public class CommandReference {
     }
 
     static List<String> getDisplayFunctions() {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
 
             r.add(".add($v)");
             r.add(".clear()");

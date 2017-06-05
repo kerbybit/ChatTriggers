@@ -103,9 +103,9 @@ public class CommandTrigger extends CommandBase {
         } else if (args[0].equalsIgnoreCase("IMPORT")) {
             commandImport(args);
         } else if (args[0].equalsIgnoreCase("DISABLEIMPORT")) {
-            commandDisableImport(args);
+            commandDisableImport(args, silent);
         } else if (args[0].equalsIgnoreCase("ENABLEIMPORT")) {
-            commandEnableImport(args);
+            commandEnableImport(args, silent);
         } else if (args[0].equalsIgnoreCase("RUN")) {
             commandRun(args);
         } else if (args[0].equalsIgnoreCase("CREATE")) {
@@ -456,7 +456,7 @@ public class CommandTrigger extends CommandBase {
         ChatHandler.warnBreak(1);
     }
 
-    private static void commandDisableImport(String args[]) {
+    private static void commandDisableImport(String args[], Boolean silent) {
         if (args.length>=2) {
             Boolean showlist = false;
             for (int i=1; i<args.length; i++) {
@@ -469,12 +469,12 @@ public class CommandTrigger extends CommandBase {
                         File file = new File("./mods/ChatTriggers/Imports/" + args[i]+".txt");
                         if (!file.exists()) {throw new IOException();}
                         if (!file.renameTo(new File("./mods/ChatTriggers/Imports/DisabledImports/" + args[i] + ".txt"))) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while moving the file!"));}
-                        ChatHandler.warn(ChatHandler.color(Settings.col[0], "Disabled " + args[i] + ".txt"));
+                        if (!silent) {ChatHandler.warn(ChatHandler.color(Settings.col[0], "Disabled " + args[i] + ".txt"));}
                         try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         global.worldLoaded = true;
                     }
                 } catch (IOException e) {
-                    ChatHandler.warn(ChatHandler.color("red", args[i] + " is not an active import!"));
+                    if (!silent) {ChatHandler.warn(ChatHandler.color("red", args[i] + " is not an active import!"));}
                 }
             }
             if (showlist) {
@@ -483,7 +483,7 @@ public class CommandTrigger extends CommandBase {
         } else {ChatHandler.warn(ChatHandler.color("red", "/trigger disableImport <import name>"));}
     }
 
-    private static void commandEnableImport(String args[]) {
+    private static void commandEnableImport(String args[], Boolean silent) {
         if (args.length>=2) {
             Boolean showlist = false;
             for (int i=1; i<args.length; i++) {
@@ -496,13 +496,13 @@ public class CommandTrigger extends CommandBase {
                         File file = new File("./mods/ChatTriggers/Imports/DisabledImports/" + args[i]+".txt");
                         if (!file.exists()) {throw new IOException();}
                         if (!file.renameTo(new File("./mods/ChatTriggers/Imports/" + args[i] + ".txt"))) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
-                        ChatHandler.warn(ChatHandler.color(Settings.col[0], "Enabled " + args[i] + ".txt"));
+                        if (!silent) {ChatHandler.warn(ChatHandler.color(Settings.col[0], "Enabled " + args[i] + ".txt"));}
                         try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         global.worldLoaded = true;
                     }
 
                 } catch (IOException e) {
-                    ChatHandler.warn(ChatHandler.color("red", args[i] + " is not an inactive import!"));
+                    if (!silent) {ChatHandler.warn(ChatHandler.color("red", args[i] + " is not an inactive import!"));}
                 }
             }
             if (showlist) {

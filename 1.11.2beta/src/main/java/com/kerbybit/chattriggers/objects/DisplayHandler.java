@@ -23,10 +23,10 @@ import java.util.List;
 import static net.minecraft.realms.RealmsMth.floor;
 
 public class DisplayHandler {
-    private static HashMap<String,List<String>> displays = new HashMap<String,List<String>>();
-    private static HashMap<String,List<String>> shown_displays = new HashMap<String,List<String>>();
-    private static HashMap<String,Double[]> displays_xy = new HashMap<String,Double[]>();
-    private static HashMap<String,String> display_settings = new HashMap<String, String>();
+    private static HashMap<String,List<String>> displays = new HashMap<>();
+    private static HashMap<String,List<String>> shown_displays = new HashMap<>();
+    private static HashMap<String,Double[]> displays_xy = new HashMap<>();
+    private static HashMap<String,String> display_settings = new HashMap<>();
 
     private static String updateDisplay(String display_name, Boolean isAsync) {
         List<String> display;
@@ -36,7 +36,7 @@ public class DisplayHandler {
                 && shown_displays.containsKey(display_name)) {
             display = displays.get(display_name);
 
-            List<String> display_return = new ArrayList<String>();
+            List<String> display_return = new ArrayList<>();
 
             for (String value : display) {
                 //setup backup for functions so strings don't get overwritten
@@ -73,14 +73,14 @@ public class DisplayHandler {
         if (displays.containsKey(display_name)
                 && displays_xy.containsKey(display_name)
                 && shown_displays.containsKey(display_name)) {
-            ArrayList<String> display = new ArrayList<String>(displays.get(display_name));
+            ArrayList<String> display = new ArrayList<>(displays.get(display_name));
             display.add(value);
             displays.put(display_name, display);
             return "Added " + value + " to " + display_name;
         } else {
             displays.put(display_name, Collections.singletonList(value));
             displays_xy.put(display_name, new Double[]{0.0,0.0,1.0});
-            shown_displays.put(display_name, new ArrayList<String>());
+            shown_displays.put(display_name, new ArrayList<>());
             return "Created and added " + value + " to " + display_name;
         }
     }
@@ -165,6 +165,13 @@ public class DisplayHandler {
         display_settings.clear();
     }
 
+    private static String removeExtras(String in, String... replace) {
+        for (String string : replace) {
+            in = in.replace(string, "");
+        }
+        return in;
+    }
+
     public static void drawDisplays(RenderGameOverlayEvent event) {
         if (event.getType() == RenderGameOverlayEvent.ElementType.TEXT) {
         GL11.glColor4f(1, 1, 1, 1);
@@ -179,7 +186,6 @@ public class DisplayHandler {
                 Double[] display_xy;
                 String settings = getDisplaySettings(display_name);
                 int max_width = 0;
-                int color = 0x00ffffff;
 
                 if (displays_xy.containsKey(display_name)) {
                     display_xy = displays_xy.get(display_name);
@@ -190,9 +196,9 @@ public class DisplayHandler {
                 String bg = "none";
                 String bgc = "40000000";
 
-                List<String> display_texts = new ArrayList<String>();
-                List<Float> display_xs = new ArrayList<Float>();
-                List<Float> display_ys = new ArrayList<Float>();
+                List<String> display_texts = new ArrayList<>();
+                List<Float> display_xs = new ArrayList<>();
+                List<Float> display_ys = new ArrayList<>();
                 boolean up = false;
                 int align = 0;
 
@@ -236,7 +242,10 @@ public class DisplayHandler {
                         rainbow_string = display_text.substring(display_text.indexOf("<rainbow="), display_text.indexOf(">", display_text.indexOf("<rainbow="))+1);
                     }
 
-
+                    String shadow_string = "";
+                    if (display_text.contains("<shadow=") && display_text.contains(">")) {
+                        shadow_string = display_text.substring(display_text.indexOf("<shadow="), display_text.indexOf(">", display_text.indexOf("<shadow="))+1);
+                    }
 
                     if (display_text.contains("<up>")) {
                         up = true;
@@ -244,13 +253,13 @@ public class DisplayHandler {
                         if (display_text.contains("<center>")) {
                             align = 1;
                             display_text = display_text.replace("<center>","");
-                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","").replace(rainbow_string,"")));
+                            int text_width = ren.getStringWidth(removeExtras(IconHandler.removeIconString(display_text), "<rainbow>", rainbow_string, shadow_string));
                             display_x = ((display_xy[0].floatValue() * width) / 100) - text_width/2;
                             display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
                         } else if (display_text.contains("<right>")) {
                             align = 2;
                             display_text = display_text.replace("<right>","");
-                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","").replace(rainbow_string,"")));
+                            int text_width = ren.getStringWidth(removeExtras(IconHandler.removeIconString(display_text), "<rainbow>", rainbow_string, shadow_string));
                             display_x = ((display_xy[0].floatValue() * width) / 100) - text_width;
                             display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
                         } else {
@@ -263,13 +272,13 @@ public class DisplayHandler {
                         if (display_text.contains("<center>")) {
                             align = 1;
                             display_text = display_text.replace("<center>","");
-                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","").replace(rainbow_string,"")));
+                            int text_width = ren.getStringWidth(removeExtras(IconHandler.removeIconString(display_text), "<rainbow>", rainbow_string, shadow_string));
                             display_x = ((display_xy[0].floatValue() * width) / 100) - text_width/2;
                             display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
                         } else if (display_text.contains("<right>")) {
                             align = 2;
                             display_text = display_text.replace("<right>","");
-                            int text_width = ren.getStringWidth(IconHandler.removeIconString(display_text.replace("<rainbow>","").replace(rainbow_string,"")));
+                            int text_width = ren.getStringWidth(removeExtras(IconHandler.removeIconString(display_text), "<rainbow>", rainbow_string, shadow_string));
                             display_x = ((display_xy[0].floatValue() * width) / 100) - text_width;
                             display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
                         } else {
@@ -278,10 +287,13 @@ public class DisplayHandler {
                             display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
                         }
                     }
-                    display_text = IconHandler.drawIcons(display_text, floor(display_x), floor(display_y));
 
-                    if (ren.getStringWidth(display_text) > max_width) {
-                        max_width = ren.getStringWidth(display_text);
+                    String trimmed_display_text = removeExtras(display_text, "<rainbow>", rainbow_string, shadow_string);
+
+
+
+                    if (ren.getStringWidth(IconHandler.removeIconString(trimmed_display_text)) > max_width) {
+                        max_width = ren.getStringWidth(IconHandler.removeIconString(trimmed_display_text));
                     }
 
                     display_texts.add(display_text);
@@ -290,68 +302,32 @@ public class DisplayHandler {
                 }
 
                 if (display_texts.size() > 0) {
-                    drawDisplay(display_texts, display_xs, display_ys, color, bg, bgc, max_width, up, align);
+                    drawDisplay(display_texts, display_xs, display_ys, bg, bgc, max_width, up, align);
                 }
             }
         }
     }
 
-    private static void drawDisplay(List<String> display_texts, List<Float> display_xs, List<Float> display_ys, int color, String bg, String bgc, int max_width, boolean up, int align) {
+    private static void drawDisplay(List<String> display_texts, List<Float> display_xs, List<Float> display_ys, String bg, String bgc, int max_width, boolean up, int align) {
         FontRenderer ren = Minecraft.getMinecraft().fontRendererObj;
 
         if (bg.equalsIgnoreCase("full")) {
             int bg_y = floor(display_ys.get(0));
             if (up) {
-                if (align == 0) {
-                    int bg_x = floor(display_xs.get(0));
-                    int bg_h = floor(display_ys.get(display_ys.size()-1));
-                    try {
-                        drawRect(bg_x, bg_y+10, bg_x+max_width, bg_h, (int) Long.parseLong(bgc, 16));
-                    } catch (NumberFormatException e) {
-                        drawRect(bg_x, bg_y+10, bg_x+max_width, bg_h, 0x40000000);
-                    }
-                } else if (align == 1) {
-                    int bg_x = floor(display_xs.get(0)) + 3;
-                    int bg_h = floor(display_ys.get(display_ys.size()-1));
-                    try {
-                        drawRect(bg_x-max_width/4, bg_y+10, bg_x+(max_width-max_width/4), bg_h, (int) Long.parseLong(bgc, 16));
-                    } catch (NumberFormatException e) {
-                        drawRect(bg_x-max_width/4, bg_y+10, bg_x+(max_width-max_width/4), bg_h, 0x40000000);
-                    }
-                } else if (align == 2) {
-                    int bg_x = floor(display_xs.get(0)) + 9;
-                    int bg_h = floor(display_ys.get(display_ys.size()-1));
-                    try {
-                        drawRect(bg_x - max_width/2, bg_y+10, bg_x + max_width/2, bg_h, (int) Long.parseLong(bgc, 16));
-                    } catch (NumberFormatException e) {
-                        drawRect(bg_x - max_width/2, bg_y+10, bg_x + max_width/2, bg_h, 0x40000000);
-                    }
+                int bg_x = floor(display_xs.get(0));
+                int bg_h = floor(display_ys.get(display_ys.size()-1));
+                try {
+                    drawRect(bg_x, bg_y+10, bg_x+max_width, bg_h, (int) Long.parseLong(bgc, 16));
+                } catch (NumberFormatException e) {
+                    drawRect(bg_x, bg_y+10, bg_x+max_width, bg_h, 0x40000000);
                 }
             } else {
-                if (align == 0) {
-                    int bg_x = floor(display_xs.get(0));
-                    int bg_h = floor(display_ys.get(display_ys.size()-1))+10;
-                    try {
-                        drawRect(bg_x, bg_y, bg_x+max_width, bg_h, (int) Long.parseLong(bgc, 16));
-                    } catch (NumberFormatException e) {
-                        drawRect(bg_x, bg_y, bg_x+max_width, bg_h, 0x40000000);
-                    }
-                } else if (align == 1) {
-                    int bg_x = floor(display_xs.get(0)) + 3;
-                    int bg_h = floor(display_ys.get(display_ys.size()-1))+10;
-                    try {
-                        drawRect(bg_x-max_width/4, bg_y, bg_x+(max_width-max_width/4), bg_h, (int) Long.parseLong(bgc, 16));
-                    } catch (NumberFormatException e) {
-                        drawRect(bg_x-max_width/4, bg_y, bg_x+(max_width-max_width/4), bg_h, 0x40000000);
-                    }
-                } else if (align == 2) {
-                    int bg_x = floor(display_xs.get(0)) + 9;
-                    int bg_h = floor(display_ys.get(display_ys.size()-1)) + 10;
-                    try {
-                        drawRect(bg_x - max_width/2, bg_y, bg_x + max_width/2, bg_h, (int) Long.parseLong(bgc, 16));
-                    } catch (NumberFormatException e) {
-                        drawRect(bg_x - max_width/2, bg_y, bg_x + max_width/2, bg_h, 0x40000000);
-                    }
+                int bg_x = floor(display_xs.get(0));
+                int bg_h = floor(display_ys.get(display_ys.size()-1))+10;
+                try {
+                    drawRect(bg_x, bg_y, bg_x+max_width, bg_h, (int) Long.parseLong(bgc, 16));
+                } catch (NumberFormatException e) {
+                    drawRect(bg_x, bg_y, bg_x+max_width, bg_h, 0x40000000);
                 }
             }
         }
@@ -361,6 +337,7 @@ public class DisplayHandler {
             float display_x = display_xs.get(i);
             float display_y = display_ys.get(i);
 
+            int color;
             if (display_text.contains("<rainbow>") || (display_text.contains("<rainbow=") && display_text.contains(">"))) {
                 display_text = display_text.replace("<rainbow>", "");
                 float speed = 5;
@@ -390,15 +367,23 @@ public class DisplayHandler {
                 color = 0xffffff;
             }
 
+            Boolean shadow = true;
+            if (display_text.contains("<shadow=") && display_text.contains(">")) {
+                String shadow_string = display_text.substring(display_text.indexOf("<shadow=")+8, display_text.indexOf(">", display_text.indexOf("<shadow=")));
+                display_text = display_text.replace("<shadow="+shadow_string+">", "");
+                shadow = shadow_string.equals("true");
+            }
+
             if (!display_text.equals("") && bg.equalsIgnoreCase("line")) {
                 try {
-                    drawRect(display_x, display_y, display_x + ren.getStringWidth(display_text), display_y + 10, (int) Long.parseLong(bgc, 16));
+                    drawRect(display_x, display_y, display_x + ren.getStringWidth(IconHandler.removeIconString(display_text)), display_y + 10, (int) Long.parseLong(bgc, 16));
                 } catch (NumberFormatException e) {
-                    drawRect(display_x, display_y, display_x + ren.getStringWidth(display_text), display_y + 10, 0x40000000);
+                    drawRect(display_x, display_y, display_x + ren.getStringWidth(IconHandler.removeIconString(display_text)), display_y + 10, 0x40000000);
                 }
             }
 
-            ren.drawStringWithShadow(display_text, display_x, display_y, color);
+            display_text = IconHandler.drawIcons(display_text, floor(display_x), floor(display_y));
+            ren.drawString(display_text, display_x, display_y, color, shadow);
         }
     }
 
@@ -534,8 +519,9 @@ public class DisplayHandler {
                 get_value = temp_search.substring(0, temp_search.indexOf(")"));
             }
             get_value = get_value.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
+            String fin_value = StringFunctions.nestedArgs(get_value, null, isAsync);
 
-            TMP_e = createDefaultString("settings", get_name, get_value, setDisplaySettings(get_name, get_value), TMP_e, isAsync);
+            TMP_e = createDefaultString("settings", get_name, get_value, setDisplaySettings(get_name, fin_value), TMP_e, isAsync);
         }
 
         return TMP_e;
@@ -547,11 +533,8 @@ public class DisplayHandler {
             global.backupAsync_string.put("DisplayToString->" + display_name + function_name.toUpperCase() + "-" + global.TMP_string.size(), value);
             return TMP_e.replace("{display["+display_name+"]}."+function_name+"("+arguments+")","{string[AsyncDisplayToString->"+display_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
         } else {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("DisplayToString->" + display_name + function_name.toUpperCase() + "-" + (global.TMP_string.size() + 1));
-            temporary.add(value);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+            global.TMP_string.put("DisplayToString->" + display_name + function_name.toUpperCase() + "-" + (global.TMP_string.size() + 1), value);
+            global.backupTMP_strings.put("DisplayToString->" + display_name + function_name.toUpperCase() + "-" + global.TMP_string.size(), value);
             return TMP_e.replace("{display["+display_name+"]}."+function_name+"("+arguments+")","{string[DisplayToString->"+display_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
         }
     }

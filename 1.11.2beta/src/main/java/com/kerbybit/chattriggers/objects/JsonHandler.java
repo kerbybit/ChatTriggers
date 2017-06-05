@@ -6,10 +6,8 @@ import com.google.gson.JsonParser;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.triggers.StringFunctions;
-import com.kerbybit.chattriggers.triggers.StringHandler;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public class JsonHandler {
-    private static HashMap<String, JsonObject> jsons = new HashMap<String, JsonObject>();
+    private static HashMap<String, JsonObject> jsons = new HashMap<>();
 
     public static String getForJson(String in) {
         return in.replace("\"", "\\\"").replace("'", "\\'");
@@ -34,8 +32,6 @@ public class JsonHandler {
             bufferedReader.close();
 
             return new JsonParser().parse(jsonString.toString()).getAsJsonObject();
-        } catch (MalformedURLException e1) {
-            return null;
         } catch (Exception e2) {
             return null;
         }
@@ -159,7 +155,7 @@ public class JsonHandler {
             returnString = new StringBuilder(getValue(key, value));
             obj = new JsonParser().parse(returnString.toString()).getAsJsonObject();
         }
-        List<String> keys = new ArrayList<String>();
+        List<String> keys = new ArrayList<>();
         for (Map.Entry<String, JsonElement> ele : obj.entrySet()) {
             keys.add(ele.getKey());
         }
@@ -180,7 +176,7 @@ public class JsonHandler {
     private static String getValues(String key, String value) {
         StringBuilder returnString = new StringBuilder(getValue(key, value));
         JsonObject obj = new JsonParser().parse(returnString.toString()).getAsJsonObject();
-        List<String> keys = new ArrayList<String>();
+        List<String> keys = new ArrayList<>();
         for (Map.Entry<String, JsonElement> eles : obj.entrySet()) {
             String ele = eles.getValue() + "";
             if (ele.startsWith("\"") && ele.endsWith("\"")) {
@@ -310,22 +306,21 @@ public class JsonHandler {
             TMP_e = createDefaultString("getValues", get_name, get_prevalue, getValues(get_name, get_value), TMP_e, isAsync);
         }
 
-
-
-
         while (TMP_e.contains("{json[") && TMP_e.contains("]}")) {
             String get_name = TMP_e.substring(TMP_e.indexOf("{json[")+6, TMP_e.indexOf("]}", TMP_e.indexOf("{json[")));
             while (get_name.contains("{json[")) {
                 get_name = get_name.substring(get_name.indexOf("{json[")+6);
             }
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("JsonToString->"+get_name+"GETVALUE-"+(global.TMP_string.size()+1));
-            temporary.add(getValue(get_name));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-
-            TMP_e = TMP_e.replace("{json["+get_name+"]}", "{string[JsonToString->"+get_name+"GETVALUE-"+global.TMP_string.size()+"]}");
+            if (isAsync) {
+                global.Async_string.put("AsyncJsonToString->"+get_name+"-"+(global.Async_string.size()+1), getValue(get_name));
+                global.backupAsync_string.put("AsyncJsonToString->"+get_name+"-"+global.Async_string.size(), getValue(get_name));
+                TMP_e = TMP_e.replace("{json["+get_name+"]}","{string[AsyncJsonToString->"+get_name+"-"+global.Async_string.size()+"]}");
+            } else {
+                global.TMP_string.put("JsonToString->"+get_name+"-"+(global.TMP_string.size()+1), getValue(get_name));
+                global.backupTMP_strings.put("JsonToString->"+get_name+"-"+global.TMP_string.size(), getValue(get_name));
+                TMP_e = TMP_e.replace("{json["+get_name+"]}","{string[JsonToString->"+get_name+"-"+global.TMP_string.size()+"]}");
+            }
         }
 
         return TMP_e;
@@ -337,13 +332,14 @@ public class JsonHandler {
             global.backupAsync_string.put("AsyncJsonToString->"+json_name+function.toUpperCase()+"-"+global.Async_string.size(), value);
             return TMP_e.replace("{json["+json_name+"]}."+function+"("+arguments+")","{string[AsyncJsonToString->"+json_name+function.toUpperCase()+"-"+global.Async_string.size()+"]}");
         } else {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("JsonToString->"+json_name+function.toUpperCase()+"-"+(global.TMP_string.size()+1));
-            temporary.add(value);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+            global.TMP_string.put("JsonToString->"+json_name+function.toUpperCase()+"-"+(global.TMP_string.size()+1), value);
+            global.backupTMP_strings.put("JsonToString->"+json_name+function.toUpperCase()+"-"+global.TMP_string.size(), value);
             return TMP_e.replace("{json["+json_name+"]}."+function+"("+arguments+")","{string[JsonToString->"+json_name+function.toUpperCase()+"-"+global.TMP_string.size()+"]}");
         }
+    }
+
+    private static String createDefaultString(String function, String json_name, String value, String TMP_e, Boolean isAsync) {
+        return createDefaultString(function, json_name, "", value, TMP_e, isAsync);
     }
 
     private static String createDefaultString(String json_name, String value, String TMP_e, Boolean isAsync) {
@@ -355,7 +351,7 @@ public class JsonHandler {
     }
 
     public static void trimJsons() {
-        HashMap<String, JsonObject> jsons_copy = new HashMap<String, JsonObject>(jsons);
+        HashMap<String, JsonObject> jsons_copy = new HashMap<>(jsons);
 
         for (String key : jsons_copy.keySet()) {
             if (key.startsWith("DefaultJson")) {

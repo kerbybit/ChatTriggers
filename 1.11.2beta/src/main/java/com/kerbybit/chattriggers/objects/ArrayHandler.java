@@ -14,7 +14,7 @@ import com.kerbybit.chattriggers.triggers.StringHandler;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class ArrayHandler {
-    private static List<List<String>> USR_array = new ArrayList<List<String>>();
+    private static List<List<String>> USR_array = new ArrayList<>();
 
     public static List<List<String>> getArrays() {
         return USR_array;
@@ -34,26 +34,36 @@ public class ArrayHandler {
 
 	        for (List<String> value : USR_array) {
 	            if (value.get(0).equals(get_name)) {
-                    List<String> temporary = new ArrayList<String>();
-                    temporary.add("ArrayToString->"+get_name+"GETR"+"-"+(global.TMP_string.size()+1));
-                    temporary.add(value.get(EventsHandler.randInt(1, value.size()-1)));
-                    global.TMP_string.add(temporary);
-                    global.backupTMP_strings.add(temporary);
+                    String stringName;
+                    if (isAsync) {
+                        stringName = "AsyncArrayToString->" + get_name + "GETR-" + (global.Async_string.size() + 1);
+                        global.Async_string.put(stringName, value.get(EventsHandler.randInt(1, value.size()-1)));
+                        global.backupAsync_string.put(stringName, value.get(EventsHandler.randInt(1, value.size()-1)));
+                    } else {
+                        stringName = "ArrayToString->" + get_name + "GETR-" + (global.TMP_string.size() + 1);
+                        global.TMP_string.put(stringName, value.get(EventsHandler.randInt(1, value.size()-1)));
+                        global.backupTMP_strings.put(stringName, value.get(EventsHandler.randInt(1, value.size()-1)));
+                    }
 
-                    TMP_e = TMP_e.replace("{array["+get_name+"]}.getRandom()","{string[ArrayToString->"+get_name+"GETR"+"-"+global.TMP_string.size()+"]}");
+                    TMP_e = TMP_e.replace("{array["+get_name+"]}.getRandom()","{string["+stringName+"]}");
 
 	                isArray = true;
                 }
             }
 
             if (!isArray) {
-                List<String> temporary = new ArrayList<String>();
-                temporary.add("ArrayToString->"+get_name+"GETR"+"-"+(global.TMP_string.size()+1));
-                temporary.add(get_name + " is not currently an array");
-                global.TMP_string.add(temporary);
-                global.backupTMP_strings.add(temporary);
+                String stringName;
+                if (isAsync) {
+                    stringName = "AsyncArrayToString->" + get_name + "GETR-" + (global.Async_string.size() + 1);
+                    global.Async_string.put(stringName, get_name + " is not currently an array");
+                    global.backupAsync_string.put(stringName, get_name + " is not currently an array");
+                } else {
+                    stringName = "ArrayToString->" + get_name + "GETR-" + (global.TMP_string.size() + 1);
+                    global.TMP_string.put(stringName, get_name + " is not currently an array");
+                    global.backupTMP_strings.put(stringName, get_name + " is not currently an array");
+                }
 
-                TMP_e = TMP_e.replace("{array["+get_name+"]}.getRandom()","{string[ArrayToString->"+get_name+"GETR"+"-"+global.TMP_string.size()+"]}");
+                TMP_e = TMP_e.replace("{array["+get_name+"]}.getRandom()","{string["+stringName+"]}");
             }
         }
 
@@ -72,7 +82,7 @@ public class ArrayHandler {
 				for (int j=0; j<USR_array.size(); j++) {
 					if (USR_array.get(j).get(0).equals(checkFrom)) {
 						String[] moreargs = args[0].split(args[1]);
-						List<String> temporary = new ArrayList<String>();
+						List<String> temporary = new ArrayList<>();
 						temporary.addAll(Arrays.asList(moreargs));
 						returnString = new StringBuilder("[");
 						for (String value : temporary) {returnString.append(value).append(" ");}
@@ -83,9 +93,9 @@ public class ArrayHandler {
 				}
 				if (!isArray) {
 					String[] moreargs = args[0].split(args[1]);
-					List<String> temporary = new ArrayList<String>();
+					List<String> temporary = new ArrayList<>();
 					temporary.add(checkFrom);
-					List<String> temp = new ArrayList<String>();
+					List<String> temp = new ArrayList<>();
 					temporary.addAll(Arrays.asList(moreargs));
 					returnString = new StringBuilder("[");
 					for (String value : temp) {returnString.append(value).append(" ");}
@@ -94,13 +104,19 @@ public class ArrayHandler {
 					USR_array.add(temporary);
 				}
 			} else {returnString = new StringBuilder("setSplit formatted wrong! use .setSplit(value,split)");}
-			
-			List<String> temporary = new ArrayList<String>();
-			temporary.add("ArrayToString->"+checkFrom+"SETSPLIT"+checkTo+"-"+(global.TMP_string.size()+1));
-			temporary.add(returnString.toString());
-			global.TMP_string.add(temporary);
-			global.backupTMP_strings.add(temporary);
-			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.setSplit(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"SETSPLIT"+checkTo+"-"+global.TMP_string.size()+"]}");
+
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "SETSPLIT-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, returnString.toString());
+                global.backupAsync_string.put(stringName, returnString.toString());
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "SETSPLIT-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, returnString.toString());
+                global.backupTMP_strings.put(stringName, returnString.toString());
+            }
+
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.setSplit(" + checkTo + ")", "{string["+stringName+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.add(") && TMP_e.contains(")")) {
@@ -135,18 +151,24 @@ public class ArrayHandler {
 			}
 			
 			if (!isArray) {
-				List<String> prearray = new ArrayList<String>();
+				List<String> prearray = new ArrayList<>();
 				prearray.add(checkFrom);
 				prearray.add(fin_checkTo);
                 USR_array.add(prearray);
 			}
-			
-			List<String> temporary = new ArrayList<String>();
-			temporary.add("ArrayToString->"+checkFrom+"ADD"+checkTo+"-"+(global.TMP_string.size()+1));
-			temporary.add(checkTo);
-			global.TMP_string.add(temporary);
-			global.backupTMP_strings.add(temporary);
-			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.add(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"ADD"+checkTo+"-"+global.TMP_string.size()+"]}");
+
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "ADD-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, checkTo);
+                global.backupAsync_string.put(stringName, checkTo);
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "ADD-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, checkTo);
+                global.backupTMP_strings.put(stringName, checkTo);
+            }
+
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.add(" + checkTo + ")", "{string["+stringName+"]}");
 		}
 
         while (TMP_e.contains("{array[") && TMP_e.contains("]}.prepend(") && TMP_e.contains(")")) {
@@ -158,26 +180,32 @@ public class ArrayHandler {
                 checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
             }
 
-            for (int j=0; j<USR_array.size(); j++) {
-                if (USR_array.get(j).get(0).equals(checkFrom)) {
-                    USR_array.get(j).add(1, checkTo);
+            for (List<String> array : USR_array) {
+                if (array.get(0).equals(checkFrom)) {
+                    array.add(1, checkTo);
                     isArray = true;
                 }
             }
 
             if (!isArray) {
-                List<String> prearray = new ArrayList<String>();
+                List<String> prearray = new ArrayList<>();
                 prearray.add(checkFrom);
                 prearray.add(checkTo);
                 USR_array.add(prearray);
             }
 
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("ArrayToString->"+checkFrom+"PREPEND"+checkTo+"-"+(global.TMP_string.size()+1));
-            temporary.add(checkTo);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
-            TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.prepend(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"PREPEND"+checkTo+"-"+global.TMP_string.size()+"]}");
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "PREPEND-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, checkTo);
+                global.backupAsync_string.put(stringName, checkTo);
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "PREPEND-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, checkTo);
+                global.backupTMP_strings.put(stringName, checkTo);
+            }
+
+            TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.prepend(" + checkTo + ")", "{string["+stringName+"]}");
         }
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.clear()")) {
@@ -194,13 +222,19 @@ public class ArrayHandler {
 					returnString = checkFrom + " cleared.";
 				}
 			}
-			
-			List<String> temporary = new ArrayList<String>();
-			temporary.add("ArrayToString->"+checkFrom+"CLEAR"+"-"+(global.USR_string.size()+1));
-			temporary.add(returnString);
-			global.TMP_string.add(temporary);
-			global.backupTMP_strings.add(temporary);
-			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.clear()", "{string[ArrayToString->"+checkFrom+"CLEAR"+"-"+global.TMP_string.size()+"]}");
+
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "CLEAR-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, returnString);
+                global.backupAsync_string.put(stringName, returnString);
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "CLEAR-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, returnString);
+                global.backupTMP_strings.put(stringName, returnString);
+            }
+
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.clear()", "{string["+stringName+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.has(") && TMP_e.contains(")")) {
@@ -211,21 +245,27 @@ public class ArrayHandler {
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
 				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
-			
-			for (int j=0; j<USR_array.size(); j++) {
-				if (USR_array.get(j).get(0).equals(checkFrom)) {
-					for (int k=1; k<USR_array.get(j).size(); k++) {
-						if (USR_array.get(j).get(k).equals(checkTo)) {checkThis = "true";}
+
+			for (List<String> array : USR_array) {
+				if (array.get(0).equals(checkFrom)) {
+					for (int k=1; k<array.size(); k++) {
+						if (array.get(k).equals(checkTo)) {checkThis = "true";}
 					}
 				}
 			}
-			
-			List<String> temporary = new ArrayList<String>();
-			temporary.add("ArrayToString->"+checkFrom+"HAS"+checkTo+"-"+(global.TMP_string.size()+1));
-			temporary.add(checkThis);
-			global.TMP_string.add(temporary);
-			global.backupTMP_strings.add(temporary);
-			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.has("+checkTo+")", "{string[ArrayToString->"+checkFrom+"HAS"+checkTo+"-"+global.TMP_string.size()+"]}");
+
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "HAS-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, checkThis);
+                global.backupAsync_string.put(stringName, checkThis);
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "HAS-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, checkThis);
+                global.backupTMP_strings.put(stringName, checkThis);
+            }
+
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.has("+checkTo+")", "{string["+stringName+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.hasIgnoreCase(") && TMP_e.contains(")")) {
@@ -236,21 +276,27 @@ public class ArrayHandler {
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
 				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
-			
-			for (int j=0; j<USR_array.size(); j++) {
-				if (USR_array.get(j).get(0).equals(checkFrom)) {
-					for (int k=1; k<USR_array.get(j).size(); k++) {
-						if (USR_array.get(j).get(k).equalsIgnoreCase(checkTo)) {checkThis = "true";}
+
+			for (List<String> array : USR_array) {
+				if (array.get(0).equals(checkFrom)) {
+					for (int k=1; k<array.size(); k++) {
+						if (array.get(k).equalsIgnoreCase(checkTo)) {checkThis = "true";}
 					}
 				}
 			}
-			
-			List<String> temporary = new ArrayList<String>();
-			temporary.add("ArrayToString->"+checkFrom+"HASIGNORECASE"+checkTo+"-"+(global.TMP_string.size()+1));
-			temporary.add(checkThis);
-			global.TMP_string.add(temporary);
-			global.backupTMP_strings.add(temporary);
-			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.hasIgnoreCase("+checkTo+")", "{string[ArrayToString->"+checkFrom+"HASIGNORECASE"+checkTo+"-"+global.TMP_string.size()+"]}");
+
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "HASIGNORECASE-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, checkThis);
+                global.backupAsync_string.put(stringName, checkThis);
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "HASIGNORECASE-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, checkThis);
+                global.backupTMP_strings.put(stringName, checkThis);
+            }
+
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.hasIgnoreCase("+checkTo+")", "{string["+stringName+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.remove(") && TMP_e.contains(")")) {
@@ -293,13 +339,19 @@ public class ArrayHandler {
 			}
 			
 			if (toRemoveArray != -1) {USR_array.remove(toRemoveArray);}
-			
-			List<String> temporary = new ArrayList<String>();
-			temporary.add("ArrayToString->"+checkFrom+"REMOVE"+checkTo+"-"+(global.TMP_string.size()+1));
-			temporary.add(returnString);
-			global.TMP_string.add(temporary);
-			global.backupTMP_strings.add(temporary);
-			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.remove(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"REMOVE"+checkTo+"-"+global.TMP_string.size()+"]}");
+
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "REMOVE-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, returnString);
+                global.backupAsync_string.put(stringName, returnString);
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "REMOVE-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, returnString);
+                global.backupTMP_strings.put(stringName, returnString);
+            }
+
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.remove(" + checkTo + ")", "{string["+stringName+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.get(") && TMP_e.contains(")")) {
@@ -326,24 +378,30 @@ public class ArrayHandler {
 					}
 				} else {returnString = "Value under bounds! (index "+toGet+" - expecting 1)";}
 			} catch (NumberFormatException e) {
-				for (int j=0; j<USR_array.size(); j++) {
-					if (USR_array.get(j).get(0).equals(checkFrom)) {
+			    for (List<String> array : USR_array) {
+					if (array.get(0).equals(checkFrom)) {
 						returnString = "-1";
-						for (int k=1; k<USR_array.get(j).size(); k++) {
-							if (USR_array.get(j).get(k).equals(checkTo)) {
+						for (int k=1; k<array.size(); k++) {
+							if (array.get(k).equals(checkTo)) {
 								returnString = k +"";
 							}
 						}
 					}
 				}
 			}
-			
-			List<String> temporary = new ArrayList<String>();
-			temporary.add("ArrayToString->"+checkFrom+"GET"+checkTo+"-"+(global.TMP_string.size()+1));
-			temporary.add(returnString);
-			global.TMP_string.add(temporary);
-			global.backupTMP_strings.add(temporary);
-			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.get(" + checkTo + ")", "{string[ArrayToString->"+checkFrom+"GET"+checkTo+"-"+global.TMP_string.size()+"]}");
+
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "GET-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, returnString);
+                global.backupAsync_string.put(stringName, returnString);
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "GET-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, returnString);
+                global.backupTMP_strings.put(stringName, returnString);
+            }
+
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.get(" + checkTo + ")", "{string["+stringName+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.size()")) {
@@ -353,17 +411,23 @@ public class ArrayHandler {
 			if (checkFrom.contains("{string[") && checkFrom.contains("]}")) {
 				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
-			
-			for (int j=0; j<USR_array.size(); j++) {
-				if (USR_array.get(j).get(0).equals(checkFrom)) {arraysize = USR_array.get(j).size()-1;}
+
+			for (List<String> array : USR_array) {
+				if (array.get(0).equals(checkFrom)) {arraysize = array.size()-1;}
 			}
-			
-			List<String> temporary = new ArrayList<String>();
-			temporary.add("ArrayToString->"+checkFrom+"SIZE"+"-"+(global.TMP_string.size()+1));
-			temporary.add(arraysize+"");
-			global.TMP_string.add(temporary);
-			global.backupTMP_strings.add(temporary);
-			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.size()", "{string[ArrayToString->"+checkFrom+"SIZE"+"-"+global.TMP_string.size()+"]}");
+
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "SIZE-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, arraysize+"");
+                global.backupAsync_string.put(stringName, arraysize+"");
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "SIZE-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, arraysize+"");
+                global.backupTMP_strings.put(stringName, arraysize+"");
+            }
+
+			TMP_e = TMP_e.replace("{array[" + checkFrom + "]}.size()", "{string["+stringName+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.importJsonFile(") && TMP_e.contains(",") && TMP_e.contains(")")) {
@@ -376,13 +440,19 @@ public class ArrayHandler {
 			}
 			
 			String checkJson = importJsonFile("array",checkFile, checkFrom+"=>"+checkTo);
-			
-			List<String> temporary = new ArrayList<String>();
-			temporary.add("ArrayToString->"+checkFrom+"IMPORTJSONFILE"+checkTo+"FROM"+checkFile+"-"+(global.TMP_string.size()+1));
-			temporary.add(checkJson);
-			global.TMP_string.add(temporary);
-			global.backupTMP_strings.add(temporary);
-			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonFile("+checkFile+","+checkTo+")", "{string[ArrayToString->"+checkFrom+"IMPORTJSONFILE"+checkTo+"FROM"+checkFile+"-"+global.TMP_string.size()+"]}");
+
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "IMPORTJSONFILE-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, checkJson);
+                global.backupAsync_string.put(stringName, checkJson);
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "IMPORTJSONFILE-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, checkJson);
+                global.backupTMP_strings.put(stringName, checkJson);
+            }
+
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonFile("+checkFile+","+checkTo+")", "{string["+stringName+"]}");
 		}
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.importJsonURL(") && TMP_e.contains(",") && TMP_e.contains(")")) {
@@ -394,15 +464,11 @@ public class ArrayHandler {
 				checkFrom = StringHandler.stringFunctions(checkFrom, chatEvent, isAsync);
 			}
 			
-			String checkJson = importJsonURL("array",checkFile, checkFrom + "=>" + checkTo);
-			
-			List<String> temporary = new ArrayList<String>();
-			temporary.add("ArrayToString->"+checkFrom+"IMPORTJSONURL"+checkTo+"FROM"+checkFile+"-"+(global.TMP_string.size()+1));
-			temporary.add(checkJson);
-			global.TMP_string.add(temporary);
-			global.backupTMP_strings.add(temporary);
-			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonURL("+checkFile+","+checkTo+")", "{string[ArrayToString->"+checkFrom+"IMPORTJSONURL"+checkTo+"FROM"+checkFile+"-"+global.TMP_string.size()+"]}");
-		}
+			importJsonURL("array",checkFile, checkFrom + "=>" + checkTo);
+
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonURL("+checkFile+","+checkTo+")", "{array["+checkFrom+"]}");
+		    System.out.println(TMP_e);
+	    }
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.exportJson(") && TMP_e.contains(")")) {
 			String checkFrom = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}.exportJson(", TMP_e.indexOf("{array[")));
@@ -416,24 +482,63 @@ public class ArrayHandler {
 			if (checkTo.contains(",")) {
 				try {returnString = exportJsonFile(checkTo.substring(0, checkTo.indexOf(",")), checkFrom, checkTo.substring(checkTo.indexOf(",")+1));}
 				catch (FileNotFoundException e) {returnString = "File not found and could not be created!";} 
-				catch (UnsupportedEncodingException e) {returnString = "File could not be saved!";} 
-				catch (IOException e) {returnString = "File could not be saved!";}
+				catch (Exception e) {returnString = "File could not be saved!";}
 			} else {returnString = "Invalid arguments! expected .exportJson(fileName,nodeName)";}
-			
-			List<String> temporary = new ArrayList<String>();
-			temporary.add("ArrayToString->"+checkFrom+"EXPORTJSON"+checkTo+"-"+(global.TMP_string.size()+1));
-			temporary.add(returnString);
-			global.TMP_string.add(temporary);
-			global.backupTMP_strings.add(temporary);
-			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.exportJson("+checkTo+")", "{string[ArrayToString->"+checkFrom+"EXPORTJSON"+checkTo+"-"+global.TMP_string.size()+"]}");
+
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + checkFrom + "EXPORTJSON-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, returnString);
+                global.backupAsync_string.put(stringName, returnString);
+            } else {
+                stringName = "ArrayToString->" + checkFrom + "EXPORTJSON-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, returnString);
+                global.backupTMP_strings.put(stringName, returnString);
+            }
+
+			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.exportJson("+checkTo+")", "{string["+stringName+"]}");
 		}
+
+		while (TMP_e.contains("{array[") && TMP_e.contains("]}")) {
+	        String arrayName = TMP_e.substring(TMP_e.indexOf("{array[")+7, TMP_e.indexOf("]}", TMP_e.indexOf("{array[")));
+            StringBuilder getArray = new StringBuilder("[");
+            String gotArray = "";
+
+            for (List<String> array : USR_array) {
+	            if (array.get(0).equals(arrayName)) {
+	                for (int i=1; i<array.size(); i++) {
+	                    getArray.append(array.get(i)).append(",");
+                    }
+                }
+
+                if (getArray.toString().equals("[")) {
+	                gotArray = "[]";
+                } else {
+                    gotArray = getArray.substring(0, getArray.length()-1) + "]";
+                }
+            }
+
+
+            String stringName;
+            if (isAsync) {
+                stringName = "AsyncArrayToString->" + arrayName + "LITERAL-" + (global.Async_string.size() + 1);
+                global.Async_string.put(stringName, gotArray);
+                global.backupAsync_string.put(stringName, gotArray);
+            } else {
+                stringName = "ArrayToString->" + arrayName + "LITERAL-" + (global.TMP_string.size() + 1);
+                global.TMP_string.put(stringName, gotArray);
+                global.backupTMP_strings.put(stringName, gotArray);
+            }
+
+            TMP_e = TMP_e.replace("{array["+arrayName+"]}", "{string["+stringName+"]}");
+        }
 		
 		return TMP_e;
 	}
 
-    public static HashMap<String, String> jsonURL = new HashMap<String, String>();
+    public static HashMap<String, String> jsonURL = new HashMap<>();
 
-    public static String exportJsonFile(String fileName, String arrayName, String nodeName) throws IOException {
+    private static String exportJsonFile(String fileName, String arrayName, String nodeName) throws IOException {
         StringBuilder returnString = new StringBuilder();
         int arrayNum = -1;
 
@@ -476,10 +581,10 @@ public class ArrayHandler {
         return returnString.toString();
     }
 
-    public static String importJsonFile(String type, String fileName, String toImport) {
+    private static String importJsonFile(String type, String fileName, String toImport) {
         StringBuilder returnString = new StringBuilder("Something went wrong!");
         try {
-            List<String> lines = new ArrayList<String>();
+            List<String> lines = new ArrayList<>();
             String line;
             BufferedReader bufferedReader;
             bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName),"UTF-8"));
@@ -505,7 +610,7 @@ public class ArrayHandler {
                     }
 
                     if (whatArray == -1) {
-                        List<String> temporary = new ArrayList<String>();
+                        List<String> temporary = new ArrayList<>();
                         temporary.add(arrayToSave);
                         ArrayHandler.USR_array.add(temporary);
                         whatArray = ArrayHandler.USR_array.size()-1;
@@ -530,28 +635,25 @@ public class ArrayHandler {
                 } else if (type.equalsIgnoreCase("STRING")) {
                     String stringToSave = toImport.substring(0,toImport.indexOf("=>"));
 
-                    for (int i=0; i<global.USR_string.size(); i++) {
-                        if (stringToSave.equals(global.USR_string.get(i).get(0))) {
-                            String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+                    if (global.USR_string.containsKey(stringToSave)) {
+                        String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
 
-                            String check = "\""+jsonGet+"\":\"";
-                            if (jsonString.contains(check)) {
-                                String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
-                                global.USR_string.get(i).set(1, jsonGot);
-                                returnString = new StringBuilder(jsonGot);
-                            }
+                        String check = "\""+jsonGet+"\":\"";
+                        if (jsonString.contains(check)) {
+                            String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+                            global.USR_string.put(stringToSave, jsonGot);
+                            returnString = new StringBuilder(jsonGot);
                         }
                     }
-                    for (int i=0; i<global.TMP_string.size(); i++) {
-                        if (stringToSave.equals(global.TMP_string.get(i).get(0))) {
-                            String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
 
-                            String check = "\""+jsonGet+"\":\"";
-                            if (jsonString.contains(check)) {
-                                String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
-                                global.TMP_string.get(i).set(1, jsonGot);
-                                returnString = new StringBuilder(jsonGot);
-                            }
+                    if (global.TMP_string.containsKey(stringToSave)) {
+                        String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+
+                        String check = "\""+jsonGet+"\":\"";
+                        if (jsonString.contains(check)) {
+                            String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+                            global.TMP_string.put(stringToSave, jsonGot);
+                            returnString = new StringBuilder(jsonGot);
                         }
                     }
                 }
@@ -571,7 +673,7 @@ public class ArrayHandler {
         return returnString.toString();
     }
 
-    public static String importJsonURL(String type, String url, String toImport) {
+    private static String importJsonURL(String type, String url, String toImport) {
         StringBuilder returnString = new StringBuilder("Something went wrong!");
         StringBuilder jsonStringBuilder = new StringBuilder();
 
@@ -581,7 +683,7 @@ public class ArrayHandler {
             try {
                 URL web = new URL(url);
                 InputStream fis = web.openStream();
-                List<String> lines = new ArrayList<String>();
+                List<String> lines = new ArrayList<>();
                 String line;
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis,"UTF-8"));
                 while ((line = bufferedReader.readLine()) != null) {
@@ -620,10 +722,10 @@ public class ArrayHandler {
                 }
 
                 if (whatArray == -1) {
-                    List<String> temporary = new ArrayList<String>();
+                    List<String> temporary = new ArrayList<>();
                     temporary.add(arrayToSave);
-                    ArrayHandler.USR_array.add(temporary);
-                    whatArray = ArrayHandler.USR_array.size()-1;
+                    USR_array.add(temporary);
+                    whatArray = USR_array.size()-1;
                 }
 
                 String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
@@ -646,28 +748,25 @@ public class ArrayHandler {
             } else if (type.equalsIgnoreCase("STRING")) {
                 String stringToSave = toImport.substring(0,toImport.indexOf("=>"));
 
-                for (int i=0; i<global.USR_string.size(); i++) {
-                    if (stringToSave.equals(global.USR_string.get(i).get(0))) {
-                        String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+                if (global.USR_string.containsKey(stringToSave)) {
+                    String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
 
-                        String check = "\""+jsonGet+"\":\"";
-                        if (jsonString.contains(check)) {
-                            String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
-                            global.USR_string.get(i).set(1, jsonGot);
-                            returnString = new StringBuilder(jsonGot);
-                        }
+                    String check = "\""+jsonGet+"\":\"";
+                    if (jsonString.contains(check)) {
+                        String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+                        global.USR_string.put(stringToSave, jsonGot);
+                        returnString = new StringBuilder(jsonGot);
                     }
                 }
-                for (int i=0; i<global.TMP_string.size(); i++) {
-                    if (stringToSave.equals(global.TMP_string.get(i).get(0))) {
-                        String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
 
-                        String check = "\""+jsonGet+"\":\"";
-                        if (jsonString.contains(check)) {
-                            String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
-                            global.TMP_string.get(i).set(1, jsonGot);
-                            returnString = new StringBuilder(jsonGot);
-                        }
+                if (global.TMP_string.containsKey(stringToSave)) {
+                    String jsonGet = toImport.substring(toImport.indexOf("=>")+2, toImport.length());
+
+                    String check = "\""+jsonGet+"\":\"";
+                    if (jsonString.contains(check)) {
+                        String jsonGot = jsonString.substring(jsonString.indexOf(check) + check.length(), jsonString.indexOf("\"", jsonString.indexOf(check)+check.length()));
+                        global.TMP_string.put(stringToSave, jsonGot);
+                        returnString = new StringBuilder(jsonGot);
                     }
                 }
             }

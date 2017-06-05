@@ -9,61 +9,70 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 public class StringHandler {
 
+    //run on main thread every tick
+    public static void updateMarkedStrings() {
+        for (Map.Entry<String, String> string : global.USR_string_mark.entrySet()) {
+            if (!global.USR_string_markdel.containsKey(string.getKey())) {
+                if (global.USR_string.containsKey(string.getKey())) {
+                    global.USR_string.put(string.getKey(), string.getValue());
+                    global.USR_string_markdel.put(string.getKey(), string.getValue());
+                }
+            }
+        }
+
+        for (Map.Entry<String, String> string : global.backupUSR_strings_mark.entrySet()) {
+            if (!global.backupUSR_strings_markdel.containsKey(string.getKey())) {
+                if (global.backupUSR_strings.containsKey(string.getKey())) {
+                    global.backupUSR_strings.put(string.getKey(), string.getValue());
+                    global.backupUSR_strings_markdel.put(string.getKey(), string.getValue());
+                }
+            }
+        }
+
+        deleteMarkedStrings();
+    }
+
+    private static void deleteMarkedStrings() {
+        try {
+            for (String key : global.USR_string_markdel.keySet()) {
+                global.USR_string_markdel.remove(key);
+                global.USR_string_mark.remove(key);
+            }
+        } catch (ConcurrentModificationException exception) {
+            // thrown if async is still messing with strings out of time
+            // clearing marked strings will attempt to run next game tick
+        }
+
+        try {
+            for (String key : global.backupUSR_strings_markdel.keySet()) {
+                global.backupUSR_strings_markdel.remove(key);
+                global.backupUSR_strings_mark.remove(key);
+            }
+        } catch (ConcurrentModificationException exception) {
+            // thrown if async is still messing with strings out of time
+            // clearing marked strings will attempt to run next game tick
+        }
+    }
 	
 	public static void resetBackupStrings() {
         global.backupUSR_strings.clear();
-        List<List<String>> temp = new ArrayList<List<String>>();
-        temp.addAll(global.USR_string);
-
-        for (List<String> backup : temp) {
-            try {
-                if (backup.size() == 2) {
-                    String first = backup.get(0);
-                    String second = backup.get(1);
-                    List<String> temporary = new ArrayList<String>();
-                    temporary.add(first);
-                    temporary.add(second);
-                    global.backupUSR_strings.add(temporary);
-                }
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
+        Map<String, String> tmpUSR = new HashMap<>(global.USR_string);
+        for (Map.Entry<String, String> entry : tmpUSR.entrySet()) {
+            global.backupUSR_strings.put(entry.getKey(), entry.getValue());
         }
 
         global.backupTMP_strings.clear();
-        temp = new ArrayList<List<String>>();
-        temp.addAll(global.TMP_string);
-
-        for (List<String> backup : temp) {
-            try {
-                if (backup.size() == 2) {
-                    String first = backup.get(0);
-                    String second = backup.get(1);
-                    List<String> temporary = new ArrayList<String>();
-                    temporary.add(first);
-                    temporary.add(second);
-                    global.backupTMP_strings.add(temporary);
-                }
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
+        Map<String, String> tempTMP = new HashMap<>(global.TMP_string);
+        for (Map.Entry<String, String> entry : tempTMP.entrySet()) {
+            global.backupTMP_strings.put(entry.getKey(), entry.getValue());
         }
 
         global.backupAsync_string.clear();
-        Map<String, String> tempAsync = new HashMap<String, String>(global.Async_string);
+        Map<String, String> tempAsync = new HashMap<>(global.Async_string);
         for (Map.Entry<String, String> entry : tempAsync.entrySet()) {
             global.backupAsync_string.put(entry.getKey(), entry.getValue());
         }
 		
-	}
-	
-	public static int getStringNum(String sn) {
-		for (int i=0; i<global.USR_string.size(); i++) {
-			if (global.USR_string.get(i).get(0).equals(sn)) {
-				return i;
-			}
-		}
-		return -1;
 	}
 	
 	public static String stringFunctions(String TMP_e, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
@@ -162,17 +171,13 @@ public class StringHandler {
                         returnString = global.Async_string.get(sn);
                     }
                 } else {
-                    for (int i = 0; i < global.USR_string.size(); i++) {
-                        if (global.USR_string.get(i).get(0).equals(sn)) {
-                            returnString = global.USR_string.get(i).get(1);
-                        }
+				    if (global.USR_string.containsKey(sn)) {
+				        returnString = global.USR_string.get(sn);
                     }
                     if (returnString.equals("Not a string!")) {
                         try {
-                            for (int i = 0; i < global.TMP_string.size(); i++) {
-                                if (global.TMP_string.get(i).get(0).equals(sn)) {
-                                    returnString = global.TMP_string.get(i).get(1);
-                                }
+                            if (global.TMP_string.containsKey(sn)) {
+                                returnString = global.TMP_string.get(sn);
                             }
                         } catch (NullPointerException e) {
                             e.printStackTrace();
@@ -191,44 +196,20 @@ public class StringHandler {
 						.replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket")
 						+ secondpart;
 
-                global.USR_string.clear();
-                List<List<String>> temp = new ArrayList<List<String>>();
-                temp.addAll(global.backupUSR_strings);
-				for (List<String> backup : temp) {
-				    try {
-                        if (backup.size() == 2) {
-                            String first = backup.get(0);
-                            String second = backup.get(1);
-                            List<String> temporary = new ArrayList<String>();
-                            temporary.add(first);
-                            temporary.add(second);
-                            global.USR_string.add(temporary);
-                        }
-                    } catch (NullPointerException e) {
-				        e.printStackTrace();
-                    }
-				}
+				global.USR_string.clear();
+				Map<String, String> USRTemp = new HashMap<>(global.backupUSR_strings);
+				for (Map.Entry<String, String> backup : USRTemp.entrySet()) {
+				    global.USR_string.put(backup.getKey(), backup.getValue());
+                }
 
 				global.TMP_string.clear();
-				temp = new ArrayList<List<String>>();
-				temp.addAll(global.backupTMP_strings);
-				for (List<String> backup : temp) {
-				    try {
-                        if (backup.size() == 2) {
-                            String first = backup.get(0);
-                            String second = backup.get(1);
-                            List<String> temporary = new ArrayList<String>();
-                            temporary.add(first);
-                            temporary.add(second);
-                            global.TMP_string.add(temporary);
-                        }
-                    } catch (NullPointerException e) {
-				        e.printStackTrace();
-                    }
+				Map<String, String> TMPTemp = new HashMap<>(global.backupTMP_strings);
+				for (Map.Entry<String, String> backup : TMPTemp.entrySet()) {
+                    global.TMP_string.put(backup.getKey(), backup.getValue());
 				}
 
 				global.Async_string.clear();
-				Map<String, String> AsyncTemp = new HashMap<String, String>(global.backupAsync_string);
+				Map<String, String> AsyncTemp = new HashMap<>(global.backupAsync_string);
 				for (Map.Entry<String, String> entry : AsyncTemp.entrySet()) {
 				    global.Async_string.put(entry.getKey(), entry.getValue());
                 }
@@ -248,7 +229,7 @@ public class StringHandler {
 				if (split_trig[i].startsWith("string[") && split_trig[i].contains("]")) {
 					String stringName = split_trig[i].substring(split_trig[i].indexOf("string[")+7, split_trig[i].indexOf("]"));
 					int stringLength = 0;
-					List<String> stringListSplit = new ArrayList<String>();
+					List<String> stringListSplit = new ArrayList<>();
 					Boolean checkCharacter = false;
 					if (!split_trig[i].endsWith("]")) {
 						try {
@@ -267,24 +248,19 @@ public class StringHandler {
 					if (i==0) {
 						if (msg.contains(split_trig[i+1])) {
 							int stringnum = -1;
-							int tmpstringnum = -1;
-							
-							for (int j=0; j<global.USR_string.size(); j++) {
-								if (global.USR_string.get(j).get(0).equals(stringName)) {
-									stringnum = j;
-								}
-							}
+
+							if (global.USR_string.containsKey(stringName)) {
+							    stringnum = 1;
+                            }
+
 							if (stringnum==-1) {
-								List<String> temporary = new ArrayList<String>();
 								String tmpnum = global.TMP_string.size()+"";
-								temporary.add("TEMP-USER-STRING"+tmpnum+"->"+stringName);
-								temporary.add("");
-								global.TMP_string.add(temporary);
-								tmpstringnum = global.TMP_string.size()-1;
+								global.TMP_string.put("TEMP-USER-STRING"+tmpnum+"->"+stringName, "");
 								global.temporary_replace.add("{string["+stringName+"]");
 								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]"); 
 								global.temporary_replace.add("{string<"+stringName+">");
-								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]"); 
+								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]");
+								stringName = "TEMP-USER-STRING"+tmpnum+"->"+stringName;
 							}
 							
 							
@@ -293,11 +269,11 @@ public class StringHandler {
 								int check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
 								if (check_stringLength == stringLength) {
 									if (stringnum!=-1) {
-										global.USR_string.get(stringnum).set(1, set_string);
-										split_trig[i] = global.USR_string.get(stringnum).get(1);
+										global.USR_string.put(stringName, set_string);
+										split_trig[i] = global.USR_string.get(stringName);
 									} else {
-										global.TMP_string.get(tmpstringnum).set(1, set_string);
-										split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+                                        global.TMP_string.put(stringName, set_string);
+                                        split_trig[i] = global.TMP_string.get(stringName);
 									}
 								}
 							} else if (stringLength < 0) {
@@ -309,11 +285,11 @@ public class StringHandler {
 									try {
 										if (check_stringLength == Integer.parseInt(value)) {
 											if (stringnum!=-1) {
-												global.USR_string.get(stringnum).set(1, set_string);
-												split_trig[i] = global.USR_string.get(stringnum).get(1);
+												global.USR_string.put(stringName, set_string);
+												split_trig[i] = global.USR_string.get(stringName);
 											} else {
-												global.TMP_string.get(tmpstringnum).set(1, set_string);
-												split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+                                                global.TMP_string.put(stringName, set_string);
+                                                split_trig[i] = global.TMP_string.get(stringName);
 											}
 										}
 									} catch (NumberFormatException e) {
@@ -323,47 +299,42 @@ public class StringHandler {
 											int toSplit = Integer.parseInt(fromtoSplit[fromtoSplit.length-1]);
 											if (fromSplit <= check_stringLength && toSplit >= check_stringLength) {
 												if (stringnum!=-1) {
-													global.USR_string.get(stringnum).set(1, set_string);
-													split_trig[i] = global.USR_string.get(stringnum).get(1);
+													global.USR_string.put(stringName, set_string);
+													split_trig[i] = global.USR_string.get(stringName);
 												} else {
-													global.TMP_string.get(tmpstringnum).set(1, set_string);
-													split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+                                                    global.TMP_string.put(stringName, set_string);
+                                                    split_trig[i] = global.TMP_string.get(stringName);
 												}
 											}
-										} catch (NumberFormatException e1) {/*do nothing*/} catch (ArrayIndexOutOfBoundsException e1) {/*do nothing*/}
+										} catch (Exception e1) {/*do nothing*/}
 									}
 								}
 							} else {
 								if (stringnum!=-1) {
-									global.USR_string.get(stringnum).set(1, set_string);
-									split_trig[i] = global.USR_string.get(stringnum).get(1);
+									global.USR_string.put(stringName, set_string);
+									split_trig[i] = global.USR_string.get(stringName);
 								} else {
-									global.TMP_string.get(tmpstringnum).set(1, set_string);
-									split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+                                    global.TMP_string.put(stringName, set_string);
+                                    split_trig[i] = global.TMP_string.get(stringName);
 								}
 							}
 						}
 					} else if (i==split_trig.length-1) {
 						if (msg.contains(split_trig[i-1])) {
 							int stringnum = -1;
-							int tmpstringnum = -1;
-							
-							for (int j=0; j<global.USR_string.size(); j++) {
-								if (global.USR_string.get(j).get(0).equals(stringName)) {
-									stringnum = j;
-								}
-							}
+
+                            if (global.USR_string.containsKey(stringName)) {
+							    stringnum = 1;
+                            }
+
 							if (stringnum==-1) {
-								List<String> temporary = new ArrayList<String>();
 								String tmpnum = global.TMP_string.size()+"";
-								temporary.add("TEMP-USER-STRING"+tmpnum+"->"+stringName);
-								temporary.add("");
-								global.TMP_string.add(temporary);
-								tmpstringnum = global.TMP_string.size()-1;
+								global.TMP_string.put("TEMP-USER-STRING"+tmpnum+"->"+stringName, "");
 								global.temporary_replace.add("{string["+stringName+"]");
 								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]");
 								global.temporary_replace.add("{string<"+stringName+">");
 								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]");
+                                stringName = "TEMP-USER-STRING"+tmpnum+"->"+stringName;
 							}
 							
 							String set_string = msg.substring(msg.indexOf(split_trig[i-1])+split_trig[i-1].length(), msg.length());
@@ -371,11 +342,11 @@ public class StringHandler {
 								int check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
 								if (check_stringLength == stringLength) {
 									if (stringnum!=-1) {
-										global.USR_string.get(stringnum).set(1, set_string);
-										split_trig[i] = global.USR_string.get(stringnum).get(1);
+										global.USR_string.put(stringName, set_string);
+                                        split_trig[i] = global.USR_string.get(stringName);
 									} else {
-										global.TMP_string.get(tmpstringnum).set(1, set_string);
-										split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+                                        global.TMP_string.put(stringName, set_string);
+                                        split_trig[i] = global.TMP_string.get(stringName);
 									}
 								}
 							} else if (stringLength < 0) {
@@ -389,11 +360,11 @@ public class StringHandler {
 									try {
 										if (check_stringLength == Integer.parseInt(value)) {
 											if (stringnum!=-1) {
-												global.USR_string.get(stringnum).set(1, set_string);
-												split_trig[i] = global.USR_string.get(stringnum).get(1);
+											    global.USR_string.put(stringName, set_string);
+												split_trig[i] = global.USR_string.get(stringName);
 											} else {
-												global.TMP_string.get(tmpstringnum).set(1, set_string);
-												split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+                                                global.TMP_string.put(stringName, set_string);
+                                                split_trig[i] = global.TMP_string.get(stringName);
 											}
 										}
 									} catch (NumberFormatException e) {
@@ -403,47 +374,42 @@ public class StringHandler {
 											int toSplit = Integer.parseInt(fromtoSplit[fromtoSplit.length-1]);
 											if (fromSplit <= check_stringLength && toSplit >= check_stringLength) {
 												if (stringnum!=-1) {
-													global.USR_string.get(stringnum).set(1, set_string);
-													split_trig[i] = global.USR_string.get(stringnum).get(1);
+                                                    global.USR_string.put(stringName, set_string);
+                                                    split_trig[i] = global.USR_string.get(stringName);
 												} else {
-													global.TMP_string.get(tmpstringnum).set(1, set_string);
-													split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+                                                    global.TMP_string.put(stringName, set_string);
+                                                    split_trig[i] = global.TMP_string.get(stringName);
 												}
 											}
-										} catch (NumberFormatException e1) {/*do nothing*/} catch (ArrayIndexOutOfBoundsException e1) {/*do nothing*/}
+										} catch (Exception e1) {/*do nothing*/}
 									}
 								}
 							} else {
 								if (stringnum!=-1) {
-									global.USR_string.get(stringnum).set(1, set_string);
-									split_trig[i] = global.USR_string.get(stringnum).get(1);
+                                    global.USR_string.put(stringName, set_string);
+                                    split_trig[i] = global.USR_string.get(stringName);
 								} else {
-									global.TMP_string.get(tmpstringnum).set(1, set_string);
-									split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+                                    global.TMP_string.put(stringName, set_string);
+                                    split_trig[i] = global.TMP_string.get(stringName);
 								}
 							}
 						}
 					} else {
 						if (msg.contains(split_trig[i-1]) && msg.contains(split_trig[i+1])) {
 							int stringnum = -1;
-							int tmpstringnum = -1;
-							
-							for (int j=0; j<global.USR_string.size(); j++) {
-								if (global.USR_string.get(j).get(0).equals(stringName)) {
-									stringnum = j;
-								}
-							}
+
+							if (global.USR_string.containsKey(stringName)) {
+							    stringnum = 1;
+                            }
+
 							if (stringnum==-1) {
-								List<String> temporary = new ArrayList<String>();
 								String tmpnum = global.TMP_string.size()+"";
-								temporary.add("TEMP-USER-STRING"+tmpnum+"->"+stringName);
-								temporary.add("");
-								global.TMP_string.add(temporary);
-								tmpstringnum = global.TMP_string.size()-1;
+								global.TMP_string.put("TEMP-USER-STRING"+tmpnum+"->"+stringName, "");
 								global.temporary_replace.add("{string["+stringName+"]");
 								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]");
 								global.temporary_replace.add("{string<"+stringName+">");
 								global.temporary_replacement.add("{string[TEMP-USER-STRING"+tmpnum+"->"+stringName+"]");
+                                stringName = "TEMP-USER-STRING"+tmpnum+"->"+stringName;
 							}
 							
 							int checkbefore = msg.indexOf(split_trig[i-1])+split_trig[i-1].length();
@@ -457,11 +423,11 @@ public class StringHandler {
 									int check_stringLength = set_string.length() - set_string.replace(" ", "").length() + 1;
 									if (check_stringLength == stringLength) {
 										if (stringnum!=-1) {
-											global.USR_string.get(stringnum).set(1, set_string);
-											split_trig[i] = global.USR_string.get(stringnum).get(1);
+                                            global.USR_string.put(stringName, set_string);
+                                            split_trig[i] = global.USR_string.get(stringName);
 										} else {
-											global.TMP_string.get(tmpstringnum).set(1, set_string);
-											split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+                                            global.TMP_string.put(stringName, set_string);
+                                            split_trig[i] = global.TMP_string.get(stringName);
 										}
 									}
 								} else if (stringLength < 0) {
@@ -475,11 +441,11 @@ public class StringHandler {
 										try {
 											if (check_stringLength == Integer.parseInt(value)) {
 												if (stringnum!=-1) {
-													global.USR_string.get(stringnum).set(1, set_string);
-													split_trig[i] = global.USR_string.get(stringnum).get(1);
+                                                    global.USR_string.put(stringName, set_string);
+                                                    split_trig[i] = global.USR_string.get(stringName);
 												} else {
-													global.TMP_string.get(tmpstringnum).set(1, set_string);
-													split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+                                                    global.TMP_string.put(stringName, set_string);
+                                                    split_trig[i] = global.TMP_string.get(stringName);
 												}
 											}
 										} catch (NumberFormatException e) {
@@ -489,23 +455,23 @@ public class StringHandler {
 												int toSplit = Integer.parseInt(fromtoSplit[fromtoSplit.length-1]);
 												if (fromSplit <= check_stringLength && toSplit >= check_stringLength) {
 													if (stringnum!=-1) {
-														global.USR_string.get(stringnum).set(1, set_string);
-														split_trig[i] = global.USR_string.get(stringnum).get(1);
+                                                        global.USR_string.put(stringName, set_string);
+                                                        split_trig[i] = global.USR_string.get(stringName);
 													} else {
-														global.TMP_string.get(tmpstringnum).set(1, set_string);
-														split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+                                                        global.TMP_string.put(stringName, set_string);
+                                                        split_trig[i] = global.TMP_string.get(stringName);
 													}
 												}
-											} catch (NumberFormatException e1) {/*do nothing*/} catch (ArrayIndexOutOfBoundsException e1) {/*do nothing*/}
+											} catch (Exception e1) {/*do nothing*/}
 										}
 									}
 								} else {
 									if (stringnum!=-1) {
-										global.USR_string.get(stringnum).set(1, set_string);
-										split_trig[i] = global.USR_string.get(stringnum).get(1);
+                                        global.USR_string.put(stringName, set_string);
+                                        split_trig[i] = global.USR_string.get(stringName);
 									} else {
-										global.TMP_string.get(tmpstringnum).set(1, set_string);
-										split_trig[i] = global.TMP_string.get(tmpstringnum).get(1);
+                                        global.TMP_string.put(stringName, set_string);
+										split_trig[i] = global.TMP_string.get(stringName);
 									}
 								}
 							}

@@ -579,6 +579,7 @@ public class BuiltInStrings {
                                 || registryName.equals("lever")
                                 || registryName.equals("pumpkin")
                                 || registryName.equals("lit_pumpkin")
+                                || registryName.equals("hopper")
                                 || registryName.endsWith("_button")
                                 || registryName.endsWith("_pressure_plate")
                                 || registryName.endsWith("_door")

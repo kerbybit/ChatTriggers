@@ -6,12 +6,11 @@ import com.kerbybit.chattriggers.triggers.EventsHandler;
 import com.kerbybit.chattriggers.triggers.StringFunctions;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
 public class ListHandler {
-    private static HashMap<String, List<String>> lists = new HashMap<String, List<String>>();
+    private static HashMap<String, List<String>> lists = new HashMap<>();
 
     private static ArrayList<String> getListFromURL(String url) {
         try {
@@ -24,8 +23,6 @@ public class ListHandler {
             bufferedReader.close();
 
             return getListFromValue(listString.toString());
-        } catch (MalformedURLException e1) {
-            return null;
         } catch (Exception e2) {
             return null;
         }
@@ -104,7 +101,7 @@ public class ListHandler {
             } else {
                 value = value.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",");
                 String[] list = value.substring(1, value.length()-1).split(",");
-                return new ArrayList<String>(Arrays.asList(list));
+                return new ArrayList<>(Arrays.asList(list));
             }
         } else {
             return null;
@@ -142,7 +139,7 @@ public class ListHandler {
 
     private static ArrayList<String> getListObject(String list_name) {
         if (lists.containsKey(list_name)) {
-            return new ArrayList<String>(lists.get(list_name));
+            return new ArrayList<>(lists.get(list_name));
         } else {
             return null;
         }
@@ -545,13 +542,11 @@ public class ListHandler {
     private static String createDefaultString(String function_name, String list_name, String arguments, String value, String TMP_e, Boolean isAsync) {
         if (isAsync) {
             global.Async_string.put("AsyncListToString->" + list_name + function_name.toUpperCase() + "-" + (global.Async_string.size() + 1), value);
+            global.backupAsync_string.put("AsyncListToString->" + list_name + function_name.toUpperCase() + "-" + global.Async_string.size(), value);
             return TMP_e.replace("{list["+list_name+"]}."+function_name+"("+arguments+")", "{string[AsyncListToString->"+list_name+function_name.toUpperCase()+"-"+global.Async_string.size()+"]}");
         } else {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("ListToString->" + list_name + function_name.toUpperCase() + "-" + (global.TMP_string.size() + 1));
-            temporary.add(value);
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+            global.TMP_string.put("ListToString->" + list_name + function_name.toUpperCase() + "-" + (global.TMP_string.size() + 1), value);
+            global.backupTMP_strings.put("ListToString->" + list_name + function_name.toUpperCase() + "-" + global.TMP_string.size(), value);
             return TMP_e.replace("{list["+list_name+"]}."+function_name+"("+arguments+")", "{string[ListToString->"+list_name+function_name.toUpperCase()+"-"+global.TMP_string.size()+"]}");
         }
     }
@@ -566,11 +561,8 @@ public class ListHandler {
             global.backupAsync_string.put("AsyncListToString->" + list_name + "LITERAL" + "-" + global.Async_string.size(), getList(list_name));
             return TMP_e.replace("{list[" + list_name + "]}", "{string[AsyncListToString->" + list_name + "LITERAL" + "-" + global.Async_string.size() + "]}");
         } else {
-            List<String> temporary = new ArrayList<String>();
-            temporary.add("ListToString->" + list_name + "LITERAL" + "-" + (global.TMP_string.size() + 1));
-            temporary.add(getList(list_name));
-            global.TMP_string.add(temporary);
-            global.backupTMP_strings.add(temporary);
+            global.TMP_string.put("ListToString->" + list_name + "LITERAL" + "-" + (global.TMP_string.size() + 1), getList(list_name));
+            global.backupTMP_strings.put("ListToString->" + list_name + "LITERAL" + "-" + global.TMP_string.size(), getList(list_name));
             return TMP_e.replace("{list[" + list_name + "]}", "{string[ListToString->" + list_name + "LITERAL" + "-" + global.TMP_string.size() + "]}");
         }
     }
@@ -580,7 +572,7 @@ public class ListHandler {
     }
 
     public static void trimLists() {
-        HashMap<String, List<String>> lists_copy = new HashMap<String, List<String>>(lists);
+        HashMap<String, List<String>> lists_copy = new HashMap<>(lists);
 
         for (String key : lists_copy.keySet()) {
             if (key.startsWith("JsonToList->") || key.startsWith("StringToList->")) {

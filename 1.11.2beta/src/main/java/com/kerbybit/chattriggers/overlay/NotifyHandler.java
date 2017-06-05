@@ -31,7 +31,7 @@ public class NotifyHandler {
             global.notify_history.remove(0);
         }
 
-        List<Float> temp_list = new ArrayList<Float>();
+        List<Float> temp_list = new ArrayList<>();
         temp_list.add((float) 0);temp_list.add((float) -1000);
         temp_list.add((float) position);temp_list.add((float) delay);
         temp_list.add((float) 0);temp_list.add((float) -1000);
