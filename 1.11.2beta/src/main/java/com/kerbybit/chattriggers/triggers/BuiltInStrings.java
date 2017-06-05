@@ -10,10 +10,13 @@ import com.kerbybit.chattriggers.objects.JsonHandler;
 import com.kerbybit.chattriggers.references.Reference;
 import com.kerbybit.chattriggers.util.RomanNumber;
 import com.kerbybit.chattriggers.util.ScoreboardReader;
+import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiBossOverlay;
 import net.minecraft.client.gui.GuiIngame;
+import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,7 +27,11 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.BossInfo;
+import net.minecraft.world.BossInfoLerping;
+import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
@@ -209,6 +216,7 @@ public class BuiltInStrings {
             for (String scoreboardLine : scoreboardNames) {
                 returnString.append(scoreboardLine.replace(",","")).append(",");
             }
+
             if (returnString.toString().equals("[")) {
                 TMP_e = createDefaultString("scoreboardlines", "[]", TMP_e, isAsync);
             } else {
@@ -253,23 +261,31 @@ public class BuiltInStrings {
 
             TMP_e = createDefaultString("actionbartext", recordPlaying, TMP_e, isAsync);
         }
-        /*if (TMP_e.contains("{bossbartext}")) { //TODO fix
-            String bossName = BossStatus.bossName;
 
-            if (bossName == null) {
-				bossName = "";
-            }
+        if (TMP_e.contains("{bossbartext}")) {
+			GuiBossOverlay bossOverlay = Minecraft.getMinecraft().ingameGUI.getBossOverlay();
+			Map<UUID, BossInfoLerping> mapBossInfos = ReflectionHelper.getPrivateValue(GuiBossOverlay.class, bossOverlay, "field_184060_g");
+
 
 			if (TMP_e.contains("{bossbartext}.hide()")) {
 				GuiIngameForge.renderBossHealth = false;
-			}
-
-			if (TMP_e.contains("{bossbartext}.show()")) {
+			} else if (TMP_e.contains("{bossbartext}.show()")) {
 				GuiIngameForge.renderBossHealth = true;
-			}
+			} else {
+				String returnString = "[";
 
-            TMP_e = createDefaultString("bossbartext", bossName, TMP_e, isAsync);
-        }*/
+				for (BossInfoLerping bossInfo : mapBossInfos.values()) {
+					returnString += bossInfo.getName().getFormattedText() + ChatFormatting.RESET + ",";
+				}
+
+				if (returnString.equals("[")) {
+					TMP_e = createDefaultString("bossbartext", "[]", TMP_e, isAsync);
+				} else {
+					ListHandler.getList("DefaultList->BOSSBARTEXT-" + (ListHandler.getListsSize() + 1), returnString.substring(0, returnString.length() - 1) + "]");
+					TMP_e = TMP_e.replace("{bossbartext}", "{list[DefaultList->BOSSBARTEXT-" + ListHandler.getListsSize() + "]}");
+				}
+			}
+        }
         if (TMP_e.contains("{setcol}")) {
             TMP_e = createDefaultString("setcol", Settings.col[0], TMP_e, isAsync);
         }
@@ -385,18 +401,9 @@ public class BuiltInStrings {
             TMP_e = createDefaultString("date", dateFormat.format(date), TMP_e, isAsync);
         }
 
-		/*if (TMP_e.contains("{gamemode}")) {
-			PlayerControllerMP pc = Minecraft.getMinecraft().playerController;
-			String gamemode;
-
-			try {
-				gamemode = ReflectionHelper.getPrivateValue(PlayerControllerMP.class, pc, 8);
-			} catch (Exception e) {
-				gamemode = "null";
-			}
-
-			TMP_e = createDefaultString("gamemode", gamemode, TMP_e, isAsync);
-		}*/ //BROKEN - HAD TO USE REFLECTION, BUT IS NOT WORKING CORRECTLY!
+		if (TMP_e.contains("{gamemode}")) {
+			TMP_e = createDefaultString("gamemode", Minecraft.getMinecraft().playerController.getCurrentGameType().toString(), TMP_e, isAsync);
+		}
 
         if (TMP_e.contains("{unixtime}")) {
             Date date = new Date();

@@ -8,6 +8,8 @@ import com.kerbybit.chattriggers.globalvars.global;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentBase;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
 import static java.lang.StrictMath.round;

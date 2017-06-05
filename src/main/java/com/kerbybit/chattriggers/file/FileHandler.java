@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.kerbybit.chattriggers.globalvars.Settings;
+import com.kerbybit.chattriggers.triggers.BuiltInStrings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 
@@ -382,6 +383,9 @@ public class FileHandler {
 			
 			if (lines.get(i).trim().startsWith("!")) {
 				String importFunction = lines.get(i).trim().substring(lines.get(i).trim().indexOf("!")+1);
+
+				importFunction = BuiltInStrings.builtInStrings(importFunction, null, false);
+
 				if (importFunction.toUpperCase().startsWith("CREATE STRING ") || importFunction.toUpperCase().startsWith("CREATESTRING ")) {
 					String sn;
 					if (importFunction.toUpperCase().startsWith("CREATE STRING ")) {
