@@ -13,6 +13,7 @@ import com.kerbybit.chattriggers.util.ScoreboardReader;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -651,6 +652,43 @@ public class BuiltInStrings {
 
             TMP_e = createDefaultString("arrows", arrows+"", TMP_e, isAsync);
         }
+
+        if (TMP_e.contains("{xpLevel}")) {
+        	TMP_e = createDefaultString("xpLevel",
+					Minecraft.getMinecraft().thePlayer.experienceLevel + "", TMP_e, isAsync);
+		}
+
+		if (TMP_e.contains("{xpProgress}")) {
+        	EntityPlayerSP p = Minecraft.getMinecraft().thePlayer;
+        	TMP_e = createDefaultString("xpProgress",
+					Math.floor(p.experience / p.xpBarCap()) + "", TMP_e, isAsync);
+		}
+
+		if (TMP_e.contains("{hunger}")) {
+        	TMP_e = createDefaultString("hunger",
+					Minecraft.getMinecraft().thePlayer.getFoodStats().getFoodLevel() + "", TMP_e, isAsync);
+		}
+
+		if (TMP_e.contains("{saturation}")) {
+        	TMP_e = createDefaultString("saturation",
+					Minecraft.getMinecraft().thePlayer.getFoodStats().getSaturationLevel() + "", TMP_e, isAsync);
+		}
+
+		if (TMP_e.contains("{renderDistance}")) {
+        	TMP_e = createDefaultString("renderDistance",
+					Minecraft.getMinecraft().gameSettings.renderDistanceChunks + "", TMP_e, isAsync);
+		}
+
+		if (TMP_e.contains("{fov}")) {
+        	TMP_e = createDefaultString("fov",
+					Math.floor(Minecraft.getMinecraft().gameSettings.fovSetting) + "", TMP_e, isAsync);
+		}
+
+		if (TMP_e.contains("{armorPoints}")) {
+        	TMP_e = createDefaultString("armorPoints",
+					Minecraft.getMinecraft().thePlayer.getTotalArmorValue() + "", TMP_e, isAsync);
+		}
+
         if (TMP_e.contains("{cps}")) {
             String returnString;
 
