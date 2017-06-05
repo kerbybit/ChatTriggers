@@ -15,16 +15,16 @@ import net.minecraft.server.MinecraftServer;
 
 public class CommandTR extends CommandBase {
 
-	public String getCommandName() {return "tr";}
+    public String getCommandName() {return "tr";}
     public String getName() {return getCommandName();}
 
-	public String getCommandUsage(ICommandSender sender) {return "/trigger run [trigger name]";}
+    public String getCommandUsage(ICommandSender sender) {return "/trigger run [trigger name]";}
     public String getUsage(ICommandSender sender) {return getCommandUsage(sender);}
 
-	public int getRequiredPermissionLevel() {return 0;}
+    public int getRequiredPermissionLevel() {return 0;}
 
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {processCommand(sender,args);}
-	public void processCommand(ICommandSender sender, String[] args) {
+    public void processCommand(ICommandSender sender, String[] args) {
         try {
             if (global.canUse) {
                 if (Settings.commandTR) {
@@ -56,5 +56,5 @@ public class CommandTR extends CommandBase {
         } catch (Exception e) {
             BugTracker.show(e, "command");
         }
-	}
+    }
 }

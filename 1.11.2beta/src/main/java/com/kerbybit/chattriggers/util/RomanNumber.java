@@ -1,4 +1,4 @@
-package com.kerbybit.chattriggers.references;
+package com.kerbybit.chattriggers.util;
 
 import java.util.TreeMap;
 

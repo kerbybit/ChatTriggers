@@ -7,11 +7,12 @@ import com.kerbybit.chattriggers.triggers.EventsHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AsyncHandler {
-    private static HashMap<Integer, String> asyncsStatus = new HashMap<Integer, String>();
-    private static List<Integer> toRemove = new ArrayList<Integer>();
-    private static HashMap<Integer, Thread> threads = new HashMap<Integer, Thread>();
+    private static HashMap<Integer, String> asyncsStatus = new HashMap<>();
+    private static List<Integer> toRemove = new ArrayList<>();
+    private static HashMap<Integer, Thread> threads = new HashMap<>();
 
     public static void asyncTick() {
         trimAsyncs();
@@ -43,27 +44,25 @@ public class AsyncHandler {
 
         //preloadAsyncStrings();
 
-        threads.put(asyncID, new Thread(new Runnable() {
-            public void run() {
-                try {
-                    EventsHandler.doEvents(global.asyncMap.get(asyncIDfin), null, true);
-                    asyncsStatus.put(asyncIDfin, "finished");
-                } catch (Exception e) {
-                    BugTracker.show(e, "async");
-                    timeoutAsync(asyncIDfin);
-                }
+        threads.put(asyncID, new Thread(() -> {
+            try {
+                EventsHandler.doEvents(global.asyncMap.get(asyncIDfin), null, true);
+                asyncsStatus.put(asyncIDfin, "finished");
+            } catch (Exception e) {
+                BugTracker.show(e, "async");
+                timeoutAsync(asyncIDfin);
             }
         }));
         threads.get(asyncID).start();
     }
 
     public static void preloadAsyncStrings() {
-        for (List<String> string : global.backupUSR_strings) {
-            global.Async_string.put(string.get(0), string.get(1));
+        for (Map.Entry<String, String> string : global.backupUSR_strings.entrySet()) {
+            global.Async_string.put(string.getKey(), string.getValue());
         }
 
-        for (List<String> string : global.backupTMP_strings) {
-            global.Async_string.put(string.get(0), string.get(1));
+        for (Map.Entry<String, String> string : global.backupTMP_strings.entrySet()) {
+            global.Async_string.put(string.getKey(), string.getValue());
         }
     }
 

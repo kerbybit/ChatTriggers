@@ -9,7 +9,9 @@ import com.kerbybit.chattriggers.references.BugTracker;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.overlay.KillfeedHandler;
 import com.kerbybit.chattriggers.overlay.NotifyHandler;
+import com.kerbybit.chattriggers.triggers.StringHandler;
 import net.minecraftforge.client.event.MouseEvent;
+import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.lwjgl.input.Keyboard;
 
@@ -74,9 +76,9 @@ public class ChatTriggers {
             }
 		}
 	}
-
-    @SubscribeEvent
-    public void onRightClickPlayer(PlayerInteractEvent.EntityInteract e) {
+	
+	@SubscribeEvent
+	public void onRightClickPlayer(PlayerInteractEvent.EntityInteract e) {
         try {
             if (global.canUse) {
                 if (e.getEntity().equals(Minecraft.getMinecraft().player)) {
@@ -87,6 +89,17 @@ public class ChatTriggers {
             }
         } catch (Exception exception) {
             BugTracker.show(exception, "onRightClickPlayer");
+        }
+	}
+
+	@SubscribeEvent
+    public void onSoundPlay(PlaySoundEvent e) {
+	    try {
+            if (global.canUse) {
+                TriggerHandler.onSoundPlay(e);
+            }
+        } catch (Exception exception) {
+	        BugTracker.show(exception, "onSoundPlay");
         }
     }
 	
@@ -151,7 +164,10 @@ public class ChatTriggers {
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent e) throws ClassNotFoundException {
+
 		if (global.canUse) {
+
+		    StringHandler.updateMarkedStrings();
 
 			KillfeedHandler.tickKillfeed();
 

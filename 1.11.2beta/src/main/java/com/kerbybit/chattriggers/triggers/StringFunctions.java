@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.kerbybit.chattriggers.triggers.StringHandler.stringFunctions;
-import static java.lang.Math.abs;
-import static net.minecraft.realms.RealmsMth.floor;
 
 public class StringFunctions {
     static String doStringFunctions(String stringName, String func, String args, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
@@ -34,32 +32,33 @@ public class StringFunctions {
 
         String returnString;
 
-        returnString = doStringSetFunctions(stringPos, stringName, func, args);
+        returnString = doStringSetFunctions(stringPos, stringName, func, args, isAsync);
 
-        if (returnString == null) {
+        if (returnString == null)
             returnString = doStringModifyFunctions(stringName, stringValue, func, args);
-        }
-        if (returnString == null) {
+        if (returnString == null)
             returnString = doStringComparatorFunctions(stringValue, func, args);
-        }
-        if (returnString == null) {
+        if (returnString == null)
             returnString = doStringMathFunctions(stringValue, func, args);
-        }
-        if (returnString == null) {
+        if (returnString == null)
             returnString = doStringUserFunctions(stringValue, func, args, chatEvent);
-        }
 
         if (returnString != null && getIsObject(returnString)) {
             return returnString;
         } else {
             if (returnString != null) {
-                if (isAsync || stringPos == null) {
+                if (stringPos == null) {
                     global.Async_string.put(stringName, returnString);
                 } else {
                     if (stringPos >= 0) {
-                        global.USR_string.get(floor(stringPos)).set(1, returnString);
+                        if (isAsync) {
+                            global.USR_string_mark.put(stringName, returnString);
+                            global.Async_string.put(stringName, returnString);
+                        } else {
+                            global.USR_string.put(stringName, returnString);
+                        }
                     } else {
-                        global.TMP_string.get(floor(abs(stringPos) - 1)).set(1, returnString);
+                        global.TMP_string.put(stringName, returnString);
                     }
                 }
             }
@@ -72,7 +71,7 @@ public class StringFunctions {
                 || in.startsWith("{display[") || in.startsWith("{json[");
     }
 
-    private static String doStringSetFunctions(Double stringPos,String stringName, String func, String args) {
+    private static String doStringSetFunctions(Double stringPos,String stringName, String func, String args, Boolean isAsync) {
         args = addExtras(args);
 
         if (func.equals("SET")) {
@@ -83,12 +82,14 @@ public class StringFunctions {
                     return set;
                 } else {
                     if (stringPos >= 0) {
-                        String set = addExtras(global.USR_string.get(floor(stringPos)).get(1));
-                        global.backupUSR_strings.get(floor(stringPos)).set(1, set);
+                        String set = addExtras(global.USR_string.get(stringName));
+                        if (isAsync) global.backupUSR_strings_mark.put(stringName, set);
+                        else global.backupUSR_strings.put(stringName, set);
+
                         return set;
                     } else {
-                        String set = addExtras(global.TMP_string.get(floor(abs(stringPos)-1)).get(1));
-                        global.backupTMP_strings.get(floor(abs(stringPos)-1)).set(1, set);
+                        String set = addExtras(global.TMP_string.get(stringName));
+                        global.backupTMP_strings.put(stringName, set);
                         return set;
                     }
                 }
@@ -99,12 +100,17 @@ public class StringFunctions {
                     return args;
                 } else {
                     if (stringPos >= 0) {
-                        global.USR_string.get(floor(stringPos)).set(1, args);
-                        global.backupUSR_strings.get(floor(stringPos)).set(1, args);
+                        if (isAsync) {
+                            global.USR_string_mark.put(stringName, args);
+                            global.backupUSR_strings_mark.put(stringName, args);
+                        } else {
+                            global.USR_string.put(stringName, args);
+                            global.backupUSR_strings.put(stringName, args);
+                        }
                         return args;
                     } else {
-                        global.TMP_string.get(floor(abs(stringPos) - 1)).set(1, args);
-                        global.backupTMP_strings.get(floor(abs(stringPos) - 1)).set(1, args);
+                        global.TMP_string.put(stringName, args);
+                        global.backupTMP_strings.put(stringName, args);
                         return args;
                     }
                 }
@@ -118,12 +124,13 @@ public class StringFunctions {
                     ret = set;
                 } else {
                     if (stringPos >= 0) {
-                        String set = addExtras(global.USR_string.get(floor(stringPos)).get(1));
-                        global.backupUSR_strings.get(floor(stringPos)).set(1, set);
+                        String set = addExtras(global.USR_string.get(stringName));
+                        if (isAsync) global.backupUSR_strings_mark.put(stringName, set);
+                        else global.backupUSR_strings.put(stringName, set);
                         ret = set;
                     } else {
-                        String set = addExtras(global.TMP_string.get(floor(abs(stringPos)-1)).get(1));
-                        global.backupTMP_strings.get(floor(abs(stringPos)-1)).set(1, set);
+                        String set = addExtras(global.TMP_string.get(stringName));
+                        global.backupTMP_strings.put(stringName, set);
                         ret = set;
                     }
                 }
@@ -134,12 +141,17 @@ public class StringFunctions {
                     ret = args;
                 } else {
                     if (stringPos >= 0) {
-                        global.USR_string.get(floor(stringPos)).set(1, args);
-                        global.backupUSR_strings.get(floor(stringPos)).set(1, args);
+                        if (isAsync) {
+                            global.USR_string_mark.put(stringName, args);
+                            global.backupUSR_strings_mark.put(stringName, args);
+                        } else {
+                            global.USR_string.put(stringName, args);
+                            global.backupUSR_strings.put(stringName, args);
+                        }
                         ret = args;
                     } else {
-                        global.TMP_string.get(floor(abs(stringPos) - 1)).set(1, args);
-                        global.backupTMP_strings.get(floor(abs(stringPos) - 1)).set(1, args);
+                        global.TMP_string.put(stringName, args);
+                        global.backupTMP_strings.put(stringName, args);
                         ret = args;
                     }
                 }
@@ -174,163 +186,184 @@ public class StringFunctions {
     }
 
     private static String doStringModifyFunctions(String stringName, String stringValue, String func, String args) {
-        if (func.equals("REPLACE")) {
-            args = removeExcludedExtras(args);
-            if (args.contains(",") && args.split(",").length == 2) {
-                return stringValue.replace(args.split(",")[0], args.split(",")[1]);
-            } else {
-                return stringValue.replace(args,"");
-            }
-        } else if (func.equals("REPLACEIGNORECASE")) {
-            args = removeExcludedExtras(args);
-            if (args.contains(",") && args.split(",").length == 2) {
-                return stringValue.replaceAll("(?i)"+args.split(",")[0], args.split(",")[1]);
-            } else {
-                return stringValue.replaceAll("(?i)"+args, "");
-            }
-        } else if (func.equals("TRIM")) {
-            return stringValue.trim();
-        } else if (func.equals("PREFIX")) {
-            return args + stringValue;
-        } else if (func.equals("SUFFIX")) {
-            return stringValue + args;
-        } else if (func.equals("TOUPPER") || func.equals("TOUPPERCASE")) {
-            return stringValue.toUpperCase();
-        } else if (func.equals("TOLOWER") || func.equals("TOLOWERCASE")) {
-            return stringValue.toLowerCase();
-        } else if (func.equals("REMOVEFORMATTING") || func.equalsIgnoreCase("REMFORM")) {
-            return stringValue.replaceAll("&[1-r]", "");
-        } else if (func.equals("CAPITALIZEFIRSTWORD") || func.equals("CAPFIRST")) {
-            if (stringValue.equals("")) return stringValue;
-            else return stringValue.substring(0,1).toUpperCase()+stringValue.substring(1);
-        } else if (func.equals("CAPITALIZEALLWORDS") || func.equals("CAPALL")) {
-            return WordUtils.capitalizeFully(stringValue);
-        } else if (func.equals("IGNOREESCAPE")) {
-            return stringValue.replace("\\", "\\\\");
-        } else if (func.equals("FIXLINKS")) {
-            for (String value : stringValue.split(" ")) {
-                String newvalue = ChatHandler.deleteFormatting(value);
-                value = value.replace("...","TripleDotF6cyUQp9TripleDot");
-                if (value.contains(".")) {
-                    if (!(newvalue.toUpperCase().startsWith("HTTP://") || newvalue.toUpperCase().startsWith("HTTPS://"))) {
-                        newvalue = "http://"+value;
+        switch (func) {
+            case("REPLACE"):
+                args = removeExcludedExtras(args);
+                if (args.contains(",") && args.split(",").length == 2) {
+                    return stringValue.replace(args.split(",")[0], args.split(",")[1]);
+                } else {
+                    return stringValue.replace(args,"");
+                }
+            case("REPLACEIGNORECASE"):
+                args = removeExcludedExtras(args);
+                if (args.contains(",") && args.split(",").length == 2) {
+                    return stringValue.replaceAll("(?i)"+args.split(",")[0], args.split(",")[1]);
+                } else {
+                    return stringValue.replaceAll("(?i)"+args, "");
+                }
+            case("TRIM"):
+                return stringValue.trim();
+            case("PREFIX"):
+                return args + stringValue;
+            case("SUFFIX"):
+                return stringValue + args;
+            case("TOUPPER"):
+            case("TOUPPERCASE"):
+                return stringValue.toUpperCase();
+            case("TOLOWER"):
+            case("TOLOWERCASE"):
+                return stringValue.toLowerCase();
+            case("REMOVEFORMATTING"):
+            case("REMFORM"):
+                return stringValue.replaceAll("&[1-r]", "");
+            case("CAPITALIZEFIRSTWORD"):
+            case("CAPFIRST"):
+                if (stringValue.equals("")) return stringValue;
+                else return stringValue.substring(0,1).toUpperCase()+stringValue.substring(1);
+            case("CAPITALIZEALLWORDS"):
+            case("CAPALL"):
+                return WordUtils.capitalizeFully(stringValue);
+            case("IGNOREESCAPE"):
+                return stringValue.replace("\\", "\\\\");
+            case("FIXLINKS"):
+                for (String value : stringValue.split(" ")) {
+                    String newvalue = ChatHandler.deleteFormatting(value);
+                    value = value.replace("...","TripleDotF6cyUQp9TripleDot");
+                    if (value.contains(".")) {
+                        if (!(newvalue.toUpperCase().startsWith("HTTP://") || newvalue.toUpperCase().startsWith("HTTPS://"))) {
+                            newvalue = "http://"+value;
+                        }
+                        stringValue = stringValue.replace(value.replace("...","TripleDotF6cyUQp9TripleDot"), "{link[" + value + "],[" + newvalue + "]}");
                     }
-                    stringValue = stringValue.replace(value.replace("...","TripleDotF6cyUQp9TripleDot"), "{link[" + value + "],[" + newvalue + "]}");
                 }
-            }
-            return stringValue;
-        } else if (func.equals("SUBSTRING")) {
-            args = removeExcludedExtras(args);
-            String[] subargs = args.split(",");
-            if (subargs.length == 2) {
-                int first = -1;
-                int last = -1;
-                Boolean getStart = false;
-                Boolean startContain = false;
-                Boolean startAlwaysNumber = false;
-                Boolean getEnd = false;
-                Boolean endContain = false;
-                Boolean endAlwaysNumber = false;
-                if (subargs[0].toUpperCase().contains("<START>") || subargs[0].toUpperCase().contains("<S>")) {
-                    getStart = true;
-                    subargs[0] = subargs[0].replaceAll("(?i)<start>", "").replaceAll("(?i)<s>", "");
+                return stringValue;
+            case("SPLIT"):
+                String[] splitString = stringValue.split(args);
+                StringBuilder list = new StringBuilder("[");
+                for (String value : splitString) {
+                    list.append(value).append(",");
                 }
-                if (subargs[0].toUpperCase().contains("<INCLUDE>") || subargs[0].toUpperCase().contains("<I>")) {
-                    startContain = true;
-                    subargs[0] = subargs[0].replaceAll("(?i)<include>", "").replaceAll("(?i)<i>", "");
-                }
-                if (subargs[0].toUpperCase().contains("<NUMBER>") || subargs[0].toUpperCase().contains("<N>")) {
-                    startAlwaysNumber = true;
-                    subargs[0] = subargs[0].replaceAll("(?i)<number>", "").replaceAll("(?i)<n>", "");
-                }
-                if (subargs[0].toUpperCase().contains("<TEXT>") || subargs[0].toUpperCase().contains("<T>")) {
-                    subargs[0] = subargs[0].replaceAll("(?i)<text>", "").replaceAll("(?i)<t>", "");
-                }
+                list = new StringBuilder(list.substring(0, list.length()-1) + "]");
 
+                ListHandler.getList("StringToList->"+stringName+"SPLIT-"+(ListHandler.getListsSize()+1), list.toString());
+                return "{list[StringToList->"+stringName+"SPLIT-"+ListHandler.getListsSize()+"]}";
+            case("SUBSTRING"):
+                args = removeExcludedExtras(args);
+                String[] subargs = args.split(",");
+                if (subargs.length == 2) {
+                    int first = -1;
+                    int last = -1;
+                    Boolean getStart = false;
+                    Boolean startContain = false;
+                    Boolean startAlwaysNumber = false;
+                    Boolean startAlwaysText = false;
+                    Boolean getEnd = false;
+                    Boolean endContain = false;
+                    Boolean endAlwaysNumber = false;
+                    Boolean endAlwaysText = false;
+                    if (subargs[0].toUpperCase().contains("<START>") || subargs[0].toUpperCase().contains("<S>"))
+                        getStart = true;
+                    if (subargs[0].toUpperCase().contains("<INCLUDE>") || subargs[0].toUpperCase().contains("<I>"))
+                        startContain = true;
+                    if (subargs[0].toUpperCase().contains("<NUMBER>") || subargs[0].toUpperCase().contains("<N>"))
+                        startAlwaysNumber = true;
+                    if (subargs[0].toUpperCase().contains("<TEXT>") || subargs[0].toUpperCase().contains("<T>"))
+                        startAlwaysText = true;
+                    subargs[0] = subargs[0].replaceAll("(?i)<start>|<s>|<include>|<i>|<number>|<n>|<text>|<t>", "");
 
-                if (subargs[1].toUpperCase().contains("<END>") || subargs[1].toUpperCase().contains("<E>")) {
-                    getEnd = true;
-                    subargs[1] = subargs[1].replaceAll("(?i)<end>", "").replaceAll("(?i)<e>", "");
-                }
-                if (subargs[1].toUpperCase().contains("<INCLUDE>") || subargs[1].toUpperCase().contains("<I>")) {
-                    endContain = true;
-                    subargs[1] = subargs[1].replaceAll("(?i)<include>", "").replaceAll("(?i)<i>", "");
-                }
-                if (subargs[1].toUpperCase().contains("<NUMBER>") || subargs[1].toUpperCase().contains("<N>")) {
-                    endAlwaysNumber = true;
-                    subargs[1] = subargs[1].replaceAll("(?i)<number>", "").replaceAll("(?i)<n>", "");
-                }
-                if (subargs[1].toUpperCase().contains("<TEXT>") || subargs[1].toUpperCase().contains("<T>")) {
-                    subargs[1] = subargs[1].replaceAll("(?i)<text>", "").replaceAll("(?i)<t>", "");
-                }
+                    if (subargs[1].toUpperCase().contains("<END>") || subargs[1].toUpperCase().contains("<E>"))
+                        getEnd = true;
+                    if (subargs[1].toUpperCase().contains("<INCLUDE>") || subargs[1].toUpperCase().contains("<I>"))
+                        endContain = true;
+                    if (subargs[1].toUpperCase().contains("<NUMBER>") || subargs[1].toUpperCase().contains("<N>"))
+                        endAlwaysNumber = true;
+                    if (subargs[1].toUpperCase().contains("<TEXT>") || subargs[1].toUpperCase().contains("<T>"))
+                        endAlwaysText = true;
+                    subargs[1] = subargs[1].replaceAll("(?i)<end>|<e>|<include>|<i>|<number>|<n>|<text>|<t>", "");
 
-                String temp = removeExtras(stringValue);
-                if (getStart) first = 0;
-                if (getEnd) last = temp.length();
-                if (first == -1) {
-                    if (temp.contains(subargs[0]) && !startAlwaysNumber) {
-                        if (startContain) first = temp.indexOf(subargs[0]);
-                        else first = temp.indexOf(subargs[0]) + subargs[0].length();
-                    } else {
-                        try {
-                            first = Integer.parseInt(subargs[0]);
-                        } catch (NumberFormatException e) {
-                            if (global.debug) ChatHandler.warn(ChatHandler.color("gray", "Did not find " + subargs[0] + " in string"));
-                            return null;
+                    String temp = removeExtras(stringValue);
+                    if (getStart) {
+                        first = 0;
+                        if (!subargs[0].equals("")) {
+                            try {
+                                int indexFromStart = Integer.parseInt(subargs[0]);
+                                if (indexFromStart > 0) first = indexFromStart;
+                            } catch (NumberFormatException exception) {
+                                // do nothing //
+                            }
                         }
                     }
-                }
-                if (last == -1) {
-                    if (temp.contains(subargs[1]) && !endAlwaysNumber) {
-                        if (endContain) last = temp.indexOf(subargs[1]) + subargs[1].length();
-                        else last = temp.indexOf(subargs[1]);
-                    } else {
-                        try {
-                            last = Integer.parseInt(subargs[1]);
-                        } catch (NumberFormatException e) {
-                            if (global.debug) ChatHandler.warn(ChatHandler.color("gray", "Did not find " + subargs[1] + " in string"));
-                            return null;
+                    if (getEnd) {
+                        last = temp.length();
+                        if (!subargs[1].equals("")) {
+                            try {
+                                int indexFromEnd = Integer.parseInt(subargs[1]);
+                                if (indexFromEnd < 0) last = temp.length()+indexFromEnd;
+                            } catch (NumberFormatException exception) {
+                                // do nothing //
+                            }
                         }
                     }
-                }
+                    if (first == -1) {
+                        if (temp.contains(subargs[0]) && !startAlwaysNumber) {
+                            if (startContain) first = temp.indexOf(subargs[0]);
+                            else first = temp.indexOf(subargs[0]) + subargs[0].length();
+                        } else if (!startAlwaysText) {
+                            try {
+                                first = Integer.parseInt(subargs[0]);
+                            } catch (NumberFormatException e) {
+                                if (global.debug) ChatHandler.warn(ChatHandler.color("gray", "Did not find " + subargs[0] + " in string"));
+                                return null;
+                            }
+                        }
+                    }
+                    if (last == -1) {
+                        if (temp.contains(subargs[1]) && !endAlwaysNumber) {
+                            if (endContain) last = temp.indexOf(subargs[1]) + subargs[1].length();
+                            else last = temp.indexOf(subargs[1]);
+                        } else if (!endAlwaysText) {
+                            try {
+                                last = Integer.parseInt(subargs[1]);
+                            } catch (NumberFormatException e) {
+                                if (global.debug) ChatHandler.warn(ChatHandler.color("gray", "Did not find " + subargs[1] + " in string"));
+                                return null;
+                            }
+                        }
+                    }
 
-                if (first != -1 && last != -1) {
-                    temp = temp.substring(first, last);
-                    return addExtras(temp);
+                    if (first != -1 && last != -1) {
+                        temp = temp.substring(first, last);
+                        return addExtras(temp);
+                    }
                 }
-            }
-        } else if (func.equals("SPLIT")) {
-            String[] splitString = stringValue.split(args);
-            StringBuilder list = new StringBuilder("[");
-            for (String value : splitString) {
-                list.append(value).append(",");
-            }
-            list = new StringBuilder(list.substring(0, list.length()-1) + "]");
-
-            ListHandler.getList("StringToList->"+stringName+"SPLIT-"+(ListHandler.getListsSize()+1), list.toString());
-            return "{list[StringToList->"+stringName+"SPLIT-"+ListHandler.getListsSize()+"]}";
+            default:
+                return null;
         }
-
-        return null;
     }
 
     private static String doStringComparatorFunctions(String stringValue, String func, String args) {
-        if (func.equals("EQUALS") || func.equals("=") || func.equals("==")) {
-            return trimBool(stringValue.equals(args));
-        } else if (func.equals("EQUALSIGNORECASE")) {
-            return trimBool(stringValue.equalsIgnoreCase(args));
-        } else if (func.equals("STARTSWITH")) {
-            return trimBool(stringValue.startsWith(args));
-        } else if (func.equals("STARTSWITHIGNORECASE")) {
-            return trimBool(stringValue.toUpperCase().startsWith(args.toUpperCase()));
-        } else if (func.equals("CONTAINS")) {
-            return trimBool(stringValue.contains(args));
-        } else if (func.equals("CONTAINSIGNORECASE")) {
-            return trimBool(stringValue.toUpperCase().contains(args.toUpperCase()));
-        } else if (func.equals("ENDSWITH")) {
-            return trimBool(stringValue.endsWith(args));
-        } else if (func.equals("ENDSWITHIGNORECASE")) {
-            return trimBool(stringValue.toUpperCase().endsWith(args.toUpperCase()));
+        switch (func) {
+            case "EQUALS":
+            case "=":
+            case "==":
+                return trimBool(stringValue.equals(args));
+            case "EQUALSIGNORECASE":
+                return trimBool(stringValue.equalsIgnoreCase(args));
+            case "STARTSWITH":
+                return trimBool(stringValue.startsWith(args));
+            case "STARTSWITHIGNORECASE":
+                return trimBool(stringValue.toUpperCase().startsWith(args.toUpperCase()));
+            case "CONTAINS":
+                return trimBool(stringValue.contains(args));
+            case "CONTAINSIGNORECASE":
+                return trimBool(stringValue.toUpperCase().contains(args.toUpperCase()));
+            case "ENDSWITH":
+                return trimBool(stringValue.endsWith(args));
+            case "ENDSWITHIGNORECASE":
+                return trimBool(stringValue.toUpperCase().endsWith(args.toUpperCase()));
+            case "MATCHESREGEX":
+            case "HASREGEX":
+                return trimBool(stringValue.matches(args));
         }
 
         Double stringValueNumber;
@@ -342,24 +375,30 @@ public class StringFunctions {
             return null;
         }
 
-        if (func.equals("LESSTHAN") || func.equals("LT") || func.equals("<")) {
-            return trimBool(stringValueNumber<argsValueNumber);
-        } else if (func.equals("LESSTHANOREQUALTO") || func.equals("LTE") || func.equals("<=")) {
-            return trimBool(stringValueNumber<=argsValueNumber);
-        } else if (func.equals("GREATORTHAN") || func.equals("GT") || func.equals(">")) {
-            return trimBool(stringValueNumber>argsValueNumber);
-        } else if (func.equals("GREATORTHANOREQUALTO") || func.equals("GTE") || func.equals(">=")) {
-            return trimBool(stringValueNumber>=argsValueNumber);
+        switch (func) {
+            case "LESSTHAN":
+            case "LT":
+            case "<":
+                return trimBool(stringValueNumber < argsValueNumber);
+            case "LESSTHANOREQUALTO":
+            case "LTE":
+            case "<=":
+                return trimBool(stringValueNumber <= argsValueNumber);
+            case "GREATORTHAN":
+            case "GT":
+            case ">":
+                return trimBool(stringValueNumber > argsValueNumber);
+            case "GREATORTHANOREQUALTO":
+            case "GTE":
+            case ">=":
+                return trimBool(stringValueNumber >= argsValueNumber);
         }
 
         return null;
     }
 
     private static String trimBool(Boolean in) {
-        if (in) {
-            return "true";
-        }
-        return "false";
+        return in ? "true" : "false";
     }
 
     private static String doStringMathFunctions(String stringValue,String func, String args) {
@@ -384,35 +423,66 @@ public class StringFunctions {
         }
 
         if (argsValueNumber != null) {
-            if (func.equals("ADD") || func.equals("+")) {
-                return trimNumber(stringValueNumber + argsValueNumber);
-            } else if (func.equals("SUBTRACT") || func.equals("MINUS") || func.equals("-")) {
-                return trimNumber(stringValueNumber - argsValueNumber);
-            } else if (func.equals("MULTIPLY") || func.equals("TIMES") || func.equals("*")) {
-                return trimNumber(stringValueNumber * argsValueNumber);
-            } else if (func.equals("DIVIDE") || func.equals("/")) {
-                return trimNumber(stringValueNumber / argsValueNumber);
-            } else if (func.equals("DIVIDEGETPERCENT") || func.equals("DIVPERCENT") || func.equals("/%")) {
-                return trimNumber((stringValueNumber / argsValueNumber) * 100);
-            } else if (func.equals("POW") || func.equals("POWER") || func.equals("^")) {
-                return trimNumber(Math.pow(stringValueNumber, argsValueNumber));
-            } else if (func.equals("MOD") || func.equals("MODULUS") || func.equals("%")) {
-                return trimNumber(stringValueNumber % argsValueNumber);
-            } else if (func.equals("ABSOLUTE") || func.equals("ABS")) {
-                return trimNumber(Math.abs(stringValueNumber));
+            switch (func) {
+                case "ADD":
+                case "PLUS":
+                case "+":
+                    return trimNumber(stringValueNumber + argsValueNumber);
+                case "SUBTRACT":
+                case "MINUS":
+                case "-":
+                    return trimNumber(stringValueNumber - argsValueNumber);
+                case "MULTIPLY":
+                case "TIMES":
+                case "*":
+                    return trimNumber(stringValueNumber * argsValueNumber);
+                case "DIVIDE":
+                case "/":
+                    return trimNumber(stringValueNumber / argsValueNumber);
+                case "DIVIDEGETPERCENT":
+                case "DIVPERCENT":
+                case "/%":
+                    return trimNumber((stringValueNumber / argsValueNumber) * 100);
+                case "POW":
+                case "POWER":
+                case "^":
+                    return trimNumber(Math.pow(stringValueNumber, argsValueNumber));
+                case "MOD":
+                case "MODULUS":
+                case "%":
+                    return trimNumber(stringValueNumber % argsValueNumber);
+				case "ATAN2":
+				case "ATANTWO":
+					return trimNumber(Math.toDegrees(Math.atan2(stringValueNumber, argsValueNumber)));
             }
         }
 
-        if (func.equals("ROUND")) {
-            if (argsValueNumber == null) {
-                return trimNumber(Math.round(stringValueNumber));
-            } else {
-                return trimNumber(Math.round(stringValueNumber * Math.pow(10, argsValueNumber)) / Math.pow(10, argsValueNumber));
-            }
-        } else if (func.equals("FLOOR")) {
-            return trimNumber(Math.floor(stringValueNumber));
-        } else if (func.equals("CEIL")) {
-            return trimNumber(Math.ceil(stringValueNumber));
+        switch (func) {
+            case "ROUND":
+                if (argsValueNumber == null) {
+                    return trimNumber(Math.round(stringValueNumber));
+                } else {
+                    return trimNumber(Math.round(stringValueNumber * Math.pow(10, argsValueNumber)) / Math.pow(10, argsValueNumber));
+                }
+            case "FLOOR":
+                return trimNumber(Math.floor(stringValueNumber));
+            case "CEIL":
+                return trimNumber(Math.ceil(stringValueNumber));
+			case "SIN":
+				return trimNumber(Math.sin(Math.toRadians(stringValueNumber)));
+			case "COS":
+				return trimNumber(Math.cos(Math.toRadians(stringValueNumber)));
+			case "TAN":
+				return trimNumber(Math.tan(Math.toRadians(stringValueNumber)));
+			case "ASIN":
+				return trimNumber(Math.toDegrees(Math.asin(stringValueNumber)));
+			case "ACOS":
+				return trimNumber(Math.toDegrees(Math.acos(stringValueNumber)));
+			case "ATAN":
+				return trimNumber(Math.toDegrees(Math.atan(stringValueNumber)));
+			case "ABSOLUTE":
+			case "ABS":
+				return trimNumber(Math.abs(stringValueNumber));
         }
 
         return null;
@@ -442,7 +512,7 @@ public class StringFunctions {
                             String[] func_args = func_arg.split(",");
                             String[] func_args_to = args.split(",");
                             if (func_args.length == func_args_to.length) {
-                                List<String> TMP_events = new ArrayList<String>();
+                                List<String> TMP_events = new ArrayList<>();
                                 for (int j = 2; j < function.size(); j++) {
                                     TMP_events.add(function.get(j));
                                 }
@@ -450,7 +520,7 @@ public class StringFunctions {
                             }
                         } else {
                             if (args.equals("")) {
-                                List<String> TMP_events = new ArrayList<String>();
+                                List<String> TMP_events = new ArrayList<>();
                                 for (int j = 2; j < function.size(); j++) {
                                     TMP_events.add(function.get(j));
                                 }
@@ -472,16 +542,12 @@ public class StringFunctions {
                 }
             }
         } else {
-            for (List<String> string : global.USR_string) {
-                if (stringName.equals(string.get(0))) {
-                    return string.get(1);
-                }
+            if (global.USR_string.containsKey(stringName)) {
+                return global.USR_string.get(stringName);
             }
 
-            for (List<String> string : global.TMP_string) {
-                if (stringName.equals(string.get(0))) {
-                    return string.get(1);
-                }
+            if (global.TMP_string.containsKey(stringName)) {
+                return global.TMP_string.get(stringName);
             }
         }
 
@@ -489,23 +555,12 @@ public class StringFunctions {
     }
 
     private static Double getStringPos(String stringName, Boolean isAsync) {
-
-        Double i = 0.0;
-        for (List<String> string : global.USR_string) {
-            if (stringName.equals(string.get(0))) {
-                return i;
-            }
-            i++;
+        if (global.USR_string.containsKey(stringName)) {
+            return 1.0;
         }
 
         if (!isAsync) {
-            i = 1.0;
-            for (List<String> string : global.TMP_string) {
-                if (stringName.equals(string.get(0))) {
-                    return -i;
-                }
-                i++;
-            }
+            return -1.0;
         }
         return null;
     }
@@ -516,11 +571,8 @@ public class StringFunctions {
             global.backupAsync_string.put(stringName, "");
             return "";
         } else {
-            List<String> temp = new ArrayList<String>();
-            temp.add(stringName);
-            temp.add("");
-            global.TMP_string.add(temp);
-            global.backupTMP_strings.add(temp);
+            global.TMP_string.put(stringName, "");
+            global.backupTMP_strings.put(stringName, "");
             return "";
         }
     }

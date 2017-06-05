@@ -149,14 +149,14 @@ class EventsReference {
                     split[i+1] = beforeBefore+"false"+afterAfter;
                 }
             } else if (split[i].equals("!=")) {
-                getBeforeAndAfterString(split[i-1], split[i+1]);
+                getBeforeAndAfterString(split[i - 1], split[i + 1]);
 
                 if (beforeString.equals(afterString)) {
-                    split[i-1] = ""; split[i] = "";
-                    split[i+1] = beforeBefore+"false"+afterAfter;
+                    split[i - 1] = ""; split[i] = "";
+                    split[i + 1] = beforeBefore + "false" + afterAfter;
                 } else {
-                    split[i-1] = ""; split[i] = "";
-                    split[i+1] = beforeBefore+"true"+afterAfter;
+                    split[i - 1] = ""; split[i] = "";
+                    split[i + 1] = beforeBefore + "true" + afterAfter;
                 }
             }
         }
@@ -186,14 +186,16 @@ class EventsReference {
                     split[i+1] = "false";
                 }
             } else if (split[i].equals("^")) {
-                if (split[i-1].trim().equalsIgnoreCase("true")
-                        ^ split[i+1].trim().equalsIgnoreCase("true")) {
-                    split[i-1] = "";  split[i] = "";
-                    split[i+1] = "true";
-                } else {
-                    split[i-1] = ""; split[i] = "";
-                    split[i+1] = "false";
-                }
+                 if (split[i - 1].trim().equalsIgnoreCase("true")
+                         ^ split[i + 1].trim().equalsIgnoreCase("true")) {
+                    split[i - 1] = "";
+                    split[i] = "";
+                    split[i + 1] = "true";
+                 } else {
+                    split[i - 1] = "";
+                    split[i] = "";
+                    split[i + 1] = "false";
+                 }
             }
         }
 
