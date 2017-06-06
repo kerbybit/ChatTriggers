@@ -332,6 +332,15 @@ public class BuiltInStrings {
         if (TMP_e.contains("{exactZ}")) {
             TMP_e = createDefaultString("exactZ", Minecraft.getMinecraft().thePlayer.posZ+"", TMP_e, isAsync);
         }
+		if (TMP_e.contains("{motionX}")) {
+			TMP_e = createDefaultString("motionX", Minecraft.getMinecraft().thePlayer.motionX + "", TMP_e, isAsync);
+		}
+		if (TMP_e.contains("{motionY}")) {
+			TMP_e = createDefaultString("motionX", Minecraft.getMinecraft().thePlayer.motionY + "", TMP_e, isAsync);
+		}
+		if (TMP_e.contains("{motionZ}")) {
+			TMP_e = createDefaultString("motionX", Minecraft.getMinecraft().thePlayer.motionZ + "", TMP_e, isAsync);
+		}
         if (TMP_e.contains("{fps}")) {
             TMP_e = createDefaultString("fps", Minecraft.getDebugFPS()+"", TMP_e, isAsync);
         }
@@ -522,6 +531,15 @@ public class BuiltInStrings {
 					jsonString += "\"entity\":{";
 					jsonString += "\"name\":\"" + entity.getName() + "\",";
 					jsonString += "\"displayName\":\"" + entity.getCustomNameTag() + EnumChatFormatting.RESET + "\",";
+					jsonString += "\"xPos\":" + entity.getPosition().getX() + ",";
+					jsonString += "\"yPos\":" + entity.getPosition().getY() + ",";
+					jsonString += "\"zPos\":" + entity.getPosition().getZ() + ",";
+					jsonString += "\"xPosExact\":" + entity.posX + ",";
+					jsonString += "\"yPosExact\":" + entity.posY + ",";
+					jsonString += "\"zPosExact\":" + entity.posZ + ",";
+					jsonString += "\"motionX\":" + entity.motionX + ",";
+					jsonString += "\"motionY\":" + entity.motionY + ",";
+					jsonString += "\"motionZ\":" + entity.motionZ + ",";
 					jsonString += "\"metadata\":{";
 
 					for (String key : tags.getKeySet()) {
