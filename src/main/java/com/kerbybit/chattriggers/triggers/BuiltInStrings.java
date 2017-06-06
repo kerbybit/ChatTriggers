@@ -323,6 +323,15 @@ public class BuiltInStrings {
         if (TMP_e.contains("{coordz}") || TMP_e.contains("{z}")) {
             TMP_e = createDefaultString("coordz", "z", Math.round(Minecraft.getMinecraft().thePlayer.posZ)+"", TMP_e, isAsync);
         }
+        if (TMP_e.contains("{exactX}")) {
+            TMP_e = createDefaultString("exactX", Minecraft.getMinecraft().thePlayer.posX+"", TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{exactY}")) {
+            TMP_e = createDefaultString("exactY", Minecraft.getMinecraft().thePlayer.posY+"", TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{exactZ}")) {
+            TMP_e = createDefaultString("exactZ", Minecraft.getMinecraft().thePlayer.posZ+"", TMP_e, isAsync);
+        }
         if (TMP_e.contains("{fps}")) {
             TMP_e = createDefaultString("fps", Minecraft.getDebugFPS()+"", TMP_e, isAsync);
         }
@@ -506,7 +515,8 @@ public class BuiltInStrings {
 			try {
 				if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
 					Entity entity = mop.entityHit;
-					NBTTagCompound nbt = entity.getEntityData();
+					NBTTagCompound tags = new NBTTagCompound();
+					entity.writeToNBT(tags);
 
 					jsonString = "{\"type\":\"entity\",";
 					jsonString += "\"entity\":{";
@@ -514,8 +524,8 @@ public class BuiltInStrings {
 					jsonString += "\"displayName\":\"" + entity.getCustomNameTag() + EnumChatFormatting.RESET + "\",";
 					jsonString += "\"metadata\":{";
 
-					for (String key : nbt.getKeySet()) {
-						jsonString += "\"" + key + "\":\"" + nbt.getTag(key).toString() + "\",";
+					for (String key : tags.getKeySet()) {
+						jsonString += "\"" + key + "\":\"" + tags.getTag(key).toString() + "\",";
 					}
 
 					if (jsonString.endsWith(",")) jsonString = jsonString.substring(0, jsonString.length() - 1);
