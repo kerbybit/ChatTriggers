@@ -483,6 +483,8 @@ public class StringFunctions {
 			case "ABSOLUTE":
 			case "ABS":
 				return trimNumber(Math.abs(stringValueNumber));
+			case "SQRT":
+				return trimNumber(Math.sqrt(stringValueNumber));
         }
 
         return null;
