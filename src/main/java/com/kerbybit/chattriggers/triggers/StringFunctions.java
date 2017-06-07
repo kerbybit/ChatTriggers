@@ -384,11 +384,11 @@ public class StringFunctions {
             case "LTE":
             case "<=":
                 return trimBool(stringValueNumber <= argsValueNumber);
-            case "GREATORTHAN":
+            case "GREATERTHAN":
             case "GT":
             case ">":
                 return trimBool(stringValueNumber > argsValueNumber);
-            case "GREATORTHANOREQUALTO":
+            case "GREATERTHANOREQUALTO":
             case "GTE":
             case ">=":
                 return trimBool(stringValueNumber >= argsValueNumber);
@@ -483,6 +483,8 @@ public class StringFunctions {
 			case "ABSOLUTE":
 			case "ABS":
 				return trimNumber(Math.abs(stringValueNumber));
+			case "SQRT":
+				return trimNumber(Math.sqrt(stringValueNumber));
         }
 
         return null;
