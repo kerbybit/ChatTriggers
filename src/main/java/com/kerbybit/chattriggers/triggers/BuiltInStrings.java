@@ -146,22 +146,22 @@ public class BuiltInStrings {
         }
         if (TMP_e.contains("{server}")) {
             String current_server;
-            if (Minecraft.getMinecraft().isSingleplayer()) {current_server = "SinglePlayer";}
-            else {current_server = Minecraft.getMinecraft().getCurrentServerData().serverName;}
+            if (Minecraft.getMinecraft().isSingleplayer()) current_server = "SinglePlayer";
+            else current_server = Minecraft.getMinecraft().getCurrentServerData().serverName;
 
             TMP_e = createDefaultString("server", current_server, TMP_e, isAsync);
         }
         if (TMP_e.contains("{serverMOTD}")) {
             String returnString;
-            if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "Single Player world";}
-            else {returnString = Minecraft.getMinecraft().getCurrentServerData().serverMOTD;}
+            if (Minecraft.getMinecraft().isSingleplayer()) returnString = "Single Player world";
+            else returnString = Minecraft.getMinecraft().getCurrentServerData().serverMOTD;
 
             TMP_e = createDefaultString("serverMOTD", returnString, TMP_e, isAsync);
         }
         if (TMP_e.contains("{serverIP}")) {
             String returnString;
-            if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "localhost";}
-            else {returnString = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
+            if (Minecraft.getMinecraft().isSingleplayer()) returnString = "localhost";
+            else returnString = Minecraft.getMinecraft().getCurrentServerData().serverIP;
 
             TMP_e = createDefaultString("serverIP", returnString, TMP_e, isAsync);
         }
@@ -314,13 +314,13 @@ public class BuiltInStrings {
         if (TMP_e.contains("{inchat}")) {
             TMP_e = createDefaultString("inchat", Minecraft.getMinecraft().ingameGUI.getChatGUI().getChatOpen() + "", TMP_e, isAsync);
         }
-        if (TMP_e.contains("{coordx}") || TMP_e.contains("{x}")) {
+        if (TMP_e.contains("{coordX}") || TMP_e.contains("{x}")) {
             TMP_e = createDefaultString("coordx", "x", Math.round(Minecraft.getMinecraft().thePlayer.posX)+"", TMP_e, isAsync);
         }
-        if (TMP_e.contains("{coordy}") || TMP_e.contains("{y}")) {
+        if (TMP_e.contains("{coordY}") || TMP_e.contains("{y}")) {
             TMP_e = createDefaultString("coordy", "y", Math.round(Minecraft.getMinecraft().thePlayer.posY)+"", TMP_e, isAsync);
         }
-        if (TMP_e.contains("{coordz}") || TMP_e.contains("{z}")) {
+        if (TMP_e.contains("{coordZ}") || TMP_e.contains("{z}")) {
             TMP_e = createDefaultString("coordz", "z", Math.round(Minecraft.getMinecraft().thePlayer.posZ)+"", TMP_e, isAsync);
         }
         if (TMP_e.contains("{exactX}")) {
