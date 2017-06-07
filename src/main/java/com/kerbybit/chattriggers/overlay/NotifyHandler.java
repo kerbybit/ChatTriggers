@@ -3,7 +3,7 @@ package com.kerbybit.chattriggers.overlay;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
-import com.kerbybit.chattriggers.objects.DisplayHandler;
+import com.kerbybit.chattriggers.objects.DisplayRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -63,7 +63,7 @@ public class NotifyHandler {
                 if (Settings.notifyBackground) {
                     double x = global.notifyAnimation.get(i).get(1);
                     double y = global.notifyAnimation.get(i).get(2);
-                    DisplayHandler.drawRect(x, y, x + ren.getStringWidth(global.notify.get(i)), y + 10, 0x40000000);
+                    DisplayRenderer.drawRect(x, y, x + ren.getStringWidth(global.notify.get(i)), y + 10, 0x40000000);
                 }
                 ren.drawStringWithShadow(global.notify.get(i), global.notifyAnimation.get(i).get(1), global.notifyAnimation.get(i).get(2), 0xffffff);
             }

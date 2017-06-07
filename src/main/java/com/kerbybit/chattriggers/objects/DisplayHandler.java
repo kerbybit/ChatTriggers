@@ -23,10 +23,10 @@ import java.util.List;
 import static net.minecraft.realms.RealmsMth.floor;
 
 public class DisplayHandler {
-    private static HashMap<String,List<String>> displays = new HashMap<>();
-    private static HashMap<String,List<String>> shown_displays = new HashMap<>();
-    private static HashMap<String,Double[]> displays_xy = new HashMap<>();
-    private static HashMap<String,String> display_settings = new HashMap<>();
+    static HashMap<String,List<String>> displays = new HashMap<>();
+    static HashMap<String,List<String>> shown_displays = new HashMap<>();
+    static HashMap<String,Double[]> displays_xy = new HashMap<>();
+    static HashMap<String,String> display_settings = new HashMap<>();
 
     private static String updateDisplay(String display_name, Boolean isAsync) {
         List<String> display;
@@ -138,7 +138,31 @@ public class DisplayHandler {
         return "Added settings " + settings + " to display " + display_name;
     }
 
-    private static String getDisplaySettings(String display_name) {
+    static Double[] getDisplayXY(String display_name) {
+        if (DisplayHandler.displays_xy.containsKey(display_name)) {
+            return DisplayHandler.displays_xy.get(display_name);
+        }
+        return new Double[]{0.0,0.0};
+    }
+
+    static String getDisplayBackground(String settings) {
+        if (settings.contains("<bg=") && settings.contains(">")) {
+            return settings.substring(settings.indexOf("<bg=")+4, settings.indexOf(">", settings.indexOf("<bg=")));
+        }
+        return "none";
+    }
+
+    static String getDisplayBackgroundColor(String settings) {
+        if (settings.contains("<bgc=") && settings.contains(">")) {
+            return settings.substring(settings.indexOf("<bgc=") + 5,
+                    settings.indexOf(">", settings.indexOf("<bgc=")))
+                    .replace("0x", "");
+        } else {
+            return "40000000";
+        }
+    }
+
+    static String getDisplaySettings(String display_name) {
         if (display_settings.containsKey(display_name)) {
             StringBuilder return_string = new StringBuilder();
             for (String value : display_settings.get(display_name).split(",")) {
@@ -163,261 +187,6 @@ public class DisplayHandler {
         displays_xy.clear();
         shown_displays.clear();
         display_settings.clear();
-    }
-
-    private static String removeExtras(String in, String... replace) {
-        for (String string : replace) {
-            in = in.replace(string, "");
-        }
-        return in;
-    }
-
-    public static void drawDisplays(RenderGameOverlayEvent event) {
-        if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
-        GL11.glColor4f(1, 1, 1, 1);
-            FontRenderer ren = Minecraft.getMinecraft().fontRendererObj;
-            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
-            float width = res.getScaledWidth();
-            float height = res.getScaledHeight();
-
-            for (Map.Entry<String, List<String>> display_map : shown_displays.entrySet()) {
-                String display_name = display_map.getKey();
-                List<String> display = display_map.getValue();
-                Double[] display_xy;
-                String settings = getDisplaySettings(display_name);
-                int max_width = 0;
-
-                if (displays_xy.containsKey(display_name)) {
-                    display_xy = displays_xy.get(display_name);
-                } else {
-                    display_xy = new Double[]{0.0,0.0};
-                }
-
-                String bg = "none";
-                String bgc = "40000000";
-
-                List<String> display_texts = new ArrayList<>();
-                List<Float> display_xs = new ArrayList<>();
-                List<Float> display_ys = new ArrayList<>();
-                boolean up = false;
-                int align = 0;
-
-                if (settings.contains("<bg=") && settings.contains(">")) {
-                    bg = settings.substring(settings.indexOf("<bg=")+4, settings.indexOf(">", settings.indexOf("<bg=")));
-                    settings = settings.replace("<bg="+bg+">", "");
-                }
-                if (settings.contains("<bgc=") && settings.contains(">")) {
-                    bgc = settings.substring(settings.indexOf("<bgc=")+5, settings.indexOf(">", settings.indexOf("<bgc=")));
-                    settings = settings.replace("<bgc="+bgc+">", "");
-                    bgc = bgc.replace("0x", "");
-                }
-
-                for (int i=0; i<display.size(); i++) {
-                    String display_text = ChatHandler.addFormatting(settings + display.get(i));
-                    display_text = display_text.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
-                            .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-                            .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")
-                            .replace("stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement", "(")
-                            .replace("stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement", ")")
-                            .replace("AmpF6cyUQp9Amp","&")
-                            .replace("TripleDotF6cyUQp9TripleDot","...")
-                            .replace("BackslashF6cyUQp9Backslash","\\\\")
-                            .replace("NewLineF6cyUQp9NewLine","\\n")
-                            .replace("SingleQuoteF6cyUQp9SingleQuote","\\'");
-                    float display_x;
-                    float display_y;
-                    float spacing = 1;
-                    if (display_text.contains("<spacing=") && display_text.contains(">")) {
-                        String spacing_string = display_text.substring(display_text.indexOf("<spacing=")+9, display_text.indexOf(">", display_text.indexOf("<spacing=")));
-                        try {
-                            spacing = Float.parseFloat(spacing_string);
-                        } catch (NumberFormatException e) {
-                            System.out.println("<spacing=$n> - $n must be a number!");
-                        }
-                        display_text = display_text.replace("<spacing="+spacing_string+">", "");
-                    }
-
-                    String rainbow_string = "";
-                    if (display_text.contains("<rainbow=") && display_text.contains(">")) {
-                        rainbow_string = display_text.substring(display_text.indexOf("<rainbow="), display_text.indexOf(">", display_text.indexOf("<rainbow="))+1);
-                    }
-
-                    String shadow_string = "";
-                    if (display_text.contains("<shadow=") && display_text.contains(">")) {
-                        shadow_string = display_text.substring(display_text.indexOf("<shadow="), display_text.indexOf(">", display_text.indexOf("<shadow="))+1);
-                    }
-
-                    if (display_text.contains("<up>")) {
-                        up = true;
-                        display_text = display_text.replace("<up>","");
-                        if (display_text.contains("<center>")) {
-                            align = 1;
-                            display_text = display_text.replace("<center>","");
-                            int text_width = ren.getStringWidth(removeExtras(IconHandler.removeIconString(display_text), "<rainbow>", rainbow_string, shadow_string));
-                            display_x = ((display_xy[0].floatValue() * width) / 100) - text_width/2;
-                            display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
-                        } else if (display_text.contains("<right>")) {
-                            align = 2;
-                            display_text = display_text.replace("<right>","");
-                            int text_width = ren.getStringWidth(removeExtras(IconHandler.removeIconString(display_text), "<rainbow>", rainbow_string, shadow_string));
-                            display_x = ((display_xy[0].floatValue() * width) / 100) - text_width;
-                            display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
-                        } else {
-                            display_text = display_text.replace("<left>","");
-                            display_x = (display_xy[0].floatValue() * width) / 100;
-                            display_y = ((display_xy[1].floatValue() * height) / 100) + (i+1) * -10 * spacing;
-                        }
-                    } else {
-                        display_text = display_text.replace("<down>","");
-                        if (display_text.contains("<center>")) {
-                            align = 1;
-                            display_text = display_text.replace("<center>","");
-                            int text_width = ren.getStringWidth(removeExtras(IconHandler.removeIconString(display_text), "<rainbow>", rainbow_string, shadow_string));
-                            display_x = ((display_xy[0].floatValue() * width) / 100) - text_width/2;
-                            display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
-                        } else if (display_text.contains("<right>")) {
-                            align = 2;
-                            display_text = display_text.replace("<right>","");
-                            int text_width = ren.getStringWidth(removeExtras(IconHandler.removeIconString(display_text), "<rainbow>", rainbow_string, shadow_string));
-                            display_x = ((display_xy[0].floatValue() * width) / 100) - text_width;
-                            display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
-                        } else {
-                            display_text = display_text.replace("<left>","");
-                            display_x = (display_xy[0].floatValue() * width) / 100;
-                            display_y = ((display_xy[1].floatValue() * height) / 100) + i * 10 * spacing;
-                        }
-                    }
-
-                    String trimmed_display_text = removeExtras(display_text, "<rainbow>", rainbow_string, shadow_string);
-
-
-
-                    if (ren.getStringWidth(IconHandler.removeIconString(trimmed_display_text)) > max_width) {
-                        max_width = ren.getStringWidth(IconHandler.removeIconString(trimmed_display_text));
-                    }
-
-                    display_texts.add(display_text);
-                    display_xs.add(display_x);
-                    display_ys.add(display_y);
-                }
-
-                if (display_texts.size() > 0) {
-                    drawDisplay(display_texts, display_xs, display_ys, bg, bgc, max_width, up, align);
-                }
-            }
-        }
-    }
-
-    private static void drawDisplay(List<String> display_texts, List<Float> display_xs, List<Float> display_ys, String bg, String bgc, int max_width, boolean up, int align) {
-        FontRenderer ren = Minecraft.getMinecraft().fontRendererObj;
-
-        if (bg.equalsIgnoreCase("full")) {
-            int bg_y = floor(display_ys.get(0));
-            if (up) {
-                int bg_x = floor(display_xs.get(0));
-                int bg_h = floor(display_ys.get(display_ys.size()-1));
-                try {
-                    drawRect(bg_x, bg_y+10, bg_x+max_width, bg_h, (int) Long.parseLong(bgc, 16));
-                } catch (NumberFormatException e) {
-                    drawRect(bg_x, bg_y+10, bg_x+max_width, bg_h, 0x40000000);
-                }
-            } else {
-                int bg_x = floor(display_xs.get(0));
-                int bg_h = floor(display_ys.get(display_ys.size()-1))+10;
-                try {
-                    drawRect(bg_x, bg_y, bg_x+max_width, bg_h, (int) Long.parseLong(bgc, 16));
-                } catch (NumberFormatException e) {
-                    drawRect(bg_x, bg_y, bg_x+max_width, bg_h, 0x40000000);
-                }
-            }
-        }
-
-        for (int i=0; i<display_texts.size(); i++) {
-            String display_text = display_texts.get(i);
-            float display_x = display_xs.get(i);
-            float display_y = display_ys.get(i);
-
-            int color;
-            if (display_text.contains("<rainbow>") || (display_text.contains("<rainbow=") && display_text.contains(">"))) {
-                display_text = display_text.replace("<rainbow>", "");
-                float speed = 5;
-                if (display_text.contains("<rainbow=") && display_text.contains(">")) {
-                    String speed_string = display_text.substring(display_text.indexOf("<rainbow=")+9, display_text.indexOf(">", display_text.indexOf("<rainbow=")));
-                    try {
-                        speed = Float.parseFloat(speed_string);
-                    } catch (NumberFormatException exception) {
-                        if (global.debug) {ChatHandler.warn("gray", "<rainbow=&n> - &n must be a number!");}
-                    }
-                    display_text = display_text.replace("<rainbow="+speed_string+">", "");
-                }
-                float step = global.ticksElapsed;
-                int red = (int) ((Math.sin(step / speed) + 0.75) * 170);
-                int green = (int) ((Math.sin(step / speed + ((2 * Math.PI) / 3)) + 0.75) * 170);
-                int blue = (int) ((Math.sin(step / speed + ((4 * Math.PI) / 3)) + 0.75) * 170);
-
-                if (red < 0) red = 0;
-                if (green < 0) green = 0;
-                if (blue < 0) blue = 0;
-                if (red > 255) red = 255;
-                if (green > 255) green = 255;
-                if (blue > 255) blue = 255;
-
-                color = 0xff000000 + (red*0x10000) + (green*0x100) + blue;
-            } else {
-                color = 0xffffff;
-            }
-
-            Boolean shadow = true;
-            if (display_text.contains("<shadow=") && display_text.contains(">")) {
-                String shadow_string = display_text.substring(display_text.indexOf("<shadow=")+8, display_text.indexOf(">", display_text.indexOf("<shadow=")));
-                display_text = display_text.replace("<shadow="+shadow_string+">", "");
-                shadow = shadow_string.equals("true");
-            }
-
-            if (!display_text.equals("") && bg.equalsIgnoreCase("line")) {
-                try {
-                    drawRect(display_x, display_y, display_x + ren.getStringWidth(IconHandler.removeIconString(display_text)), display_y + 10, (int) Long.parseLong(bgc, 16));
-                } catch (NumberFormatException e) {
-                    drawRect(display_x, display_y, display_x + ren.getStringWidth(IconHandler.removeIconString(display_text)), display_y + 10, 0x40000000);
-                }
-            }
-
-            display_text = IconHandler.drawIcons(display_text, floor(display_x), floor(display_y));
-            ren.drawString(display_text, display_x, display_y, color, shadow);
-        }
-    }
-
-    public static void drawRect(double left, double top, double right, double bottom, int color) {
-        if (left < right) {
-            double i = left;
-            left = right;
-            right = i;
-        }
-
-        if (top < bottom) {
-            double j = top;
-            top = bottom;
-            bottom = j;
-        }
-
-        float f3 = (float)(color >> 24 & 255) / 255.0F;
-        float f = (float)(color >> 16 & 255) / 255.0F;
-        float f1 = (float)(color >> 8 & 255) / 255.0F;
-        float f2 = (float)(color & 255) / 255.0F;
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-        GlStateManager.color(f, f1, f2, f3);
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION);
-        worldrenderer.pos(left+1, bottom-1, 0.0D).endVertex();
-        worldrenderer.pos(right-1, bottom-1, 0.0D).endVertex();
-        worldrenderer.pos(right-1, top-1, 0.0D).endVertex();
-        worldrenderer.pos(left+1, top-1, 0.0D).endVertex();
-        tessellator.draw();
-        GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
     }
 
     public static String displayFunctions(String TMP_e, Boolean isAsync) {

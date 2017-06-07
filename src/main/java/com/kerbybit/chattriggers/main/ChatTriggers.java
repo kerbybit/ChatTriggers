@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.gui.DisplayOverlay;
+import com.kerbybit.chattriggers.objects.DisplayRenderer;
 import com.kerbybit.chattriggers.references.AsyncHandler;
 import com.kerbybit.chattriggers.references.BugTracker;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
@@ -139,7 +140,7 @@ public class ChatTriggers {
                 KillfeedHandler.drawKillfeed(event);
                 NotifyHandler.drawNotify(event);
 
-                DisplayHandler.drawDisplays(event);
+                DisplayRenderer.drawDisplays(event);
 
 
                 GuiTriggerList.openGui();
