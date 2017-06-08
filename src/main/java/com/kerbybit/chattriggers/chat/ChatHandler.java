@@ -11,7 +11,6 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 
 import static java.lang.StrictMath.round;
-import static net.minecraft.realms.RealmsMth.floor;
 
 public class ChatHandler {
 	

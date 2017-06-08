@@ -116,8 +116,6 @@ public class DisplayRenderer {
                     display_ys.add(display_y);
                 }
 
-
-
                 if (display_texts.size() > 0) {
                     if (bg.equalsIgnoreCase("full")) {
                         int display_bg_x = floor((display_xy[0].floatValue() * width) / 100);

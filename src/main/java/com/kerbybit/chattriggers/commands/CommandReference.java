@@ -80,7 +80,9 @@ public class CommandReference {
 	public static void clearTriggerList() {
 		global.chatTrigger.clear();
         global.onChatTrigger.clear();
+        global.actionTrigger.clear();
 		global.tickTrigger.clear();
+		global.tickTriggerTime.clear();
 		global.onWorldLoadTrigger.clear();
 		global.onWorldFirstLoadTrigger.clear();
 		global.onServerChangeTrigger.clear();
