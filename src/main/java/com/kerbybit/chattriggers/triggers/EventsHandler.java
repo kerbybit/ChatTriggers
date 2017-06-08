@@ -177,7 +177,9 @@ public class EventsHandler {
 		//non-logic events
 			if (TMP_c.equalsIgnoreCase("TRIGGER")) {doTrigger(TMP_e, chatEvent, soundEvent, isAsync);}
             if (TMP_c.equalsIgnoreCase("CHAT")) {
-                ChatHandler.warn(TMP_e);
+				if (!TMP_e.equalsIgnoreCase("cancel chat")) {
+					ChatHandler.warn(TMP_e);
+				}
             }
 			TMP_e = TMP_e.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",");
 			if (TMP_c.equalsIgnoreCase("SAY")) {if (!global.hasWatermark) {global.chatQueue.add(TMP_e);}}
