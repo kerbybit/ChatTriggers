@@ -2,6 +2,8 @@ language: java
 sudo: required
 before_script:
   - chmod +x gradlew
+script:
+  - gradlew build
 deploy:
   provider: pages
   skip_cleanup: true
