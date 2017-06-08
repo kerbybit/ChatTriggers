@@ -1,4 +1,5 @@
 language: java
+sudo: required
 deploy:
   provider: pages
   skip_cleanup: true
