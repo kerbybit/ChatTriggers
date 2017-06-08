@@ -19,15 +19,18 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
@@ -215,8 +218,8 @@ public class BuiltInStrings {
             if (returnString.toString().equals("[")) {
                 TMP_e = createDefaultString("scoreboardlines", "[]", TMP_e, isAsync);
             } else {
-                ListHandler.getList("DefaultList->PLAYERLIST-"+(ListHandler.getListsSize()+1), returnString.substring(0, returnString.length()-1)+"]");
-                TMP_e = TMP_e.replace("{scoreboardlines}", "{list[DefaultList->PLAYERLIST-"+ListHandler.getListsSize()+"]}");
+                ListHandler.getList("DefaultList->SCOREBOARDLINES-"+(ListHandler.getListsSize()+1), returnString.substring(0, returnString.length()-1)+"]");
+                TMP_e = TMP_e.replace("{scoreboardlines}", "{list[DefaultList->SCOREBOARDLINES-"+ListHandler.getListsSize()+"]}");
             }
         }
         if (TMP_e.contains("{debug}")) {
@@ -336,14 +339,18 @@ public class BuiltInStrings {
 			TMP_e = createDefaultString("motionX", Minecraft.getMinecraft().thePlayer.motionX + "", TMP_e, isAsync);
 		}
 		if (TMP_e.contains("{motionY}")) {
-			TMP_e = createDefaultString("motionX", Minecraft.getMinecraft().thePlayer.motionY + "", TMP_e, isAsync);
+			TMP_e = createDefaultString("motionY", Minecraft.getMinecraft().thePlayer.motionY + "", TMP_e, isAsync);
 		}
 		if (TMP_e.contains("{motionZ}")) {
-			TMP_e = createDefaultString("motionX", Minecraft.getMinecraft().thePlayer.motionZ + "", TMP_e, isAsync);
+			TMP_e = createDefaultString("motionZ", Minecraft.getMinecraft().thePlayer.motionZ + "", TMP_e, isAsync);
 		}
         if (TMP_e.contains("{fps}")) {
             TMP_e = createDefaultString("fps", Minecraft.getDebugFPS()+"", TMP_e, isAsync);
         }
+        if (TMP_e.contains("{lightLevel}")) {
+        	Minecraft mc = Minecraft.getMinecraft();
+        	TMP_e = createDefaultString("lightLevel", mc.theWorld.getLight(mc.thePlayer.playerLocation) + "", TMP_e, isAsync);
+		}
         if (TMP_e.contains("{fpscol}")) {
             String col;
             if (Minecraft.getDebugFPS() >= global.fpshigh) {
@@ -526,10 +533,12 @@ public class BuiltInStrings {
 					Entity entity = mop.entityHit;
 					NBTTagCompound tags = new NBTTagCompound();
 					entity.writeToNBT(tags);
+					String isHuman = entity instanceof EntityPlayer ? "true" : "false";
 
 					jsonString = "{\"type\":\"entity\",";
 					jsonString += "\"entity\":{";
 					jsonString += "\"name\":\"" + entity.getName() + "\",";
+					jsonString += "\"isHuman\":\"" + isHuman + "\",";
 					jsonString += "\"displayName\":\"" + entity.getCustomNameTag() + EnumChatFormatting.RESET + "\",";
 					jsonString += "\"xPos\":" + entity.getPosition().getX() + ",";
 					jsonString += "\"yPos\":" + entity.getPosition().getY() + ",";
@@ -538,26 +547,41 @@ public class BuiltInStrings {
 					jsonString += "\"yPosExact\":" + entity.posY + ",";
 					jsonString += "\"zPosExact\":" + entity.posZ + ",";
 					jsonString += "\"motionX\":" + entity.motionX + ",";
-					jsonString += "\"motionY\":" + entity.motionY + ",";
-					jsonString += "\"motionZ\":" + entity.motionZ + ",";
-					jsonString += "\"metadata\":{";
+					jsonString += "\"motionY\":" + entity.motionX + ",";
+					jsonString += "\"motionZ\":" + entity.motionX + "";
 
-					for (String key : tags.getKeySet()) {
-						jsonString += "\"" + key + "\":\"" + tags.getTag(key).toString() + "\",";
-					}
-
-					if (jsonString.endsWith(",")) jsonString = jsonString.substring(0, jsonString.length() - 1);
-					jsonString += "}";
 					if (entity instanceof EntityLivingBase) {
 
-					    jsonString += ",\"teamName\":\"";
+						jsonString += ",\"teamName\":\"";
 
-					    if (((EntityLivingBase) entity).getTeam() == null) {
-                            jsonString += "null\"";
-                        } else {
-					        jsonString += ((EntityLivingBase) entity).getTeam().getRegisteredName() + "\"";
-                        }
-                    }
+						if (((EntityLivingBase) entity).getTeam() == null) {
+							jsonString += "null\",";
+						} else {
+							jsonString += ((EntityLivingBase) entity).getTeam().getRegisteredName() + "\",";
+						}
+					}
+
+					jsonString += "\"metadata\":{";
+
+					StringBuilder jsonStringBuilder = new StringBuilder(jsonString);
+					for (String key : tags.getKeySet()) {
+						if (!tags.getTag(key).toString().startsWith("[") && !tags.getTag(key).toString().startsWith("{")) {
+							if (key.equalsIgnoreCase("healf") || key.equalsIgnoreCase("health")
+									|| key.equalsIgnoreCase("absorptionamount")) {
+								continue;
+							}
+
+							jsonStringBuilder.append("\"").append(key).append("\":\"").append(tags.getTag(key).toString()).append("\",");
+						}
+					}
+					jsonString = jsonStringBuilder.toString();
+
+					if (!jsonString.endsWith("{")) {
+						System.out.println(jsonString);
+						jsonString = jsonString.substring(0, jsonString.length() - 1);
+					}
+
+					jsonString += "}";
 
                     jsonString += "}}";
 				} else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.MISS) {
@@ -655,7 +679,9 @@ public class BuiltInStrings {
 						jsonString += "\"name\":\"" + block.getLocalizedName() + "\",";
 						jsonString += "\"unlocalizedName\":\"" + block.getUnlocalizedName().replace("tile.","") + "\",";
 						jsonString += "\"registryName\":\"" + registryName + "\",";
-						jsonString += "\"id\":" + Block.getIdFromBlock(block);
+						jsonString += "\"id\":" + Block.getIdFromBlock(block) + "\",";
+						jsonString += "\"lightLevel\":" + Minecraft.getMinecraft().theWorld.getLight(mop.getBlockPos()) + "";
+						jsonString += "\"isOnFire\":" + block.isFireSource(Minecraft.getMinecraft().theWorld, mop.getBlockPos(), EnumFacing.UP);
 						jsonString += "}}";
 					}
 				}
@@ -908,12 +934,14 @@ public class BuiltInStrings {
 					}
 				}
 			}
-			held = "{\"" + item.getItem().getRegistryName().replace("minecraft:", "")
+			held = "{\"registryName\":\"" + item.getItem().getRegistryName().replace("minecraft:", "") + ","
+					+ "\"" + "item"
 					+ "\":{\"displayName\":\"" + JsonHandler.getForJson(item.getDisplayName())
 					+ "\",\"maxDurability\":" + (int) floor(itemMaxDamage)
 					+ ",\"durability\":" + (int) floor(itemDamage)
 					+ ",\"durabilityPercent\":" + (int) floor(itemPercent)
 					+ ",\"itemCount\":" + item.stackSize
+					+ ",\"id\":" + Item.getIdFromItem(item.getItem())
 					+ ",\"data\":" + itemData + "}}";
 		} catch (Exception e) {
 			held = "{}";
