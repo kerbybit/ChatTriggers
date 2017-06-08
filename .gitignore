@@ -1,9 +1,5 @@
 /.idea/
-/.gradle/
 /build/
-/gradle/
-build.gradle
-gradlew
-gradlew.bat
 ChatTriggers.iml
 /run/
+/.gradle
