@@ -121,7 +121,7 @@ public class IconHandler {
 
                 if (item != null) {
                     drawItemIcon(x + Minecraft.getMinecraft().fontRendererObj.getStringWidth(before_value), y-4, itemStack);
-                    return drawIcons(input.replace("{icon["+get_name+"]}", "    "), x, y);
+                    return drawIcons(input.replaceFirst("\\{icon\\["+get_name+"]}", "    "), x, y);
                 }
             }
             return drawIcons(input.replace("{icon["+get_name+"]}", "   "), x, y);
