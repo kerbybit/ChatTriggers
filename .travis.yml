@@ -9,6 +9,7 @@ before_script: chmod +x gradlew
 script:
   - jdk_switcher use oraclejdk8
   - ./gradlew build
+  - ls
 deploy:
   provider: pages
   skip_cleanup: true
