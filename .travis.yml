@@ -15,7 +15,7 @@ deploy:
   skip_cleanup: true
   github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
   repo: git@github.com:FalseHonesty/FalseHonesty.github.io.git
-  local_dir: /build/libs
+  local_dir: /build/libs/ChatTriggers-1.8.9-5.0-NIGHTLY
   target_branch: master
   on:
     branch: master
