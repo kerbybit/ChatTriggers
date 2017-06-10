@@ -5,7 +5,9 @@ addons:
   apt:
     packages:
       - oracle-java8-installer
-before_script: chmod +x gradlew
+before_script:
+  - chmod +x gradlew
+  - rm -R 1.*
 script:
   - jdk_switcher use oraclejdk8
   - ./gradlew build

@@ -802,6 +802,10 @@ public class BuiltInStrings {
             TMP_e = createDefaultString("CTVersion", Reference.VERSION, TMP_e, isAsync);
         }
 
+        if (TMP_e.contains("{MCVersion}")) {
+        	TMP_e = createDefaultString("MCVersion", Minecraft.getMinecraft().getVersion(), TMP_e, isAsync);
+		}
+
         if (TMP_e.contains("{black}")) {
             TMP_e = createDefaultString("black", "&0", TMP_e, isAsync);
         }
