@@ -93,6 +93,8 @@ public class IconHandler {
                 String skullOwner = null;
                 if (get_name.contains("{SkullOwner:\"")) {
                 	skullOwner = get_name.substring(get_name.indexOf("{SkullOwner:\"") + 13, get_name.indexOf("\"}"));
+
+                	input = input.replace("{SkullOwner:\"" + skullOwner + "\"}", "");
 				}
 
                 Item item = Item.getByNameOrId(get_final_name);
