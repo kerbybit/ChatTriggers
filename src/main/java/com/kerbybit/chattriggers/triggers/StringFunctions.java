@@ -22,7 +22,7 @@ public class StringFunctions {
     static String doStringFunctions(String stringName, String func, String args, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
         func = func.toUpperCase();
 
-        args = nestedArgs(args, chatEvent, isAsync);
+        args = nestedArgs(args, chatEvent, isAsync, true);
 
         String stringValue = getStringValue(stringName, isAsync);
         if (stringValue == null) {
@@ -215,8 +215,10 @@ public class StringFunctions {
                 return stringValue.toLowerCase();
             case("REMOVEFORMATTING"):
             case("REMFORM"):
-                stringValue = stringValue.replaceAll("&[1-r]", "");
                 return ChatHandler.deleteFormatting(stringValue);
+            case("IGNOREFORMATTING"):
+            case("IGNOREFORM"):
+                return ChatHandler.ignoreFormatting(stringValue);
             case("CAPITALIZEFIRSTWORD"):
             case("CAPFIRST"):
                 if (stringValue.equals("")) return stringValue;
@@ -581,25 +583,29 @@ public class StringFunctions {
     }
 
     public static String nestedArgs(String args, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
-        args = stringFunctions(args, chatEvent, isAsync);
+        return nestedArgs(args, chatEvent, isAsync, false);
+    }
+
+    private static String nestedArgs(String args, ClientChatReceivedEvent chatEvent, Boolean isAsync, Boolean nested) {
+        args = stringFunctions(args, chatEvent, isAsync, nested);
         while (args.contains("{array[") && args.contains("]}")) {
             args = ArrayHandler.arrayFunctions(args, chatEvent, isAsync);
-            args = stringFunctions(args, chatEvent, isAsync);
+            args = stringFunctions(args, chatEvent, isAsync, nested);
         }
         while (args.contains("{display[") && args.contains("]}")) {
             args = DisplayHandler.displayFunctions(args, isAsync);
-            args = stringFunctions(args, chatEvent, isAsync);
+            args = stringFunctions(args, chatEvent, isAsync, nested);
         }
         while (args.contains("{list[") && args.contains("]}")) {
             args = ListHandler.listFunctions(args, isAsync);
-            args = stringFunctions(args, chatEvent, isAsync);
+            args = stringFunctions(args, chatEvent, isAsync, nested);
         }
         while (args.contains("{json[") && args.contains("]}")) {
             args = JsonHandler.jsonFunctions(args, isAsync);
-            args = stringFunctions(args, chatEvent, isAsync);
+            args = stringFunctions(args, chatEvent, isAsync, nested);
         }
         while (args.contains("{string[") && args.contains("]}")) {
-            args = stringFunctions(args, chatEvent, isAsync);
+            args = stringFunctions(args, chatEvent, isAsync, nested);
         }
         return args;
     }

@@ -267,8 +267,8 @@ public class ChatHandler {
         try {
             Minecraft.getMinecraft().thePlayer.addChatMessage(TMP_out);
         } catch (NullPointerException e) {
-            //do nothing
-            //world probably isnt loaded
+            //world isn't loaded
+            System.out.println(TMP_out);
         }
 	}
 	

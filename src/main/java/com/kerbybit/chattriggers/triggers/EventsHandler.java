@@ -202,8 +202,8 @@ public class EventsHandler {
 
 			if (TMP_c.equalsIgnoreCase("TITLE")) {
 				Minecraft.getMinecraft().ingameGUI.displayTitle(null, null, TMP_fi, TMP_t, TMP_fo);
-				Minecraft.getMinecraft().ingameGUI.displayTitle(null, ChatHandler.addFormatting(TMP_st), TMP_fi, TMP_t, TMP_fo);
-				Minecraft.getMinecraft().ingameGUI.displayTitle(ChatHandler.addFormatting(removeStringReplacements(TMP_e)), TMP_st, TMP_fi, TMP_t, TMP_fo);
+				Minecraft.getMinecraft().ingameGUI.displayTitle(null, ChatHandler.addFormatting(removeStringReplacements(TMP_st)), TMP_fi, TMP_t, TMP_fo);
+				Minecraft.getMinecraft().ingameGUI.displayTitle(ChatHandler.addFormatting(removeStringReplacements(TMP_e)), ChatHandler.addFormatting(removeStringReplacements(TMP_st)), TMP_fi, TMP_t, TMP_fo);
 			}
 
 			if (TMP_c.equalsIgnoreCase("CANCEL")) {
