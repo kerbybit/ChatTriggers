@@ -7,10 +7,10 @@ addons:
       - oracle-java8-installer
 before_script:
   - chmod +x gradlew
-  - rm -R 1.*
 script:
   - jdk_switcher use oraclejdk8
   - ./gradlew build
+  - rm -R 1.*
 deploy:
   provider: gcs
   access_key_id: "GOOGHQAG7JD7CM5233OC"
