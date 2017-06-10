@@ -560,23 +560,24 @@ public class BuiltInStrings {
 						jsonString += ",\"teamName\":\"";
 
 						if (((EntityLivingBase) entity).getTeam() == null) {
-							jsonString += "null\",";
+							jsonString += "null\"";
 						} else {
-							jsonString += ((EntityLivingBase) entity).getTeam().getRegisteredName() + "\",";
+							jsonString += ((EntityLivingBase) entity).getTeam().getRegisteredName() + "\"";
 						}
 					}
 
-					jsonString += "\"metadata\":{";
+					jsonString += ",\"metadata\":{";
 
 					StringBuilder jsonStringBuilder = new StringBuilder(jsonString);
 					for (String key : tags.getKeySet()) {
 						if (!tags.getTag(key).toString().startsWith("[") && !tags.getTag(key).toString().startsWith("{")) {
+
 							if (key.equalsIgnoreCase("healf") || key.equalsIgnoreCase("health")
 									|| key.equalsIgnoreCase("absorptionamount")) {
 								continue;
 							}
 
-							jsonStringBuilder.append("\"").append(key).append("\":\"").append(tags.getTag(key).toString()).append("\",");
+							jsonStringBuilder.append("\"").append(key).append("\":\"").append(tags.getTag(key).toString().replace("\"", "")).append("\",");
 						}
 					}
 					jsonString = jsonStringBuilder.toString();
@@ -743,6 +744,10 @@ public class BuiltInStrings {
 		if (TMP_e.contains("{fov}")) {
         	TMP_e = createDefaultString("fov",
 					Math.floor(Minecraft.getMinecraft().gameSettings.fovSetting) + "", TMP_e, isAsync);
+		}
+
+		if (TMP_e.contains("{uuid}")) {
+        	TMP_e = createDefaultString("uuid", Minecraft.getMinecraft().getSession().getPlayerID(), TMP_e, isAsync);
 		}
 
 		if (TMP_e.contains("{armorPoints}")) {
