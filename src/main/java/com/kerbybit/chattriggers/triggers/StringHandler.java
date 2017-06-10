@@ -74,12 +74,8 @@ public class StringHandler {
         }
 		
 	}
-
-	public static String stringFunctions(String TMP_e, ClientChatReceivedEvent event, Boolean isAsync) {
-        return stringFunctions(TMP_e, event, isAsync, false);
-    }
 	
-	static String stringFunctions(String TMP_e, ClientChatReceivedEvent chatEvent, Boolean isAsync, Boolean nested) {
+	public static String stringFunctions(String TMP_e, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
 		TMP_e = TMP_e.replace("'('", "stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement")
 				.replace("')'", "stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement");
 		while (TMP_e.contains("{string[") && TMP_e.contains("]}")) {
@@ -200,24 +196,22 @@ public class StringHandler {
 						.replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket")
 						+ secondpart;
 
-				if (!nested) {
-                    global.USR_string.clear();
-                    Map<String, String> USRTemp = new HashMap<>(global.backupUSR_strings);
-                    for (Map.Entry<String, String> backup : USRTemp.entrySet()) {
-                        global.USR_string.put(backup.getKey(), backup.getValue());
-                    }
+                global.USR_string.clear();
+                Map<String, String> USRTemp = new HashMap<>(global.backupUSR_strings);
+                for (Map.Entry<String, String> backup : USRTemp.entrySet()) {
+                    global.USR_string.put(backup.getKey(), backup.getValue());
+                }
 
-                    global.TMP_string.clear();
-                    Map<String, String> TMPTemp = new HashMap<>(global.backupTMP_strings);
-                    for (Map.Entry<String, String> backup : TMPTemp.entrySet()) {
-                        global.TMP_string.put(backup.getKey(), backup.getValue());
-                    }
+                global.TMP_string.clear();
+                Map<String, String> TMPTemp = new HashMap<>(global.backupTMP_strings);
+                for (Map.Entry<String, String> backup : TMPTemp.entrySet()) {
+                    global.TMP_string.put(backup.getKey(), backup.getValue());
+                }
 
-                    global.Async_string.clear();
-                    Map<String, String> AsyncTemp = new HashMap<>(global.backupAsync_string);
-                    for (Map.Entry<String, String> entry : AsyncTemp.entrySet()) {
-                        global.Async_string.put(entry.getKey(), entry.getValue());
-                    }
+                global.Async_string.clear();
+                Map<String, String> AsyncTemp = new HashMap<>(global.backupAsync_string);
+                for (Map.Entry<String, String> entry : AsyncTemp.entrySet()) {
+                    global.Async_string.put(entry.getKey(), entry.getValue());
                 }
 			}
 		}
