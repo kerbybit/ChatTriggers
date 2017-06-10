@@ -18,7 +18,8 @@ public class JsonHandler {
     private static HashMap<String, JsonObject> jsons = new HashMap<>();
 
     public static String getForJson(String in) {
-        return in.replace("\"", "\\\"").replace("'", "\\'");
+        return in.replace("\"", "\\\"")
+                .replace("'", "\\'");
     }
 
     private static JsonObject getJsonFromURL(String url) {
@@ -140,34 +141,43 @@ public class JsonHandler {
     private static String getValue(String key) {
         if (jsons.containsKey(key)) {
             return jsons.get(key) + "";
-        } else {
-            return "Not a json";
         }
+        return "Not a json";
+    }
+
+    private static JsonObject getObject(String key) {
+        if (jsons.containsKey(key)) {
+            return jsons.get(key);
+        }
+        return null;
     }
 
     private static String getKeys(String key, String value) {
-        StringBuilder returnString;
-        JsonObject obj;
+        StringBuilder returnString = new StringBuilder("Not a json");
+        JsonObject obj = null;
         if (value.equals("")) {
-            returnString = new StringBuilder(getValue(key));
-            obj = new JsonParser().parse(returnString.toString()).getAsJsonObject();
+            obj = getObject(key);
         } else {
             returnString = new StringBuilder(getValue(key, value));
-            obj = new JsonParser().parse(returnString.toString()).getAsJsonObject();
+            if (!returnString.toString().equals("Not a json")) {
+                obj = new JsonParser().parse(returnString.toString()).getAsJsonObject();
+            }
         }
         List<String> keys = new ArrayList<>();
-        for (Map.Entry<String, JsonElement> ele : obj.entrySet()) {
-            keys.add(ele.getKey());
-        }
+        if (obj != null) {
+            for (Map.Entry<String, JsonElement> ele : obj.entrySet()) {
+                keys.add(ele.getKey());
+            }
 
-        returnString = new StringBuilder("[");
-        for (String element : keys) {
-            returnString.append(element).append(",");
-        }
-        if (returnString.toString().equals("[")) {
-            returnString.append("]");
-        } else {
-            returnString = new StringBuilder(returnString.substring(0, returnString.length()-1) + "]");
+            returnString = new StringBuilder("[");
+            for (String element : keys) {
+                returnString.append(element).append(",");
+            }
+            if (returnString.toString().equals("[")) {
+                returnString.append("]");
+            } else {
+                returnString = new StringBuilder(returnString.substring(0, returnString.length() - 1) + "]");
+            }
         }
 
         return returnString.toString();

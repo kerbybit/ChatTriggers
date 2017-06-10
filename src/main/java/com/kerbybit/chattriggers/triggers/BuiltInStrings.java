@@ -464,7 +464,12 @@ public class BuiltInStrings {
                 if (armor != null) {
                     float armorMaxDamage = armor.getMaxDamage();
                     float armorDamage = armorMaxDamage - armor.getItemDamage();
-                    float armorPercent = (armorDamage / armorMaxDamage) * 100;
+                    float armorPercent;
+                    if (armorMaxDamage == 0) {
+                        armorPercent = 0;
+                    } else {
+                        armorPercent = (armorDamage / armorMaxDamage) * 100;
+                    }
                     String armorData = armor.getMetadata()+"";
                     NBTTagCompound armorNBT = armor.getTagCompound();
                     if (armorNBT!=null) {
@@ -683,6 +688,7 @@ public class BuiltInStrings {
 						jsonString += "\"lightLevel\":" + Minecraft.getMinecraft().theWorld.getLight(mop.getBlockPos()) + ",";
 						jsonString += "\"isOnFire\":" + block.isFireSource(Minecraft.getMinecraft().theWorld, mop.getBlockPos(), EnumFacing.UP);
 						jsonString += "}}";
+						//System.out.println(jsonString);
 					}
 				}
 			} catch (Exception e) {
@@ -947,6 +953,7 @@ public class BuiltInStrings {
 					+ ",\"itemCount\":" + item.stackSize
 					+ ",\"id\":" + Item.getIdFromItem(item.getItem())
 					+ ",\"data\":" + itemData + "}}";
+			//System.out.println(held);
 		} catch (Exception e) {
 			held = "{}";
 		}
