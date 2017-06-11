@@ -957,8 +957,8 @@ public class BuiltInStrings {
         	TMP_e = createDefaultString("biome", biome.biomeName, TMP_e, isAsync);
 		}
 
-		if (TMP_e.contains("{minecraftTime")) {
-        	TMP_e = createDefaultString("minecraftTime", Minecraft.getMinecraft().theWorld.getWorldTime() + "", TMP_e, isAsync);
+		if (TMP_e.contains("{worldTime}")) {
+        	TMP_e = createDefaultString("worldTime", Minecraft.getMinecraft().theWorld.getWorldTime() + "", TMP_e, isAsync);
 		}
 
 		if (TMP_e.contains("{chunkX}")) {
