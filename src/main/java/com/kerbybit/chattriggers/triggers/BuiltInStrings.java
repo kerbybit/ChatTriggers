@@ -28,6 +28,8 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -524,6 +526,143 @@ public class BuiltInStrings {
 			}
 		}
 
+		if (TMP_e.contains("{lookingAtMin}")) {
+			MovingObjectPosition mop = Minecraft.getMinecraft().objectMouseOver;
+			String jsonString;
+
+			try {
+				if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
+					Entity entity = mop.entityHit;
+					String isHuman = entity instanceof EntityPlayer ? "true" : "false";
+
+					jsonString = "{\"type\":\"entity\",";
+					jsonString += "\"entity\":{";
+					jsonString += "\"name\":\"" + entity.getName() + "\",";
+					jsonString += "\"isHuman\":\"" + isHuman + "\",";
+					jsonString += "\"displayName\":\"" + entity.getCustomNameTag() + EnumChatFormatting.RESET + "\",";
+					jsonString += "\"xPos\":" + entity.getPosition().getX() + ",";
+					jsonString += "\"yPos\":" + entity.getPosition().getY() + ",";
+					jsonString += "\"zPos\":" + entity.getPosition().getZ() + "";
+
+					if (entity instanceof EntityLivingBase) {
+
+						jsonString += ",\"teamName\":\"";
+
+						if (((EntityLivingBase) entity).getTeam() == null) {
+							jsonString += "null\"";
+						} else {
+							jsonString += ((EntityLivingBase) entity).getTeam().getRegisteredName() + "\"";
+						}
+					}
+
+					jsonString += "}}";
+				} else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.MISS) {
+					jsonString = "{\"type\":\"null\"}";
+				} else {
+					IBlockState blockState = Minecraft.getMinecraft().theWorld.getBlockState(mop.getBlockPos());
+					Block block = blockState.getBlock();
+
+					if (block == null) {
+						jsonString = "{\"type\":\"null\"}";
+					} else {
+						int itemData = block.getMetaFromState(blockState);
+						String registryName = block.getRegistryName().replace("minecraft:", "");
+						if (registryName.startsWith("double_") && (registryName.endsWith("_slab") || registryName.endsWith("_slab2"))) {
+							registryName = registryName.substring(7);
+						}
+						if (registryName.startsWith("lit_") && !registryName.endsWith("pumpkin")) {
+							registryName = registryName.substring(4);
+						}
+						if (registryName.equals("anvil")) {
+							if (itemData > 5) itemData = 2;
+							else if (itemData < 4) itemData = 0;
+							else itemData = 1;
+						} else if (registryName.endsWith("_slab")
+								|| registryName.endsWith("_slab2")
+								|| registryName.equals("sapling")
+								|| registryName.equals("leaves")) {
+							if (itemData > 7) {
+								itemData -= 8;
+							}
+						} else if (registryName.equals("log")) {
+							itemData %= 4;
+						} else if (registryName.equals("ender_chest")
+								|| registryName.equals("chest")
+								|| registryName.equals("trapped_chest")
+								|| registryName.equals("vine")
+								|| registryName.equals("tripwire_hook")
+								|| registryName.equals("dropper")
+								|| registryName.equals("dispenser")
+								|| registryName.equals("bed")
+								|| registryName.equals("ladder")
+								|| registryName.equals("end_portal_frame")
+								|| registryName.equals("daylight_detector")
+								|| registryName.equals("hay_block")
+								|| registryName.equals("brewing_stand")
+								|| registryName.equals("furnace")
+								|| registryName.equals("lever")
+								|| registryName.equals("pumpkin")
+								|| registryName.equals("lit_pumpkin")
+								|| registryName.equals("hopper")
+								|| registryName.endsWith("_button")
+								|| registryName.endsWith("_pressure_plate")
+								|| registryName.endsWith("_door")
+								|| registryName.endsWith("_fence_gate")
+								|| registryName.endsWith("_stairs")
+								|| registryName.endsWith("torch")
+								|| registryName.endsWith("piston")
+								|| registryName.endsWith("trapdoor")
+								|| registryName.endsWith("rail")) {
+							itemData = 0;
+						} else if (registryName.endsWith("_repeater")) {
+							registryName = "repeater";
+							itemData = 0;
+						} else if (registryName.endsWith("_comparator")) {
+							registryName = "comparator";
+							itemData = 0;
+						} else if (registryName.equals("redstone_wire")) {
+							registryName = "redstone";
+							itemData = 0;
+						} else if (registryName.equals("piston_head")) {
+							registryName = "piston";
+							itemData = 0;
+						} else if (registryName.equals("tripwire")) {
+							registryName = "string";
+							itemData = 0;
+						} else if (registryName.equals("standing_banner")) {
+							registryName = "banner";
+							itemData = 15;
+						} else if (registryName.equals("double_plant")) {
+							registryName = "tallgrass";
+							itemData = 1;
+						} else if (registryName.equals("quartz_block")) {
+							if (itemData > 2) {
+								itemData = 2;
+							}
+						}
+
+						jsonString = "{\"type\":\"block\",";
+						jsonString += "\"block\":{";
+						jsonString += "\"xPos\":" + mop.getBlockPos().getX() + ",";
+						jsonString += "\"yPos\":" + mop.getBlockPos().getY() + ",";
+						jsonString += "\"zPos\":" + mop.getBlockPos().getZ() + ",";
+						jsonString += "\"data\":" + itemData + ",";
+						jsonString += "\"metadata\":" + block.getMetaFromState(blockState) + ",";
+						jsonString += "\"name\":\"" + block.getLocalizedName() + "\",";
+						jsonString += "\"unlocalizedName\":\"" + block.getUnlocalizedName().replace("tile.","") + "\",";
+						jsonString += "\"registryName\":\"" + registryName + "\",";
+						jsonString += "\"id\":" + Block.getIdFromBlock(block) + "";
+						jsonString += "}}";
+					}
+				}
+			} catch (Exception e) {
+				jsonString = "{}";
+			}
+
+			JsonHandler.getJson("DefaultJson->LOOKINGATMIN-" + (JsonHandler.getJsonsSize() + 1), jsonString);
+			TMP_e = TMP_e.replace("{lookingAtMin}", "{json[DefaultJson->LOOKINGATMIN-" + JsonHandler.getJsonsSize() + "]}");
+		}
+
 		if (TMP_e.contains("{lookingAt}")) {
 			MovingObjectPosition mop = Minecraft.getMinecraft().objectMouseOver;
 			String jsonString;
@@ -555,23 +694,24 @@ public class BuiltInStrings {
 						jsonString += ",\"teamName\":\"";
 
 						if (((EntityLivingBase) entity).getTeam() == null) {
-							jsonString += "null\",";
+							jsonString += "null\"";
 						} else {
-							jsonString += ((EntityLivingBase) entity).getTeam().getRegisteredName() + "\",";
+							jsonString += ((EntityLivingBase) entity).getTeam().getRegisteredName() + "\"";
 						}
 					}
 
-					jsonString += "\"metadata\":{";
+					jsonString += ",\"metadata\":{";
 
 					StringBuilder jsonStringBuilder = new StringBuilder(jsonString);
 					for (String key : tags.getKeySet()) {
 						if (!tags.getTag(key).toString().startsWith("[") && !tags.getTag(key).toString().startsWith("{")) {
+
 							if (key.equalsIgnoreCase("healf") || key.equalsIgnoreCase("health")
 									|| key.equalsIgnoreCase("absorptionamount")) {
 								continue;
 							}
 
-							jsonStringBuilder.append("\"").append(key).append("\":\"").append(tags.getTag(key).toString()).append("\",");
+							jsonStringBuilder.append("\"").append(key).append("\":\"").append(tags.getTag(key).toString().replace("\"", "")).append("\",");
 						}
 					}
 					jsonString = jsonStringBuilder.toString();
@@ -738,6 +878,10 @@ public class BuiltInStrings {
 					Math.floor(Minecraft.getMinecraft().gameSettings.fovSetting) + "", TMP_e, isAsync);
 		}
 
+		if (TMP_e.contains("{uuid}")) {
+        	TMP_e = createDefaultString("uuid", Minecraft.getMinecraft().getSession().getPlayerID(), TMP_e, isAsync);
+		}
+
 		if (TMP_e.contains("{armorPoints}")) {
         	TMP_e = createDefaultString("armorPoints",
 					Minecraft.getMinecraft().thePlayer.getTotalArmorValue() + "", TMP_e, isAsync);
@@ -800,6 +944,34 @@ public class BuiltInStrings {
         if (TMP_e.contains("{CTVersion}")) {
             TMP_e = createDefaultString("CTVersion", Reference.VERSION, TMP_e, isAsync);
         }
+
+        if (TMP_e.contains("{MCVersion}")) {
+        	TMP_e = createDefaultString("MCVersion", Minecraft.getMinecraft().getVersion(), TMP_e, isAsync);
+		}
+
+		if (TMP_e.contains("{biome}")) {
+        	Chunk chunk = Minecraft.getMinecraft().theWorld.getChunkFromBlockCoords(Minecraft.getMinecraft().thePlayer.getPosition());
+        	BiomeGenBase biome = chunk.getBiome(Minecraft.getMinecraft().thePlayer.getPosition(),
+					Minecraft.getMinecraft().theWorld.getWorldChunkManager());
+
+        	TMP_e = createDefaultString("biome", biome.biomeName, TMP_e, isAsync);
+		}
+
+		if (TMP_e.contains("{worldTime}")) {
+        	TMP_e = createDefaultString("worldTime", Minecraft.getMinecraft().theWorld.getWorldTime() + "", TMP_e, isAsync);
+		}
+
+		if (TMP_e.contains("{chunkX}")) {
+			TMP_e = createDefaultString("chunkX", Minecraft.getMinecraft().thePlayer.chunkCoordX + "", TMP_e, isAsync);
+		}
+
+		if (TMP_e.contains("{chunkY}")) {
+			TMP_e = createDefaultString("chunkY", Minecraft.getMinecraft().thePlayer.chunkCoordY + "", TMP_e, isAsync);
+		}
+
+		if (TMP_e.contains("{chunkZ}")) {
+			TMP_e = createDefaultString("chunkZ", Minecraft.getMinecraft().thePlayer.chunkCoordZ + "", TMP_e, isAsync);
+		}
 
         if (TMP_e.contains("{black}")) {
             TMP_e = createDefaultString("black", "&0", TMP_e, isAsync);
