@@ -30,7 +30,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
@@ -109,8 +108,6 @@ public class BuiltInStrings {
             String strnum = TMP_e.substring(TMP_e.indexOf("{msg(")+5, TMP_e.indexOf(")}", TMP_e.indexOf("{msg(")));
             String temporary;
             String get_number = StringFunctions.nestedArgs(strnum, chatEvent, isAsync);
-            System.out.println(strnum);
-            System.out.println(get_number);
 
             try {
                 int num = Integer.parseInt(get_number);
@@ -125,8 +122,6 @@ public class BuiltInStrings {
             global.backupTMP_strings.put(stringName, temporary);
 
             TMP_e = TMP_e.replace("{msg("+strnum+")}", "{string["+stringName+"]}");
-            System.out.println(stringName);
-            System.out.println(TMP_e);
         }
         if (chatEvent!=null) {
             if (TMP_e.contains("{msg}.meta()")) {
@@ -583,7 +578,6 @@ public class BuiltInStrings {
 					jsonString = jsonStringBuilder.toString();
 
 					if (!jsonString.endsWith("{")) {
-						System.out.println(jsonString);
 						jsonString = jsonString.substring(0, jsonString.length() - 1);
 					}
 
@@ -689,7 +683,6 @@ public class BuiltInStrings {
 						jsonString += "\"lightLevel\":" + Minecraft.getMinecraft().theWorld.getLight(mop.getBlockPos()) + ",";
 						jsonString += "\"isOnFire\":" + block.isFireSource(Minecraft.getMinecraft().theWorld, mop.getBlockPos(), EnumFacing.UP);
 						jsonString += "}}";
-						//System.out.println(jsonString);
 					}
 				}
 			} catch (Exception e) {
@@ -958,7 +951,6 @@ public class BuiltInStrings {
 					+ ",\"itemCount\":" + item.stackSize
 					+ ",\"id\":" + Item.getIdFromItem(item.getItem())
 					+ ",\"data\":" + itemData + "}}";
-			//System.out.println(held);
 		} catch (Exception e) {
 			held = "{}";
 		}

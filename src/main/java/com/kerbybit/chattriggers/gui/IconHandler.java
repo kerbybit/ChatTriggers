@@ -145,7 +145,7 @@ public class IconHandler {
 
     private static Boolean isPotion(String name) {
         return (name.equals("speed") || name.equals("slowness")
-                ||name.equals("stength") || name.equals("weakness")
+                ||name.equals("strength") || name.equals("weakness")
                 || name.equals("regeneration") || name.equals("fire resistance")
                 || name.equals("poison") || name.equals("night vision")
                 || name.equals("jump boost") || name.equals("water breathing")

@@ -2,31 +2,19 @@ package com.kerbybit.chattriggers.objects;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
-import com.kerbybit.chattriggers.gui.IconHandler;
 import com.kerbybit.chattriggers.triggers.BuiltInStrings;
 import com.kerbybit.chattriggers.triggers.StringFunctions;
 import com.kerbybit.chattriggers.triggers.StringHandler;
 import com.kerbybit.chattriggers.triggers.TagHandler;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 import java.util.List;
 
-import static net.minecraft.realms.RealmsMth.floor;
-
 public class DisplayHandler {
-    static HashMap<String,List<String>> displays = new HashMap<>();
+    private static HashMap<String,List<String>> displays = new HashMap<>();
     static HashMap<String,List<String>> shown_displays = new HashMap<>();
-    static HashMap<String,Double[]> displays_xy = new HashMap<>();
-    static HashMap<String,String> display_settings = new HashMap<>();
+    private static HashMap<String,Double[]> displays_xy = new HashMap<>();
+    private static HashMap<String,String> display_settings = new HashMap<>();
 
     private static String updateDisplay(String display_name, Boolean isAsync) {
         List<String> display;
@@ -40,7 +28,7 @@ public class DisplayHandler {
 
             for (String value : display) {
                 //setup backup for functions so strings don't get overwritten
-                StringHandler.resetBackupStrings();
+                StringHandler.resetBackupStrings(isAsync);
 
                 //built in strings
                 value = BuiltInStrings.builtInStrings(value, null, isAsync);

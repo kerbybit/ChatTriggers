@@ -215,8 +215,10 @@ public class StringFunctions {
                 return stringValue.toLowerCase();
             case("REMOVEFORMATTING"):
             case("REMFORM"):
-                stringValue = stringValue.replaceAll("&[1-r]", "");
                 return ChatHandler.deleteFormatting(stringValue);
+            case("IGNOREFORMATTING"):
+            case("IGNOREFORM"):
+                return ChatHandler.ignoreFormatting(stringValue);
             case("CAPITALIZEFIRSTWORD"):
             case("CAPFIRST"):
                 if (stringValue.equals("")) return stringValue;
