@@ -5,6 +5,8 @@ import java.io.IOException;
 import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.gui.DisplayOverlay;
 import com.kerbybit.chattriggers.objects.DisplayRenderer;
+import com.kerbybit.chattriggers.objects.JsonHandler;
+import com.kerbybit.chattriggers.objects.ListHandler;
 import com.kerbybit.chattriggers.references.AsyncHandler;
 import com.kerbybit.chattriggers.references.BugTracker;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
@@ -169,6 +171,9 @@ public class ChatTriggers {
 		if (global.canUse) {
 
 		    StringHandler.updateMarkedStrings();
+
+            JsonHandler.trimJsons();
+            ListHandler.trimLists();
 
 			KillfeedHandler.tickKillfeed();
 

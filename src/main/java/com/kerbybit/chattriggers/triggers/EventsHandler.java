@@ -77,9 +77,6 @@ public class EventsHandler {
 			    }
 			}
 		}
-        //trim jsons and lists to save memory
-        JsonHandler.trimJsons();
-        ListHandler.trimLists();
 
 		for (int i=0; i<tmp_event.size(); i++) {
         //SETUP
@@ -97,7 +94,7 @@ public class EventsHandler {
 			String TMP_st = "";
 
 		//setup backup for functions so strings don't get overwritten
-			StringHandler.resetBackupStrings();
+			StringHandler.resetBackupStrings(isAsync);
 
         //displays
             TMP_e = DisplayHandler.displayFunctions(TMP_e, isAsync);
