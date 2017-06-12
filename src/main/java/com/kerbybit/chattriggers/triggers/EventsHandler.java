@@ -622,7 +622,7 @@ public class EventsHandler {
 						if (eventsToElse.size()>0) {
 							if (eventsToElse.get(0).toUpperCase().startsWith("ELSEIF")) {
 								eventsToElse.set(0, eventsToElse.get(0).substring(4));
-								ret = doEvents(eventsToElse, chatEvent, isAsync);
+								ret = doEvents(eventsToElse, chatEvent, soundEvent, isAsync);
 							} else {
 								eventsToElse.remove(0);
 								ret = doEvents(eventsToElse, chatEvent, soundEvent, isAsync);

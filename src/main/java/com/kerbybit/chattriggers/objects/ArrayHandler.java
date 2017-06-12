@@ -467,7 +467,6 @@ public class ArrayHandler {
 			importJsonURL("array",checkFile, checkFrom + "=>" + checkTo);
 
 			TMP_e = TMP_e.replace("{array["+checkFrom+"]}.importJsonURL("+checkFile+","+checkTo+")", "{array["+checkFrom+"]}");
-		    System.out.println(TMP_e);
 	    }
 		
 		while (TMP_e.contains("{array[") && TMP_e.contains("]}.exportJson(") && TMP_e.contains(")")) {

@@ -344,11 +344,9 @@ public class CommandReference {
         return "" + Minecraft.getMinecraft().getCurrentServerData().pingToServer;
     }
 
-    private static Long sysTime = Minecraft.getSystemTime();
     private static Long secSysTime = Minecraft.getSystemTime();
     //run on render
     public static void clickCalc() {
-
         while (Minecraft.getSystemTime() > secSysTime + 50L) {
             secSysTime += 50L;
 
@@ -360,14 +358,23 @@ public class CommandReference {
                     }
                 }
             }
+            if (global.rclicks.size() > 0) {
+                for (int i=0; i<global.rclicks.size(); i++) {
+                    global.rclicks.set(i, global.rclicks.get(i)-1);
+                    if (global.rclicks.get(i) == 0) {
+                        global.rclicks.remove(i);
+                    }
+                }
+            }
 
             global.clicks_ave.add((double) global.clicks.size());
-            global.rclicks_ave.add(global.rclicks);
-            if (global.clicks.size() > global.clicks_max) {
-                global.clicks_max = global.clicks.size();
-            }
+            global.rclicks_ave.add((double) global.rclicks.size());
+
             if (global.clicks_ave.size() > 100) {
                 global.clicks_ave.remove(0);
+            }
+            if (global.rclicks_ave.size() > 100) {
+                global.rclicks_ave.remove(0);
             }
             if (global.clicks_ave.size() > 0) {
                 if (global.clicks_ave.get(global.clicks_ave.size() - 1) == 0) {
@@ -375,19 +382,18 @@ public class CommandReference {
                     global.clicks_max = 0;
                 }
             }
+            if (global.rclicks_ave.size() > 0) {
+                if (global.rclicks_ave.get(global.rclicks_ave.size() -1 ) == 0) {
+                    global.rclicks_ave.clear();
+                    global.rclicks_max = 0;
+                }
+            }
         }
-
-        while (Minecraft.getSystemTime() > sysTime + 1000L) {
-            sysTime += 1000L;
-
-            global.rclicks = 0.0;
-
-            if (global.rclicks_ave.size() > 10) {
-                global.rclicks_ave.remove(0);
-            }
-            if (global.rclicks > global.rclicks_max) {
-                global.rclicks_max = global.rclicks;
-            }
+        if (global.clicks.size() > global.clicks_max) {
+            global.clicks_max = global.clicks.size();
+        }
+        if (global.rclicks.size() > global.rclicks_max) {
+            global.rclicks_max = global.rclicks.size();
         }
     }
 }

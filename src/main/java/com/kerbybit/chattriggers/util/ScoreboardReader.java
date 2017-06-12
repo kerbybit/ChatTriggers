@@ -20,7 +20,7 @@ public class ScoreboardReader {
     private static String scoreboardTitle;
 
     static {
-        scoreboardNames = new ArrayList<String>();
+        scoreboardNames = new ArrayList<>();
         scoreboardTitle = "";
     }
 

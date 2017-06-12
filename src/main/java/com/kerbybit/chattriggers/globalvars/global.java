@@ -33,9 +33,10 @@ public class global {
     public static List<Double> clicks_ave = new ArrayList<>();
     public static Integer clicks_max = 0;
 
-    public static Double rclicks = 0.0;
+
+    public static List<Integer> rclicks = new ArrayList<>();
     public static List<Double> rclicks_ave = new ArrayList<>();
-    public static Double rclicks_max = 0.0;
+    public static Integer rclicks_max = 0;
 	
 	public static String importURL = "";
 	public static Boolean canImport = true;

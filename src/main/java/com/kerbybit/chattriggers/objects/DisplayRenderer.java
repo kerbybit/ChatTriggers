@@ -105,7 +105,7 @@ public class DisplayRenderer {
 
                     if (bg.equalsIgnoreCase("full")) {
                         String trimmed_display_text = removeExtras(display_text, "<rainbow>", rainbow_string, shadow_string);
-                        int get_width = ren.getStringWidth(IconHandler.removeIconString(trimmed_display_text));
+                        int get_width = ren.getStringWidth(IconHandler.removeIconString(ChatHandler.addFormatting(trimmed_display_text)));
                         if (get_width > max_width) {
                             max_width = get_width;
                         }
@@ -194,9 +194,9 @@ public class DisplayRenderer {
 
             if (!display_text.equals("") && bg.equalsIgnoreCase("line")) {
                 try {
-                    drawRect(display_x, display_y, display_x + ren.getStringWidth(IconHandler.removeIconString(display_text)), display_y + 10, (int) Long.parseLong(bgc, 16));
+                    drawRect(display_x, display_y, display_x + ren.getStringWidth(IconHandler.removeIconString(ChatHandler.addFormatting(display_text))), display_y + 10, (int) Long.parseLong(bgc, 16));
                 } catch (NumberFormatException e) {
-                    drawRect(display_x, display_y, display_x + ren.getStringWidth(IconHandler.removeIconString(display_text)), display_y + 10, 0x40000000);
+                    drawRect(display_x, display_y, display_x + ren.getStringWidth(IconHandler.removeIconString(ChatHandler.addFormatting(display_text))), display_y + 10, 0x40000000);
                 }
             }
 
@@ -284,8 +284,8 @@ public class DisplayRenderer {
         GlStateManager.color(f, f1, f2, f3);
         worldrenderer.begin(7, DefaultVertexFormats.POSITION);
         worldrenderer.pos(left+1, bottom-1, 0.0D).endVertex();
-        worldrenderer.pos(right-1, bottom-1, 0.0D).endVertex();
-        worldrenderer.pos(right-1, top-1, 0.0D).endVertex();
+        worldrenderer.pos(right-2, bottom-1, 0.0D).endVertex();
+        worldrenderer.pos(right-2, top-1, 0.0D).endVertex();
         worldrenderer.pos(left+1, top-1, 0.0D).endVertex();
         tessellator.draw();
         GlStateManager.enableTexture2D();

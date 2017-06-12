@@ -206,7 +206,7 @@ public class ChatTriggers {
             global.clicks.add(20);
         }
         if (e.button == 1 && e.buttonstate) {
-	        global.rclicks++;
+	        global.rclicks.add(20);
         }
     }
 }

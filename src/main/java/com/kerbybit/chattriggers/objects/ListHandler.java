@@ -186,7 +186,6 @@ public class ListHandler {
             if (value.contains(",")) {
                 String position_string = value.substring(0, value.indexOf(","));
                 String new_value = value.substring(value.indexOf(",")+1);
-                System.out.println(position_string + " " + new_value);
 
                 try {
                     list_object.set(Integer.parseInt(position_string), new_value);
@@ -578,6 +577,13 @@ public class ListHandler {
             if (key.startsWith("JsonToList->") || key.startsWith("StringToList->")) {
                lists.remove(key);
             }
+        }
+    }
+
+    public static void dumpLists() {
+        for (Map.Entry<String, List<String>> entry : lists.entrySet()) {
+            ChatHandler.warn(entry.getKey());
+            ChatHandler.warn("  " + entry.getValue());
         }
     }
 }

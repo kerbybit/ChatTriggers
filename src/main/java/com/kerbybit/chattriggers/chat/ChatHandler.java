@@ -97,16 +97,12 @@ public class ChatHandler {
     }
 
     private static int getChatWidth(String cht) {
-	    if (cht.equals(" ")) {
-            return Minecraft.getMinecraft().fontRendererObj.getStringWidth(cht);
-        } else {
-            cht = removeClickableExtras(cht);
-            cht = removeHoverExtras(cht);
-            cht = removeLinkExtras(cht);
-            cht = removeExtras(cht);
+        cht = removeClickableExtras(cht);
+        cht = removeHoverExtras(cht);
+        cht = removeLinkExtras(cht);
+        cht = removeExtras(cht);
 
-            return Minecraft.getMinecraft().fontRendererObj.getStringWidth(cht);
-        }
+        return Minecraft.getMinecraft().fontRendererObj.getStringWidth(addFormatting(cht));
     }
 
 	private static String center(String cht) {
@@ -117,7 +113,7 @@ public class ChatHandler {
 
         if (chatWidth < fullWidth) {
             StringBuilder spaces = new StringBuilder();
-            float spaceWidth = getChatWidth(" ");
+            float spaceWidth = Minecraft.getMinecraft().fontRendererObj.getCharWidth(' ');
             float centerWidth = (fullWidth - chatWidth) / 2;
 
             int numberSpaces = round(centerWidth / spaceWidth);
@@ -131,16 +127,7 @@ public class ChatHandler {
 
     }
 
-	public static void warn(String color, String chat) {
-	    warn(color(color, chat));
-    }
-	public static void warn(String cht) {
-	    if (cht.toUpperCase().contains("<CENTER>")) {
-	        cht = center(cht);
-        }
-
-        //fix link
-        cht = removeFormatting(cht);
+    private static String fixLinks(String cht) {
         while (cht.contains("{link[") && cht.contains("]stringCommaReplacementF6cyUQp9stringCommaReplacement[") && cht.contains("]}")) {
             StringBuilder prev_color = new StringBuilder();
             if (cht.indexOf("{link[")!=0) {
@@ -176,6 +163,20 @@ public class ChatHandler {
             String second = tmp_string.substring(tmp_string.indexOf("]stringCommaReplacementF6cyUQp9stringCommaReplacement[")+54);
             cht = cht.replace("{link[" + first + "]stringCommaReplacementF6cyUQp9stringCommaReplacement[" + second + "]}", "clickable("+prev_color+first+",open_url,"+deleteFormatting(second)+",open link)"+prev_color);
         }
+	    return cht;
+    }
+
+	public static void warn(String color, String chat) {
+	    warn(color(color, chat));
+    }
+	public static void warn(String cht) {
+	    cht = removeFormatting(cht);
+
+	    if (cht.toUpperCase().contains("<CENTER>"))
+	        cht = center(cht);
+
+	    //fix links
+	    cht = fixLinks(cht);
 
 		cht = cht.replace("'('", "LeftParF6cyUQp9LeftPar")
                 .replace("')'", "RightParF6cyUQp9RightPar")

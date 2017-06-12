@@ -14,6 +14,7 @@ import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.objects.ArrayHandler;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
+import com.kerbybit.chattriggers.objects.ListHandler;
 import com.kerbybit.chattriggers.overlay.KillfeedHandler;
 import com.kerbybit.chattriggers.overlay.NotifyHandler;
 import com.kerbybit.chattriggers.references.BugTracker;
@@ -1405,6 +1406,8 @@ public class CommandTrigger extends CommandBase {
                                 TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size() - 1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
                                 ChatHandler.sendJson(TMP_eventout);
                             }
+                        } else if (args[2].equalsIgnoreCase("LISTS")) {
+                            ListHandler.dumpLists();
                         } else {
                             ChatHandler.warn(ChatHandler.color("red", "/trigger settings dump [number]"));
                             ChatHandler.warn(ChatHandler.color("red", args[2] + " is not a number!"));

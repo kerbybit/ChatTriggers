@@ -288,22 +288,11 @@ public class BuiltInStrings {
         if (TMP_e.contains("{chatwidth}")) {
             TMP_e = createDefaultString("chatwidth", ""+(int)((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40), TMP_e, isAsync);
         }
-        if (TMP_e.contains("{scoreboardtitle}")) {
-            String boardTitle = "null";
-            try {
-                if (Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(0) != null) {
-                    boardTitle = Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(0).getDisplayName();
-                } else if (Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(1) != null) {
-                    boardTitle = Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(1).getDisplayName();
-                }
-            } catch (Exception e) {
-                //Do nothing//
-                //catch for ReplayMod//
-            }
-            TMP_e = createDefaultString("scoreboardtitle", ChatHandler.removeFormatting(boardTitle), TMP_e, isAsync);
+        if (TMP_e.contains("{scoreboardtitle}") || TMP_e.contains("{scoreboardTitle}")) {
+            TMP_e = createDefaultString("scoreboardtitle", "scoreboardTitle", ChatHandler.removeFormatting(ScoreboardReader.getScoreboardTitle()), TMP_e, isAsync);
         }
         if (TMP_e.contains("{hp}") || TMP_e.contains("{HP}")) {
-            TMP_e = createDefaultString("hp", global.playerHealth + "", TMP_e, isAsync);
+            TMP_e = createDefaultString("hp", "HP", global.playerHealth + "", TMP_e, isAsync);
         }
         if (TMP_e.contains("{sneak}") || TMP_e.contains("{sneaking}")) {
             TMP_e = createDefaultString("sneak", "sneaking", Minecraft.getMinecraft().thePlayer.isSneaking()+"", TMP_e, isAsync);
@@ -311,17 +300,17 @@ public class BuiltInStrings {
         if (TMP_e.contains("{sprint}") || TMP_e.contains("{sprinting}")) {
             TMP_e = createDefaultString("sprint", "sprinting", Minecraft.getMinecraft().thePlayer.isSprinting()+"", TMP_e, isAsync);
         }
-        if (TMP_e.contains("{inchat}")) {
-            TMP_e = createDefaultString("inchat", Minecraft.getMinecraft().ingameGUI.getChatGUI().getChatOpen() + "", TMP_e, isAsync);
+        if (TMP_e.contains("{inchat}") || TMP_e.contains("{inChat}")) {
+            TMP_e = createDefaultString("inchat", "inChat",Minecraft.getMinecraft().ingameGUI.getChatGUI().getChatOpen() + "", TMP_e, isAsync);
         }
         if (TMP_e.contains("{coordX}") || TMP_e.contains("{x}")) {
-            TMP_e = createDefaultString("coordx", "x", Math.round(Minecraft.getMinecraft().thePlayer.posX)+"", TMP_e, isAsync);
+            TMP_e = createDefaultString("coordX", "x", Math.round(Minecraft.getMinecraft().thePlayer.posX)+"", TMP_e, isAsync);
         }
         if (TMP_e.contains("{coordY}") || TMP_e.contains("{y}")) {
-            TMP_e = createDefaultString("coordy", "y", Math.round(Minecraft.getMinecraft().thePlayer.posY)+"", TMP_e, isAsync);
+            TMP_e = createDefaultString("coordY", "y", Math.round(Minecraft.getMinecraft().thePlayer.posY)+"", TMP_e, isAsync);
         }
         if (TMP_e.contains("{coordZ}") || TMP_e.contains("{z}")) {
-            TMP_e = createDefaultString("coordz", "z", Math.round(Minecraft.getMinecraft().thePlayer.posZ)+"", TMP_e, isAsync);
+            TMP_e = createDefaultString("coordZ", "z", Math.round(Minecraft.getMinecraft().thePlayer.posZ)+"", TMP_e, isAsync);
         }
         if (TMP_e.contains("{exactX}")) {
             TMP_e = createDefaultString("exactX", Minecraft.getMinecraft().thePlayer.posX+"", TMP_e, isAsync);
@@ -341,14 +330,14 @@ public class BuiltInStrings {
 		if (TMP_e.contains("{motionZ}")) {
 			TMP_e = createDefaultString("motionZ", Minecraft.getMinecraft().thePlayer.motionZ + "", TMP_e, isAsync);
 		}
-        if (TMP_e.contains("{fps}")) {
-            TMP_e = createDefaultString("fps", Minecraft.getDebugFPS()+"", TMP_e, isAsync);
+        if (TMP_e.contains("{fps}") || TMP_e.contains("{FPS}")) {
+            TMP_e = createDefaultString("fps", "FPS", Minecraft.getDebugFPS()+"", TMP_e, isAsync);
         }
         if (TMP_e.contains("{lightLevel}")) {
         	Minecraft mc = Minecraft.getMinecraft();
         	TMP_e = createDefaultString("lightLevel", mc.theWorld.getLight(mc.thePlayer.playerLocation) + "", TMP_e, isAsync);
 		}
-        if (TMP_e.contains("{fpscol}")) {
+        if (TMP_e.contains("{fpscol}") || TMP_e.contains("{fpsCol}")) {
             String col;
             if (Minecraft.getDebugFPS() >= global.fpshigh) {
                 col = global.fpshighcol;
@@ -358,7 +347,7 @@ public class BuiltInStrings {
                 col = global.fpslowcol;
             }
 
-            TMP_e = createDefaultString("fpscol", col, TMP_e, isAsync);
+            TMP_e = createDefaultString("fpscol", "fpsCol", col, TMP_e, isAsync);
         }
         if (TMP_e.contains("{facing}")) {
         	float yaw = MathHelper.wrapAngleTo180_float(Minecraft.getMinecraft().thePlayer.rotationYaw);
@@ -385,6 +374,9 @@ public class BuiltInStrings {
 
             TMP_e = createDefaultString("facing", direction, TMP_e, isAsync);
         }
+        if (TMP_e.contains("{facingMin}")) {
+            TMP_e = createDefaultString("facingMin", Minecraft.getMinecraft().thePlayer.getHorizontalFacing().toString(), TMP_e, isAsync);
+        }
         if (TMP_e.contains("{time}")) {
             Calendar cal = Calendar.getInstance();
             int hour = cal.get(Calendar.HOUR_OF_DAY);
@@ -409,20 +401,6 @@ public class BuiltInStrings {
             Date date = new Date();
             TMP_e = createDefaultString("date", dateFormat.format(date), TMP_e, isAsync);
         }
-
-		/*if (TMP_e.contains("{gamemode}")) {
-			PlayerControllerMP pc = Minecraft.getMinecraft().playerController;
-			String gamemode;
-
-			try {
-				gamemode = ReflectionHelper.getPrivateValue(PlayerControllerMP.class, pc, 8);
-			} catch (Exception e) {
-				gamemode = "null";
-			}
-
-			TMP_e = createDefaultString("gamemode", gamemode, TMP_e, isAsync);
-		}*/ //BROKEN - HAD TO USE REFLECTION, BUT IS NOT WORKING CORRECTLY!
-
         if (TMP_e.contains("{unixtime}")) {
             Date date = new Date();
             TMP_e = createDefaultString("unixtime", date.getTime()+"", TMP_e, isAsync);
@@ -897,11 +875,7 @@ public class BuiltInStrings {
         if (TMP_e.contains("{rcps}")) {
             String returnString;
 
-            if (global.rclicks_ave.size() > 0)  {
-                returnString = floor(global.rclicks_ave.get(global.rclicks_ave.size()-1)) +"";
-            } else {
-                returnString = "0";
-            }
+            returnString = global.rclicks.size() + "";
 
             TMP_e = createDefaultString("rcps", returnString.replace(".0", ""), TMP_e, isAsync);
         }
@@ -928,7 +902,7 @@ public class BuiltInStrings {
                 for (Double click : global.rclicks_ave) {
                     clicks += click;
                 }
-                clicksAve = clicks/global.rclicks_ave.size() + "";
+                clicksAve = round(clicks/global.rclicks_ave.size()) + "";
             } else {
                 clicksAve = "0";
             }
