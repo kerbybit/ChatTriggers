@@ -20,7 +20,7 @@ public class CommandTR extends CommandBase {
 
 	public int getRequiredPermissionLevel() {return 0;}
 
-	public void processCommand(ICommandSender sender, String[] args) throws CommandException {
+	public void processCommand(ICommandSender sender, String[] args) {
         try {
             if (global.canUse) {
                 if (Settings.commandTR) {
@@ -32,21 +32,6 @@ public class CommandTR extends CommandBase {
                     StringBuilder send = new StringBuilder();
                     for (String arg : args) {send.append(arg).append(" ");}
                     Minecraft.getMinecraft().thePlayer.sendChatMessage("/tr " + send.toString().trim());
-                }
-            } else {
-                if (EventsHandler.randInt(0,5) == 0) {
-                    BugTracker.show(null, "blacklisted");
-                } else {
-                    if (Settings.commandTR) {
-                        ArrayList<String> temporary = new ArrayList<>();
-                        temporary.add("run");
-                        temporary.addAll(Arrays.asList(args));
-                        CommandTrigger.doCommand(temporary.toArray(new String[temporary.size()]), false);
-                    } else {
-                        StringBuilder send = new StringBuilder();
-                        for (String arg : args) {send.append(arg).append(" ");}
-                        Minecraft.getMinecraft().thePlayer.sendChatMessage("/tr " + send.toString().trim());
-                    }
                 }
             }
         } catch (Exception e) {

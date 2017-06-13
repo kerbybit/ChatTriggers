@@ -39,15 +39,10 @@ public class KillfeedHandler {
     public static void showKillfeedHistory(Boolean formatted) {
         if (global.killfeed_history.size() > 0) {
             for (String value : global.killfeed_history) {
-                if (formatted) {
-                    ChatHandler.warn(value);
-                } else {
-                    ChatHandler.warn(ChatHandler.ignoreFormatting(value));
-                }
+                if (formatted) ChatHandler.warn(value);
+                else ChatHandler.warn(ChatHandler.ignoreFormatting(value));
             }
-        } else {
-            ChatHandler.warn(ChatHandler.color("red", "No killfeed history to show"));
-        }
+        } else ChatHandler.warn(ChatHandler.color("red", "No killfeed history to show"));
     }
 
     public static void showKillfeedHistory() {

@@ -14,6 +14,7 @@ import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.objects.ArrayHandler;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
+import com.kerbybit.chattriggers.objects.JsonHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
 import com.kerbybit.chattriggers.overlay.KillfeedHandler;
 import com.kerbybit.chattriggers.overlay.NotifyHandler;
@@ -34,18 +35,12 @@ public class CommandTrigger extends CommandBase {
 
     public String getCommandName() {return "trigger";}
 
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException {
+    public void processCommand(ICommandSender sender, String[] args) {
         if (global.canUse) {
             try {
                 doCommand(args, false);
             } catch (Exception e) {
                 BugTracker.show(e, "command");
-            }
-        } else {
-            if (EventsHandler.randInt(0,5) == 0) {
-                BugTracker.show(null, "blacklisted");
-            } else {
-                doCommand(args, false);
             }
         }
     }
@@ -53,11 +48,6 @@ public class CommandTrigger extends CommandBase {
     public int getRequiredPermissionLevel() {return 0;}
 
     public String getCommandUsage(ICommandSender sender) {return "/trigger [create/add/list] <...>";}
-
-    ///MC 1.9+
-    /*public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        processCommand(sender, args);
-    }*/
 
     private static void logCommand(String args[]) {
         StringBuilder temp_command = new StringBuilder("/trigger");
@@ -78,8 +68,6 @@ public class CommandTrigger extends CommandBase {
             commandFail();
         } else if (args[0].equalsIgnoreCase("FILES") || args[0].equalsIgnoreCase("FILE")) {
             commandFiles();
-        } else if (args[0].equalsIgnoreCase("DISPLAYS") || args[0].equalsIgnoreCase("DISPLAY")) {
-            commandDisplays();
         } else if (args[0].equalsIgnoreCase("ARRAYS") || args[0].equalsIgnoreCase("ARRAY")) {
             commandArrays(args);
         } else if (args[0].equalsIgnoreCase("SUBMITBUGREPORT")) {
@@ -149,12 +137,6 @@ public class CommandTrigger extends CommandBase {
             e.printStackTrace();
             ChatHandler.warn(ChatHandler.color("red", "Could not find ChatTriggers files!"));
         }
-    }
-
-    private static void commandDisplays() {
-        ChatHandler.warnBreak(0);
-        DisplayHandler.dumpDisplays();
-        ChatHandler.warnBreak(1);
     }
 
     private static void commandArrays(String[] args) {
@@ -1325,10 +1307,6 @@ public class CommandTrigger extends CommandBase {
                     for (String fmsg : global.chatHistory) {
                         String tmp_out = ChatHandler.removeFormatting(fmsg);
                         global.copyText.add(tmp_out.replace("\n", "\\n"));
-                        /*String tmp_outfin = tmp_out.replace(",", "stringCommaReplacementF6cyUQp9stringCommaReplacement")
-                                .replace("(", "stringOpenBracketF6cyUQp9stringOpenBracket")
-                                .replace(")", "stringCloseBracketF6cyUQp9stringCloseBracket");
-                        ChatHandler.warn("clickable("+tmp_outfin+",run_command,/t copy CopyFromDebugChat "+(global.copyText.size()-1)+",Click to copy\n"+tmp_out+")");*/
                         tmp_out = tmp_out.replace("'", "\\'");
                         List<String> TMP_eventout = new ArrayList<>();
                         TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size()-1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
@@ -1352,50 +1330,66 @@ public class CommandTrigger extends CommandBase {
                         }
                     } catch (Exception e) {
                         if (args[2].equalsIgnoreCase("killfeed")) {
+                            ChatHandler.warnBreak(0);
                             if (args.length == 4) {
                                 if (args[3].equalsIgnoreCase("formatted")) {
                                     KillfeedHandler.showKillfeedHistory(true);
-                                } else {
-                                    KillfeedHandler.showKillfeedHistory();
-                                }
-                            } else {
-                                KillfeedHandler.showKillfeedHistory();
-                            }
+                                } else KillfeedHandler.showKillfeedHistory();
+                            } else KillfeedHandler.showKillfeedHistory();
+                            ChatHandler.warnBreak(1);
                         } else if (args[2].equalsIgnoreCase("notify")) {
+                            ChatHandler.warnBreak(0);
                             if (args.length == 4) {
                                 if (args[3].equalsIgnoreCase("formatted")) {
                                     NotifyHandler.showNotifyHistory(true);
-                                } else {
-                                    NotifyHandler.showNotifyHistory();
-                                }
-                            } else {
-                                NotifyHandler.showNotifyHistory();
-                            }
+                                } else NotifyHandler.showNotifyHistory();
+                            } else NotifyHandler.showNotifyHistory();
+                            ChatHandler.warnBreak(1);
                         } else if (args[2].equalsIgnoreCase("ASYNC")) {
-                            Map<String, String> temp = new HashMap<>(global.Async_string);
-                            for (Map.Entry<String, String> entry : temp.entrySet()) {
-                                ChatHandler.warn(entry.getKey() + " - " + entry.getValue());
-                            }
+                            ChatHandler.warnBreak(0);
+                            if (global.Async_string.size() > 0) {
+                                Map<String, String> temp = new HashMap<>(global.Async_string);
+                                for (Map.Entry<String, String> entry : temp.entrySet()) {
+                                    ChatHandler.warn(entry.getKey() + " - " + entry.getValue());
+                                }
+                            } else ChatHandler.warn("red", "There are currently no async strings.");
+                            ChatHandler.warnBreak(1);
                         } else if (args[2].equalsIgnoreCase("TEMP")) {
-                            Map<String, String> temp = new HashMap<>(global.TMP_string);
-                            for (Map.Entry<String, String> string : temp.entrySet()) {
-                                ChatHandler.warn(string.getKey() + " - " + string.getValue());
-                            }
+                            ChatHandler.warnBreak(0);
+                            if (global.TMP_string.size() > 0) {
+                                Map<String, String> temp = new HashMap<>(global.TMP_string);
+                                for (Map.Entry<String, String> string : temp.entrySet()) {
+                                    ChatHandler.warn(string.getKey() + " - " + string.getValue());
+                                }
+                            } else ChatHandler.warn("red", "There are currently no temp strings.");
+                            ChatHandler.warnBreak(1);
                         } else if (args[2].equalsIgnoreCase("STRINGS")) {
-                            Map<String, String> temp = new HashMap<>(global.USR_string);
-                            for (Map.Entry<String, String> string : temp.entrySet()) {
-                                ChatHandler.warn(string.getKey() + " - " + string.getValue());
-                            }
+                            ChatHandler.warnBreak(0);
+                            if (global.USR_string.size() > 0) {
+                                Map<String, String> temp = new HashMap<>(global.USR_string);
+                                for (Map.Entry<String, String> string : temp.entrySet()) {
+                                    ChatHandler.warn(string.getKey() + " - " + string.getValue());
+                                }
+                            } else ChatHandler.warn("red", "There are currently no user strings.");
+                            ChatHandler.warnBreak(1);
                         } else if (args[2].equalsIgnoreCase("MARKEDSTRINGS")) {
-                            Map<String, String> temp = new HashMap<>(global.USR_string_mark);
-                            for (Map.Entry<String, String> string : temp.entrySet()) {
-                                ChatHandler.warn(string.getKey() + " - " + string.getValue());
-                            }
+                            ChatHandler.warnBreak(0);
+                            if (global.USR_string_mark.size() > 0) {
+                                Map<String, String> temp = new HashMap<>(global.USR_string_mark);
+                                for (Map.Entry<String, String> string : temp.entrySet()) {
+                                    ChatHandler.warn(string.getKey() + " - " + string.getValue());
+                                }
+                            } else ChatHandler.warn("red", "There are currently no marked user strings.");
+                            ChatHandler.warnBreak(1);
                         } else if (args[2].equalsIgnoreCase("MARKEDDELSTRINGS")) {
-                            Map<String, String> temp = new HashMap<>(global.USR_string_markdel);
-                            for (Map.Entry<String, String> string : temp.entrySet()) {
-                                ChatHandler.warn(string.getKey() + " - " + string.getValue());
-                            }
+                            ChatHandler.warnBreak(0);
+                            if (global.USR_string_markdel.size() > 0) {
+                                Map<String, String> temp = new HashMap<>(global.USR_string_markdel);
+                                for (Map.Entry<String, String> string : temp.entrySet()) {
+                                    ChatHandler.warn(string.getKey() + " - " + string.getValue());
+                                }
+                            } else ChatHandler.warn("red", "There are currently no marked user strings ready for deletion.");
+                            ChatHandler.warnBreak(1);
                         } else if (args[2].equalsIgnoreCase("ACTIONBAR")) {
                             List<String> temp = new ArrayList<>(global.actionHistory);
                             for (String action : temp) {
@@ -1407,7 +1401,17 @@ public class CommandTrigger extends CommandBase {
                                 ChatHandler.sendJson(TMP_eventout);
                             }
                         } else if (args[2].equalsIgnoreCase("LISTS")) {
+                            ChatHandler.warnBreak(0);
                             ListHandler.dumpLists();
+                            ChatHandler.warnBreak(1);
+                        } else if (args[2].equalsIgnoreCase("JSONS")) {
+                            ChatHandler.warnBreak(0);
+                            JsonHandler.dumpJsons();
+                            ChatHandler.warnBreak(1);
+                        } else if (args[2].equalsIgnoreCase("DISPLAYS")) {
+                            ChatHandler.warnBreak(0);
+                            DisplayHandler.dumpDisplays();
+                            ChatHandler.warnBreak(1);
                         } else {
                             ChatHandler.warn(ChatHandler.color("red", "/trigger settings dump [number]"));
                             ChatHandler.warn(ChatHandler.color("red", args[2] + " is not a number!"));

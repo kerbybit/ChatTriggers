@@ -167,9 +167,7 @@ public class ChatTriggers {
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent e) throws ClassNotFoundException {
-
 		if (global.canUse) {
-
 		    StringHandler.updateMarkedStrings();
 
             JsonHandler.trimJsons();

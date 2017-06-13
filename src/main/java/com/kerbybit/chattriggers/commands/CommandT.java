@@ -26,18 +26,6 @@ public class CommandT extends CommandBase{
                     for (String arg : args) {send.append(arg).append(" ");}
                     Minecraft.getMinecraft().thePlayer.sendChatMessage("/t " + send.toString().trim());
                 }
-            } else {
-                if (EventsHandler.randInt(0,5) == 0) {
-                    BugTracker.show(null, "blacklisted");
-                } else {
-                    if (Settings.commandT) {
-                        CommandTrigger.doCommand(args, false);
-                    } else {
-                        StringBuilder send = new StringBuilder();
-                        for (String arg : args) {send.append(arg).append(" ");}
-                        Minecraft.getMinecraft().thePlayer.sendChatMessage("/t " + send.toString().trim());
-                    }
-                }
             }
         } catch (Exception e) {
             BugTracker.show(e, "command");

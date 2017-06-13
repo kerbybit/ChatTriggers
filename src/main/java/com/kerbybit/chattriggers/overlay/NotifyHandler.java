@@ -42,15 +42,10 @@ public class NotifyHandler {
     public static void showNotifyHistory(Boolean formatted) {
         if (global.notify_history.size() > 0) {
             for (String value : global.notify_history) {
-                if (formatted) {
-                    ChatHandler.warn(value);
-                } else {
-                    ChatHandler.warn(ChatHandler.ignoreFormatting(value));
-                }
+                if (formatted) ChatHandler.warn(value);
+                else ChatHandler.warn(ChatHandler.ignoreFormatting(value));
             }
-        } else {
-            ChatHandler.warn(ChatHandler.color("red", "No notify history to show"));
-        }
+        } else ChatHandler.warn(ChatHandler.color("red", "No notify history to show"));
     }
 
     public static void showNotifyHistory() {
