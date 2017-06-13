@@ -12,7 +12,6 @@ import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.file.UpdateHandler;
 import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
-import com.kerbybit.chattriggers.objects.ArrayHandler;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.objects.JsonHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
@@ -24,7 +23,6 @@ import com.kerbybit.chattriggers.triggers.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -59,73 +57,96 @@ public class CommandTrigger extends CommandBase {
 
     public static void doCommand(String args[], Boolean silent) {
         logCommand(args);
-        if (args.length == 0) {
-            ChatHandler.warn("&c/trigger &c[clickable(&ccreate,suggest_command,/trigger create ,&7Suggest &7/trigger &7create)&c/clickable(&cadd,suggest_command,/trigger add ,&7Suggest &7/trigger &7add)&c/clickable(&clist,run_command,/trigger list,&7Run &7/trigger &7list)&c] &c<...>");
-            ChatHandler.warn("&c/trigger &c[clickable(&cstring,suggest_command,/trigger string ,&7Suggest &7/trigger &7string)&c/clickable(&carray,run_command,/trigger array,&7Run &7/trigger &7array)&c/clickable(&cdisplay,run_command,/trigger display,&7Run &7/trigger &7display)&c] &c<...>");
-            ChatHandler.warn("&c/trigger &c[clickable(&csave,run_command,/trigger save,&7Run &7/trigger &7save)&c/clickable(&cload,run_command,/trigger load,&7Run &7/trigger 77load)&c]");
-            ChatHandler.warn("&c/trigger &c[clickable(&crun,suggest_command,/trigger run ,&7Suggest &7/trigger &7run)&c/clickable(&cimport,suggest_command,/trigger import ,&7Suggest &7/trigger &7import)&c/clickable(&cimports,run_command,/trigger imports,&7Run &7/trigger &7imports)&c] &c<...>");
-        } else if (args[0].equalsIgnoreCase("FAIL")) {
-            commandFail();
-        } else if (args[0].equalsIgnoreCase("FILES") || args[0].equalsIgnoreCase("FILE")) {
-            commandFiles();
-        } else if (args[0].equalsIgnoreCase("ARRAYS") || args[0].equalsIgnoreCase("ARRAY")) {
-            commandArrays(args);
-        } else if (args[0].equalsIgnoreCase("SUBMITBUGREPORT")) {
-            commandSubmitBugReport();
-        } else if (args[0].equalsIgnoreCase("SUBMITFAKEBUGREPORT")) {
-            ChatHandler.warn(ChatHandler.color(Settings.col[0],"Sending bug report..."));
-            ChatHandler.warn(ChatHandler.color("&c", "Unable to submit bug report at this time. try again later."));
-        } else if (args[0].equalsIgnoreCase("SIMULATE")) {
-            commandSimulate(args);
-        } else if (args[0].equalsIgnoreCase("HELP") || (args[0].equalsIgnoreCase("?"))) {
-            commandHelp(args);
-        } else if (args[0].equalsIgnoreCase("COPY")) {
-            commandCopy(args, silent);
-        } else if (args[0].equalsIgnoreCase("NOTIFY")) {
-            commandNotify(args);
-        } else if (args[0].equalsIgnoreCase("KILLFEED")) {
-            commandKillfeed(args);
-        } else if (args[0].equalsIgnoreCase("IMPORTS")) {
-            commandImports();
-        } else if (args[0].equalsIgnoreCase("RESET")) {
-            CommandReference.resetAll();
-        } else if (args[0].equalsIgnoreCase("IMPORT")) {
-            commandImport(args);
-        } else if (args[0].equalsIgnoreCase("DISABLEIMPORT")) {
-            commandDisableImport(args, silent);
-        } else if (args[0].equalsIgnoreCase("ENABLEIMPORT")) {
-            commandEnableImport(args, silent);
-        } else if (args[0].equalsIgnoreCase("RUN")) {
-            commandRun(args);
-        } else if (args[0].equalsIgnoreCase("CREATE")) {
-            commandCreate(args, silent);
-        } else if (args[0].equalsIgnoreCase("DELETE")) {
-            commandDelete(args, silent);
-        } else if (args[0].equalsIgnoreCase("ADD")) {
-            commandAdd(args, silent);
-        } else if (args[0].equalsIgnoreCase("REMOVE")) {
-            commandRemove(args, silent);
-        } else if (args[0].equalsIgnoreCase("STRING")) {
-            commandString(args, silent);
-        } else if (args[0].equalsIgnoreCase("LIST")) {
-            commandList(args);
-        } else if (args[0].equalsIgnoreCase("SETTINGS")) {
-            commandSettings(args);
-        } else if (args[0].equalsIgnoreCase("SAVE")) {
-            commandSave();
-        } else if (args[0].equalsIgnoreCase("LOAD")) {
-            commandLoad();
-        } else if (args[0].equalsIgnoreCase("TESTIMPORT")) {
-            commandTestImport(args);
-        } else if (args[0].equalsIgnoreCase("RELOAD")) {
-            commandReload();
-        } else if (args[0].equalsIgnoreCase("TEST")) {
-            commandTest();
-        } else {
-            ChatHandler.warn("&c/trigger &c[clickable(&ccreate,suggest_command,/trigger create ,&7Suggest &7/trigger &7create)&c/clickable(&cadd,suggest_command,/trigger add ,&7Suggest &7/trigger &7add)&c/clickable(&clist,run_command,/trigger list,&7Run &7/trigger &7list)&c] &c<...>");
-            ChatHandler.warn("&c/trigger &c[clickable(&cstring,suggest_command,/trigger string ,&7Suggest &7/trigger &7string)&c/clickable(&carray,run_command,/trigger array,&7Run &7/trigger &7array)&c] &c<...>");
-            ChatHandler.warn("&c/trigger &c[clickable(&csave,run_command,/trigger save,&7Run &7/trigger &7save)&c/clickable(&cload,run_command,/trigger load,&7Run &7/trigger 77load)&c]");
-            ChatHandler.warn("&c/trigger &c[clickable(&crun,suggest_command,/trigger run ,&7Suggest &7/trigger &7run)&c/clickable(&cimport,suggest_command,/trigger import ,&7Suggest &7/trigger &7import)&c/clickable(&cimports,run_command,/trigger imports,&7Run &7/trigger &7imports)&c] &c<...>");
+        String command = "null";
+        if (args.length != 0) {
+            command = args[0].toUpperCase();
+        }
+        switch (command) {
+            case("FAIL"):
+                commandFail();
+                break;
+            case("FILES"):
+            case("FILE"):
+                commandFiles();
+                break;
+            case("SUBMITBUGREPORT"):
+                commandSubmitBugReport();
+                break;
+            case("SIMULATE"):
+            case("SIM"):
+                commandSimulate(args);
+                break;
+            case("EXECUTE"):
+            case("EXEC"):
+                commandExecute(args);
+                break;
+            case("HELP"):
+            case("?"):
+                commandHelp(args);
+                break;
+            case("COPY"):
+                commandCopy(args, silent);
+                break;
+            case("IMPORTS"):
+                commandImports();
+                break;
+            case("RESET"):
+                CommandReference.resetAll();
+                break;
+            case("IMPORT"):
+                commandImport(args);
+                break;
+            case("DISABLEIMPORT"):
+                commandDisableImport(args, silent);
+                break;
+            case("ENABLEIMPORT"):
+                commandEnableImport(args, silent);
+                break;
+            case("RUN"):
+                commandRun(args);
+                break;
+            case("CREATE"):
+                commandCreate(args, silent);
+                break;
+            case("DELETE"):
+                commandDelete(args, silent);
+                break;
+            case("ADD"):
+                commandAdd(args, silent);
+                break;
+            case("REMOVE"):
+                commandRemove(args, silent);
+                break;
+            case("STRING"):
+                commandString(args, silent);
+                break;
+            case("LIST"):
+                commandList(args);
+                break;
+            case("SETTINGS"):
+                commandSettings(args);
+                break;
+            case("SAVE"):
+                commandSave();
+                break;
+            case("LOAD"):
+                commandLoad();
+                break;
+            case("TESTIMPORT"):
+                commandTestImport(args);
+                break;
+            case("RELOAD"):
+                commandReload();
+                break;
+            case("TEST"):
+                commandTest();
+                break;
+            default:
+                ChatHandler.warn("&c/trigger &c[clickable(&ccreate,suggest_command,/trigger create ,&7Suggest &7/trigger &7create)&c/clickable(&cadd,suggest_command,/trigger add ,&7Suggest &7/trigger &7add)&c/clickable(&clist,run_command,/trigger list,&7Run &7/trigger &7list)&c] &c<...>");
+                ChatHandler.warn("&c/trigger &c[clickable(&cstring,suggest_command,/trigger string ,&7Suggest &7/trigger &7string)&c/clickable(&carray,run_command,/trigger array,&7Run &7/trigger &7array)&c] &c<...>");
+                ChatHandler.warn("&c/trigger &c[clickable(&csave,run_command,/trigger save,&7Run &7/trigger &7save)&c/clickable(&cload,run_command,/trigger load,&7Run &7/trigger 77load)&c]");
+                ChatHandler.warn("&c/trigger &c[clickable(&crun,suggest_command,/trigger run ,&7Suggest &7/trigger &7run)&c/clickable(&cimport,suggest_command,/trigger import ,&7Suggest &7/trigger &7import)&c/clickable(&cimports,run_command,/trigger imports,&7Run &7/trigger &7imports)&c] &c<...>");
+                break;
         }
     }
 
@@ -139,38 +160,6 @@ public class CommandTrigger extends CommandBase {
         }
     }
 
-    private static void commandArrays(String[] args) {
-        ChatHandler.warnBreak(0);
-        if (ArrayHandler.getArraysSize() > 0) {
-            if (args.length == 1) {
-                for (List<String> array : ArrayHandler.getArrays()) {
-                    ChatHandler.warn("clickable("+array.get(0)+",run_command,/trigger array "+array.get(0)+",&7Get values stored in "+array.get(0)+")");
-                }
-            } else {
-                StringBuilder get_array = new StringBuilder();
-                Boolean is_array = false;
-                for (int i=1; i<args.length; i++) {
-                    get_array.append(" ").append(args[i]);
-                }
-                for (List<String> array : ArrayHandler.getArrays()) {
-                    if (array.get(0).equals(get_array.toString().trim())) {
-                        is_array = true;
-                        ChatHandler.warn(array.get(0));
-                        for (int i=1; i<array.size(); i++) {
-                            ChatHandler.warn("  " + ChatHandler.ignoreFormatting(array.get(i)));
-                        }
-                    }
-                }
-                if (!is_array) {
-                    ChatHandler.warn(ChatHandler.color("red", "That is not currently an array"));
-                }
-            }
-        } else {
-            ChatHandler.warn(ChatHandler.color("red","There are currently no arrays"));
-        }
-        ChatHandler.warnBreak(1);
-    }
-
     private static void commandSubmitBugReport() {
         BugTracker.send();
     }
@@ -180,12 +169,24 @@ public class CommandTrigger extends CommandBase {
         for (int i=1; i<args.length; i++) {
             TMP_e.append(args[i]).append(" ");
         }
-        //ChatHandler.warn(TMP_e);
         ClientChatReceivedEvent chatEvent = new ClientChatReceivedEvent((byte)0, IChatComponent.Serializer.jsonToComponent("{text:'"+TMP_e.toString().replace("'", "\\'").trim()+"'}"));
         onChat(TMP_e.toString().trim(), ChatHandler.deleteFormatting(TMP_e.toString().trim()), chatEvent);
-        if (!chatEvent.isCanceled()) {
+        if (!chatEvent.isCanceled())
             ChatHandler.warn(TMP_e.toString().trim());
+    }
+
+    private static void commandExecute(String args[]) {
+        StringBuilder TMP_e = new StringBuilder();
+        for (int i=1; i<args.length; i++) {
+            TMP_e.append(args[i]).append(" ");
         }
+        String event = TMP_e.toString().trim();
+        if (event.startsWith("{"))
+            event = "do " + event;
+
+        List<String> temp = new ArrayList<>();
+        temp.add(event);
+        EventsHandler.doEvents(temp, null);
     }
 
     private static void commandHelp(String args[]) {
@@ -319,26 +320,6 @@ public class CommandTrigger extends CommandBase {
             }
         } else {
             ChatHandler.warn(ChatHandler.color("red", "/trigger copy <text>"));
-        }
-    }
-
-    private static void commandNotify(String args[]) {
-        if (args.length != 1) {
-            StringBuilder TMP_e = new StringBuilder();
-            for (int i=1; i<args.length; i++) {TMP_e.append(args[i]).append(" ");}
-            NotifyHandler.addToNotify(ChatHandler.addFormatting(TMP_e.toString().trim()), 0, global.notifySize);
-        } else {
-            ChatHandler.warn(ChatHandler.color("red", "/trigger notify <text>"));
-        }
-    }
-
-    private static void commandKillfeed(String args[]) {
-        if (args.length != 1) {
-            StringBuilder TMP_e = new StringBuilder();
-            for (int i=1; i<args.length; i++) {TMP_e.append(args[i]).append(" ");}
-            KillfeedHandler.addToKillfeed(ChatHandler.addFormatting(TMP_e.toString().trim()), 100);
-        } else {
-            ChatHandler.warn(ChatHandler.color("red", "/trigger killfeed <text>"));
         }
     }
 
@@ -494,7 +475,7 @@ public class CommandTrigger extends CommandBase {
         } else {ChatHandler.warn(ChatHandler.color("red", "/trigger disableImport <import name>"));}
     }
 
-    private static void commandRun(String args[]) {
+    static void commandRun(String args[]) {
         if (args.length < 2) {
             ChatHandler.warn(ChatHandler.color("red", "/tr <trigger>"));
             ArrayList<List<String>> listCommands = new ArrayList<>();

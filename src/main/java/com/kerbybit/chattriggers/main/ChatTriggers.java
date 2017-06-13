@@ -129,6 +129,8 @@ public class ChatTriggers {
 	public void onWorldUnload(WorldEvent.Unload e) {
 		if (global.canUse) {
 			global.worldIsLoaded=false;
+			global.chatQueue.clear();
+			global.commandQueue.clear();
             DisplayHandler.clearDisplays();
 		}
 	}
@@ -199,9 +201,9 @@ public class ChatTriggers {
 	}
 
 	@SubscribeEvent
-    public void onMouseClicked(MouseEvent e) {
+    public void onMouseEvent(MouseEvent e) {
 	    if (e.button == 0 && e.buttonstate) {
-            global.clicks.add(20);
+	        global.clicks.add(20);
         }
         if (e.button == 1 && e.buttonstate) {
 	        global.rclicks.add(20);

@@ -135,12 +135,6 @@ public class BuiltInStrings {
                 TMP_e = createDefaultString("msg", ChatHandler.removeFormatting(chatEvent.message.getFormattedText()), TMP_e, isAsync);
             }
         }
-        if (TMP_e.contains("{trigsize}")) {
-            TMP_e = createDefaultString("trigsize", global.trigger.size()+"", TMP_e, isAsync);
-        }
-        if (TMP_e.contains("{notifysize}")) {
-            TMP_e = createDefaultString("notifysize", global.notifySize+"", TMP_e, isAsync);
-        }
         if (TMP_e.contains("{me}")) {
             TMP_e = createDefaultString("me", Minecraft.getMinecraft().thePlayer.getDisplayNameString(), TMP_e, isAsync);
         }
@@ -180,12 +174,12 @@ public class BuiltInStrings {
         if (TMP_e.contains("{pitch}")) {
             TMP_e = createDefaultString("pitch", String.valueOf(MathHelper.wrapAngleTo180_float(Minecraft.getMinecraft().thePlayer.rotationPitch)), TMP_e, isAsync);
         }
-        if (TMP_e.contains("{serverversion}")) {
+        if (TMP_e.contains("{serverversion}") || TMP_e.contains("{serverVersion}")) {
             String returnString;
             if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "1.8";}
             else {returnString = Minecraft.getMinecraft().getCurrentServerData().gameVersion;}
 
-            TMP_e = createDefaultString("serverversion", returnString, TMP_e, isAsync);
+            TMP_e = createDefaultString("serverversion", "serverVersion", returnString, TMP_e, isAsync);
         }
         if (TMP_e.contains("{playerlist}")) {
             StringBuilder returnString = new StringBuilder("[");
@@ -222,7 +216,7 @@ public class BuiltInStrings {
         if (TMP_e.contains("{debug}")) {
             TMP_e = createDefaultString("debug", global.debug + "", TMP_e, isAsync);
         }
-        if (TMP_e.contains("{titletext}")) {
+        if (TMP_e.contains("{titletext}") || TMP_e.contains("{titleText}")) {
 			String titleText;
 
 			titleText = ReflectionHelper.getPrivateValue(
@@ -232,9 +226,9 @@ public class BuiltInStrings {
                 titleText = "null";
             }
 
-            TMP_e = createDefaultString("titletext", titleText, TMP_e, isAsync);
+            TMP_e = createDefaultString("titletext", "titleText", titleText, TMP_e, isAsync);
         }
-        if (TMP_e.contains("{subtitletext}")) {
+        if (TMP_e.contains("{subtitletext}") || TMP_e.contains("{subtitleText}")) {
 			String subtitleText;
 
 			subtitleText = ReflectionHelper.getPrivateValue(
@@ -244,9 +238,9 @@ public class BuiltInStrings {
                 subtitleText = "null";
             }
 
-            TMP_e = createDefaultString("subtitletext", subtitleText, TMP_e, isAsync);
+            TMP_e = createDefaultString("subtitletext", "subtitleText", subtitleText, TMP_e, isAsync);
         }
-        if (TMP_e.contains("{actionbartext}")) {
+        if (TMP_e.contains("{actionbartext}") || TMP_e.contains("{actionbarText}")) {
             String recordPlaying = ReflectionHelper.getPrivateValue(
                     GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "field_73838_g");
 
@@ -254,24 +248,24 @@ public class BuiltInStrings {
                 recordPlaying = "null";
             }
 
-            TMP_e = createDefaultString("actionbartext", recordPlaying, TMP_e, isAsync);
+            TMP_e = createDefaultString("actionbartext", "actionbarText", recordPlaying, TMP_e, isAsync);
         }
-        if (TMP_e.contains("{bossbartext}")) {
+        if (TMP_e.contains("{bossbartext}") || TMP_e.contains("{bossbarText}")) {
             String bossName = BossStatus.bossName;
 
             if (bossName == null) {
 				bossName = "";
             }
 
-			if (TMP_e.contains("{bossbartext}.hide()")) {
+			if (TMP_e.contains("{bossbartext}.hide()") || TMP_e.contains("{bossbarText}.hide()")) {
 				GuiIngameForge.renderBossHealth = false;
 			}
 
-			if (TMP_e.contains("{bossbartext}.show()")) {
+			if (TMP_e.contains("{bossbartext}.show()") || TMP_e.contains("{bossbarText}.show()")) {
 				GuiIngameForge.renderBossHealth = true;
 			}
 
-            TMP_e = createDefaultString("bossbartext", bossName, TMP_e, isAsync);
+            TMP_e = createDefaultString("bossbartext", "bossbarText", bossName, TMP_e, isAsync);
         }
         if (TMP_e.contains("{setcol}")) {
             TMP_e = createDefaultString("setcol", Settings.col[0], TMP_e, isAsync);
@@ -285,8 +279,8 @@ public class BuiltInStrings {
 
             TMP_e = createDefaultString("br", dashes.toString(), TMP_e, isAsync);
         }
-        if (TMP_e.contains("{chatwidth}")) {
-            TMP_e = createDefaultString("chatwidth", ""+(int)((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40), TMP_e, isAsync);
+        if (TMP_e.contains("{chatwidth}") || TMP_e.contains("{chatWidth}")) {
+            TMP_e = createDefaultString("chatwidth", "chatWidth", ""+(int)((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40), TMP_e, isAsync);
         }
         if (TMP_e.contains("{scoreboardtitle}") || TMP_e.contains("{scoreboardTitle}")) {
             TMP_e = createDefaultString("scoreboardtitle", "scoreboardTitle", ChatHandler.removeFormatting(ScoreboardReader.getScoreboardTitle()), TMP_e, isAsync);
@@ -401,9 +395,9 @@ public class BuiltInStrings {
             Date date = new Date();
             TMP_e = createDefaultString("date", dateFormat.format(date), TMP_e, isAsync);
         }
-        if (TMP_e.contains("{unixtime}")) {
+        if (TMP_e.contains("{unixtime}") || TMP_e.contains("{unixTime}")) {
             Date date = new Date();
-            TMP_e = createDefaultString("unixtime", date.getTime()+"", TMP_e, isAsync);
+            TMP_e = createDefaultString("unixtime", "unixTime", date.getTime()+"", TMP_e, isAsync);
         }
         if (TMP_e.contains("{potionEffects}")) {
             Collection<PotionEffect> potionEffects = Minecraft.getMinecraft().thePlayer.getActivePotionEffects();

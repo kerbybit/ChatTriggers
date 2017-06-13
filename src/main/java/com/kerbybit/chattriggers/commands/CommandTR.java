@@ -27,7 +27,7 @@ public class CommandTR extends CommandBase {
                     ArrayList<String> temporary = new ArrayList<>();
                     temporary.add("run");
                     temporary.addAll(Arrays.asList(args));
-                    CommandTrigger.doCommand(temporary.toArray(new String[temporary.size()]), false);
+                    CommandTrigger.commandRun(temporary.toArray(new String[temporary.size()]));
                 } else {
                     StringBuilder send = new StringBuilder();
                     for (String arg : args) {send.append(arg).append(" ");}

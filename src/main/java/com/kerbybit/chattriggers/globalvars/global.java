@@ -1,8 +1,5 @@
 package com.kerbybit.chattriggers.globalvars;
 
-import net.minecraft.client.audio.ISound;
-import net.minecraftforge.client.event.sound.PlaySoundEvent;
-
 import java.util.*;
 
 public class global {
@@ -32,8 +29,6 @@ public class global {
     public static List<Integer> clicks = new ArrayList<>();
     public static List<Double> clicks_ave = new ArrayList<>();
     public static Integer clicks_max = 0;
-
-
     public static List<Integer> rclicks = new ArrayList<>();
     public static List<Double> rclicks_ave = new ArrayList<>();
     public static Integer rclicks_max = 0;
