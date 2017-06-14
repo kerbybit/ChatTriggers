@@ -266,6 +266,7 @@ public class FileHandler {
         writer.println("show killfeed in notifications:"+Settings.killfeedInNotify);
         writer.println("notification speed:"+Settings.notifySpeed);
         writer.println("notify background:"+Settings.notifyBackground);
+        writer.println("in extra display screen:"+global.displayMenu);
 
         writer.println("");
         writer.println("fpslow:"+global.fpslowcol + " " + global.fpslow);
@@ -598,6 +599,10 @@ public class FileHandler {
             if (l.startsWith("backup files:")) {
 			    String get = l.substring(l.indexOf("backup files:")+13).trim();
 			    Settings.backupFiles = get.equalsIgnoreCase("true");
+            }
+            if (l.startsWith("in extra display screen:")) {
+			    String get = l.substring(l.indexOf("in extra display screen:")+24).trim();
+			    global.displayMenu = get.equalsIgnoreCase("true");
             }
 		}
 	}

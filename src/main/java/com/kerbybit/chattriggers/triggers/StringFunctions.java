@@ -308,35 +308,42 @@ public class StringFunctions {
                         }
                     }
                     if (first == -1) {
-                        if (temp.contains(subargs[0]) && !startAlwaysNumber) {
-                            if (startContain) first = temp.indexOf(subargs[0]);
-                            else first = temp.indexOf(subargs[0]) + subargs[0].length();
-                        } else if (!startAlwaysText) {
+                        if (!startAlwaysText) {
                             try {
                                 first = Integer.parseInt(subargs[0]);
                             } catch (NumberFormatException e) {
                                 if (global.debug) ChatHandler.warn(ChatHandler.color("gray", "Did not find " + subargs[0] + " in string"));
                                 return null;
                             }
+
+                        } else if (temp.contains(subargs[0]) && !startAlwaysNumber) {
+                            if (startContain) first = temp.indexOf(subargs[0]);
+                            else first = temp.indexOf(subargs[0]) + subargs[0].length();
                         }
                     }
                     if (last == -1) {
-                        if (temp.contains(subargs[1]) && !endAlwaysNumber) {
-                            if (endContain) last = temp.indexOf(subargs[1]) + subargs[1].length();
-                            else last = temp.indexOf(subargs[1]);
-                        } else if (!endAlwaysText) {
+                        if (!endAlwaysText) {
                             try {
                                 last = Integer.parseInt(subargs[1]);
                             } catch (NumberFormatException e) {
                                 if (global.debug) ChatHandler.warn(ChatHandler.color("gray", "Did not find " + subargs[1] + " in string"));
                                 return null;
                             }
+                        } else if (temp.contains(subargs[1]) && !endAlwaysNumber) {
+                            if (endContain) last = temp.indexOf(subargs[1]) + subargs[1].length();
+                            else last = temp.indexOf(subargs[1]);
                         }
                     }
 
                     if (first != -1 && last != -1) {
-                        temp = temp.substring(first, last);
-                        return addExtras(temp);
+                        if (first <= last) {
+                            if (last < temp.length()) {
+                                temp = temp.substring(first, last);
+                                return addExtras(temp);
+                            }
+                        }
+                        if (global.debug) ChatHandler.warn("red", "Error in .substring() - Index out of bounds");
+                        return null;
                     }
                 }
             default:

@@ -15,6 +15,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiIngame;
+import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.BossStatus;
@@ -44,6 +45,8 @@ import static java.lang.Math.floor;
 import static java.lang.StrictMath.round;
 
 public class BuiltInStrings {
+    private static Minecraft mc = Minecraft.getMinecraft();
+    
     public static String builtInStrings(String TMP_e, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
         while (TMP_e.contains("{imported(") && TMP_e.contains(")}")) {
             String temporary;
@@ -136,32 +139,32 @@ public class BuiltInStrings {
             }
         }
         if (TMP_e.contains("{me}")) {
-            TMP_e = createDefaultString("me", Minecraft.getMinecraft().thePlayer.getDisplayNameString(), TMP_e, isAsync);
+            TMP_e = createDefaultString("me", mc.thePlayer.getDisplayNameString(), TMP_e, isAsync);
         }
         if (TMP_e.contains("{server}")) {
             String current_server;
-            if (Minecraft.getMinecraft().isSingleplayer()) current_server = "SinglePlayer";
-            else current_server = Minecraft.getMinecraft().getCurrentServerData().serverName;
+            if (mc.isSingleplayer()) current_server = "SinglePlayer";
+            else current_server = mc.getCurrentServerData().serverName;
 
             TMP_e = createDefaultString("server", current_server, TMP_e, isAsync);
         }
         if (TMP_e.contains("{serverMOTD}")) {
             String returnString;
-            if (Minecraft.getMinecraft().isSingleplayer()) returnString = "Single Player world";
-            else returnString = Minecraft.getMinecraft().getCurrentServerData().serverMOTD;
+            if (mc.isSingleplayer()) returnString = "Single Player world";
+            else returnString = mc.getCurrentServerData().serverMOTD;
 
             TMP_e = createDefaultString("serverMOTD", returnString, TMP_e, isAsync);
         }
         if (TMP_e.contains("{serverIP}")) {
             String returnString;
-            if (Minecraft.getMinecraft().isSingleplayer()) returnString = "localhost";
-            else returnString = Minecraft.getMinecraft().getCurrentServerData().serverIP;
+            if (mc.isSingleplayer()) returnString = "localhost";
+            else returnString = mc.getCurrentServerData().serverIP;
 
             TMP_e = createDefaultString("serverIP", returnString, TMP_e, isAsync);
         }
         if (TMP_e.contains("{ping}")) {
             String returnString;
-            if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "5";}
+            if (mc.isSingleplayer()) {returnString = "5";}
             else {
                 returnString = CommandReference.getPing();
             }
@@ -169,21 +172,21 @@ public class BuiltInStrings {
             TMP_e = createDefaultString("ping", returnString, TMP_e, isAsync);
         }
         if (TMP_e.contains("{yaw}")) {
-            TMP_e = createDefaultString("yaw", String.valueOf(MathHelper.wrapAngleTo180_float(Minecraft.getMinecraft().thePlayer.rotationYaw)), TMP_e, isAsync);
+            TMP_e = createDefaultString("yaw", String.valueOf(MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw)), TMP_e, isAsync);
         }
         if (TMP_e.contains("{pitch}")) {
-            TMP_e = createDefaultString("pitch", String.valueOf(MathHelper.wrapAngleTo180_float(Minecraft.getMinecraft().thePlayer.rotationPitch)), TMP_e, isAsync);
+            TMP_e = createDefaultString("pitch", String.valueOf(MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationPitch)), TMP_e, isAsync);
         }
         if (TMP_e.contains("{serverversion}") || TMP_e.contains("{serverVersion}")) {
             String returnString;
-            if (Minecraft.getMinecraft().isSingleplayer()) {returnString = "1.8";}
-            else {returnString = Minecraft.getMinecraft().getCurrentServerData().gameVersion;}
+            if (mc.isSingleplayer()) {returnString = "1.8";}
+            else {returnString = mc.getCurrentServerData().gameVersion;}
 
             TMP_e = createDefaultString("serverversion", "serverVersion", returnString, TMP_e, isAsync);
         }
         if (TMP_e.contains("{playerlist}")) {
             StringBuilder returnString = new StringBuilder("[");
-            for (EntityPlayer player : Minecraft.getMinecraft().theWorld.playerEntities) {
+            for (EntityPlayer player : mc.theWorld.playerEntities) {
                 String playerName = player.getName();
                 if (!playerName.equals("")) {
                     returnString.append(player.getName()).append(",");
@@ -272,15 +275,15 @@ public class BuiltInStrings {
         }
         if (TMP_e.contains("{br}")) {
             StringBuilder dashes = new StringBuilder();
-            float chatWidth = Minecraft.getMinecraft().gameSettings.chatWidth;
-            float chatScale = Minecraft.getMinecraft().gameSettings.chatScale;
+            float chatWidth = mc.gameSettings.chatWidth;
+            float chatScale = mc.gameSettings.chatScale;
             int numdash = (int) floor(((((280*(chatWidth))+40)/320) * (1/chatScale))*53);
             for (int j=0; j<numdash; j++) {dashes.append("-");}
 
             TMP_e = createDefaultString("br", dashes.toString(), TMP_e, isAsync);
         }
         if (TMP_e.contains("{chatwidth}") || TMP_e.contains("{chatWidth}")) {
-            TMP_e = createDefaultString("chatwidth", "chatWidth", ""+(int)((280*(Minecraft.getMinecraft().gameSettings.chatWidth))+40), TMP_e, isAsync);
+            TMP_e = createDefaultString("chatwidth", "chatWidth", ""+(int)((280*(mc.gameSettings.chatWidth))+40), TMP_e, isAsync);
         }
         if (TMP_e.contains("{scoreboardtitle}") || TMP_e.contains("{scoreboardTitle}")) {
             TMP_e = createDefaultString("scoreboardtitle", "scoreboardTitle", ChatHandler.removeFormatting(ScoreboardReader.getScoreboardTitle()), TMP_e, isAsync);
@@ -289,46 +292,51 @@ public class BuiltInStrings {
             TMP_e = createDefaultString("hp", "HP", global.playerHealth + "", TMP_e, isAsync);
         }
         if (TMP_e.contains("{sneak}") || TMP_e.contains("{sneaking}")) {
-            TMP_e = createDefaultString("sneak", "sneaking", Minecraft.getMinecraft().thePlayer.isSneaking()+"", TMP_e, isAsync);
+            TMP_e = createDefaultString("sneak", "sneaking", mc.thePlayer.isSneaking()+"", TMP_e, isAsync);
         }
         if (TMP_e.contains("{sprint}") || TMP_e.contains("{sprinting}")) {
-            TMP_e = createDefaultString("sprint", "sprinting", Minecraft.getMinecraft().thePlayer.isSprinting()+"", TMP_e, isAsync);
+            TMP_e = createDefaultString("sprint", "sprinting", mc.thePlayer.isSprinting()+"", TMP_e, isAsync);
         }
         if (TMP_e.contains("{inchat}") || TMP_e.contains("{inChat}")) {
-            TMP_e = createDefaultString("inchat", "inChat",Minecraft.getMinecraft().ingameGUI.getChatGUI().getChatOpen() + "", TMP_e, isAsync);
+            TMP_e = createDefaultString("inchat", "inChat",mc.ingameGUI.getChatGUI().getChatOpen() + "", TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{intab}") || TMP_e.contains("{inTab}")) {
+            TMP_e = createDefaultString("intab", "inTab",  mc.gameSettings.keyBindPlayerList.isKeyDown() + "", TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{inAltScreen}")) {
+            TMP_e = createDefaultString("inAltScreen", global.displayMenu + "", TMP_e, isAsync);
         }
         if (TMP_e.contains("{coordX}") || TMP_e.contains("{x}")) {
-            TMP_e = createDefaultString("coordX", "x", Math.round(Minecraft.getMinecraft().thePlayer.posX)+"", TMP_e, isAsync);
+            TMP_e = createDefaultString("coordX", "x", Math.round(mc.thePlayer.posX)+"", TMP_e, isAsync);
         }
         if (TMP_e.contains("{coordY}") || TMP_e.contains("{y}")) {
-            TMP_e = createDefaultString("coordY", "y", Math.round(Minecraft.getMinecraft().thePlayer.posY)+"", TMP_e, isAsync);
+            TMP_e = createDefaultString("coordY", "y", Math.round(mc.thePlayer.posY)+"", TMP_e, isAsync);
         }
         if (TMP_e.contains("{coordZ}") || TMP_e.contains("{z}")) {
-            TMP_e = createDefaultString("coordZ", "z", Math.round(Minecraft.getMinecraft().thePlayer.posZ)+"", TMP_e, isAsync);
+            TMP_e = createDefaultString("coordZ", "z", Math.round(mc.thePlayer.posZ)+"", TMP_e, isAsync);
         }
         if (TMP_e.contains("{exactX}")) {
-            TMP_e = createDefaultString("exactX", Minecraft.getMinecraft().thePlayer.posX+"", TMP_e, isAsync);
+            TMP_e = createDefaultString("exactX", mc.thePlayer.posX+"", TMP_e, isAsync);
         }
         if (TMP_e.contains("{exactY}")) {
-            TMP_e = createDefaultString("exactY", Minecraft.getMinecraft().thePlayer.posY+"", TMP_e, isAsync);
+            TMP_e = createDefaultString("exactY", mc.thePlayer.posY+"", TMP_e, isAsync);
         }
         if (TMP_e.contains("{exactZ}")) {
-            TMP_e = createDefaultString("exactZ", Minecraft.getMinecraft().thePlayer.posZ+"", TMP_e, isAsync);
+            TMP_e = createDefaultString("exactZ", mc.thePlayer.posZ+"", TMP_e, isAsync);
         }
 		if (TMP_e.contains("{motionX}")) {
-			TMP_e = createDefaultString("motionX", Minecraft.getMinecraft().thePlayer.motionX + "", TMP_e, isAsync);
+			TMP_e = createDefaultString("motionX", mc.thePlayer.motionX + "", TMP_e, isAsync);
 		}
 		if (TMP_e.contains("{motionY}")) {
-			TMP_e = createDefaultString("motionY", Minecraft.getMinecraft().thePlayer.motionY + "", TMP_e, isAsync);
+			TMP_e = createDefaultString("motionY", mc.thePlayer.motionY + "", TMP_e, isAsync);
 		}
 		if (TMP_e.contains("{motionZ}")) {
-			TMP_e = createDefaultString("motionZ", Minecraft.getMinecraft().thePlayer.motionZ + "", TMP_e, isAsync);
+			TMP_e = createDefaultString("motionZ", mc.thePlayer.motionZ + "", TMP_e, isAsync);
 		}
         if (TMP_e.contains("{fps}") || TMP_e.contains("{FPS}")) {
             TMP_e = createDefaultString("fps", "FPS", Minecraft.getDebugFPS()+"", TMP_e, isAsync);
         }
         if (TMP_e.contains("{lightLevel}")) {
-        	Minecraft mc = Minecraft.getMinecraft();
         	TMP_e = createDefaultString("lightLevel", mc.theWorld.getLight(mc.thePlayer.playerLocation) + "", TMP_e, isAsync);
 		}
         if (TMP_e.contains("{fpscol}") || TMP_e.contains("{fpsCol}")) {
@@ -344,7 +352,7 @@ public class BuiltInStrings {
             TMP_e = createDefaultString("fpscol", "fpsCol", col, TMP_e, isAsync);
         }
         if (TMP_e.contains("{facing}")) {
-        	float yaw = MathHelper.wrapAngleTo180_float(Minecraft.getMinecraft().thePlayer.rotationYaw);
+        	float yaw = MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw);
 
         	String direction = "";
 
@@ -369,7 +377,7 @@ public class BuiltInStrings {
             TMP_e = createDefaultString("facing", direction, TMP_e, isAsync);
         }
         if (TMP_e.contains("{facingMin}")) {
-            TMP_e = createDefaultString("facingMin", Minecraft.getMinecraft().thePlayer.getHorizontalFacing().toString(), TMP_e, isAsync);
+            TMP_e = createDefaultString("facingMin", mc.thePlayer.getHorizontalFacing().toString(), TMP_e, isAsync);
         }
         if (TMP_e.contains("{time}")) {
             Calendar cal = Calendar.getInstance();
@@ -400,7 +408,7 @@ public class BuiltInStrings {
             TMP_e = createDefaultString("unixtime", "unixTime", date.getTime()+"", TMP_e, isAsync);
         }
         if (TMP_e.contains("{potionEffects}")) {
-            Collection<PotionEffect> potionEffects = Minecraft.getMinecraft().thePlayer.getActivePotionEffects();
+            Collection<PotionEffect> potionEffects = mc.thePlayer.getActivePotionEffects();
             StringBuilder potionList = new StringBuilder("{");
             for (PotionEffect potionEffect : potionEffects) {
                 if (!potionEffect.getIsAmbient()) {
@@ -426,7 +434,7 @@ public class BuiltInStrings {
             TMP_e = TMP_e.replace("{potionEffects}", "{json[DefaultJson->POTIONEFFECTS-"+ JsonHandler.getJsonsSize()+"]}");
         }
         if (TMP_e.contains("{armor}")) {
-            ItemStack[] armor_set = Minecraft.getMinecraft().thePlayer.inventory.armorInventory;
+            ItemStack[] armor_set = mc.thePlayer.inventory.armorInventory;
             StringBuilder armorList = new StringBuilder("{");
             for (int i=armor_set.length-1; i>=0; i--) {
                 ItemStack armor = armor_set[i];
@@ -476,7 +484,7 @@ public class BuiltInStrings {
             TMP_e = TMP_e.replace("{armor}", "{json[DefaultJson->ARMOR-"+ JsonHandler.getJsonsSize()+"]}");
         }
         if (TMP_e.contains("{heldItem}")) {
-            ItemStack item = Minecraft.getMinecraft().thePlayer.getHeldItem();
+            ItemStack item = mc.thePlayer.getHeldItem();
 
             JsonHandler.getJson("DefaultJson->HELDITEM-"+(JsonHandler.getJsonsSize()+1), getItemJson(item));
 
@@ -490,7 +498,7 @@ public class BuiltInStrings {
         	int slot = Integer.parseInt(StringFunctions.nestedArgs(slotString, chatEvent, isAsync));
 
         	if (slot <= 8) {
-				ItemStack itemStack = Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(slot);
+				ItemStack itemStack = mc.thePlayer.inventory.getStackInSlot(slot);
 
 				JsonHandler.getJson("DefaultJson->HOTBAR-" + (JsonHandler.getJsonsSize() + 1), getItemJson(itemStack));
 				TMP_e = TMP_e.replace("{hotbar(" + slotString + ")}",
@@ -499,7 +507,7 @@ public class BuiltInStrings {
 		}
 
 		if (TMP_e.contains("{lookingAtMin}")) {
-			MovingObjectPosition mop = Minecraft.getMinecraft().objectMouseOver;
+			MovingObjectPosition mop = mc.objectMouseOver;
 			String jsonString;
 
 			try {
@@ -531,7 +539,7 @@ public class BuiltInStrings {
 				} else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.MISS) {
 					jsonString = "{\"type\":\"null\"}";
 				} else {
-					IBlockState blockState = Minecraft.getMinecraft().theWorld.getBlockState(mop.getBlockPos());
+					IBlockState blockState = mc.theWorld.getBlockState(mop.getBlockPos());
 					Block block = blockState.getBlock();
 
 					if (block == null) {
@@ -636,7 +644,7 @@ public class BuiltInStrings {
 		}
 
 		if (TMP_e.contains("{lookingAt}")) {
-			MovingObjectPosition mop = Minecraft.getMinecraft().objectMouseOver;
+			MovingObjectPosition mop = mc.objectMouseOver;
 			String jsonString;
 
 			try {
@@ -698,7 +706,7 @@ public class BuiltInStrings {
 				} else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.MISS) {
 					jsonString = "{\"type\":\"null\"}";
 				} else {
-					IBlockState blockState = Minecraft.getMinecraft().theWorld.getBlockState(mop.getBlockPos());
+					IBlockState blockState = mc.theWorld.getBlockState(mop.getBlockPos());
 					Block block = blockState.getBlock();
 
 					if (block == null) {
@@ -791,8 +799,8 @@ public class BuiltInStrings {
 						jsonString += "\"unlocalizedName\":\"" + block.getUnlocalizedName().replace("tile.","") + "\",";
 						jsonString += "\"registryName\":\"" + registryName + "\",";
 						jsonString += "\"id\":" + Block.getIdFromBlock(block) + ",";
-						jsonString += "\"lightLevel\":" + Minecraft.getMinecraft().theWorld.getLight(mop.getBlockPos()) + ",";
-						jsonString += "\"isOnFire\":" + block.isFireSource(Minecraft.getMinecraft().theWorld, mop.getBlockPos(), EnumFacing.UP);
+						jsonString += "\"lightLevel\":" + mc.theWorld.getLight(mop.getBlockPos()) + ",";
+						jsonString += "\"isOnFire\":" + block.isFireSource(mc.theWorld, mop.getBlockPos(), EnumFacing.UP);
 						jsonString += "}}";
 					}
 				}
@@ -805,7 +813,7 @@ public class BuiltInStrings {
 		}
 
         if (TMP_e.contains("{arrows}")) {
-            ItemStack[] inventory = Minecraft.getMinecraft().thePlayer.inventory.mainInventory;
+            ItemStack[] inventory = mc.thePlayer.inventory.mainInventory;
             int arrows = 0;
 
             for (ItemStack item : inventory) {
@@ -821,42 +829,42 @@ public class BuiltInStrings {
 
         if (TMP_e.contains("{xpLevel}")) {
         	TMP_e = createDefaultString("xpLevel",
-					Minecraft.getMinecraft().thePlayer.experienceLevel + "", TMP_e, isAsync);
+					mc.thePlayer.experienceLevel + "", TMP_e, isAsync);
 		}
 
 		if (TMP_e.contains("{xpProgress}")) {
-        	EntityPlayerSP p = Minecraft.getMinecraft().thePlayer;
+        	EntityPlayerSP p = mc.thePlayer;
         	TMP_e = createDefaultString("xpProgress",
 					Math.floor(p.experience / p.xpBarCap()) + "", TMP_e, isAsync);
 		}
 
 		if (TMP_e.contains("{hunger}")) {
         	TMP_e = createDefaultString("hunger",
-					Minecraft.getMinecraft().thePlayer.getFoodStats().getFoodLevel() + "", TMP_e, isAsync);
+					mc.thePlayer.getFoodStats().getFoodLevel() + "", TMP_e, isAsync);
 		}
 
 		if (TMP_e.contains("{saturation}")) {
         	TMP_e = createDefaultString("saturation",
-					Minecraft.getMinecraft().thePlayer.getFoodStats().getSaturationLevel() + "", TMP_e, isAsync);
+					mc.thePlayer.getFoodStats().getSaturationLevel() + "", TMP_e, isAsync);
 		}
 
 		if (TMP_e.contains("{renderDistance}")) {
         	TMP_e = createDefaultString("renderDistance",
-					Minecraft.getMinecraft().gameSettings.renderDistanceChunks + "", TMP_e, isAsync);
+					mc.gameSettings.renderDistanceChunks + "", TMP_e, isAsync);
 		}
 
 		if (TMP_e.contains("{fov}")) {
         	TMP_e = createDefaultString("fov",
-					Math.floor(Minecraft.getMinecraft().gameSettings.fovSetting) + "", TMP_e, isAsync);
+					Math.floor(mc.gameSettings.fovSetting) + "", TMP_e, isAsync);
 		}
 
 		if (TMP_e.contains("{uuid}")) {
-        	TMP_e = createDefaultString("uuid", Minecraft.getMinecraft().getSession().getPlayerID(), TMP_e, isAsync);
+        	TMP_e = createDefaultString("uuid", mc.getSession().getPlayerID(), TMP_e, isAsync);
 		}
 
 		if (TMP_e.contains("{armorPoints}")) {
         	TMP_e = createDefaultString("armorPoints",
-					Minecraft.getMinecraft().thePlayer.getTotalArmorValue() + "", TMP_e, isAsync);
+					mc.thePlayer.getTotalArmorValue() + "", TMP_e, isAsync);
 		}
 
         if (TMP_e.contains("{cps}")) {
@@ -914,31 +922,31 @@ public class BuiltInStrings {
         }
 
         if (TMP_e.contains("{MCVersion}")) {
-        	TMP_e = createDefaultString("MCVersion", Minecraft.getMinecraft().getVersion(), TMP_e, isAsync);
+        	TMP_e = createDefaultString("MCVersion", mc.getVersion(), TMP_e, isAsync);
 		}
 
 		if (TMP_e.contains("{biome}")) {
-        	Chunk chunk = Minecraft.getMinecraft().theWorld.getChunkFromBlockCoords(Minecraft.getMinecraft().thePlayer.getPosition());
-        	BiomeGenBase biome = chunk.getBiome(Minecraft.getMinecraft().thePlayer.getPosition(),
-					Minecraft.getMinecraft().theWorld.getWorldChunkManager());
+        	Chunk chunk = mc.theWorld.getChunkFromBlockCoords(mc.thePlayer.getPosition());
+        	BiomeGenBase biome = chunk.getBiome(mc.thePlayer.getPosition(),
+					mc.theWorld.getWorldChunkManager());
 
         	TMP_e = createDefaultString("biome", biome.biomeName, TMP_e, isAsync);
 		}
 
 		if (TMP_e.contains("{worldTime}")) {
-        	TMP_e = createDefaultString("worldTime", Minecraft.getMinecraft().theWorld.getWorldTime() + "", TMP_e, isAsync);
+        	TMP_e = createDefaultString("worldTime", mc.theWorld.getWorldTime() + "", TMP_e, isAsync);
 		}
 
 		if (TMP_e.contains("{chunkX}")) {
-			TMP_e = createDefaultString("chunkX", Minecraft.getMinecraft().thePlayer.chunkCoordX + "", TMP_e, isAsync);
+			TMP_e = createDefaultString("chunkX", mc.thePlayer.chunkCoordX + "", TMP_e, isAsync);
 		}
 
 		if (TMP_e.contains("{chunkY}")) {
-			TMP_e = createDefaultString("chunkY", Minecraft.getMinecraft().thePlayer.chunkCoordY + "", TMP_e, isAsync);
+			TMP_e = createDefaultString("chunkY", mc.thePlayer.chunkCoordY + "", TMP_e, isAsync);
 		}
 
 		if (TMP_e.contains("{chunkZ}")) {
-			TMP_e = createDefaultString("chunkZ", Minecraft.getMinecraft().thePlayer.chunkCoordZ + "", TMP_e, isAsync);
+			TMP_e = createDefaultString("chunkZ", mc.thePlayer.chunkCoordZ + "", TMP_e, isAsync);
 		}
 
         if (TMP_e.contains("{black}")) {

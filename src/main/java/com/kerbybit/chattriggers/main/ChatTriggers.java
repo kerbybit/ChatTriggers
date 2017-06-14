@@ -50,6 +50,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 public class ChatTriggers {
 	private static KeyBinding altGuiKey;
     private static KeyBinding displayKey;
+    private static KeyBinding displayMenuKey;
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event) throws ClassNotFoundException, IOException {
@@ -61,10 +62,12 @@ public class ChatTriggers {
         ClientCommandHandler.instance.registerCommand(new CommandTR());
         
         altGuiKey = new KeyBinding("Trigger GUI", Keyboard.KEY_L, "ChatTriggers");
-        displayKey = new KeyBinding("Killfeed position", Keyboard.KEY_K, "ChatTriggers");
+        displayKey = new KeyBinding("Killfeed Position", Keyboard.KEY_K, "ChatTriggers");
+        displayMenuKey = new KeyBinding("Alternate Display Screen", Keyboard.KEY_F4, "ChatTriggers");
 
         ClientRegistry.registerKeyBinding(altGuiKey);
         ClientRegistry.registerKeyBinding(displayKey);
+        ClientRegistry.registerKeyBinding(displayMenuKey);
 	}
 	
 	@SubscribeEvent
@@ -76,6 +79,10 @@ public class ChatTriggers {
 			}
             if (displayKey.isPressed()) {
                 global.showDisplayGui = true;
+            }
+            if (displayMenuKey.isPressed()) {
+                global.displayMenu = !global.displayMenu;
+                try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
             }
 		}
 	}

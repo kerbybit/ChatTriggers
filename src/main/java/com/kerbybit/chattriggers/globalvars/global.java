@@ -75,6 +75,7 @@ public class global {
 	public static boolean showGUI = false;
 	public static boolean showAltInputGui = false;
     public static boolean showDisplayGui = false;
+    public static boolean displayMenu = false;
 
     public static Boolean ignoreNextSound = false;
 	
