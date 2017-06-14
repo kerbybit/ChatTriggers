@@ -59,16 +59,22 @@ class EventsReference {
 
     private static String tieredLogic(String logic) {
         while (logic.contains("(") && logic.contains(")")) {
-            String in = logic.substring(logic.indexOf("(")+1, logic.indexOf(")", logic.indexOf("(")));
-            String search = logic.substring(logic.indexOf("(")+1);
-            while (in.contains("(")) {
-                search = search.replaceFirst("\\(", "tempOpenBracketF6cyUQp9tempOpenBracket")
-                        .replaceFirst("\\)", "tempCloseBreacketF6cyUQp9tempCloseBracket");
-                in = search.substring(0, search.indexOf(")"));
+            int second = logic.indexOf(")", logic.indexOf("("));
+            if (second >= 0) {
+                String in = logic.substring(logic.indexOf("(") + 1, second);
+                String search = logic.substring(logic.indexOf("(") + 1);
+                while (in.contains("(")) {
+                    search = search.replaceFirst("\\(", "tempOpenBracketF6cyUQp9tempOpenBracket")
+                            .replaceFirst("\\)", "tempCloseBreacketF6cyUQp9tempCloseBracket");
+                    in = search.substring(0, search.indexOf(")"));
+                }
+                in = in.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(")
+                        .replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
+                logic = logic.replace("(" + in + ")", calculateLogic(in));
+            } else {
+                ChatHandler.warn("red", "Error in tiered logic. Are you missing a ')'?");
+                break;
             }
-            in = in.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(")
-                    .replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
-            logic = logic.replace("("+in+")", calculateLogic(in));
         }
         return logic;
     }
@@ -98,66 +104,85 @@ class EventsReference {
         //split logic
         String[] split = logic.split("compareF6cyUQp9compare");
         for (int i=1; i<split.length-1; i++) {
-            if (split[i].equals("<")) {
-                getBeforeAndAfter(split[i-1], split[i+1]);
+            switch (split[i]) {
+                case "<":
+                    getBeforeAndAfter(split[i - 1], split[i + 1]);
 
-                if (before < after) {
-                    split[i-1] = ""; split[i] = "";
-                    split[i+1] = beforeBefore+"true"+afterAfter;
-                } else {
-                    split[i-1] = ""; split[i] = "";
-                    split[i+1] = beforeBefore+"false"+afterAfter;
-                }
-            } else if (split[i].equals(">")) {
-                getBeforeAndAfter(split[i-1], split[i+1]);
+                    if (before < after) {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = beforeBefore + "true" + afterAfter;
+                    } else {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = beforeBefore + "false" + afterAfter;
+                    }
+                    break;
+                case ">":
+                    getBeforeAndAfter(split[i - 1], split[i + 1]);
 
-                if (before > after) {
-                    split[i-1] = ""; split[i] = "";
-                    split[i+1] = beforeBefore+"true"+afterAfter;
-                } else {
-                    split[i-1] = ""; split[i] = "";
-                    split[i+1] = beforeBefore+"false"+afterAfter;
-                }
-            } else if (split[i].equals("<=")) {
-                getBeforeAndAfter(split[i-1], split[i+1]);
+                    if (before > after) {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = beforeBefore + "true" + afterAfter;
+                    } else {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = beforeBefore + "false" + afterAfter;
+                    }
+                    break;
+                case "<=":
+                    getBeforeAndAfter(split[i - 1], split[i + 1]);
 
-                if (before <= after) {
-                    split[i-1] = ""; split[i] = "";
-                    split[i+1] = beforeBefore+"true"+afterAfter;
-                } else {
-                    split[i-1] = ""; split[i] = "";
-                    split[i+1] = beforeBefore+"false"+afterAfter;
-                }
-            } else if (split[i].equals(">=")) {
-                getBeforeAndAfter(split[i-1], split[i+1]);
+                    if (before <= after) {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = beforeBefore + "true" + afterAfter;
+                    } else {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = beforeBefore + "false" + afterAfter;
+                    }
+                    break;
+                case ">=":
+                    getBeforeAndAfter(split[i - 1], split[i + 1]);
 
-                if (before >= after) {
-                    split[i-1] = ""; split[i] = "";
-                    split[i+1] = beforeBefore+"true"+afterAfter;
-                } else {
-                    split[i-1] = ""; split[i] = "";
-                    split[i+1] = beforeBefore+"false"+afterAfter;
-                }
-            } else if (split[i].equals("==")) {
-                getBeforeAndAfterString(split[i-1], split[i+1]);
+                    if (before >= after) {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = beforeBefore + "true" + afterAfter;
+                    } else {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = beforeBefore + "false" + afterAfter;
+                    }
+                    break;
+                case "==":
+                    getBeforeAndAfterString(split[i - 1], split[i + 1]);
 
-                if (beforeString.equals(afterString)) {
-                    split[i-1] = ""; split[i] = "";
-                    split[i+1] = beforeBefore+"true"+afterAfter;
-                } else {
-                    split[i-1] = ""; split[i] = "";
-                    split[i+1] = beforeBefore+"false"+afterAfter;
-                }
-            } else if (split[i].equals("!=")) {
-                getBeforeAndAfterString(split[i - 1], split[i + 1]);
+                    if (beforeString.equals(afterString)) {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = beforeBefore + "true" + afterAfter;
+                    } else {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = beforeBefore + "false" + afterAfter;
+                    }
+                    break;
+                case "!=":
+                    getBeforeAndAfterString(split[i - 1], split[i + 1]);
 
-                if (beforeString.equals(afterString)) {
-                    split[i - 1] = ""; split[i] = "";
-                    split[i + 1] = beforeBefore + "false" + afterAfter;
-                } else {
-                    split[i - 1] = ""; split[i] = "";
-                    split[i + 1] = beforeBefore + "true" + afterAfter;
-                }
+                    if (beforeString.equals(afterString)) {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = beforeBefore + "false" + afterAfter;
+                    } else {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = beforeBefore + "true" + afterAfter;
+                    }
+                    break;
             }
         }
 
@@ -167,35 +192,43 @@ class EventsReference {
         //split logic
         split = logic.split("logicF6cyUQp9logic");
         for (int i=1; i<split.length-1; i++) {
-            if (split[i].equals("&&")) {
-                if (split[i-1].trim().equalsIgnoreCase("true")
-                        && split[i+1].trim().equalsIgnoreCase("true")) {
-                    split[i-1] = ""; split[i] = "";
-                    split[i+1] = "true";
-                } else {
-                    split[i-1] = ""; split[i] = "";
-                    split[i+1] = "false";
-                }
-            } else if (split[i].equals("||")) {
-                if (split[i-1].trim().equalsIgnoreCase("true")
-                        || split[i+1].trim().equalsIgnoreCase("true")) {
-                    split[i-1] = ""; split[i] = "";
-                    split[i+1] = "true";
-                } else {
-                    split[i-1] = ""; split[i] = "";
-                    split[i+1] = "false";
-                }
-            } else if (split[i].equals("^")) {
-                 if (split[i - 1].trim().equalsIgnoreCase("true")
-                         ^ split[i + 1].trim().equalsIgnoreCase("true")) {
-                    split[i - 1] = "";
-                    split[i] = "";
-                    split[i + 1] = "true";
-                 } else {
-                    split[i - 1] = "";
-                    split[i] = "";
-                    split[i + 1] = "false";
-                 }
+            switch (split[i]) {
+                case "&&":
+                    if (split[i - 1].trim().equalsIgnoreCase("true")
+                            && split[i + 1].trim().equalsIgnoreCase("true")) {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = "true";
+                    } else {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = "false";
+                    }
+                    break;
+                case "||":
+                    if (split[i - 1].trim().equalsIgnoreCase("true")
+                            || split[i + 1].trim().equalsIgnoreCase("true")) {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = "true";
+                    } else {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = "false";
+                    }
+                    break;
+                case "^":
+                    if (split[i - 1].trim().equalsIgnoreCase("true")
+                            ^ split[i + 1].trim().equalsIgnoreCase("true")) {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = "true";
+                    } else {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = "false";
+                    }
+                    break;
             }
         }
 

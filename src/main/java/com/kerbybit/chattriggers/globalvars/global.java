@@ -36,6 +36,7 @@ public class global {
 	public static String importURL = "";
 	public static Boolean canImport = true;
 	public static List<String> neededImports = new ArrayList<>();
+	public static boolean saveSoon = false;
 
 	public static HashMap<String, String> imported = new HashMap<>();
 

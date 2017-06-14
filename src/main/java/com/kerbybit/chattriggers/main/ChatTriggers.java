@@ -171,6 +171,13 @@ public class ChatTriggers {
 	public void onClientTick(ClientTickEvent e) throws ClassNotFoundException {
 		if (global.canUse) {
 		    StringHandler.updateMarkedStrings();
+		    if (global.saveSoon) {
+		        try {FileHandler.saveAll();}
+		        catch (IOException exception) {
+		            ChatHandler.warn(ChatHandler.color("red", "Something went wrong while loading the files after an import!"));
+		        }
+		        global.saveSoon = false;
+            }
 
             JsonHandler.trimJsons();
             ListHandler.trimLists();

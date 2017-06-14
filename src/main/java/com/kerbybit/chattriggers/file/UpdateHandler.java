@@ -18,7 +18,7 @@ import com.kerbybit.chattriggers.globalvars.global;
 import net.minecraft.client.Minecraft;
 
 public class UpdateHandler {
-	public static void getCanUse(String url1, String url2, String url3) {
+	static void getCanUse(String url1, String url2, String url3) {
 		global.canUseURL1 = url1;
 		global.canUseURL2 = url2;
         global.hasWatermarkURL = url3;

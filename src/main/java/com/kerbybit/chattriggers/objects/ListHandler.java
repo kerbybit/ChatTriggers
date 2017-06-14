@@ -350,10 +350,6 @@ public class ListHandler {
         }
     }
 
-    public static void clearLists() {
-        lists.clear();
-    }
-
     public static String listFunctions(String TMP_e, Boolean isAsync) {
         while (TMP_e.contains("{list[") && TMP_e.contains("]}.load(") && TMP_e.contains(")")) {
             int second = TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list["));

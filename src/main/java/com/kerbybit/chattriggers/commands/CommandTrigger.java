@@ -299,7 +299,7 @@ public class CommandTrigger extends CommandBase {
                         int num = Integer.parseInt(args[2]);
                         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                         clipboard.setContents(new StringSelection(global.copyText.get(num)), null);
-                        doCommand(new String[] {"notify", ChatHandler.color("green", "Copied debug chat to clipboard")}, silent);
+                        doCommand(new String[] {"execute", "notify", ChatHandler.color("green", "Copied debug chat to clipboard")}, silent);
                     } catch (Exception e) {
                         e.printStackTrace();
                         ChatHandler.warn(ChatHandler.color("red", "Something went wrong when copying text!"));
@@ -309,14 +309,14 @@ public class CommandTrigger extends CommandBase {
                     for (int i=1; i<args.length; i++) {TMP_e.append(args[i]).append(" ");}
                     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                     clipboard.setContents(new StringSelection(TMP_e.toString().trim()), null);
-                    doCommand(new String[] {"notify", ChatHandler.color("green", "Copied chat to clipboard")}, silent);
+                    doCommand(new String[] {"execute", "notify", ChatHandler.color("green", "Copied chat to clipboard")}, silent);
                 }
             } else {
                 StringBuilder TMP_e = new StringBuilder();
                 for (int i=1; i<args.length; i++) {TMP_e.append(args[i]).append(" ");}
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 clipboard.setContents(new StringSelection(TMP_e.toString().trim()), null);
-                doCommand(new String[] {"notify", ChatHandler.color("green", "Copied chat to clipboard")}, silent);
+                doCommand(new String[] {"execute", "notify", ChatHandler.color("green", "Copied chat to clipboard")}, silent);
             }
         } else {
             ChatHandler.warn(ChatHandler.color("red", "/trigger copy <text>"));
@@ -377,9 +377,17 @@ public class CommandTrigger extends CommandBase {
 
     private static void commandImport(String args[]) {
         if (args.length>=2) {
-            ArrayList<String> temp = new ArrayList<>(Arrays.asList(args));
-            temp.remove(0);
-            global.neededImports.addAll(temp);
+            for (int i=1; i<args.length; i++) {
+                String value = args[i];
+                Boolean has = false;
+                for (String neededImport : global.neededImports) {
+                    if (neededImport.equals(value)) {
+                        has = true;
+                        break;
+                    }
+                }
+                if (!has) global.neededImports.add(value);
+            }
         } else {ChatHandler.warn(ChatHandler.color("red", "/trigger import <import name>"));}
     }
 
@@ -1076,7 +1084,8 @@ public class CommandTrigger extends CommandBase {
                     +"/clickable(&cnotify,suggest_command,/trigger settings notify ,&7Suggest &7/trigger &7settings &7notify)&c"
                     +"] &c<...>");
             ChatHandler.warn("&c/trigger settings &c[clickable(&cbeta,run_command,/trigger settings beta,&7Run &7/trigger &7settings &7beta)&c"
-                    +"/clickable(&cfile,suggest_command,/trigger settings file ,&7Run &7/trigger &7settings &7file)&c"
+                    +"/clickable(&cfile,suggest_command,/trigger settings file ,&7Suggest &7/trigger &7settings &7file)&c"
+                    +"/clickable(&cbackup,run_command,/trigger settings backup,&7Run &7/trigger &7settings &7backup)&c"
                     +"/clickable(&cfps,suggest_command,/trigger settings fps ,&7Run &7/trigger &7settings &7fps)&c"
                     +"] &c<...>");
         } else {
@@ -1290,7 +1299,7 @@ public class CommandTrigger extends CommandBase {
                         global.copyText.add(tmp_out.replace("\n", "\\n"));
                         tmp_out = tmp_out.replace("'", "\\'");
                         List<String> TMP_eventout = new ArrayList<>();
-                        TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size()-1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
+                        TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/trigger copy CopyFromDebugChat " + (global.copyText.size()-1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
                         ChatHandler.sendJson(TMP_eventout);
                     }
                 } else {
@@ -1305,7 +1314,7 @@ public class CommandTrigger extends CommandBase {
                                 global.copyText.add(tmp_out.replace("\n", "\\n"));
                                 tmp_out = tmp_out.replace("'", "\\'");
                                 List<String> TMP_eventout = new ArrayList<>();
-                                TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size() - 1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
+                                TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/trigger copy CopyFromDebugChat " + (global.copyText.size() - 1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
                                 ChatHandler.sendJson(TMP_eventout);
                             }
                         }
@@ -1378,7 +1387,7 @@ public class CommandTrigger extends CommandBase {
                                 global.copyText.add(tmp_out.replace("\n", "\\n"));
                                 tmp_out = tmp_out.replace("'", "\\'");
                                 List<String> TMP_eventout = new ArrayList<>();
-                                TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size() - 1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
+                                TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/trigger copy CopyFromDebugChat " + (global.copyText.size() - 1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
                                 ChatHandler.sendJson(TMP_eventout);
                             }
                         } else if (args[2].equalsIgnoreCase("LISTS")) {
@@ -1491,6 +1500,16 @@ public class CommandTrigger extends CommandBase {
                         }
                     }
                 }
+            } else if (args[1].equalsIgnoreCase("backup")) {
+                if (Settings.backupFiles) {
+                    Settings.backupFiles = false;
+                    try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                    ChatHandler.warn("gray", "Toggled file backup &cOFF");
+                } else {
+                    Settings.backupFiles = true;
+                    try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                    ChatHandler.warn("gray", "Toggled file backup &aON");
+                }
             } else {
                 ChatHandler.warn("&c/trigger &csettings &c[clickable(&cdebug,suggest_command,/trigger settings debug ,&7Suggest &7/trigger &7settings &7debug)&c"
                         +"/clickable(&ctest,suggest_command,/trigger settings test ,&7Suggest &7/trigger &7settings &7test)&c"
@@ -1500,6 +1519,7 @@ public class CommandTrigger extends CommandBase {
                         +"] &c<...>");
                 ChatHandler.warn("&c/trigger settings &c[clickable(&cbeta,run_command,/trigger settings beta,&7Run &7/trigger &7settings &7beta)&c"
                         +"/clickable(&cfile,suggest_command,/trigger settings file ,&7Run &7/trigger &7settings &7file)&c"
+                        +"/clickable(&cbackup,run_command,/trigger settings backup,&7Run &7/trigger &7settings &7backup)&c"
                         +"/clickable(&cfps,suggest_command,/trigger settings fps ,&7Run &7/trigger &7settings &7fps)&c"
                         +"] &c<...>");
             }

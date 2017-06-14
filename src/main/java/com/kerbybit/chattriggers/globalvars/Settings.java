@@ -20,6 +20,7 @@ public class Settings {
 
     public static Boolean isBeta = false;
     public static String CTversion = "4.1.7";
+    public static Boolean backupFiles = false;
 
     public static Boolean oldFormatting = false;
 

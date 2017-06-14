@@ -102,7 +102,7 @@ public class FileHandler {
                     File fcheck = new File("./mods/ChatTriggers/Imports/DisabledImports/"+file);
                     if (fcheck.exists()) {if (!fcheck.delete()) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while deleting the disabled import " + file + "!"));}}
 
-                    try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Something went wrong while loading the files after an import!"));}
+                    global.saveSoon = true;
 
                     ChatHandler.warn(ChatHandler.color(Settings.col[0], "Got "+file+" successfully!"));
                 } catch (MalformedURLException e) {
@@ -252,6 +252,7 @@ public class FileHandler {
 		writer.println("");
 		writer.println("version:"+Settings.CTversion);
         writer.println("isBeta:"+Settings.isBeta);
+        writer.println("backup files:"+Settings.backupFiles);
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         Date date = new Date();
         writer.println("lastOpened:"+dateFormat.format(date));
@@ -447,7 +448,14 @@ public class FileHandler {
 						if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Importing "+value));}
 						File dir = new File("./mods/ChatTriggers/Imports/"+value+".txt");
 						if (!dir.exists()) {
-							global.neededImports.add(value);
+						    Boolean has = false;
+						    for (String neededImport : global.neededImports) {
+						        if (neededImport.equals(value)) {
+						            has = true;
+						            break;
+                                }
+                            }
+							if (!has) global.neededImports.add(value);
 						} else {
 							if (global.debug) {ChatHandler.warn(ChatHandler.color("gray", "Import already exists"));}
 						}
@@ -587,6 +595,10 @@ public class FileHandler {
 			    String get = l.substring(l.indexOf("killfeed background:")+20).trim();
 			    Settings.killfeedBackground = get.equalsIgnoreCase("true");
             }
+            if (l.startsWith("backup files:")) {
+			    String get = l.substring(l.indexOf("backup files:")+13).trim();
+			    Settings.backupFiles = get.equalsIgnoreCase("true");
+            }
 		}
 	}
 	
@@ -609,58 +621,58 @@ public class FileHandler {
 	}
 
 	private static void backupDefaultFiles() {
-        try {
-            DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd_h.mm");
-            Date date = new Date();
+        if (Settings.backupFiles) {
+            try {
+                DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd_h.mm");
+                Date date = new Date();
 
-            File checkFile = new File("./mods/ChatTriggers/backups/");
-            if (!checkFile.exists()) {
-                if (!checkFile.mkdir()) {
-                    throw new IOException();
+                File checkFile = new File("./mods/ChatTriggers/backups/");
+                if (!checkFile.exists()) {
+                    if (!checkFile.mkdir()) {
+                        throw new IOException();
+                    }
                 }
-            }
 
-            checkFile = new File("./mods/ChatTriggers/backups/" + dateFormat.format(date));
-            if (!checkFile.exists()) {
-                if (!checkFile.mkdir()) {
-                    throw new IOException();
+                checkFile = new File("./mods/ChatTriggers/backups/" + dateFormat.format(date));
+                if (!checkFile.exists()) {
+                    if (!checkFile.mkdir()) {
+                        throw new IOException();
+                    }
                 }
-            }
 
-            PrintWriter writer = new PrintWriter("./mods/ChatTriggers/backups/" + dateFormat.format(date) + "/triggers.txt","UTF-8");
-            for (String line : loadFile("./mods/ChatTriggers/triggers.txt")) {
-                writer.println(line);
-            }
-            writer.close();
+                PrintWriter writer = new PrintWriter("./mods/ChatTriggers/backups/" + dateFormat.format(date) + "/triggers.txt", "UTF-8");
+                for (String line : loadFile("./mods/ChatTriggers/triggers.txt")) {
+                    writer.println(line);
+                }
+                writer.close();
 
-            writer = new PrintWriter("./mods/ChatTriggers/backups/" + dateFormat.format(date) + "/strings.txt", "UTF-8");
-            for (String line : loadFile("./mods/ChatTriggers/strings.txt")) {
-                writer.println(line);
-            }
-            writer.close();
+                writer = new PrintWriter("./mods/ChatTriggers/backups/" + dateFormat.format(date) + "/strings.txt", "UTF-8");
+                for (String line : loadFile("./mods/ChatTriggers/strings.txt")) {
+                    writer.println(line);
+                }
+                writer.close();
 
-            writer = new PrintWriter("./mods/ChatTriggers/backups/" + dateFormat.format(date) + "/settings.txt", "UTF-8");
-            for (String line : loadFile("./mods/ChatTriggers/settings.txt")) {
-                writer.println(line);
+                writer = new PrintWriter("./mods/ChatTriggers/backups/" + dateFormat.format(date) + "/settings.txt", "UTF-8");
+                for (String line : loadFile("./mods/ChatTriggers/settings.txt")) {
+                    writer.println(line);
+                }
+                writer.close();
+            } catch (Exception e) {
+                ChatHandler.warn("red", "There was a problem while creating backups!");
+                e.printStackTrace();
             }
-            writer.close();
-        } catch (Exception e) {
-            ChatHandler.warn("red", "There was a problem while creating backups!");
-            e.printStackTrace();
         }
     }
 	
 	private static void startup() throws ClassNotFoundException {
 		ChatHandler.warn(ChatHandler.color("gray", "Loading ChatTriggers..."));
 		try {
-		    //backup
-            backupDefaultFiles();
-
 			CommandReference.clearTriggerList();
 			global.trigger = loadTriggers("./mods/ChatTriggers/triggers.txt", false, null);
 			global.USR_string = loadStrings();
 			loadSettings();
 			loadImports();
+			backupDefaultFiles();
 			ChatHandler.warn(ChatHandler.color(Settings.col[0], "ChatTriggers loaded"));
 		} catch (IOException e1) {
 			ChatHandler.warn(ChatHandler.color("gold", "Setting up missing files..."));

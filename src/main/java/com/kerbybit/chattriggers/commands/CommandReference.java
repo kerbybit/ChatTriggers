@@ -132,7 +132,7 @@ public class CommandReference {
 	}
 	
 	static Boolean isEventType(String TMP_etype) {
-        List<String> check = new ArrayList<>(getEventTypes());
+        List<String> check = new ArrayList<>(getAllEventTypes());
         for (String value : check) {
             if (!value.equals("")) {
                 if (TMP_etype.equalsIgnoreCase(value)) {
@@ -219,7 +219,7 @@ public class CommandReference {
             r.add("{cps} {cpsAve} {cpsMax}");
             r.add("{rcps} {rcpsAve} {rcpsMax}");
             r.add("");
-            r.add("{server} {serverIP} {serverMOTD} {serverversion}");
+            r.add("{server} {serverIP} {serverMOTD} {serverVersion}");
             r.add("{ping} {playerList}");
             r.add("{scoreboardTitle} {scoreboardLines}");
             r.add("");
@@ -270,7 +270,7 @@ public class CommandReference {
             r.add("");
             r.add(".replace($value1,$value2) .replace($value)");
             r.add(".replaceIgnoreCase($value1,$value2)");
-            r.add(".substring($v1,$v2) .substring(&n1,$n2)");
+            r.add(".substring($v1,$v2) .substring($n1,$n2)");
             r.add(".trim()");
             r.add(".prefix($value) .suffix($value)");
             r.add(".toUpper() .toUpperCase()");
