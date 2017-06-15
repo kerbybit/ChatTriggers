@@ -15,7 +15,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiIngame;
-import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.BossStatus;
@@ -286,6 +285,7 @@ public class BuiltInStrings {
             TMP_e = createDefaultString("chatwidth", "chatWidth", ""+(int)((280*(mc.gameSettings.chatWidth))+40), TMP_e, isAsync);
         }
         if (TMP_e.contains("{scoreboardtitle}") || TMP_e.contains("{scoreboardTitle}")) {
+            ScoreboardReader.resetCache();
             TMP_e = createDefaultString("scoreboardtitle", "scoreboardTitle", ChatHandler.removeFormatting(ScoreboardReader.getScoreboardTitle()), TMP_e, isAsync);
         }
         if (TMP_e.contains("{hp}") || TMP_e.contains("{HP}")) {
@@ -380,32 +380,51 @@ public class BuiltInStrings {
             TMP_e = createDefaultString("facingMin", mc.thePlayer.getHorizontalFacing().toString(), TMP_e, isAsync);
         }
         if (TMP_e.contains("{time}")) {
-            Calendar cal = Calendar.getInstance();
-            int hour = cal.get(Calendar.HOUR_OF_DAY);
-            int minute = cal.get(Calendar.MINUTE);
-            String minute_string;
-            if (minute < 10) {
-                minute_string = "0" + minute;
-            } else {
-                minute_string = "" + minute;
-            }
-            if (hour > 12) {
-                minute_string = minute_string + "pm";
-                hour = hour - 12;
-            } else {
-                minute_string = minute_string + "am";
-            }
-
-            TMP_e = createDefaultString("time", hour + ":" + minute_string, TMP_e, isAsync);
+            DateFormat dateFormat = new SimpleDateFormat(Settings.timeFormat);
+            TMP_e = createDefaultString("time", dateFormat.format(new Date()), TMP_e, isAsync);
         }
         if (TMP_e.contains("{date}")) {
             DateFormat dateFormat = new SimpleDateFormat(Settings.dateFormat);
-            Date date = new Date();
-            TMP_e = createDefaultString("date", dateFormat.format(date), TMP_e, isAsync);
+            TMP_e = createDefaultString("date", dateFormat.format(new Date()), TMP_e, isAsync);
         }
         if (TMP_e.contains("{unixtime}") || TMP_e.contains("{unixTime}")) {
-            Date date = new Date();
-            TMP_e = createDefaultString("unixtime", "unixTime", date.getTime()+"", TMP_e, isAsync);
+            TMP_e = createDefaultString("unixtime", "unixTime", new Date().getTime()+"", TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{day}")) {
+            DateFormat dateFormat = new SimpleDateFormat("EEEE");
+            TMP_e = createDefaultString("day", dateFormat.format(new Date()), TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{month}")) {
+            DateFormat dateFormat = new SimpleDateFormat("MMMM");
+            TMP_e = createDefaultString("month", dateFormat.format(new Date()), TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{year}")) {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy");
+            TMP_e = createDefaultString("year", dateFormat.format(new Date()), TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{hour}")) {
+            DateFormat dateFormat = new SimpleDateFormat("H");
+            TMP_e = createDefaultString("hour", dateFormat.format(new Date()), TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{hour12}")) {
+            DateFormat dateFormat = new SimpleDateFormat("h");
+            TMP_e = createDefaultString("hour", dateFormat.format(new Date()), TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{minute}")) {
+            DateFormat dateFormat = new SimpleDateFormat("m");
+            TMP_e = createDefaultString("minute", dateFormat.format(new Date()), TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{second}")) {
+            DateFormat dateFormat = new SimpleDateFormat("s");
+            TMP_e = createDefaultString("second", dateFormat.format(new Date()), TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{am/pm}")) {
+            DateFormat dateFormat = new SimpleDateFormat("a");
+            TMP_e = createDefaultString("am/pm", dateFormat.format(new Date()), TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{timezone}")) {
+            DateFormat dateFormat = new SimpleDateFormat("zzz");
+            TMP_e = createDefaultString("timezone", dateFormat.format(new Date()), TMP_e, isAsync);
         }
         if (TMP_e.contains("{potionEffects}")) {
             Collection<PotionEffect> potionEffects = mc.thePlayer.getActivePotionEffects();

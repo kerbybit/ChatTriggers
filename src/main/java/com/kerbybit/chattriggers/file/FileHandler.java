@@ -276,6 +276,7 @@ public class FileHandler {
         writer.println("");
         writer.println("old formatting:"+Settings.oldFormatting);
         writer.println("date format:"+Settings.dateFormat);
+        writer.println("time format:"+Settings.timeFormat);
 
 		writer.close();
 	}
@@ -587,6 +588,9 @@ public class FileHandler {
             }
             if (l.startsWith("date format:")) {
 			    Settings.dateFormat = l.substring(l.indexOf("date format:")+12).trim();
+            }
+            if (l.startsWith("time format:")) {
+			    Settings.timeFormat = l.substring(l.indexOf("time format:")+12).trim();
             }
             if (l.startsWith("notify background:")) {
 			    String get = l.substring(l.indexOf("notify background:")+18).trim();

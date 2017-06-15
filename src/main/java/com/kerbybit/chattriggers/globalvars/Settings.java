@@ -25,6 +25,7 @@ public class Settings {
     public static Boolean oldFormatting = false;
 
     public static String dateFormat = "dd/MM/yyyy";
+    public static String timeFormat = "h:mm:ss";
 
     public static Boolean notifyBackground = true;
 

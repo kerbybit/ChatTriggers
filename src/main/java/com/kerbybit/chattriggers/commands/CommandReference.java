@@ -202,7 +202,8 @@ public class CommandReference {
             r.add("{me} {uuid}");
             r.add("{hp} {hunger} {saturation}");
             r.add("{xpLevel} {xpProgress}");
-            r.add("{inChat} {renderDistance} {fov}");
+            r.add("{inChat} {inTab} {inAltScreen}");
+            r.add("{renderDistance} {fov}");
             r.add("{sneak} {sprint}");
             r.add("{x} {y} {z}");
             r.add("{exacX} {exacY} {exacZ}");
@@ -223,11 +224,14 @@ public class CommandReference {
             r.add("{ping} {playerList}");
             r.add("{scoreboardTitle} {scoreboardLines}");
             r.add("");
-            r.add("{actiobarText} {bossbarText}");
+            r.add("{actionbarText} {bossbarText}");
             r.add("{titleText} {subtitleText}");
             r.add("");
             r.add("{random($low,$high)} {random($high)}");
             r.add("{time} {date} {unixTime}");
+            r.add("{year} {month} {day}");
+            r.add("{hour} {hour12} {minute} {second}");
+            r.add("{am/pm} {timezone}");
             r.add("{CTVersion} {MCVersion}");
             r.add("");
             r.add("{black} {darkBlue} {darkGreen} {darkAqua} {darkRed} {darkPurple} {gold} {gray} {darkGray} {blue} {green} {aqua} {red} {lightPurple} {yellow} {white}");
