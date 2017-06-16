@@ -264,8 +264,10 @@ public class FileHandler {
         writer.println("killfeed fade:"+Settings.killfeedFade);
         writer.println("killfeed background:"+Settings.killfeedBackground);
         writer.println("show killfeed in notifications:"+Settings.killfeedInNotify);
+        writer.println("killfeed pause:"+Settings.killfeedPause);
         writer.println("notification speed:"+Settings.notifySpeed);
         writer.println("notify background:"+Settings.notifyBackground);
+        writer.println("notify pause:"+Settings.notifyPause);
         writer.println("in extra display screen:"+global.displayMenu);
 
         writer.println("");
@@ -607,6 +609,22 @@ public class FileHandler {
             if (l.startsWith("in extra display screen:")) {
 			    String get = l.substring(l.indexOf("in extra display screen:")+24).trim();
 			    global.displayMenu = get.equalsIgnoreCase("true");
+            }
+            if (l.startsWith("killfeed pause:")) {
+                String get = l.substring(l.indexOf("killfeed pause:")+15).trim();
+                try {
+                    Settings.killfeedPause = Integer.parseInt(get);
+                } catch (NumberFormatException exception) {
+                    Settings.killfeedPause = 50;
+                }
+            }
+            if (l.startsWith("notify pause:")) {
+                String get = l.substring(l.indexOf("notify pause:")+13).trim();
+                try {
+                    Settings.notifyPause = Integer.parseInt(get);
+                } catch (NumberFormatException exception) {
+                    Settings.notifyPause = 50;
+                }
             }
 		}
 	}

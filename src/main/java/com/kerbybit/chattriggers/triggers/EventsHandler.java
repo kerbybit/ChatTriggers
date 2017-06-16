@@ -13,6 +13,7 @@ import java.util.Random;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.commands.CommandTrigger;
+import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.objects.ArrayHandler;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
@@ -85,7 +86,7 @@ public class EventsHandler {
 			String TMP_c;
 			if (!TMP_e.contains(" ")) {TMP_c = TMP_e; TMP_e="";}
 			else {TMP_c = TMP_e.substring(0, TMP_e.indexOf(" ")); TMP_e = TMP_e.substring(TMP_e.indexOf(" ")+1, TMP_e.length());}
-			int TMP_t = 50;
+			int TMP_t = -1;
 			int TMP_p = global.notifySize;
 			int TMP_v = 100;
 			int TMP_pi = 1;
@@ -123,6 +124,10 @@ public class EventsHandler {
 					TMP_e = TMP_e.replace("<time="+TMP_t+">", "");
 				}
 			} catch (NumberFormatException e1) {ChatHandler.warn(ChatHandler.color("red", "<time=t> t must be an integer!"));}
+			if (TMP_t == -1) {
+			    if (TMP_c.equalsIgnoreCase("NOTIFY")) TMP_t = Settings.notifyPause;
+			    else if (TMP_c.equalsIgnoreCase("KILLFEED")) TMP_t = Settings.killfeedPause;
+            }
 			
 			try {
 				if (TMP_e.contains("<pos=") && TMP_e.contains(">")) {

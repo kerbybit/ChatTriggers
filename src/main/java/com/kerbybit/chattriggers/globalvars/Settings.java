@@ -11,6 +11,8 @@ public class Settings {
     public static Boolean killfeedInNotify = false;
     public static Boolean killfeedFade = true;
     public static int notifySpeed = 10;
+    public static int notifyPause = 50;
+    public static int killfeedPause = 50;
     public static Double[] killfeedPosition = new Double[]{5.0/res.getScaledWidth(), 5.0/res.getScaledHeight()};
 
     public static Boolean commandT = true;

@@ -1192,13 +1192,25 @@ public class CommandTrigger extends CommandBase {
                             ChatHandler.warn(ChatHandler.color("gray", "Toggled killfeed background") + " " + ChatHandler.color("green", "on"));
                             try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         }
+                    } else if (args[2].equalsIgnoreCase("PAUSE")) {
+                        if (args.length == 4) {
+                            try {
+                                Settings.killfeedPause = Integer.parseInt(args[3].trim());
+                                ChatHandler.warn("gray", "Changed default killfeed pause to " + Settings.col[0] + Settings.notifyPause);
+                                try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                            } catch (NumberFormatException exception) {
+                                ChatHandler.warn("red", "/trigger settings killfeed pause <number>");
+                            }
+                        } else {
+                            ChatHandler.warn("red", "/trigger settings killfeed pause <number>");
+                        }
                     } else {
                         ChatHandler.warn("&c/trigger &csettings &ckillfeed &c[clickable(&cposition,suggest_command,/trigger settings killfeed position ,&7Suggest &7/trigger &7settings &7killfeed &7position)&c/clickable(&cshowInNotify,run_command,/trigger settings killfeed showInNotify,&7Run &7/trigger &7settings &7killfeed &7showInNotify)&c] &c<...>");
-                        ChatHandler.warn("&c/trigger &csettings &ckillfeed &c[clickable(&cfade,run_command,/trigger settings killfeed fade,&7Run &7/trigger &7settings &7killfeed &7fade)&c/clickable(&cbackground,run_command,/trigger settings killfeed background,&7Run &7/trigger &7setting &7killfeed &7background)&c] &c<...>");
+                        ChatHandler.warn("&c/trigger &csettings &ckillfeed &c[clickable(&cfade,run_command,/trigger settings killfeed fade,&7Run &7/trigger &7settings &7killfeed &7fade)&c/clickable(&cbackground,run_command,/trigger settings killfeed background,&7Run &7/trigger &7setting &7killfeed &7background)&c/clickable(&cpause,suggest_command,/trigger settings pause ,&7Suggest &7/trigger &7settings &7killfeed &7pause)&c] &c<...>");
                     }
                 } else {
                     ChatHandler.warn("&c/trigger &csettings &ckillfeed &c[clickable(&cposition,suggest_command,/trigger settings killfeed position ,&7Suggest &7/trigger &7settings &7killfeed &7position)&c/clickable(&cshowInNotify,run_command,/trigger settings killfeed showInNotify,&7Run &7/trigger &7settings &7killfeed &7showInNotify)&c] &c<...>");
-                    ChatHandler.warn("&c/trigger &csettings &ckillfeed &c[clickable(&cfade,run_command,/trigger settings killfeed fade,&7Run &7/trigger &7settings &7killfeed &7fade)&c/clickable(&cbackground,run_command,/trigger settings killfeed background,&7Run &7/trigger &7setting &7killfeed &7background)&c] &c<...>");
+                    ChatHandler.warn("&c/trigger &csettings &ckillfeed &c[clickable(&cfade,run_command,/trigger settings killfeed fade,&7Run &7/trigger &7settings &7killfeed &7fade)&c/clickable(&cbackground,run_command,/trigger settings killfeed background,&7Run &7/trigger &7setting &7killfeed &7background)&c/clickable(&cpause,suggest_command,/trigger settings pause ,&7Suggest &7/trigger &7settings &7killfeed &7pause)&c] &c<...>");
                 }
             } else if (args[1].equalsIgnoreCase("NOTIFY")) {
                 if (args.length>2) {
@@ -1233,11 +1245,23 @@ public class CommandTrigger extends CommandBase {
                             ChatHandler.warn(ChatHandler.color("gray", "Toggled notify background") + " " + ChatHandler.color("green", "on"));
                             try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         }
+                    } else if (args[2].equalsIgnoreCase("PAUSE")) {
+                        if (args.length == 4) {
+                            try {
+                                Settings.notifyPause = Integer.parseInt(args[3].trim());
+                                ChatHandler.warn("gray", "Changed default notify pause to " + Settings.col[0] + Settings.notifyPause);
+                                try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
+                            } catch (NumberFormatException exception) {
+                                ChatHandler.warn("red", "/trigger settings notify pause <number>");
+                            }
+                        } else {
+                            ChatHandler.warn("red", "/trigger settings notify pause <number>");
+                        }
                     } else {
-                        ChatHandler.warn("&c/trigger &csettings &cnotify &c[clickable(&cspeed,suggest_command,/trigger settings notify speed ,&7Suggest &7/trigger &7settings &7notify &7speed)&c/clickable(&cbackground,run_command,/trigger settings notify background,&7Run &7/trigger &7settings &7notify &7background)&c] &c<...>");
+                        ChatHandler.warn("&c/trigger &csettings &cnotify &c[clickable(&cspeed,suggest_command,/trigger settings notify speed ,&7Suggest &7/trigger &7settings &7notify &7speed)&c/clickable(&cbackground,run_command,/trigger settings notify background,&7Run &7/trigger &7settings &7notify &7background)&c/clickable(&cpause,suggest_command,/trigger settings notify pause ,&7Suggest &7/trigger &7settings &7notify &7pause)&c] &c<...>");
                     }
                 } else {
-                    ChatHandler.warn("&c/trigger &csettings &cnotify &c[clickable(&cspeed,suggest_command,/trigger settings notify speed ,&7Suggest &7/trigger &7settings &7notify &7speed)&c/clickable(&cbackground,run_command,/trigger settings notify background,&7Run &7/trigger &7settings &7notify &7background)&c] &c<...>");
+                    ChatHandler.warn("&c/trigger &csettings &cnotify &c[clickable(&cspeed,suggest_command,/trigger settings notify speed ,&7Suggest &7/trigger &7settings &7notify &7speed)&c/clickable(&cbackground,run_command,/trigger settings notify background,&7Run &7/trigger &7settings &7notify &7background)&c/clickable(&cpause,suggest_command,/trigger settings notify pause ,&7Suggest &7/trigger &7settings &7notify &7pause)&c] &c<...>");
                 }
             } else if (args[1].equalsIgnoreCase("BETA")) {
                 if (args.length>2) {

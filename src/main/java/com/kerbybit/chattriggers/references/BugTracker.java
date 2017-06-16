@@ -104,18 +104,18 @@ public class BugTracker {
             case "command":
                 return "An unknown error occurred while performing this command";
             case "chat":
-                return "An unknown error has occured while executing \"&cchat&4\"";
+                return "An unknown error has occurred while executing \"&cchat&4\"";
             case "onrightclickplayer":
-                return "An unknown error has occured while executing \"&conRightClickPlayer&4\"";
+                return "An unknown error has occurred while executing \"&conRightClickPlayer&4\"";
             case "onworldload":
-                return "An unknown error has occured while executing \"&conWorldLoad&4\"";
+                return "An unknown error has occurred while executing \"&conWorldLoad&4\"";
             case "onclienttick":
-                return "An unknown error has occured while executing \"&conClientTick&4\"";
+                return "An unknown error has occurred while executing \"&conClientTick&4\"";
             case "async":
                 CommandTrigger.commandLoad();
-                return "An unknown error has occured while executing \"&casync&4\"";
+                return "An unknown error has occurred while executing \"&casync&4\"";
             case "onsoundplay":
-                return "An unknown error has occured while executing \"&conSoundPlay&4\"";
+                return "An unknown error has occurred while executing \"&conSoundPlay&4\"";
             default:
                 return "An unknown error has occurred";
         }
