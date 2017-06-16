@@ -87,6 +87,9 @@ public class CommandTrigger extends CommandBase {
             case("COPY"):
                 commandCopy(args, silent);
                 break;
+            case("CLEARCHAT"):
+                commandClearChat();
+                break;
             case("IMPORTS"):
                 commandImports();
                 break;
@@ -187,6 +190,10 @@ public class CommandTrigger extends CommandBase {
         List<String> temp = new ArrayList<>();
         temp.add(event);
         EventsHandler.doEvents(temp, null);
+    }
+
+    private static void commandClearChat() {
+        Minecraft.getMinecraft().ingameGUI.getChatGUI().deleteChatLine(0);
     }
 
     private static void commandHelp(String args[]) {

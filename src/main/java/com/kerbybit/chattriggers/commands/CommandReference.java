@@ -174,8 +174,9 @@ public class CommandReference {
             r.add("debug");
             r.add("log");
             r.add("simulate");
-            r.add("enableimport");
-            r.add("disableimport");
+            r.add("enableImport");
+            r.add("disableImport");
+            r.add("clearChat");
 
         return r;
     }
@@ -251,7 +252,7 @@ public class CommandReference {
             r.add(".subtract($number) .minus($number) .-($number)");
             r.add(".multiply($number) .times($number) .*($number)");
             r.add(".divide($number) ./($number)");
-            r.add(".divideGetPercentage($number) .divPercent($number) ./%($number)");
+            r.add(".divideGetPercentage($number) ./%($number)");
             r.add(".power($number) .pow($number) .^($number)");
             r.add(".modulus($number) .mod($number) .%($number)");
             r.add(".absolute() .abs()");

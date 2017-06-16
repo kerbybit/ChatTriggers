@@ -9,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.potion.Potion;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -138,9 +137,8 @@ public class IconHandler {
                 return removeIconString(input.replace("{icon["+get_name+"]}", "   "));
             }
             return removeIconString(input.replace("{icon["+get_name+"]}", "    "));
-        } else {
-            return input;
         }
+        return input;
     }
 
     private static Boolean isPotion(String name) {

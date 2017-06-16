@@ -20,7 +20,7 @@ public class GuiTriggerList extends GuiScreen {
 	private static Minecraft MC = Minecraft.getMinecraft();
 	
 	private String backString = EnumChatFormatting.GRAY.toString()+"< Back";
-	private List<Float> backOffset = new ArrayList<Float>();
+	private List<Float> backOffset = new ArrayList<>();
 	
 	//-1 = setup menu
 	//0  = lists

@@ -25,14 +25,15 @@ public class BugTracker {
                 try {
                     ChatHandler.warn("&7Sending bug report...");
                     StringBuilder bug = new StringBuilder();
-                    if (global.bugLastCommand.equals("")) {
-                        bug.append(global.bugLastEvent).append("\n\n");
-                    } else {
-                        bug.append(global.bugLastCommand).append("\n\n");
-                    }
+
+                    if (global.bugLastCommand.equals("")) bug.append(global.bugLastEvent).append("\n\n");
+                    else bug.append(global.bugLastCommand).append("\n\n");
+
+
                     for (String b : global.bugReport) {
                         bug.append(b).append("\n");
                     }
+
                     URL url = new URL("http://ct.kerbybit.com/bugreport/");
                     Map<String,Object> params = new LinkedHashMap<>();
                     params.put("name", Minecraft.getMinecraft().thePlayer.getDisplayNameString());
@@ -58,7 +59,7 @@ public class BugTracker {
                     ChatHandler.warn(Settings.col[0] + "Bug report submitted successfully!");
                     global.bugReport.clear();
                 } catch (Exception e) {
-                    ChatHandler.warn("&4An error occured while submitting a bug report!");
+                    ChatHandler.warn("&4An error occurred while submitting a bug report!");
                     ChatHandler.warn("&4Is ct.kerbybit.com down?");
                 }
             });

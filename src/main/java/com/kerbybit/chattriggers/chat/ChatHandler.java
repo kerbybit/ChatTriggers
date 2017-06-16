@@ -2,7 +2,6 @@ package com.kerbybit.chattriggers.chat;
 
 import java.util.List;
 
-import com.kerbybit.chattriggers.commands.CommandTrigger;
 import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
 
@@ -316,20 +315,12 @@ public class ChatHandler {
 		
 		if (global.commandQueue.size() > 0) {
 			String cht = global.commandQueue.remove(0);
-			if (cht.startsWith("trigger ") || (cht.startsWith("t "))) {
-				if (cht.startsWith("trigger ")) {cht = cht.substring(8);}
-				else {cht = cht.substring(2);}
-				String[] args = cht.split(" ");
-				if (global.debug) {CommandTrigger.doCommand(args, false);}
-				else {CommandTrigger.doCommand(args, true);}
-			} else {
-                if (!global.hasWatermark) {
-                    Minecraft.getMinecraft().thePlayer.sendChatMessage("/" +
-                            cht.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
-                                    .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
-                                    .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"));
-                }
-			}
+            if (!global.hasWatermark) {
+                Minecraft.getMinecraft().thePlayer.sendChatMessage("/" +
+                        cht.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                                .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+                                .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")"));
+            }
 		}
 	}
 	

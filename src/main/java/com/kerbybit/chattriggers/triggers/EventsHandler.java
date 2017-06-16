@@ -78,7 +78,7 @@ public class EventsHandler {
 			}
 		}
 
-		for (int i=0; i<tmp_event.size(); i++) {
+		for (int i=0; i<tmp_event.size()+1; i++) {
         //SETUP
 			String TMP_e = tmp_event.get(i);
             global.lastEvent = TMP_e;
@@ -216,7 +216,16 @@ public class EventsHandler {
 			if (TMP_c.equalsIgnoreCase("NOTIFY")) {
 				NotifyHandler.addToNotify(TMP_e, TMP_t, TMP_p);
 			}
-			if (TMP_c.equalsIgnoreCase("COMMAND")) {global.commandQueue.add(TMP_e);}
+			if (TMP_c.equalsIgnoreCase("COMMAND")) {
+			    if (TMP_e.toLowerCase().startsWith("t ")
+                        || TMP_e.toLowerCase().startsWith("trigger ")) {
+			        String[] args = TMP_e.substring(TMP_e.indexOf(" ")).trim().split(" ");
+			        CommandTrigger.doCommand(args, true);
+                } else {
+                    global.commandQueue.add(TMP_e);
+                }
+
+			}
 			if (TMP_c.equalsIgnoreCase("COPY")) {
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clipboard.setContents(new StringSelection(removeStringReplacements(TMP_e)), null);
@@ -229,21 +238,17 @@ public class EventsHandler {
 			    List<String> args = new ArrayList<>();
 			    args.add("enableimport");
 			    args.addAll(Arrays.asList(removeStringReplacements(TMP_e).split(" ")));
-			    if (global.debug) {
-                    CommandTrigger.doCommand(args.toArray(new String[args.size()]), false);
-                } else {
-                    CommandTrigger.doCommand(args.toArray(new String[args.size()]), true);
-                }
+                CommandTrigger.doCommand(args.toArray(new String[args.size()]), !global.debug);
             }
             if (TMP_c.equalsIgnoreCase("DISABLEIMPORT")) {
                 List<String> args = new ArrayList<>();
                 args.add("disableimport");
                 args.addAll(Arrays.asList(removeStringReplacements(TMP_e).split(" ")));
-                if (global.debug) {
-                    CommandTrigger.doCommand(args.toArray(new String[args.size()]), false);
-                } else {
-                    CommandTrigger.doCommand(args.toArray(new String[args.size()]), true);
-                }
+                CommandTrigger.doCommand(args.toArray(new String[args.size()]), !global.debug);
+            }
+            if (TMP_c.equalsIgnoreCase("CLEARCHAT")) {
+			    Minecraft.getMinecraft().ingameGUI.getChatGUI().deleteChatLine(0);
+			    if (global.debug) ChatHandler.warn("&7", "Cleared chat");
             }
             if (TMP_c.equalsIgnoreCase("RETURN")) {
                 ret = removeStringReplacements(TMP_e);

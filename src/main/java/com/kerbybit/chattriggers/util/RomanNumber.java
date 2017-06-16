@@ -3,7 +3,7 @@ package com.kerbybit.chattriggers.util;
 import java.util.TreeMap;
 
 public class RomanNumber {
-    private final static TreeMap<Integer, String> map = new TreeMap<Integer, String>();
+    private final static TreeMap<Integer, String> map = new TreeMap<>();
     static {
         map.put(1000, "M");
         map.put(900, "CM");

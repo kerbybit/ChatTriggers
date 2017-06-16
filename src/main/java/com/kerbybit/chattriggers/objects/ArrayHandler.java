@@ -20,7 +20,7 @@ public class ArrayHandler {
         return USR_array;
     }
 
-    public static int getArraysSize() {
+    private static int getArraysSize() {
         return USR_array.size();
     }
 
