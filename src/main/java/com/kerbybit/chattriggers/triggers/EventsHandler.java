@@ -78,7 +78,7 @@ public class EventsHandler {
 			}
 		}
 
-		for (int i=0; i<tmp_event.size()+1; i++) {
+		for (int i=0; i<tmp_event.size(); i++) {
         //SETUP
 			String TMP_e = tmp_event.get(i);
             global.lastEvent = TMP_e;
@@ -232,7 +232,7 @@ public class EventsHandler {
 			}
 			if (TMP_c.equalsIgnoreCase("URL")) {
 				try {Desktop.getDesktop().browse(URI.create(removeStringReplacements(TMP_e)));}
-				catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Unable to open URL! IOExeption"));}
+				catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Unable to open URL! IOException"));}
 			}
 			if (TMP_c.equalsIgnoreCase("ENABLEIMPORT")) {
 			    List<String> args = new ArrayList<>();
