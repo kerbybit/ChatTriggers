@@ -97,8 +97,10 @@ public class JsonHandler {
             }
         } catch (FileNotFoundException exception) {
             File check = new File(dest.substring(0, dest.lastIndexOf("/")));
-            if (!check.mkdir()) {
-                ChatHandler.warn("red", "Unable to save json to file!");
+            if (!check.mkdir())
+                ChatHandler.warn("red", "Unable to save list to file!");
+            else {
+                saveJsonToFile(json_name, dest);
             }
         } catch (IOException exception) {
             ChatHandler.warn("red", "Unable to save json to file! IOException");
