@@ -85,8 +85,11 @@ public class ListHandler {
             }
         } catch (FileNotFoundException exception) {
             File check = new File(dest.substring(0, dest.lastIndexOf("/")));
-            if (!check.mkdir()) {
+            if (!check.mkdir())
                 ChatHandler.warn("red", "Unable to save list to file!");
+            else {
+                if (compact) saveListToFile(list_name, "<compact>"+dest);
+                else saveListToFile(list_name, dest);
             }
         } catch (IOException exception) {
             ChatHandler.warn("red", "Unable to save list to file! IOException");
