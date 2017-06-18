@@ -58,35 +58,32 @@ public class DisplayHandler {
     }
 
     private static String addToDisplay(String display_name, String value) {
-        if (displays.containsKey(display_name)
-                && displays_xy.containsKey(display_name)
-                && shown_displays.containsKey(display_name)) {
+        if (!displays_xy.containsKey(display_name)) {
+            displays_xy.put(display_name, new Double[]{0.0,0.0,1.0});
+        }
+
+        if (displays.containsKey(display_name)) {
             ArrayList<String> display = new ArrayList<>(displays.get(display_name));
             display.add(value);
             displays.put(display_name, display);
             return "Added " + value + " to " + display_name;
         } else {
             displays.put(display_name, Collections.singletonList(value));
-            displays_xy.put(display_name, new Double[]{0.0,0.0,1.0});
             shown_displays.put(display_name, new ArrayList<>());
             return "Created and added " + value + " to " + display_name;
         }
     }
 
     private static String getDisplayX(String display_name) {
-        if (displays_xy.containsKey(display_name)) {
+        if (displays_xy.containsKey(display_name))
             return displays_xy.get(display_name)[0] + "";
-        } else {
-            return "Display " + display_name + " has no x to get";
-        }
+        return "Display " + display_name + " has no x to get";
     }
 
     private static String getDisplayY(String display_name) {
-        if (displays_xy.containsKey(display_name)) {
+        if (displays_xy.containsKey(display_name))
             return displays_xy.get(display_name)[1] + "";
-        } else {
-            return "Display " + display_name + " has no y to get";
-        }
+        return "Display " + display_name + " has no y to get";
     }
 
     private static String setDisplayX(String display_name, String value) {
@@ -100,9 +97,8 @@ public class DisplayHandler {
             } catch (NumberFormatException e) {
                 return "ERR: setDisplayX -> " + value + " is not a valid number";
             }
-        } else {
-            return "Display " + display_name + " has no x to set";
         }
+        return "Display " + display_name + " has no x to set";
     }
 
     private static String setDisplayY(String display_name, String value) {
@@ -116,9 +112,8 @@ public class DisplayHandler {
             } catch (NumberFormatException e) {
                 return "ERR: setDisplayY -> " + value + " is not a valid number";
             }
-        } else {
-            return "Display " + display_name + " has no y to set";
         }
+        return "Display " + display_name + " has no y to set";
     }
 
     private static String setDisplaySettings(String display_name, String settings) {
@@ -145,9 +140,8 @@ public class DisplayHandler {
             return settings.substring(settings.indexOf("<bgc=") + 5,
                     settings.indexOf(">", settings.indexOf("<bgc=")))
                     .replace("0x", "");
-        } else {
-            return "40000000";
         }
+        return "40000000";
     }
 
     static String getDisplaySettings(String display_name) {
@@ -157,9 +151,8 @@ public class DisplayHandler {
                 return_string.append("<").append(value).append(">");
             }
             return return_string.toString();
-        } else {
-            return "";
         }
+        return "";
     }
 
     private static String deleteDisplay(String display_name) {

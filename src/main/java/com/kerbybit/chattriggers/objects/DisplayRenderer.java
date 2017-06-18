@@ -40,8 +40,12 @@ public class DisplayRenderer {
                 Double[] display_xy = DisplayHandler.getDisplayXY(display_name);
 
                 String bg = DisplayHandler.getDisplayBackground(settings);
-                String bgc = DisplayHandler.getDisplayBackgroundColor(settings);
-                settings = settings.replace("<bg="+bg+">", "").replace("<bgc="+bgc+">", "");
+                String bgc_str = DisplayHandler.getDisplayBackgroundColor(settings);
+                long bgc = 0x40000000;
+                try {
+                    bgc = Long.parseLong(bgc_str, 16);
+                } catch (NumberFormatException exception) { /* do nothing */ }
+                settings = settings.replace("<bg="+bg+">", "").replace("<bgc="+bgc_str+">", "");
 
                 List<String> display_texts = new ArrayList<>();
                 List<Float> display_xs = new ArrayList<>();
@@ -128,25 +132,18 @@ public class DisplayRenderer {
         }
     }
 
-    private static void drawDisplayBackgroundFull(int bg_x, int bg_y, int bg_h, String bgc, int max_width, Boolean up, int align) {
-        long color = 0x40000000;
-        try {
-            color = Long.parseLong(bgc, 16);
-        } catch (NumberFormatException exception) {
-            // do nothing //
-        }
-
+    private static void drawDisplayBackgroundFull(int bg_x, int bg_y, int bg_h, long bgc, int max_width, Boolean up, int align) {
         if (align == 2) max_width = -max_width;
         if (align == 1) {
-            if (up) drawRect(bg_x - max_width/2, bg_y + 10, bg_x + max_width/2, bg_h, (int) color);
-            else drawRect(bg_x - max_width/2, bg_y, bg_x + max_width/2, bg_h, (int) color);
+            if (up) drawRect(bg_x - max_width/2, bg_y + 10, bg_x + max_width/2, bg_h, (int) bgc);
+            else drawRect(bg_x - max_width/2, bg_y, bg_x + max_width/2, bg_h, (int) bgc);
         } else {
-            if (up) drawRect(bg_x, bg_y + 10, bg_x + max_width, bg_h, (int) color);
-            else drawRect(bg_x, bg_y, bg_x + max_width, bg_h, (int) color);
+            if (up) drawRect(bg_x, bg_y + 10, bg_x + max_width, bg_h, (int) bgc);
+            else drawRect(bg_x, bg_y, bg_x + max_width, bg_h, (int) bgc);
         }
     }
 
-    private static void drawDisplay(List<String> display_texts, List<Float> display_xs, List<Float> display_ys, String bg, String bgc) {
+    private static void drawDisplay(List<String> display_texts, List<Float> display_xs, List<Float> display_ys, String bg, long bgc) {
         FontRenderer ren = Minecraft.getMinecraft().fontRendererObj;
 
         for (int i=0; i<display_texts.size(); i++) {
@@ -192,11 +189,7 @@ public class DisplayRenderer {
             }
 
             if (!display_text.equals("") && bg.equalsIgnoreCase("line")) {
-                try {
-                    drawRect(display_x, display_y, display_x + ren.getStringWidth(IconHandler.removeIconString(ChatHandler.addFormatting(display_text))), display_y + 10, (int) Long.parseLong(bgc, 16));
-                } catch (NumberFormatException e) {
-                    drawRect(display_x, display_y, display_x + ren.getStringWidth(IconHandler.removeIconString(ChatHandler.addFormatting(display_text))), display_y + 10, 0x40000000);
-                }
+                drawRect(display_x, display_y, display_x + ren.getStringWidth(IconHandler.removeIconString(ChatHandler.addFormatting(display_text))), display_y + 10, (int) bgc);
             }
 
             display_text = IconHandler.drawIcons(display_text, floor(display_x), floor(display_y));

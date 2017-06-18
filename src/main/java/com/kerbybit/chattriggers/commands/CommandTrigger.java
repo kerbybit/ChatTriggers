@@ -376,6 +376,7 @@ public class CommandTrigger extends CommandBase {
         global.tick = 0;
         FileHandler.firstFileLoad();
         global.worldLoaded = true;
+        global.worldFirstLoad = true;
     }
 
     private static void commandTest() {

@@ -280,8 +280,9 @@ public class TriggerHandler {
 	public static void worldLoadTriggers() {
 		if (global.worldLoaded) {
             DisplayHandler.clearDisplays();
-			for (int i=0; i<global.onWorldFirstLoadTrigger.size(); i++) {
-				if (global.worldFirstLoad) {
+
+            if (global.worldFirstLoad) {
+			    for (int i=0; i<global.onWorldFirstLoadTrigger.size(); i++) {
 					//add all events to temp list
 					List<String> TMP_events = new ArrayList<>();
 					for (int j=2; j<global.onWorldFirstLoadTrigger.get(i).size(); j++) {TMP_events.add(global.onWorldFirstLoadTrigger.get(i).get(j));}
@@ -299,13 +300,14 @@ public class TriggerHandler {
 				//do events
 				EventsHandler.doEvents(TMP_events, null);
 			}
-			
-			for (int i=0; i<global.onServerChangeTrigger.size(); i++) {
-				String currentServer;
-				if (Minecraft.getMinecraft().isSingleplayer()) {currentServer = "SinglePlayer";}
-                else {currentServer = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
-				
-				if (!currentServer.equals(global.connectedToServer)) {
+
+            String currentServer;
+            if (Minecraft.getMinecraft().isSingleplayer()) {currentServer = "SinglePlayer";}
+            else {currentServer = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
+
+            if (!currentServer.equals(global.connectedToServer)) {
+			    for (int i=0; i<global.onServerChangeTrigger.size(); i++) {
+
 					//add all events to temp list
 					List<String> TMP_events = new ArrayList<>();
 					for (int j=2; j<global.onServerChangeTrigger.get(i).size(); j++) {TMP_events.add(global.onServerChangeTrigger.get(i).get(j));}

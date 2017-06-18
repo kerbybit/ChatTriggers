@@ -94,7 +94,11 @@ public class FileHandler {
 
                     if (global.debug) {ChatHandler.warn(ChatHandler.color("&7", "Saving file to "+fin.getName()));}
                     PrintWriter writer = new PrintWriter(fin,"UTF-8");
-                    for (String value : lines) {writer.println(value);}
+                    for (String value : lines) {
+                        if (!value.startsWith("!VERSION ")) {
+                            writer.println(value);
+                        }
+                    }
                     writer.println("!VERSION " + currentVersion);
                     writer.close();
                     if (global.debug) {ChatHandler.warn(ChatHandler.color("&7", "Loading imports into triggers"));}
