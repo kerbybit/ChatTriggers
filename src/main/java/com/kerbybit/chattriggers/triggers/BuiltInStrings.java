@@ -674,7 +674,7 @@ public class BuiltInStrings {
 					jsonString += "\"entity\":{";
 					jsonString += "\"name\":\"" + entity.getName() + "\",";
 					jsonString += "\"isHuman\":\"" + isHuman + "\",";
-					jsonString += "\"displayName\":\"" + entity.getCustomNameTag() + EnumChatFormatting.RESET + "\"";
+					jsonString += "\"displayName\":\"" + entity.getCustomNameTag() + EnumChatFormatting.RESET + "\",";
 					jsonString += "\"motionX\":" + entity.motionX + ",";
 					jsonString += "\"motionY\":" + entity.motionX + ",";
 					jsonString += "\"motionZ\":" + entity.motionX + "";
