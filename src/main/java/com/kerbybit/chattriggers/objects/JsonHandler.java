@@ -9,6 +9,7 @@ import com.kerbybit.chattriggers.triggers.StringFunctions;
 
 import java.io.*;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,15 +27,20 @@ public class JsonHandler {
         try {
             StringBuilder jsonString = new StringBuilder();
             String line;
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new URL(url).openStream(),"UTF-8"));
+            URLConnection conn = new URL(url).openConnection();
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream(),"UTF-8"));
             while ((line = bufferedReader.readLine()) != null) {
                 jsonString.append(line);
             }
             bufferedReader.close();
 
+            System.out.println(jsonString.toString());
             return new JsonParser().parse(jsonString.toString()).getAsJsonObject();
-        } catch (Exception e2) {
-            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            ChatHandler.warn("Unable to load Json value! IOException");
+            return new JsonParser().parse("{}").getAsJsonObject();
         }
     }
 

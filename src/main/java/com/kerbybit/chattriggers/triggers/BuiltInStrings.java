@@ -538,10 +538,7 @@ public class BuiltInStrings {
 					jsonString += "\"entity\":{";
 					jsonString += "\"name\":\"" + entity.getName() + "\",";
 					jsonString += "\"isHuman\":\"" + isHuman + "\",";
-					jsonString += "\"displayName\":\"" + entity.getCustomNameTag() + EnumChatFormatting.RESET + "\",";
-					jsonString += "\"xPos\":" + entity.getPosition().getX() + ",";
-					jsonString += "\"yPos\":" + entity.getPosition().getY() + ",";
-					jsonString += "\"zPos\":" + entity.getPosition().getZ() + "";
+					jsonString += "\"displayName\":\"" + entity.getCustomNameTag() + EnumChatFormatting.RESET + "\"";
 
 					if (entity instanceof EntityLivingBase) {
 
@@ -677,13 +674,7 @@ public class BuiltInStrings {
 					jsonString += "\"entity\":{";
 					jsonString += "\"name\":\"" + entity.getName() + "\",";
 					jsonString += "\"isHuman\":\"" + isHuman + "\",";
-					jsonString += "\"displayName\":\"" + entity.getCustomNameTag() + EnumChatFormatting.RESET + "\",";
-					jsonString += "\"xPos\":" + entity.getPosition().getX() + ",";
-					jsonString += "\"yPos\":" + entity.getPosition().getY() + ",";
-					jsonString += "\"zPos\":" + entity.getPosition().getZ() + ",";
-					jsonString += "\"xPosExact\":" + entity.posX + ",";
-					jsonString += "\"yPosExact\":" + entity.posY + ",";
-					jsonString += "\"zPosExact\":" + entity.posZ + ",";
+					jsonString += "\"displayName\":\"" + entity.getCustomNameTag() + EnumChatFormatting.RESET + "\"";
 					jsonString += "\"motionX\":" + entity.motionX + ",";
 					jsonString += "\"motionY\":" + entity.motionX + ",";
 					jsonString += "\"motionZ\":" + entity.motionX + "";
