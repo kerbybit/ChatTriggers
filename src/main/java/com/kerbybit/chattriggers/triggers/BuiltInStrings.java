@@ -200,10 +200,16 @@ public class BuiltInStrings {
         }
         if (TMP_e.contains("{scoreboardlines}")) {
             StringBuilder returnString = new StringBuilder("[");
-            ScoreboardReader.resetCache();
+
+            if (global.ticksSinceRefresh > 20 * 20) {
+                ScoreboardReader.resetCache();
+                global.ticksSinceRefresh = 0;
+            }
 
             ArrayList<String> scoreboardNames = ScoreboardReader.getScoreboardNames();
             Collections.reverse(scoreboardNames);
+
+            System.out.println(scoreboardNames);
 
             for (String scoreboardLine : scoreboardNames) {
                 returnString.append(scoreboardLine.replace(",","")).append(",");

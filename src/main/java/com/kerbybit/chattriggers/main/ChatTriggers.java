@@ -207,6 +207,7 @@ public class ChatTriggers {
 
             EventsHandler.eventTick();
             global.ticksElapsed++;
+            global.ticksSinceRefresh++;
 
 			ChatHandler.onClientTick();
 		} else {

@@ -250,6 +250,8 @@ public class JsonHandler {
                 get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
                 String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
+               get_value = get_value.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",");
+
                 TMP_e = createDefaultString("load", get_name, get_prevalue, getJson(get_name, get_value), TMP_e, isAsync);
             } else break;
         }

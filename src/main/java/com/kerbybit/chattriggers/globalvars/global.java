@@ -51,6 +51,7 @@ public class global {
 
 	public static int tick = 0;
 	public static int ticksElapsed = 0;
+	public static int ticksSinceRefresh = 0;
 	public static List<String> chatQueue = new ArrayList<>();
 	public static int chatDelay = 0;
 	public static List<String> commandQueue = new ArrayList<>();

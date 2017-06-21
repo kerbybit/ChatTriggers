@@ -374,6 +374,23 @@ public class StringFunctions {
             case "MATCHESREGEX":
             case "HASREGEX":
                 return trimBool(stringValue.matches(args));
+            case "CALCINSIDE":
+                String[] argList = args.split(",");
+                int x = Integer.parseInt(argList[0]);
+                int y = Integer.parseInt(argList[1]);
+                int z = Integer.parseInt(argList[2]);
+                int x1 = Integer.parseInt(argList[3]);
+                int y1 = Integer.parseInt(argList[4]);
+                int z1 = Integer.parseInt(argList[5]);
+                int x2 = Integer.parseInt(argList[6]);
+                int y2 = Integer.parseInt(argList[7]);
+                int z2 = Integer.parseInt(argList[8]);
+
+                if (((x <= x1 && x >= x2) || (x >= x1 && x <= x2)) && ((y <= y1 && y >= y2) || (y >= y1 && y <= y2)) && ((z <= z1 && z >= z2) || (z >= z1 && z <= z2))) {
+                    return "true";
+                } else {
+                    return "false";
+                }
         }
 
         Double stringValueNumber;
@@ -464,6 +481,8 @@ public class StringFunctions {
 				case "ATAN2":
 				case "ATANTWO":
 					return trimNumber(Math.toDegrees(Math.atan2(stringValueNumber, argsValueNumber)));
+                case "ROUND":
+                    return trimNumber(argsValueNumber * (Math.round(stringValueNumber / argsValueNumber)));
             }
         }
 
