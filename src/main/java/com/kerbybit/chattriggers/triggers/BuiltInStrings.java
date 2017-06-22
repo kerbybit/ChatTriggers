@@ -183,6 +183,15 @@ public class BuiltInStrings {
 
             TMP_e = createDefaultString("serverversion", "serverVersion", returnString, TMP_e, isAsync);
         }
+        if (TMP_e.contains("{isFullscreen}")) {
+            TMP_e = createDefaultString("isfullscreen", "isFullscreen", mc.isFullScreen() + "",TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{windowheight}")) {
+            TMP_e = createDefaultString("windowheight", "windowHeight", mc.displayHeight + "",TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{windowwidth}")) {
+            TMP_e = createDefaultString("windowwidth", "windowWidth", mc.displayWidth + "",TMP_e, isAsync);
+        }
         if (TMP_e.contains("{playerlist}") || TMP_e.contains("{playerList}")) {
             StringBuilder returnString = new StringBuilder("[");
             for (EntityPlayer player : mc.theWorld.playerEntities) {
