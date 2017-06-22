@@ -336,11 +336,13 @@ public class ListHandler {
         }
     }
 
-    private static void reverseList(String list_name) {
+    private static List<String> reverseList(String list_name) {
         if (lists.containsKey(list_name)) {
-            List<String> list = lists.get(list_name);
+            List<String> list = new ArrayList<>(lists.get(list_name));
             Collections.reverse(list);
+            return list;
         }
+        return null;
     }
 
     private static String clearList(String list_name) {
@@ -424,16 +426,17 @@ public class ListHandler {
             } else break;
         }
         while(TMP_e.contains("{list[") && TMP_e.contains("]}.reverse()")) {
-            int second = TMP_e.indexOf("]}.sort()", TMP_e.indexOf("{list["));
+            int second = TMP_e.indexOf("]}.reverse()", TMP_e.indexOf("{list["));
             if (second > -1) {
                 String get_name = TMP_e.substring(TMP_e.indexOf("{list[") + 6, second);
                 while (get_name.contains("{list[")) {
                     get_name = get_name.substring(get_name.indexOf("{list[") + 6);
                 }
 
-                reverseList(get_name);
+                String list_name = "ListToList->" + (ListHandler.getListsSize()+1);
+                lists.put(list_name, reverseList(get_name));
 
-                TMP_e = TMP_e.replace("{list[" + get_name + "]}.sort()", "{list[" + get_name + "]}");
+                TMP_e = TMP_e.replace("{list[" + get_name + "]}.reverse()", "{list[" + list_name + "]}");
             } else break;
         }
 
@@ -632,7 +635,7 @@ public class ListHandler {
         HashMap<String, List<String>> lists_copy = new HashMap<>(lists);
 
         for (String key : lists_copy.keySet()) {
-            if (key.startsWith("JsonToList->") || key.startsWith("StringToList->")) {
+            if (key.startsWith("JsonToList->") || key.startsWith("StringToList->") || key.startsWith("ListToList->") || key.startsWith("DefaultList->")) {
                lists.remove(key);
             }
         }

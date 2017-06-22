@@ -183,7 +183,7 @@ public class BuiltInStrings {
 
             TMP_e = createDefaultString("serverversion", "serverVersion", returnString, TMP_e, isAsync);
         }
-        if (TMP_e.contains("{playerlist}")) {
+        if (TMP_e.contains("{playerlist}") || TMP_e.contains("{playerList}")) {
             StringBuilder returnString = new StringBuilder("[");
             for (EntityPlayer player : mc.theWorld.playerEntities) {
                 String playerName = player.getName();
@@ -192,13 +192,14 @@ public class BuiltInStrings {
                 }
             }
             if (returnString.toString().equals("[")) {
-                TMP_e = createDefaultString("playerlist", "[]", TMP_e, isAsync);
+                TMP_e = createDefaultString("playerlist", "playerList", "[]", TMP_e, isAsync);
             } else {
                 ListHandler.getList("DefaultList->PLAYERLIST-"+(ListHandler.getListsSize()+1), returnString.substring(0, returnString.length()-1)+"]");
-                TMP_e = TMP_e.replace("{playerlist}", "{list[DefaultList->PLAYERLIST-"+ListHandler.getListsSize()+"]}");
+                TMP_e = TMP_e.replace("{playerlist}", "{list[DefaultList->PLAYERLIST-"+ListHandler.getListsSize()+"]}")
+                    .replace("{playerList}", "{list[DefaultList->PLAYERLIST-"+ListHandler.getListsSize()+"]}");
             }
         }
-        if (TMP_e.contains("{scoreboardlines}")) {
+        if (TMP_e.contains("{scoreboardlines}") || TMP_e.contains("{scoreboardLines}")) {
             StringBuilder returnString = new StringBuilder("[");
             ScoreboardReader.resetCache();
 
@@ -209,10 +210,11 @@ public class BuiltInStrings {
                 returnString.append(scoreboardLine.replace(",","")).append(",");
             }
             if (returnString.toString().equals("[")) {
-                TMP_e = createDefaultString("scoreboardlines", "[]", TMP_e, isAsync);
+                TMP_e = createDefaultString("scoreboardlines", "scoreboardLines", "[]", TMP_e, isAsync);
             } else {
                 ListHandler.getList("DefaultList->SCOREBOARDLINES-"+(ListHandler.getListsSize()+1), returnString.substring(0, returnString.length()-1)+"]");
-                TMP_e = TMP_e.replace("{scoreboardlines}", "{list[DefaultList->SCOREBOARDLINES-"+ListHandler.getListsSize()+"]}");
+                TMP_e = TMP_e.replace("{scoreboardlines}", "{list[DefaultList->SCOREBOARDLINES-"+ListHandler.getListsSize()+"]}")
+                    .replace("{scoreboardLines}", "{list[DefaultList->SCOREBOARDLINES-"+ListHandler.getListsSize()+"]}");
             }
         }
         if (TMP_e.contains("{debug}")) {
