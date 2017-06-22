@@ -369,7 +369,7 @@ public class FileHandler {
 			}
 			if (!isTrigger) {
                 if (!lines.get(i).trim().startsWith("//") && !lines.get(i).trim().equals("")) {
-                    if (lines.get(i).trim().startsWith("{")) {
+                    if (lines.get(i).trim().startsWith("{") || lines.get(i).trim().startsWith("$")) {
                         if (j != -1) {
                             String tmp_event = "do "+lines.get(i).trim();
                             tmp_triggers.get(j).add(tmp_event);
