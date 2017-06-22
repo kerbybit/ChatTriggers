@@ -419,7 +419,7 @@ public class BuiltInStrings {
         }
         if (TMP_e.contains("{hour12}")) {
             DateFormat dateFormat = new SimpleDateFormat("h");
-            TMP_e = createDefaultString("hour", dateFormat.format(new Date()), TMP_e, isAsync);
+            TMP_e = createDefaultString("hour12", dateFormat.format(new Date()), TMP_e, isAsync);
         }
         if (TMP_e.contains("{minute}")) {
             DateFormat dateFormat = new SimpleDateFormat("m");

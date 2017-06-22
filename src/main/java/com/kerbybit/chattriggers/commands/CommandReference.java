@@ -14,6 +14,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class CommandReference {
+    public static Boolean isCommandAllowed(String command) {
+        command = command.toLowerCase();
+        return command.equals("who")
+                || command.equals("whereami")
+                || command.equals("wtfmap");
+    }
+
     static void clearAll() {
         global.waitEvents.clear();
         global.waitTime.clear();

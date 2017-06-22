@@ -366,10 +366,10 @@ public class ListHandler {
                 }
                 String temp_search = TMP_e.substring(TMP_e.indexOf("]}.load(", TMP_e.indexOf("{list[")) + 8);
                 while (get_prevalue.contains("(")) {
-                    temp_search = temp_search.replaceFirst("\\(", "tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)", "tempCloseBreacketF6cyUQp9tempCloseBracket");
+                    temp_search = temp_search.replaceFirst("\\(", "tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)", "tempCloseBracketF6cyUQp9tempCloseBracket");
                     get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
                 }
-                get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
+                get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBracketF6cyUQp9tempCloseBracket", ")");
                 String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
                 getList(get_name, get_value);
@@ -388,10 +388,10 @@ public class ListHandler {
                 }
                 String temp_search = TMP_e.substring(TMP_e.indexOf("]}.export(", TMP_e.indexOf("{list[")) + 10);
                 while (get_prevalue.contains("(")) {
-                    temp_search = temp_search.replaceFirst("\\(", "tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)", "tempCloseBreacketF6cyUQp9tempCloseBracket");
+                    temp_search = temp_search.replaceFirst("\\(", "tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)", "tempCloseBracketF6cyUQp9tempCloseBracket");
                     get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
                 }
-                get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
+                get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBracketF6cyUQp9tempCloseBracket", ")");
                 String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
                 saveListToFile(get_name, get_value);

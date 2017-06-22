@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
+import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.commands.CommandTrigger;
 import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.objects.ArrayHandler;
@@ -226,6 +227,8 @@ public class EventsHandler {
                         || TMP_e.toLowerCase().startsWith("trigger ")) {
 			        String[] args = TMP_e.substring(TMP_e.indexOf(" ")).trim().split(" ");
 			        CommandTrigger.doCommand(args, true);
+                } else if (CommandReference.isCommandAllowed(TMP_e)) {
+			        Minecraft.getMinecraft().thePlayer.sendChatMessage("/" + TMP_e);
                 } else {
                     global.commandQueue.add(TMP_e);
                 }
