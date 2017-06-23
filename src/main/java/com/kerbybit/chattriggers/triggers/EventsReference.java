@@ -88,16 +88,16 @@ class EventsReference {
         //  && || ^
 
         //add spacing for split
-        logic = logic.replace("<", "compareF6cyUQp9compare<compareF6cyUQp9compare")
-                .replace(">", "compareF6cyUQp9compare>compareF6cyUQp9compare")
-                .replace("<=", "compareF6cyUQp9compare<=compareF6cyUQp9compare")
-                .replace(">=", "compareF6cyUQp9compare>=compareF6cyUQp9compare")
-                .replace("==", "compareF6cyUQp9compare==compareF6cyUQp9compare")
-                .replace("!=", "compareF6cyUQp9compare!=compareF6cyUQp9compare")
+        logic = logic.replace("<=", "compareF6cyUQp9compareLTEcompareF6cyUQp9compare")
+                .replace(">=", "compareF6cyUQp9compareGTEcompareF6cyUQp9compare")
+                .replace("<", "compareF6cyUQp9compareLTcompareF6cyUQp9compare")
+                .replace(">", "compareF6cyUQp9compareGTcompareF6cyUQp9compare")
+                .replace("==", "compareF6cyUQp9compareEEcompareF6cyUQp9compare")
+                .replace("!=", "compareF6cyUQp9compareNEcompareF6cyUQp9compare")
 
-                .replace("&&", "logicF6cyUQp9logic&&logicF6cyUQp9logic")
-                .replace("||", "logicF6cyUQp9logic||logicF6cyUQp9logic")
-                .replace("^", "logicF6cyUQp9logic^logicF6cyUQp9logic")
+                .replace("&&", "logicF6cyUQp9logicANDlogicF6cyUQp9logic")
+                .replace("||", "logicF6cyUQp9logicORlogicF6cyUQp9logic")
+                .replace("^", "logicF6cyUQp9logicXORlogicF6cyUQp9logic")
                 .replace("!true", "false")
                 .replace("!false", "true");
 
@@ -105,33 +105,7 @@ class EventsReference {
         String[] split = logic.split("compareF6cyUQp9compare");
         for (int i=1; i<split.length-1; i++) {
             switch (split[i]) {
-                case "<":
-                    getBeforeAndAfter(split[i - 1], split[i + 1]);
-
-                    if (before < after) {
-                        split[i - 1] = "";
-                        split[i] = "";
-                        split[i + 1] = beforeBefore + "true" + afterAfter;
-                    } else {
-                        split[i - 1] = "";
-                        split[i] = "";
-                        split[i + 1] = beforeBefore + "false" + afterAfter;
-                    }
-                    break;
-                case ">":
-                    getBeforeAndAfter(split[i - 1], split[i + 1]);
-
-                    if (before > after) {
-                        split[i - 1] = "";
-                        split[i] = "";
-                        split[i + 1] = beforeBefore + "true" + afterAfter;
-                    } else {
-                        split[i - 1] = "";
-                        split[i] = "";
-                        split[i + 1] = beforeBefore + "false" + afterAfter;
-                    }
-                    break;
-                case "<=":
+                case "LTE":
                     getBeforeAndAfter(split[i - 1], split[i + 1]);
 
                     if (before <= after) {
@@ -144,7 +118,7 @@ class EventsReference {
                         split[i + 1] = beforeBefore + "false" + afterAfter;
                     }
                     break;
-                case ">=":
+                case "GTE":
                     getBeforeAndAfter(split[i - 1], split[i + 1]);
 
                     if (before >= after) {
@@ -157,7 +131,33 @@ class EventsReference {
                         split[i + 1] = beforeBefore + "false" + afterAfter;
                     }
                     break;
-                case "==":
+                case "LT":
+                    getBeforeAndAfter(split[i - 1], split[i + 1]);
+
+                    if (before < after) {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = beforeBefore + "true" + afterAfter;
+                    } else {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = beforeBefore + "false" + afterAfter;
+                    }
+                    break;
+                case "GT":
+                    getBeforeAndAfter(split[i - 1], split[i + 1]);
+
+                    if (before > after) {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = beforeBefore + "true" + afterAfter;
+                    } else {
+                        split[i - 1] = "";
+                        split[i] = "";
+                        split[i + 1] = beforeBefore + "false" + afterAfter;
+                    }
+                    break;
+                case "EE":
                     getBeforeAndAfterString(split[i - 1], split[i + 1]);
 
                     if (beforeString.equals(afterString)) {
@@ -170,7 +170,7 @@ class EventsReference {
                         split[i + 1] = beforeBefore + "false" + afterAfter;
                     }
                     break;
-                case "!=":
+                case "NE":
                     getBeforeAndAfterString(split[i - 1], split[i + 1]);
 
                     if (beforeString.equals(afterString)) {
@@ -193,7 +193,7 @@ class EventsReference {
         split = logic.split("logicF6cyUQp9logic");
         for (int i=1; i<split.length-1; i++) {
             switch (split[i]) {
-                case "&&":
+                case "AND":
                     if (split[i - 1].trim().equalsIgnoreCase("true")
                             && split[i + 1].trim().equalsIgnoreCase("true")) {
                         split[i - 1] = "";
@@ -205,7 +205,7 @@ class EventsReference {
                         split[i + 1] = "false";
                     }
                     break;
-                case "||":
+                case "OR":
                     if (split[i - 1].trim().equalsIgnoreCase("true")
                             || split[i + 1].trim().equalsIgnoreCase("true")) {
                         split[i - 1] = "";
@@ -217,7 +217,7 @@ class EventsReference {
                         split[i + 1] = "false";
                     }
                     break;
-                case "^":
+                case "XOR":
                     if (split[i - 1].trim().equalsIgnoreCase("true")
                             ^ split[i + 1].trim().equalsIgnoreCase("true")) {
                         split[i - 1] = "";
