@@ -24,10 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.*;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.client.GuiIngameForge;
@@ -569,97 +566,128 @@ public class BuiltInStrings {
 					IBlockState blockState = mc.theWorld.getBlockState(mop.getBlockPos());
 					Block block = blockState.getBlock();
 
+
 					if (block == null) {
 						jsonString = "{\"type\":\"null\"}";
 					} else {
-						int itemData = block.getMetaFromState(blockState);
-						String registryName = block.getRegistryName().replace("minecraft:", "");
-						if (registryName.startsWith("double_") && (registryName.endsWith("_slab") || registryName.endsWith("_slab2"))) {
-							registryName = registryName.substring(7);
-						}
-						if (registryName.startsWith("lit_") && !registryName.endsWith("pumpkin")) {
-							registryName = registryName.substring(4);
-						}
-						if (registryName.equals("anvil")) {
-							if (itemData > 5) itemData = 2;
-							else if (itemData < 4) itemData = 0;
-							else itemData = 1;
-						} else if (registryName.endsWith("_slab")
-								|| registryName.endsWith("_slab2")
-								|| registryName.equals("sapling")
-								|| registryName.equals("leaves")) {
-							if (itemData > 7) {
-								itemData -= 8;
-							}
-						} else if (registryName.equals("log")) {
-							itemData %= 4;
-						} else if (registryName.equals("ender_chest")
-								|| registryName.equals("chest")
-								|| registryName.equals("trapped_chest")
-								|| registryName.equals("vine")
-								|| registryName.equals("tripwire_hook")
-								|| registryName.equals("dropper")
-								|| registryName.equals("dispenser")
-								|| registryName.equals("bed")
-								|| registryName.equals("ladder")
-								|| registryName.equals("end_portal_frame")
-								|| registryName.equals("daylight_detector")
-								|| registryName.equals("hay_block")
-								|| registryName.equals("brewing_stand")
-								|| registryName.equals("furnace")
-								|| registryName.equals("lever")
-								|| registryName.equals("pumpkin")
-								|| registryName.equals("lit_pumpkin")
-								|| registryName.equals("hopper")
-								|| registryName.endsWith("_button")
-								|| registryName.endsWith("_pressure_plate")
-								|| registryName.endsWith("_door")
-								|| registryName.endsWith("_fence_gate")
-								|| registryName.endsWith("_stairs")
-								|| registryName.endsWith("torch")
-								|| registryName.endsWith("piston")
-								|| registryName.endsWith("trapdoor")
-								|| registryName.endsWith("rail")) {
-							itemData = 0;
-						} else if (registryName.endsWith("_repeater")) {
-							registryName = "repeater";
-							itemData = 0;
-						} else if (registryName.endsWith("_comparator")) {
-							registryName = "comparator";
-							itemData = 0;
-						} else if (registryName.equals("redstone_wire")) {
-							registryName = "redstone";
-							itemData = 0;
-						} else if (registryName.equals("piston_head")) {
-							registryName = "piston";
-							itemData = 0;
-						} else if (registryName.equals("tripwire")) {
-							registryName = "string";
-							itemData = 0;
-						} else if (registryName.equals("standing_banner")) {
-							registryName = "banner";
-							itemData = 15;
-						} else if (registryName.equals("double_plant")) {
-							registryName = "tallgrass";
-							itemData = 1;
-						} else if (registryName.equals("quartz_block")) {
-							if (itemData > 2) {
-								itemData = 2;
-							}
-						}
+                        BlockPos pos = mop.getBlockPos();
+                        String blockOnFace = "";
 
-						jsonString = "{\"type\":\"block\",";
-						jsonString += "\"block\":{";
-						jsonString += "\"xPos\":" + mop.getBlockPos().getX() + ",";
-						jsonString += "\"yPos\":" + mop.getBlockPos().getY() + ",";
-						jsonString += "\"zPos\":" + mop.getBlockPos().getZ() + ",";
-						jsonString += "\"data\":" + itemData + ",";
-						jsonString += "\"metadata\":" + block.getMetaFromState(blockState) + ",";
-						jsonString += "\"name\":\"" + block.getLocalizedName() + "\",";
-						jsonString += "\"unlocalizedName\":\"" + block.getUnlocalizedName().replace("tile.","") + "\",";
-						jsonString += "\"registryName\":\"" + registryName + "\",";
-						jsonString += "\"id\":" + Block.getIdFromBlock(block) + "";
-						jsonString += "}}";
+                        switch(mop.sideHit.toString()) {
+                            case("up"):
+                                blockOnFace = mc.theWorld.getBlockState(pos.up()).getBlock().getUnlocalizedName();
+                                break;
+                            case("down"):
+                                blockOnFace = mc.theWorld.getBlockState(pos.down()).getBlock().getUnlocalizedName();
+                                break;
+                            case("north"):
+                                blockOnFace = mc.theWorld.getBlockState(pos.north()).getBlock().getUnlocalizedName();
+                                break;
+                            case("south"):
+                                blockOnFace = mc.theWorld.getBlockState(pos.south()).getBlock().getUnlocalizedName();
+                                break;
+                            case("east"):
+                                blockOnFace = mc.theWorld.getBlockState(pos.east()).getBlock().getUnlocalizedName();
+                                break;
+                            case("west"):
+                                blockOnFace = mc.theWorld.getBlockState(pos.west()).getBlock().getUnlocalizedName();
+                                break;
+                            default:
+                                break;
+                        }
+
+                        if (blockOnFace.equals("tile.water") || blockOnFace.equals("tile.lava")) {
+                            jsonString = "{\"type\":\"" + blockOnFace.replace("tile.", "") + "\"}";
+                        } else {
+                            int itemData = block.getMetaFromState(blockState);
+                            String registryName = block.getRegistryName().replace("minecraft:", "");
+                            if (registryName.startsWith("double_") && (registryName.endsWith("_slab") || registryName.endsWith("_slab2"))) {
+                                registryName = registryName.substring(7);
+                            }
+                            if (registryName.startsWith("lit_") && !registryName.endsWith("pumpkin")) {
+                                registryName = registryName.substring(4);
+                            }
+                            if (registryName.equals("anvil")) {
+                                if (itemData > 5) itemData = 2;
+                                else if (itemData < 4) itemData = 0;
+                                else itemData = 1;
+                            } else if (registryName.endsWith("_slab")
+                                    || registryName.endsWith("_slab2")
+                                    || registryName.equals("sapling")
+                                    || registryName.equals("leaves")) {
+                                if (itemData > 7) {
+                                    itemData -= 8;
+                                }
+                            } else if (registryName.equals("log")) {
+                                itemData %= 4;
+                            } else if (registryName.equals("ender_chest")
+                                    || registryName.equals("chest")
+                                    || registryName.equals("trapped_chest")
+                                    || registryName.equals("vine")
+                                    || registryName.equals("tripwire_hook")
+                                    || registryName.equals("dropper")
+                                    || registryName.equals("dispenser")
+                                    || registryName.equals("bed")
+                                    || registryName.equals("ladder")
+                                    || registryName.equals("end_portal_frame")
+                                    || registryName.equals("daylight_detector")
+                                    || registryName.equals("hay_block")
+                                    || registryName.equals("brewing_stand")
+                                    || registryName.equals("furnace")
+                                    || registryName.equals("lever")
+                                    || registryName.equals("pumpkin")
+                                    || registryName.equals("lit_pumpkin")
+                                    || registryName.equals("hopper")
+                                    || registryName.endsWith("_button")
+                                    || registryName.endsWith("_pressure_plate")
+                                    || registryName.endsWith("_door")
+                                    || registryName.endsWith("_fence_gate")
+                                    || registryName.endsWith("_stairs")
+                                    || registryName.endsWith("torch")
+                                    || registryName.endsWith("piston")
+                                    || registryName.endsWith("trapdoor")
+                                    || registryName.endsWith("rail")) {
+                                itemData = 0;
+                            } else if (registryName.endsWith("_repeater")) {
+                                registryName = "repeater";
+                                itemData = 0;
+                            } else if (registryName.endsWith("_comparator")) {
+                                registryName = "comparator";
+                                itemData = 0;
+                            } else if (registryName.equals("redstone_wire")) {
+                                registryName = "redstone";
+                                itemData = 0;
+                            } else if (registryName.equals("piston_head")) {
+                                registryName = "piston";
+                                itemData = 0;
+                            } else if (registryName.equals("tripwire")) {
+                                registryName = "string";
+                                itemData = 0;
+                            } else if (registryName.equals("standing_banner")) {
+                                registryName = "banner";
+                                itemData = 15;
+                            } else if (registryName.equals("double_plant")) {
+                                registryName = "tallgrass";
+                                itemData = 1;
+                            } else if (registryName.equals("quartz_block")) {
+                                if (itemData > 2) {
+                                    itemData = 2;
+                                }
+                            }
+
+                            jsonString = "{\"type\":\"block\",";
+                            jsonString += "\"block\":{";
+                            jsonString += "\"xPos\":" + pos.getX() + ",";
+                            jsonString += "\"yPos\":" + pos.getY() + ",";
+                            jsonString += "\"zPos\":" + pos.getZ() + ",";
+                            jsonString += "\"data\":" + itemData + ",";
+                            jsonString += "\"metadata\":" + block.getMetaFromState(blockState) + ",";
+                            jsonString += "\"name\":\"" + block.getLocalizedName() + "\",";
+                            jsonString += "\"unlocalizedName\":\"" + block.getUnlocalizedName().replace("tile.", "") + "\",";
+                            jsonString += "\"registryName\":\"" + registryName + "\",";
+                            jsonString += "\"id\":" + Block.getIdFromBlock(block) + "";
+                            jsonString += "}}";
+                        }
 					}
 				}
 			} catch (Exception e) {
@@ -733,97 +761,127 @@ public class BuiltInStrings {
 					if (block == null) {
 						jsonString = "{\"type\":\"null\"}";
 					} else {
-                        int itemData = block.getMetaFromState(blockState);
-                        String registryName = block.getRegistryName().replace("minecraft:", "");
-                        if (registryName.startsWith("double_") && (registryName.endsWith("_slab") || registryName.endsWith("_slab2"))) {
-                            registryName = registryName.substring(7);
-                        }
-                        if (registryName.startsWith("lit_") && !registryName.endsWith("pumpkin")) {
-                            registryName = registryName.substring(4);
-                        }
-                        if (registryName.equals("anvil")) {
-                            if (itemData > 5) itemData = 2;
-                            else if (itemData < 4) itemData = 0;
-                            else itemData = 1;
-                        } else if (registryName.endsWith("_slab")
-                                || registryName.endsWith("_slab2")
-                                || registryName.equals("sapling")
-                                || registryName.equals("leaves")) {
-                            if (itemData > 7) {
-                                itemData -= 8;
-                            }
-                        } else if (registryName.equals("log")) {
-                            itemData %= 4;
-                        } else if (registryName.equals("ender_chest")
-                                || registryName.equals("chest")
-                                || registryName.equals("trapped_chest")
-                                || registryName.equals("vine")
-                                || registryName.equals("tripwire_hook")
-                                || registryName.equals("dropper")
-                                || registryName.equals("dispenser")
-                                || registryName.equals("bed")
-                                || registryName.equals("ladder")
-                                || registryName.equals("end_portal_frame")
-                                || registryName.equals("daylight_detector")
-                                || registryName.equals("hay_block")
-                                || registryName.equals("brewing_stand")
-                                || registryName.equals("furnace")
-                                || registryName.equals("lever")
-                                || registryName.equals("pumpkin")
-                                || registryName.equals("lit_pumpkin")
-                                || registryName.equals("hopper")
-                                || registryName.endsWith("_button")
-                                || registryName.endsWith("_pressure_plate")
-                                || registryName.endsWith("_door")
-                                || registryName.endsWith("_fence_gate")
-                                || registryName.endsWith("_stairs")
-                                || registryName.endsWith("torch")
-                                || registryName.endsWith("piston")
-                                || registryName.endsWith("trapdoor")
-                                || registryName.endsWith("rail")) {
-                            itemData = 0;
-                        } else if (registryName.endsWith("_repeater")) {
-                            registryName = "repeater";
-                            itemData = 0;
-                        } else if (registryName.endsWith("_comparator")) {
-                            registryName = "comparator";
-                            itemData = 0;
-                        } else if (registryName.equals("redstone_wire")) {
-                            registryName = "redstone";
-                            itemData = 0;
-                        } else if (registryName.equals("piston_head")) {
-                            registryName = "piston";
-                            itemData = 0;
-                        } else if (registryName.equals("tripwire")) {
-                            registryName = "string";
-                            itemData = 0;
-                        } else if (registryName.equals("standing_banner")) {
-                            registryName = "banner";
-                            itemData = 15;
-                        } else if (registryName.equals("double_plant")) {
-                            registryName = "tallgrass";
-                            itemData = 1;
-                        } else if (registryName.equals("quartz_block")) {
-                            if (itemData > 2) {
-                                itemData = 2;
-                            }
+                        BlockPos pos = mop.getBlockPos();
+                        String blockOnFace = "";
+
+                        switch (mop.sideHit.toString()) {
+                            case ("up"):
+                                blockOnFace = mc.theWorld.getBlockState(pos.up()).getBlock().getUnlocalizedName();
+                                break;
+                            case ("down"):
+                                blockOnFace = mc.theWorld.getBlockState(pos.down()).getBlock().getUnlocalizedName();
+                                break;
+                            case ("north"):
+                                blockOnFace = mc.theWorld.getBlockState(pos.north()).getBlock().getUnlocalizedName();
+                                break;
+                            case ("south"):
+                                blockOnFace = mc.theWorld.getBlockState(pos.south()).getBlock().getUnlocalizedName();
+                                break;
+                            case ("east"):
+                                blockOnFace = mc.theWorld.getBlockState(pos.east()).getBlock().getUnlocalizedName();
+                                break;
+                            case ("west"):
+                                blockOnFace = mc.theWorld.getBlockState(pos.west()).getBlock().getUnlocalizedName();
+                                break;
+                            default:
+                                break;
                         }
 
-						jsonString = "{\"type\":\"block\",";
-						jsonString += "\"block\":{";
-						jsonString += "\"xPos\":" + mop.getBlockPos().getX() + ",";
-						jsonString += "\"yPos\":" + mop.getBlockPos().getY() + ",";
-						jsonString += "\"zPos\":" + mop.getBlockPos().getZ() + ",";
-						jsonString += "\"data\":" + itemData + ",";
-						jsonString += "\"metadata\":" + block.getMetaFromState(blockState) + ",";
-						jsonString += "\"name\":\"" + block.getLocalizedName() + "\",";
-						jsonString += "\"unlocalizedName\":\"" + block.getUnlocalizedName().replace("tile.","") + "\",";
-						jsonString += "\"registryName\":\"" + registryName + "\",";
-						jsonString += "\"id\":" + Block.getIdFromBlock(block) + ",";
-						jsonString += "\"lightLevel\":" + mc.theWorld.getLight(mop.getBlockPos()) + ",";
-						jsonString += "\"isOnFire\":" + block.isFireSource(mc.theWorld, mop.getBlockPos(), EnumFacing.UP);
-						jsonString += "}}";
-					}
+                        if (blockOnFace.equals("tile.water") || blockOnFace.equals("tile.lava")) {
+                            jsonString = "{\"type\":\"" + blockOnFace.replace("tile.", "") + "\"}";
+                        } else {
+                            int itemData = block.getMetaFromState(blockState);
+                            String registryName = block.getRegistryName().replace("minecraft:", "");
+                            if (registryName.startsWith("double_") && (registryName.endsWith("_slab") || registryName.endsWith("_slab2"))) {
+                                registryName = registryName.substring(7);
+                            }
+                            if (registryName.startsWith("lit_") && !registryName.endsWith("pumpkin")) {
+                                registryName = registryName.substring(4);
+                            }
+                            if (registryName.equals("anvil")) {
+                                if (itemData > 5) itemData = 2;
+                                else if (itemData < 4) itemData = 0;
+                                else itemData = 1;
+                            } else if (registryName.endsWith("_slab")
+                                    || registryName.endsWith("_slab2")
+                                    || registryName.equals("sapling")
+                                    || registryName.equals("leaves")) {
+                                if (itemData > 7) {
+                                    itemData -= 8;
+                                }
+                            } else if (registryName.equals("log")) {
+                                itemData %= 4;
+                            } else if (registryName.equals("ender_chest")
+                                    || registryName.equals("chest")
+                                    || registryName.equals("trapped_chest")
+                                    || registryName.equals("vine")
+                                    || registryName.equals("tripwire_hook")
+                                    || registryName.equals("dropper")
+                                    || registryName.equals("dispenser")
+                                    || registryName.equals("bed")
+                                    || registryName.equals("ladder")
+                                    || registryName.equals("end_portal_frame")
+                                    || registryName.equals("daylight_detector")
+                                    || registryName.equals("hay_block")
+                                    || registryName.equals("brewing_stand")
+                                    || registryName.equals("furnace")
+                                    || registryName.equals("lever")
+                                    || registryName.equals("pumpkin")
+                                    || registryName.equals("lit_pumpkin")
+                                    || registryName.equals("hopper")
+                                    || registryName.endsWith("_button")
+                                    || registryName.endsWith("_pressure_plate")
+                                    || registryName.endsWith("_door")
+                                    || registryName.endsWith("_fence_gate")
+                                    || registryName.endsWith("_stairs")
+                                    || registryName.endsWith("torch")
+                                    || registryName.endsWith("piston")
+                                    || registryName.endsWith("trapdoor")
+                                    || registryName.endsWith("rail")) {
+                                itemData = 0;
+                            } else if (registryName.endsWith("_repeater")) {
+                                registryName = "repeater";
+                                itemData = 0;
+                            } else if (registryName.endsWith("_comparator")) {
+                                registryName = "comparator";
+                                itemData = 0;
+                            } else if (registryName.equals("redstone_wire")) {
+                                registryName = "redstone";
+                                itemData = 0;
+                            } else if (registryName.equals("piston_head")) {
+                                registryName = "piston";
+                                itemData = 0;
+                            } else if (registryName.equals("tripwire")) {
+                                registryName = "string";
+                                itemData = 0;
+                            } else if (registryName.equals("standing_banner")) {
+                                registryName = "banner";
+                                itemData = 15;
+                            } else if (registryName.equals("double_plant")) {
+                                registryName = "tallgrass";
+                                itemData = 1;
+                            } else if (registryName.equals("quartz_block")) {
+                                if (itemData > 2) {
+                                    itemData = 2;
+                                }
+                            }
+
+                            jsonString = "{\"type\":\"block\",";
+                            jsonString += "\"block\":{";
+                            jsonString += "\"xPos\":" + pos.getX() + ",";
+                            jsonString += "\"yPos\":" + pos.getY() + ",";
+                            jsonString += "\"zPos\":" + pos.getZ() + ",";
+                            jsonString += "\"data\":" + itemData + ",";
+                            jsonString += "\"metadata\":" + block.getMetaFromState(blockState) + ",";
+                            jsonString += "\"name\":\"" + block.getLocalizedName() + "\",";
+                            jsonString += "\"unlocalizedName\":\"" + block.getUnlocalizedName().replace("tile.", "") + "\",";
+                            jsonString += "\"registryName\":\"" + registryName + "\",";
+                            jsonString += "\"id\":" + Block.getIdFromBlock(block) + ",";
+                            jsonString += "\"lightLevel\":" + mc.theWorld.getLight(mop.getBlockPos()) + ",";
+                            jsonString += "\"isOnFire\":" + block.isFireSource(mc.theWorld, mop.getBlockPos(), EnumFacing.UP);
+                            jsonString += "}}";
+                        }
+                    }
 				}
 			} catch (Exception e) {
 				jsonString = "{}";
