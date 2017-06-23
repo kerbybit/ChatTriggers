@@ -487,6 +487,10 @@ public class StringFunctions {
 					return trimNumber(Math.toDegrees(Math.atan2(stringValueNumber, argsValueNumber)));
                 case "ROUND":
                     return trimNumber(argsValueNumber * (Math.round(stringValueNumber / argsValueNumber)));
+                case "FLOOR":
+                    return trimNumber(argsValueNumber * (Math.floor(stringValueNumber / argsValueNumber)));
+                case "CEIL":
+                    return trimNumber(argsValueNumber * (Math.ceil(stringValueNumber / argsValueNumber)));
             }
         }
 
