@@ -433,8 +433,11 @@ public class ListHandler {
                     get_name = get_name.substring(get_name.indexOf("{list[") + 6);
                 }
 
-                String list_name = "ListToList->" + (ListHandler.getListsSize()+1);
-                lists.put(list_name, reverseList(get_name));
+                String list_name = "ListToList->" + (getListsSize()+1);
+                List<String> list;
+                if ((list = reverseList(get_name)) != null) {
+                    lists.put(list_name, list);
+                }
 
                 TMP_e = TMP_e.replace("{list[" + get_name + "]}.reverse()", "{list[" + list_name + "]}");
             } else break;
