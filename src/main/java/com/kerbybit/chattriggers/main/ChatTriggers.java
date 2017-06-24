@@ -186,8 +186,7 @@ public class ChatTriggers {
 		        global.saveSoon = false;
             }
 
-            JsonHandler.trimJsons();
-            ListHandler.trimLists();
+
 
 			KillfeedHandler.tickKillfeed();
 

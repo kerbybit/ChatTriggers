@@ -95,6 +95,9 @@ public class EventsHandler {
 			int TMP_fo = 20;
 			String TMP_st = "";
 
+            JsonHandler.trimJsons();
+            ListHandler.trimLists();
+
 		//setup backup for functions so strings don't get overwritten
 			StringHandler.resetBackupStrings(isAsync);
 
@@ -468,7 +471,7 @@ public class EventsHandler {
                         if (global.debug) {ChatHandler.warn(ChatHandler.color("red", "ERR: for $value in $array -> missing value or array!"));}
                     }
 
-                    if (valfrom.startsWith("[") && valfrom.endsWith("]")) {
+                    if (valfrom.startsWith("[") && valfrom.endsWith("]") && !valfrom.equals("[]")) {
                         arrayto.addAll(Arrays.asList(valfrom.substring(1, valfrom.length()-1).split(",")));
                     } else {
                         for (List<String> array : ArrayHandler.getArrays()) {
