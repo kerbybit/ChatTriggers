@@ -253,7 +253,7 @@ public class CommandTrigger extends CommandBase {
                 ChatHandler.warnBreak(0);
                 ChatHandler.warn("&fString functions");
                 for (String value : CommandReference.getStringFunctions()) {
-                    ChatHandler.warn(Settings.col[0], " " + value);
+                    ChatHandler.warn(Settings.col[0], " " + value.replace("(", "(&7").replace(")", Settings.col[0]+")"));
                 }
                 ChatHandler.warn("");
                 ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
@@ -262,7 +262,7 @@ public class CommandTrigger extends CommandBase {
                 ChatHandler.warnBreak(0);
                 ChatHandler.warn("&fArray functions (depreciated)");
                 for (String value : CommandReference.getArrayFunctions()) {
-                    ChatHandler.warn(Settings.col[0], " " + value);
+                    ChatHandler.warn(Settings.col[0], " " + value.replace("(", "(&7").replace(")", Settings.col[0]+")"));
                 }
                 ChatHandler.warn("");
                 ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
@@ -271,7 +271,7 @@ public class CommandTrigger extends CommandBase {
                 ChatHandler.warnBreak(0);
                 ChatHandler.warn("&fList functions");
                 for (String value : CommandReference.getListFunctions()) {
-                    ChatHandler.warn(Settings.col[0], " " + value);
+                    ChatHandler.warn(Settings.col[0], " " + value.replace("(", "(&7").replace(")", Settings.col[0]+")"));
                 }
                 ChatHandler.warn("");
                 ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
@@ -280,7 +280,7 @@ public class CommandTrigger extends CommandBase {
                 ChatHandler.warnBreak(0);
                 ChatHandler.warn("&fJson functions");
                 for (String value : CommandReference.getJsonFunctions()) {
-                    ChatHandler.warn(Settings.col[0], " " + value);
+                    ChatHandler.warn(Settings.col[0], " " + value.replace("(", "(&7").replace(")", Settings.col[0]+")"));
                 }
                 ChatHandler.warn("");
                 ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
@@ -289,7 +289,7 @@ public class CommandTrigger extends CommandBase {
                 ChatHandler.warnBreak(0);
                 ChatHandler.warn("&fDisplay functions");
                 for (String value : CommandReference.getDisplayFunctions()) {
-                    ChatHandler.warn(Settings.col[0], " " + value);
+                    ChatHandler.warn(Settings.col[0], " " + value.replace("(", "(&7").replace(")", Settings.col[0]+")"));
                 }
                 ChatHandler.warn("");
                 ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");

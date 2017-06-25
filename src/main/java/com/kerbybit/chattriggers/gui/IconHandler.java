@@ -151,7 +151,8 @@ public class IconHandler {
                 || name.equals("blindness") || name.equals("saturation")
                 || name.equals("absorption") || name.equals("health boost")
                 || name.equals("mining fatigue") || name.equals("wither")
-                || name.equals("resistance"));
+                || name.equals("resistance") || name.equals("haste")
+                || name.equals("nausea"));
     }
 
     private static Potion getPotionByName(String name) {
@@ -194,6 +195,10 @@ public class IconHandler {
                 return Potion.wither;
             case "resistance":
                 return Potion.resistance;
+            case "haste":
+                return Potion.digSpeed;
+            case "nausea":
+                return Potion.confusion;
         }
         return null;
     }
@@ -232,6 +237,7 @@ public class IconHandler {
                 return "&8";
             case "saturation":
             case "absorption":
+            case "haste":
                 return "&6";
         }
         return "&r";
@@ -259,6 +265,8 @@ public class IconHandler {
                 return "mining fatigue";
             case "healthBoost":
                 return "health boost";
+            case "digSpeed":
+                return "haste";
         }
         return name;
     }

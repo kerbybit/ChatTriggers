@@ -144,19 +144,19 @@ public class BuiltInStrings {
 
             TMP_e = createDefaultString("server", current_server, TMP_e, isAsync);
         }
-        if (TMP_e.contains("{serverMOTD}")) {
+        if (TMP_e.contains("{serverMOTD}") || TMP_e.contains("{servermotd}")) {
             String returnString;
             if (mc.isSingleplayer()) returnString = "Single Player world";
             else returnString = mc.getCurrentServerData().serverMOTD;
 
-            TMP_e = createDefaultString("serverMOTD", returnString, TMP_e, isAsync);
+            TMP_e = createDefaultString("serverMOTD", "servermotd", returnString, TMP_e, isAsync);
         }
-        if (TMP_e.contains("{serverIP}")) {
+        if (TMP_e.contains("{serverIP}") || TMP_e.contains("{serverip}")) {
             String returnString;
             if (mc.isSingleplayer()) returnString = "localhost";
             else returnString = mc.getCurrentServerData().serverIP;
 
-            TMP_e = createDefaultString("serverIP", returnString, TMP_e, isAsync);
+            TMP_e = createDefaultString("serverIP", "serverip", returnString, TMP_e, isAsync);
         }
         if (TMP_e.contains("{ping}")) {
             String returnString;
@@ -180,13 +180,13 @@ public class BuiltInStrings {
 
             TMP_e = createDefaultString("serverversion", "serverVersion", returnString, TMP_e, isAsync);
         }
-        if (TMP_e.contains("{isFullscreen}")) {
+        if (TMP_e.contains("{isFullscreen}") || TMP_e.contains("{isfullscreen}")) {
             TMP_e = createDefaultString("isfullscreen", "isFullscreen", mc.isFullScreen() + "",TMP_e, isAsync);
         }
-        if (TMP_e.contains("{windowheight}")) {
+        if (TMP_e.contains("{windowheight}") || TMP_e.contains("{windowHeight}")) {
             TMP_e = createDefaultString("windowheight", "windowHeight", mc.displayHeight + "",TMP_e, isAsync);
         }
-        if (TMP_e.contains("{windowwidth}")) {
+        if (TMP_e.contains("{windowwidth}") || TMP_e.contains("{windowWidth}")) {
             TMP_e = createDefaultString("windowwidth", "windowWidth", mc.displayWidth + "",TMP_e, isAsync);
         }
         if (TMP_e.contains("{playerlist}") || TMP_e.contains("{playerList}")) {
