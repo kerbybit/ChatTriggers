@@ -180,6 +180,15 @@ public class BuiltInStrings {
 
             TMP_e = createDefaultString("serverversion", "serverVersion", returnString, TMP_e, isAsync);
         }
+        if (TMP_e.contains("{isFullscreen}")) {
+            TMP_e = createDefaultString("isfullscreen", "isFullscreen", mc.isFullScreen() + "",TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{windowheight}")) {
+            TMP_e = createDefaultString("windowheight", "windowHeight", mc.displayHeight + "",TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{windowwidth}")) {
+            TMP_e = createDefaultString("windowwidth", "windowWidth", mc.displayWidth + "",TMP_e, isAsync);
+        }
         if (TMP_e.contains("{playerlist}") || TMP_e.contains("{playerList}")) {
             StringBuilder returnString = new StringBuilder("[");
             for (EntityPlayer player : mc.theWorld.playerEntities) {
@@ -271,6 +280,7 @@ public class BuiltInStrings {
         if (TMP_e.contains("{setcol}")) {
             TMP_e = createDefaultString("setcol", Settings.col[0], TMP_e, isAsync);
         }
+
         if (TMP_e.contains("{br}")) {
             StringBuilder dashes = new StringBuilder();
             float chatWidth = mc.gameSettings.chatWidth;
@@ -279,6 +289,23 @@ public class BuiltInStrings {
             for (int j=0; j<numdash; j++) {dashes.append("-");}
 
             TMP_e = createDefaultString("br", dashes.toString(), TMP_e, isAsync);
+        }
+
+        if (TMP_e.contains("{br(") && TMP_e.contains(")}")) {
+            String fillerChar = TMP_e.substring(TMP_e.indexOf("{br(") + 4, TMP_e.indexOf(")}", TMP_e.indexOf("{br(")));
+
+            StringBuilder fillerString = new StringBuilder();
+            int chatWidth = (int) ((mc.gameSettings.chatWidth * 360) - 40);
+            int strWidth = mc.fontRendererObj.getStringWidth(fillerChar);
+            int charsToFill = (int) Math.floor(chatWidth / strWidth);
+
+            for (int i = 0; i < charsToFill; i++) {
+                fillerString.append(fillerChar);
+            }
+
+            String toReturn = mc.fontRendererObj.trimStringToWidth(fillerString.toString(), chatWidth);
+
+            TMP_e = TMP_e.replace("{br(" + fillerChar + ")}", toReturn);
         }
         if (TMP_e.contains("{chatwidth}") || TMP_e.contains("{chatWidth}")) {
             TMP_e = createDefaultString("chatwidth", "chatWidth", ""+(int)((280*(mc.gameSettings.chatWidth))+40), TMP_e, isAsync);

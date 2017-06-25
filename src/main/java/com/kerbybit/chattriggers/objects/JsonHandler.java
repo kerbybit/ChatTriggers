@@ -6,6 +6,8 @@ import com.google.gson.JsonParser;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.triggers.StringFunctions;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.ChatComponentText;
 
 import java.io.*;
 import java.net.URL;
@@ -104,13 +106,37 @@ public class JsonHandler {
         } catch (FileNotFoundException exception) {
             File check = new File(dest.substring(0, dest.lastIndexOf("/")));
             if (!check.mkdir())
-                ChatHandler.warn("red", "Unable to save list to file!");
+                ChatHandler.warn("red", "Unable to save json to file!");
             else {
                 saveJsonToFile(json_name, dest);
             }
         } catch (IOException exception) {
             ChatHandler.warn("red", "Unable to save json to file! IOException");
             exception.printStackTrace();
+        }
+    }
+
+    private static void setValue(String json_name, String key, String value) {
+        if (jsons.containsKey(json_name)) {
+            try {
+                JsonObject obj = jsons.get(json_name);
+                String[] seg = key.split("\\.");
+
+                for (String element : seg) {
+                    if (obj != null) {
+                        JsonElement ele = obj.get(element);
+                        if (!ele.isJsonObject()) {
+                            obj.addProperty(element, value);
+                        } else {
+                            obj = ele.getAsJsonObject();
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Not a json"));
         }
     }
 
@@ -231,6 +257,30 @@ public class JsonHandler {
                 }
 
                 TMP_e = createDefaultString(get_name, clearJson(get_name), TMP_e, isAsync);
+            } else break;
+        }
+
+        while (TMP_e.contains("{json[") && TMP_e.contains("]}.set(") && TMP_e.contains(")")) {
+            int second = TMP_e.indexOf("]}.set(", TMP_e.indexOf("{json["));
+            if (second > -1) {
+                String get_name = TMP_e.substring(TMP_e.indexOf("{json[") + 6, second);
+                String get_prevalue = TMP_e.substring(TMP_e.indexOf("]}.set(", TMP_e.indexOf("{json[")) + 7, TMP_e.indexOf(")", TMP_e.indexOf("]}.set(", TMP_e.indexOf("{json["))));
+                String temp_search = TMP_e.substring(TMP_e.indexOf("]}.set(", TMP_e.indexOf("{json[")) + 7);
+                while (get_name.contains("{json[")) {
+                    get_name = get_name.substring(get_name.indexOf("{json[") + 6);
+                }
+                while (get_prevalue.contains("(")) {
+                    temp_search = temp_search.replaceFirst("\\(", "tempOpenBracketF6cyUQp9tempOpenBracket").replaceFirst("\\)", "tempCloseBreacketF6cyUQp9tempCloseBracket");
+                    get_prevalue = temp_search.substring(0, temp_search.indexOf(")"));
+                }
+                get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
+                String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
+
+                String key = get_value.split(",")[0];
+                String value = get_value.split(",")[1];
+                setValue(get_name, key, value);
+
+                TMP_e = TMP_e.replace("{json[" + get_name + "]}.set(" + get_prevalue + ")", "{json[" + get_name + "]}");
             } else break;
         }
 

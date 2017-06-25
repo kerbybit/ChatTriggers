@@ -12,6 +12,8 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -219,6 +221,8 @@ public class StringFunctions {
             case("IGNOREFORMATTING"):
             case("IGNOREFORM"):
                 return ChatHandler.ignoreFormatting(stringValue);
+            case("ADDCOMMAS"):
+                return NumberFormat.getNumberInstance().format(Long.parseLong(stringValue));
             case("CAPITALIZEFIRSTWORD"):
             case("CAPFIRST"):
                 if (stringValue.equals("")) return stringValue;
@@ -483,6 +487,10 @@ public class StringFunctions {
 					return trimNumber(Math.toDegrees(Math.atan2(stringValueNumber, argsValueNumber)));
                 case "ROUND":
                     return trimNumber(argsValueNumber * (Math.round(stringValueNumber / argsValueNumber)));
+                case "FLOOR":
+                    return trimNumber(argsValueNumber * (Math.floor(stringValueNumber / argsValueNumber)));
+                case "CEIL":
+                    return trimNumber(argsValueNumber * (Math.ceil(stringValueNumber / argsValueNumber)));
             }
         }
 
