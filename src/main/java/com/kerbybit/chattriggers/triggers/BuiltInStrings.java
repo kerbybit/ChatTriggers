@@ -931,8 +931,7 @@ public class BuiltInStrings {
 
 		if (TMP_e.contains("{xpProgress}")) {
         	EntityPlayerSP p = mc.thePlayer;
-        	TMP_e = createDefaultString("xpProgress",
-					Math.floor(p.experience / p.xpBarCap()) + "", TMP_e, isAsync);
+        	TMP_e = createDefaultString("xpProgress", p.experience + "", TMP_e, isAsync);
 		}
 
 		if (TMP_e.contains("{hunger}")) {
