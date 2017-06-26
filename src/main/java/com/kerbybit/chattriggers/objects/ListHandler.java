@@ -49,6 +49,8 @@ public class ListHandler {
 
     private static void saveListToFile(String list_name, String dest) {
         Boolean compact = false;
+        dest = dest.replace("./mods/ChatTriggers/", "./");
+        dest = dest.replace("./", "./mods/ChatTriggers/");
 
         if (!dest.contains("/")) {
             dest = "./mods/ChatTriggers/"+dest;
@@ -84,12 +86,32 @@ public class ListHandler {
                 writer.close();
             }
         } catch (FileNotFoundException exception) {
-            File check = new File(dest.substring(0, dest.lastIndexOf("/")));
-            if (!check.mkdir())
-                ChatHandler.warn("red", "Unable to save list to file!");
-            else {
-                if (compact) saveListToFile(list_name, "<compact>"+dest);
-                else saveListToFile(list_name, dest);
+            dest = dest.replace("./mods/ChatTriggers/", "");
+            String check_str = dest.substring(0, dest.lastIndexOf("/"));
+            System.out.println(check_str);
+
+            if (check_str.contains("/")) {
+                StringBuilder folder = new StringBuilder("./mods/ChatTriggers/");
+                for (String value : check_str.split("/")) {
+                    folder = folder.append(value).append("/");
+                    System.out.println(folder);
+                    File check = new File(folder.toString());
+                    if (!check.mkdir()) {
+                        break;
+                    }
+                }
+                if (new File(folder.toString()).exists()) {
+                    if (compact) saveListToFile(list_name, "<compact>./" + dest);
+                    else saveListToFile(list_name, "./" + dest);
+                }
+            } else {
+                File check = new File("./mods/ChatTriggers/" + check_str);
+                if (!check.mkdir())
+                    ChatHandler.warn("red", "Unable to save list to file!");
+                else {
+                    if (compact) saveListToFile(list_name, "<compact>./" + dest);
+                    else saveListToFile(list_name, "./" + dest);
+                }
             }
         } catch (IOException exception) {
             ChatHandler.warn("red", "Unable to save list to file! IOException");

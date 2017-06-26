@@ -202,9 +202,9 @@ public class CommandReference {
 
             r.add("{msg} {msg}.meta() {msg($number)}");
             r.add("{imported($import)}");
-            r.add("{br}");
-            r.add("{setcol}");
-            r.add("{debug}");
+            r.add("{br} {br($character)}");
+            r.add("{setcol} {debug}");
+            r.add("{windowWidth} {windowHeight} {isFullscreen}");
             r.add("{chatWidth}");
             r.add("");
             r.add("{me} {uuid}");
@@ -282,7 +282,7 @@ public class CommandReference {
             r.add("");
             r.add(".replace($value1,$value2) .replace($value)");
             r.add(".replaceIgnoreCase($value1,$value2)");
-            r.add(".substring($v1,$v2) .substring($n1,$n2)");
+            r.add(".substring($value1,$value2) .substring($number1,$number2)");
             r.add(".trim()");
             r.add(".prefix($value) .suffix($value)");
             r.add(".toUpper() .toUpperCase()");
@@ -305,15 +305,15 @@ public class CommandReference {
         List<String> r = new ArrayList<>();
 
             r.add(".clear()");
-            r.add(".add($v)");
-            r.add(".remove($v) .remove($n)");
-            r.add(".get($v) .get($n)");
+            r.add(".add($value)");
+            r.add(".remove($value) .remove($index)");
+            r.add(".get($value) .get($index)");
             r.add(".size()");
             r.add("");
-            r.add(".setSplit($v,$split)");
-            r.add(".importJsonFile($file,$node)");
-            r.add(".importJsonURL($URL,$node)");
-            r.add(".exportJson($file,$node)");
+            r.add(".setSplit($value,$split)");
+            r.add(".importJsonFile($file,$key)");
+            r.add(".importJsonURL($URL,$key)");
+            r.add(".exportJson($file,$key)");
 
         return r;
     }
@@ -324,11 +324,11 @@ public class CommandReference {
             r.add(".load($v) .load($file) .load($URL)");
             r.add(".export($file)");
             r.add(".size()");
-            r.add(".add($v)");
-            r.add(".get($v) .get($n)");
-            r.add(".has($v)");
+            r.add(".add($value)");
+            r.add(".get($value) .get($index)");
+            r.add(".has($value)");
             r.add(".getRandom()");
-            r.add(".remove($n) .remove($v)");
+            r.add(".remove($index) .remove($value)");
             r.add(".sort()");
             r.add(".reverse()");
             r.add(".clear()");
@@ -340,10 +340,11 @@ public class CommandReference {
         List<String> r = new ArrayList<>();
 
             r.add(".clear()");
-            r.add(".load($v) .load($file) .load($URL)");
-            r.add(".get($v)");
-            r.add(".getKeys($v)");
-            r.add(".getValues($v)");
+            r.add(".load($value) .load($file) .load($URL)");
+            r.add(".get($key)");
+            r.add(".set($key,$value)");
+            r.add(".getKeys($key)");
+            r.add(".getValues($key)");
 
         return r;
     }
@@ -351,11 +352,11 @@ public class CommandReference {
     static List<String> getDisplayFunctions() {
         List<String> r = new ArrayList<>();
 
-            r.add(".add($v)");
+            r.add(".add($value)");
             r.add(".clear()");
             r.add(".getX() .getY()");
-            r.add(".setX($v) .setY($v)");
-            r.add(".settings($v)");
+            r.add(".setX($number) .setY($number)");
+            r.add(".settings($value)");
             r.add(".update()");
 
         return r;

@@ -94,6 +94,9 @@ public class JsonHandler {
     }
 
     private static void saveJsonToFile(String json_name, String dest) {
+        dest = dest.replace("./mods/ChatTriggers/", "./");
+        dest = dest.replace("./", "./mods/ChatTriggers/");
+
         if (!dest.contains("/")) {
             dest = "./mods/ChatTriggers/"+dest;
         }
@@ -105,11 +108,30 @@ public class JsonHandler {
                 writer.close();
             }
         } catch (FileNotFoundException exception) {
-            File check = new File(dest.substring(0, dest.lastIndexOf("/")));
-            if (!check.mkdir())
-                ChatHandler.warn("red", "Unable to save json to file!");
-            else {
-                saveJsonToFile(json_name, dest);
+            dest = dest.replace("./mods/ChatTriggers/", "");
+            String check_str = dest.substring(0, dest.lastIndexOf("/"));
+            System.out.println(check_str);
+
+            if (check_str.contains("/")) {
+                StringBuilder folder = new StringBuilder("./mods/ChatTriggers/");
+                for (String value : check_str.split("/")) {
+                    folder = folder.append(value).append("/");
+                    System.out.println(folder);
+                    File check = new File(folder.toString());
+                    if (!check.mkdir()) {
+                        break;
+                    }
+                }
+                if (new File(folder.toString()).exists()) {
+                    saveJsonToFile(json_name, "./" + dest);
+                }
+            } else {
+                File check = new File("./mods/ChatTriggers/" + check_str);
+                if (!check.mkdir())
+                    ChatHandler.warn("red", "Unable to save json to file!");
+                else {
+                    saveJsonToFile(json_name, "./" + dest);
+                }
             }
         } catch (IOException exception) {
             ChatHandler.warn("red", "Unable to save json to file! IOException");

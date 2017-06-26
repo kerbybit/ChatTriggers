@@ -68,7 +68,7 @@ public class ChatHandler {
     private static String removeClickableExtras(String cht) {
 	    while (cht.contains("clickable(") && cht.contains(",") && cht.contains(")")) {
 	        String first = cht.substring(0, cht.indexOf("clickable("));
-	        String text = cht.substring(cht.indexOf("clickable(")+10, cht.indexOf(",", cht.indexOf("clickable(")));
+	        String text = EnumChatFormatting.RESET + cht.substring(cht.indexOf("clickable(")+10, cht.indexOf(",", cht.indexOf("clickable(")));
 	        String last = cht.substring(cht.indexOf(")", cht.indexOf("clickable("))+1);
 	        cht = first + text + last;
         }
@@ -78,7 +78,7 @@ public class ChatHandler {
     private static String removeHoverExtras(String cht) {
         while (cht.contains("hover(") && cht.contains(",") && cht.contains(")")) {
             String first = cht.substring(0, cht.indexOf("hover("));
-            String text = cht.substring(cht.indexOf("hover(")+6, cht.indexOf(",", cht.indexOf("hover(")));
+            String text = EnumChatFormatting.RESET + cht.substring(cht.indexOf("hover(")+6, cht.indexOf(",", cht.indexOf("hover(")));
             String last = cht.substring(cht.indexOf(")", cht.indexOf("hover("))+1);
             cht = first + text + last;
         }
