@@ -3,6 +3,7 @@ package com.kerbybit.chattriggers.objects;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.triggers.StringFunctions;
@@ -121,9 +122,18 @@ public class JsonHandler {
             try {
                 JsonObject obj = jsons.get(json_name);
                 String[] seg = key.split("\\.");
+                int index = 1;
 
                 for (String element : seg) {
                     if (obj != null) {
+                        if (!obj.has(element)) {
+                            if (index < seg.length) {
+                                obj.add(element, new JsonObject());
+                            } else {
+                                obj.addProperty(element, value);
+                            }
+                        }
+
                         JsonElement ele = obj.get(element);
                         if (!ele.isJsonObject()) {
                             obj.addProperty(element, value);
@@ -131,6 +141,7 @@ public class JsonHandler {
                             obj = ele.getAsJsonObject();
                         }
                     }
+                    index++;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
