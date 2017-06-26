@@ -164,7 +164,7 @@ public class DisplayRenderer {
                     }
                     display_text = display_text.replace("<rainbow="+speed_string+">", "");
                 }
-                float step = global.ticksElapsed;
+                float step = global.ticksElapsed + i*10;
                 int red = (int) ((Math.sin(step / speed) + 0.75) * 170);
                 int green = (int) ((Math.sin(step / speed + ((2 * Math.PI) / 3)) + 0.75) * 170);
                 int blue = (int) ((Math.sin(step / speed + ((4 * Math.PI) / 3)) + 0.75) * 170);
