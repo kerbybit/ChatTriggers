@@ -68,9 +68,20 @@ public class ChatHandler {
     private static String removeClickableExtras(String cht) {
 	    while (cht.contains("clickable(") && cht.contains(",") && cht.contains(")")) {
 	        String first = cht.substring(0, cht.indexOf("clickable("));
-	        String text = EnumChatFormatting.RESET + cht.substring(cht.indexOf("clickable(")+10, cht.indexOf(",", cht.indexOf("clickable(")));
-	        String last = cht.substring(cht.indexOf(")", cht.indexOf("clickable("))+1);
-	        cht = first + text + last;
+
+            String TMP_clk = cht.substring(cht.indexOf("clickable(") + 10, cht.indexOf(")", cht.indexOf("clickable(")));
+
+            if (TMP_clk.contains("(")) {
+                TMP_clk = cht.substring(cht.indexOf("clickable(")+10, cht.indexOf(")", cht.indexOf(")", cht.indexOf("clickable("))+1));
+                String TMP_subcheck = TMP_clk.substring(TMP_clk.indexOf("(")+1,TMP_clk.indexOf(")"));
+                String TMP_subcheckReplace = TMP_subcheck.replace(",", "CommaF6cyUQp9Comma");
+                TMP_clk = TMP_clk.replace(TMP_subcheck, TMP_subcheckReplace);
+            }
+            String text = TMP_clk.substring(0, TMP_clk.indexOf(","));
+            text = text.replace("CommaF6cyUQp9Comma", ",");
+
+	        String last = cht.substring(cht.indexOf(")", cht.indexOf(TMP_clk)+TMP_clk.length())+1);
+	        cht = first + EnumChatFormatting.RESET + text + last;
         }
         return cht;
     }

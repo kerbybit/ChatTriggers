@@ -106,7 +106,7 @@ public class StringHandler {
 				
 				String efirst = TMP_e.substring(0, TMP_e.indexOf(sn));
 				String esecond = TMP_e.substring(TMP_e.indexOf(sn)+sn.length());
-				sn = stringFunctions(sn, chatEvent, isAsync);
+				sn = StringFunctions.nestedArgs(sn, chatEvent, isAsync);
 				
 				TMP_e = efirst + sn + esecond;
 				sn = sn.replace("stringOpenStringF6cyUQp9stringOpenString", "{string[");
@@ -161,9 +161,10 @@ public class StringHandler {
 				
 				String efirst = TMP_e.substring(0, TMP_e.indexOf(sn));
 				String esecond = TMP_e.substring(TMP_e.indexOf(sn)+sn.length());
-				sn = stringFunctions(sn, chatEvent, isAsync);
+				sn = StringFunctions.nestedArgs(sn, chatEvent, isAsync);
 				
 				TMP_e = efirst + sn + esecond;
+				//System.out.println(TMP_e);
 				
 				String returnString = "Not a string!";
 
