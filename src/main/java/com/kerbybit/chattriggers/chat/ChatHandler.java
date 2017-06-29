@@ -74,13 +74,11 @@ public class ChatHandler {
             if (TMP_clk.contains("(")) {
                 TMP_clk = cht.substring(cht.indexOf("clickable(")+10, cht.indexOf(")", cht.indexOf(")", cht.indexOf("clickable("))+1));
                 String TMP_subcheck = TMP_clk.substring(TMP_clk.indexOf("(")+1,TMP_clk.indexOf(")"));
-                String TMP_subcheckReplace = TMP_subcheck.replace(",", "CommaF6cyUQp9Comma");
-                TMP_clk = TMP_clk.replace(TMP_subcheck, TMP_subcheckReplace);
+                TMP_clk = TMP_clk.replace(TMP_subcheck, TMP_subcheck);
             }
-            String text = TMP_clk.substring(0, TMP_clk.indexOf(","));
-            text = text.replace("CommaF6cyUQp9Comma", ",");
-
+            String text = TMP_clk.split(",")[0];
 	        String last = cht.substring(cht.indexOf(")", cht.indexOf(TMP_clk)+TMP_clk.length())+1);
+
 	        cht = first + EnumChatFormatting.RESET + text + last;
         }
         return cht;
