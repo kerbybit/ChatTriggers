@@ -455,7 +455,11 @@ public class ListHandler {
                     get_name = get_name.substring(get_name.indexOf("{list[") + 6);
                 }
 
-                String list_name = "ListToList->" + (getListsSize()+1);
+                String list_name;
+                if (isAsync)
+                    list_name = "AsyncListToList->" + (getListsSize()+1);
+                else
+                    list_name = "ListToList->" + (getListsSize()+1);
                 List<String> list;
                 if ((list = reverseList(get_name)) != null) {
                     lists.put(list_name, list);
@@ -660,8 +664,20 @@ public class ListHandler {
         HashMap<String, List<String>> lists_copy = new HashMap<>(lists);
 
         for (String key : lists_copy.keySet()) {
-            if (key.startsWith("JsonToList->") || key.startsWith("StringToList->") || key.startsWith("ListToList->") || key.startsWith("DefaultList->")) {
+            if (key.startsWith("JsonToList->")
+                    || key.startsWith("StringToList->")
+                    || key.startsWith("ListToList->")
+                    || key.startsWith("DefaultList->")) {
                lists.remove(key);
+            }
+
+            if (global.asyncMap.size() == 0) {
+                if (key.startsWith("AsyncJsonToList->")
+                        || key.startsWith("AsyncStringToList->")
+                        || key.startsWith("AsyncListToList->")
+                        || key.startsWith("AsyncDefaultList->")) {
+                    lists.remove(key);
+                }
             }
         }
     }

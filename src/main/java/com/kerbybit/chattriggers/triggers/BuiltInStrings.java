@@ -200,9 +200,15 @@ public class BuiltInStrings {
             if (returnString.toString().equals("[")) {
                 TMP_e = createDefaultString("playerlist", "playerList", "[]", TMP_e, isAsync);
             } else {
-                ListHandler.getList("DefaultList->PLAYERLIST-"+(ListHandler.getListsSize()+1), returnString.substring(0, returnString.length()-1)+"]");
-                TMP_e = TMP_e.replace("{playerlist}", "{list[DefaultList->PLAYERLIST-"+ListHandler.getListsSize()+"]}")
-                    .replace("{playerList}", "{list[DefaultList->PLAYERLIST-"+ListHandler.getListsSize()+"]}");
+                String list_name;
+                if (isAsync)
+                    list_name = "AsyncDefaultList->PLAYERLIST-"+(ListHandler.getListsSize()+1);
+                else
+                    list_name = "DefaultList->PLAYERLIST-"+(ListHandler.getListsSize()+1);
+
+                ListHandler.getList(list_name, returnString.substring(0, returnString.length()-1)+"]");
+                TMP_e = TMP_e.replace("{playerlist}", "{list[" + list_name + "]}")
+                    .replace("{playerList}", "{list[" + list_name + "]}");
             }
         }
         if (TMP_e.contains("{scoreboardlines}") || TMP_e.contains("{scoreboardLines}")) {
@@ -218,9 +224,15 @@ public class BuiltInStrings {
             if (returnString.toString().equals("[")) {
                 TMP_e = createDefaultString("scoreboardlines", "scoreboardLines", "[]", TMP_e, isAsync);
             } else {
-                ListHandler.getList("DefaultList->SCOREBOARDLINES-"+(ListHandler.getListsSize()+1), returnString.substring(0, returnString.length()-1)+"]");
-                TMP_e = TMP_e.replace("{scoreboardlines}", "{list[DefaultList->SCOREBOARDLINES-"+ListHandler.getListsSize()+"]}")
-                    .replace("{scoreboardLines}", "{list[DefaultList->SCOREBOARDLINES-"+ListHandler.getListsSize()+"]}");
+                String list_name;
+                if (isAsync)
+                    list_name = "AsyncDefaultList->SCOREBOARDLINES-"+(ListHandler.getListsSize()+1);
+                else
+                    list_name = "DefaultList->SCOREBOARDLINES-"+(ListHandler.getListsSize()+1);
+
+                ListHandler.getList(list_name, returnString.substring(0, returnString.length()-1)+"]");
+                TMP_e = TMP_e.replace("{scoreboardlines}", "{list[" + list_name + "]}")
+                    .replace("{scoreboardLines}", "{list[" + list_name + "]}");
             }
         }
         if (TMP_e.contains("{debug}")) {
@@ -474,9 +486,15 @@ public class BuiltInStrings {
                 potionList = new StringBuilder(potionList.substring(0, potionList.length()-1) + "}");
             }
 
-            JsonHandler.getJson("DefaultJson->POTIONEFFECTS-"+(JsonHandler.getJsonsSize()+1), potionList.toString());
+            String json_name;
+            if (isAsync)
+                json_name = "AsyncDefaultJson->POTIONEFFECTS-"+(JsonHandler.getJsonsSize()+1);
+            else
+                json_name = "DefaultJson->POTIONEFFECTS-"+(JsonHandler.getJsonsSize()+1);
 
-            TMP_e = TMP_e.replace("{potionEffects}", "{json[DefaultJson->POTIONEFFECTS-"+ JsonHandler.getJsonsSize()+"]}");
+            JsonHandler.getJson(json_name, potionList.toString());
+
+            TMP_e = TMP_e.replace("{potionEffects}", "{json[" + json_name + "]}");
         }
         if (TMP_e.contains("{armor}")) {
             ItemStack[] armor_set = mc.thePlayer.inventory.armorInventory;

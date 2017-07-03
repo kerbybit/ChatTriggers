@@ -3,7 +3,6 @@ package com.kerbybit.chattriggers.objects;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.triggers.StringFunctions;
@@ -397,9 +396,14 @@ public class JsonHandler {
                 get_prevalue = get_prevalue.replace("tempOpenBracketF6cyUQp9tempOpenBracket", "(").replace("tempCloseBreacketF6cyUQp9tempCloseBracket", ")");
                 String get_value = StringFunctions.nestedArgs(get_prevalue, null, isAsync);
 
-                ListHandler.getList("JsonToList->" + get_name + "GETKEYS" + get_value + "-" + (ListHandler.getListsSize() + 1), getKeys(get_name, get_value));
+                String list_name;
+                if (isAsync)
+                    list_name = "AsyncJsonToList->" + get_name + "GETKEYS" + get_value + "-" + (ListHandler.getListsSize() + 1);
+                else
+                    list_name = "JsonToList->" + get_name + "GETKEYS" + get_value + "-" + (ListHandler.getListsSize() + 1);
+                ListHandler.getList(list_name, getKeys(get_name, get_value));
 
-                TMP_e = TMP_e.replace("{json[" + get_name + "]}.getKeys(" + get_prevalue + ")", "{list[JsonToList->" + get_name + "GETKEYS" + get_value + "-" + ListHandler.getListsSize() + "]}");
+                TMP_e = TMP_e.replace("{json[" + get_name + "]}.getKeys(" + get_prevalue + ")", "{list[" + list_name + "]}");
             } else break;
         }
 
@@ -481,6 +485,12 @@ public class JsonHandler {
         for (String key : jsons_copy.keySet()) {
             if (key.startsWith("DefaultJson")) {
                 jsons.remove(key);
+            }
+
+            if (global.asyncMap.size() == 0) {
+                if (key.startsWith("AsyncDefaultJson")) {
+                    jsons.remove(key);
+                }
             }
         }
     }
