@@ -207,6 +207,9 @@ public class ChatTriggers {
             EventsHandler.eventTick();
             global.ticksElapsed++;
 
+            JsonHandler.trimJsons();
+            ListHandler.trimLists();
+
 			ChatHandler.onClientTick();
 		} else {
             Minecraft.getMinecraft().gameSettings.invertMouse = global.inverted;

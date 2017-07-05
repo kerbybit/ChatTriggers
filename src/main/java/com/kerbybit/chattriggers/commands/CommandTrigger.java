@@ -551,6 +551,7 @@ public class CommandTrigger extends CommandBase {
                     EventsHandler.doEvents(TMP_events, null);
                 }
             } catch (NumberFormatException e1) {
+                Boolean ranTrigger = false;
                 for (int k=0; k<global.trigger.size(); k++) {
 
                     String TMP_trig = global.trigger.get(k).get(1);
@@ -585,6 +586,7 @@ public class CommandTrigger extends CommandBase {
                                                 TMP_events.add(global.trigger.get(k).get(j));
                                             }
                                             EventsHandler.doEvents(TMP_events, null, argsOut, argsIn);
+                                            ranTrigger = true;
                                         }
                                     } else if (TMP_e.toString().startsWith(TMP_trigtest)) {
                                         String[] argsIn = TMP_e.toString().replace(TMP_trigtest,"").trim().split(" ");
@@ -598,6 +600,7 @@ public class CommandTrigger extends CommandBase {
                                                 TMP_events.add(global.trigger.get(k).get(j));
                                             }
                                             EventsHandler.doEvents(TMP_events, null, argsOut, argsIn);
+                                            ranTrigger = true;
                                         }
                                     }
                                 }
@@ -626,7 +629,48 @@ public class CommandTrigger extends CommandBase {
                                                 TMP_events.add(global.trigger.get(k).get(j));
                                             }
                                             EventsHandler.doEvents(TMP_events, null, argsOut, argsIn);
+                                            ranTrigger = true;
                                         }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!ranTrigger) {
+                    for (int k=0; k<global.trigger.size(); k++) {
+                        String TMP_trig = global.trigger.get(k).get(1);
+                        String TMP_trigtype = global.trigger.get(k).get(0);
+
+                        TMP_trig = TagHandler.removeTags(TMP_trig);
+
+                        if (TMP_trigtype.toUpperCase().startsWith("OTHER")) {
+                            if (TMP_trig.contains("(") && TMP_trig.endsWith(")")) {
+                                String TMP_trigtest = TMP_trig.substring(0, TMP_trig.indexOf("("));
+                                if (TMP_e.toString().startsWith(TMP_trigtest) && TMP_e.toString().endsWith(")")) {
+                                    return;
+                                } else if (TMP_e.toString().startsWith(TMP_trigtest)) {
+                                    //String[] argsIn = TMP_e.toString().replace(TMP_trigtest,"").trim().split(" ");
+
+                                    String TMP_argsOut = TMP_trig.substring(TMP_trig.indexOf("(") + 1, TMP_trig.length() - 1);
+                                    String[] argsOut = TMP_argsOut.split(",");
+
+                                    String[] argsIn = new String[argsOut.length];
+                                    String[] get = TMP_e.toString().replace(TMP_trigtest,"").trim().split(" ");
+                                    for (int i = 0; i<get.length;i++ ) {
+                                        try {
+                                            argsIn[i] = get[i];
+                                        } catch (IndexOutOfBoundsException e) {
+                                            argsIn[argsIn.length-1] = argsIn[argsIn.length-1] + " " + get[i];
+                                        }
+                                    }
+
+                                    if (argsIn.length == argsOut.length) {
+                                        List<String> TMP_events = new ArrayList<>();
+                                        for (int j = 2; j < global.trigger.get(k).size(); j++) {
+                                            TMP_events.add(global.trigger.get(k).get(j));
+                                        }
+                                        EventsHandler.doEvents(TMP_events, null, argsOut, argsIn);
                                     }
                                 }
                             }

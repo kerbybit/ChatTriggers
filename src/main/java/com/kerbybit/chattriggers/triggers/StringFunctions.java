@@ -8,8 +8,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import org.apache.commons.lang3.text.WordUtils;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.text.DecimalFormat;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +37,7 @@ public class StringFunctions {
         returnString = doStringSetFunctions(stringPos, stringName, func, args, isAsync);
 
         if (returnString == null)
-            returnString = doStringModifyFunctions(stringName, stringValue, func, args);
+            returnString = doStringModifyFunctions(stringName, stringValue, func, args, isAsync);
         if (returnString == null)
             returnString = doStringComparatorFunctions(stringValue, func, args);
         if (returnString == null)
@@ -184,7 +187,7 @@ public class StringFunctions {
                 .replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",");
     }
 
-    private static String doStringModifyFunctions(String stringName, String stringValue, String func, String args) {
+    private static String doStringModifyFunctions(String stringName, String stringValue, String func, String args, Boolean isAsync) {
         switch (func) {
             case("REPLACE"):
                 args = removeExcludedExtras(args);
@@ -249,8 +252,13 @@ public class StringFunctions {
                 }
                 list = new StringBuilder(list.substring(0, list.length()-1) + "]");
 
-                ListHandler.getList("StringToList->"+stringName+"SPLIT-"+(ListHandler.getListsSize()+1), list.toString());
-                return "{list[StringToList->"+stringName+"SPLIT-"+ListHandler.getListsSize()+"]}";
+                String list_name;
+                if (isAsync)
+                    list_name = "AsyncStringToList->"+stringName+"SPLIT-"+(ListHandler.getListsSize()+1);
+                else
+                    list_name = "StringToList->"+stringName+"SPLIT-"+(ListHandler.getListsSize()+1);
+                ListHandler.getList(list_name, list.toString());
+                return "{list[" + list_name + "]}";
             case("SUBSTRING"):
                 args = removeExcludedExtras(args);
                 String[] subargs = args.split(",");
@@ -347,8 +355,48 @@ public class StringFunctions {
                         return null;
                     }
                 }
+            case("LOAD"):
+                if (args.toUpperCase().startsWith("HTTP"))
+                    return getStringFromURL(args);
+                else
+                    return getStringFromFile(args);
             default:
                 return null;
+        }
+    }
+
+    private static String getStringFromURL(String url) {
+        try {
+            StringBuilder listString = new StringBuilder();
+            String line;
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new URL(url).openStream(),"UTF-8"));
+            while ((line = bufferedReader.readLine()) != null) {
+                listString.append(line);
+            }
+            bufferedReader.close();
+
+            return listString.toString();
+        } catch (Exception exception) {
+            return null;
+        }
+    }
+
+    private static String getStringFromFile(String dest) {
+        try {
+            if (!dest.contains("/")) {
+                dest = "./mods/ChatTriggers/"+dest;
+            }
+
+            StringBuilder listString = new StringBuilder();
+            String line;
+            BufferedReader bufferedReader;
+            bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(dest),"UTF-8"));
+            while ((line = bufferedReader.readLine()) != null) {
+                listString.append(line.trim());
+            }
+            return listString.toString();
+        } catch (Exception exception) {
+            return null;
         }
     }
 

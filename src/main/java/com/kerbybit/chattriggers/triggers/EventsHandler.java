@@ -92,9 +92,6 @@ public class EventsHandler {
 			int TMP_fo = 20;
 			String TMP_st = "";
 
-            JsonHandler.trimJsons();
-            ListHandler.trimLists();
-
 		//setup backup for functions so strings don't get overwritten
 			StringHandler.resetBackupStrings(isAsync);
 
