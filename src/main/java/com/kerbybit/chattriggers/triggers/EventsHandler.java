@@ -15,10 +15,7 @@ import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.commands.CommandTrigger;
 import com.kerbybit.chattriggers.globalvars.Settings;
-import com.kerbybit.chattriggers.objects.ArrayHandler;
-import com.kerbybit.chattriggers.objects.DisplayHandler;
-import com.kerbybit.chattriggers.objects.ListHandler;
-import com.kerbybit.chattriggers.objects.JsonHandler;
+import com.kerbybit.chattriggers.objects.*;
 import com.kerbybit.chattriggers.globalvars.global;
 
 import com.kerbybit.chattriggers.overlay.KillfeedHandler;
@@ -119,6 +116,7 @@ public class EventsHandler {
             TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent, isAsync);
             TMP_e = ListHandler.listFunctions(TMP_e, isAsync);
 			TMP_e = ArrayHandler.arrayFunctions(TMP_e, chatEvent, isAsync);
+			TMP_e = BookHandler.bookFunctions(TMP_e, isAsync);
 			TMP_e = StringHandler.stringFunctions(TMP_e, chatEvent, isAsync);
 			
 		//tags
