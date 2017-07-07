@@ -1,5 +1,6 @@
 package com.kerbybit.chattriggers.triggers;
 
+import com.google.common.collect.Ordering;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.globalvars.Settings;
@@ -15,6 +16,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiIngame;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.BossStatus;
@@ -42,6 +45,7 @@ import static java.lang.StrictMath.round;
 
 public class BuiltInStrings {
     private static Minecraft mc = Minecraft.getMinecraft();
+    private static final Ordering<NetworkPlayerInfo> tab = Ordering.from(new CommandReference.PlayerComparator());
     
     public static String builtInStrings(String TMP_e, ClientChatReceivedEvent chatEvent, Boolean isAsync) {
         while (TMP_e.contains("{imported(") && TMP_e.contains(")}")) {
@@ -209,6 +213,29 @@ public class BuiltInStrings {
                 ListHandler.getList(list_name, returnString.substring(0, returnString.length()-1)+"]");
                 TMP_e = TMP_e.replace("{playerlist}", "{list[" + list_name + "]}")
                     .replace("{playerList}", "{list[" + list_name + "]}");
+            }
+        }
+        if (TMP_e.contains("{tabList}") || TMP_e.contains("{tablist}")) {
+            StringBuilder returnString = new StringBuilder("[");
+
+            NetHandlerPlayClient nethandlerplayclient = mc.thePlayer.sendQueue;
+            List<NetworkPlayerInfo> list = tab.sortedCopy(nethandlerplayclient.getPlayerInfoMap());
+            for (NetworkPlayerInfo player : list) {
+                returnString.append(player.getGameProfile().getName()).append(",");
+            }
+
+            if (returnString.toString().equals("[")) {
+                TMP_e = createDefaultString("tabList", "tablist", "[]", TMP_e, isAsync);
+            } else {
+                String list_name;
+                if (isAsync)
+                    list_name = "AsyncDefaultList->TABLIST-"+(ListHandler.getListsSize()+1);
+                else
+                    list_name = "DefaultList->TABLIST-"+(ListHandler.getListsSize()+1);
+
+                ListHandler.getList(list_name, returnString.substring(0, returnString.length()-1) + "]");
+                TMP_e = TMP_e.replace("{tabList}", "{list[" + list_name + "]}")
+                        .replace("{tablist}", "{list[" + list_name + "]}");
             }
         }
         if (TMP_e.contains("{scoreboardlines}") || TMP_e.contains("{scoreboardLines}")) {

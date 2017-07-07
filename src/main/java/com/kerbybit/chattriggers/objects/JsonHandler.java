@@ -115,7 +115,6 @@ public class JsonHandler {
                 StringBuilder folder = new StringBuilder("./mods/ChatTriggers/");
                 for (String value : check_str.split("/")) {
                     folder = folder.append(value).append("/");
-                    System.out.println(folder);
                     File check = new File(folder.toString());
                     if (!check.mkdir()) {
                         break;
