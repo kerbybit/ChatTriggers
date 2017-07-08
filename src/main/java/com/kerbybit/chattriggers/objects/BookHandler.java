@@ -4,9 +4,13 @@ import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.triggers.StringFunctions;
 import com.kerbybit.chattriggers.triggers.StringHandler;
 import com.kerbybit.chattriggers.util.BookData;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiScreenBook;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.util.HashMap;
 
@@ -158,6 +162,29 @@ public class BookHandler {
 
 			bookData.display(pageToOpen);
 			args = args.replace("{book[" + bookName + "]}.display(" + ender, "");
+		}
+
+		while (args.contains("{book[") && args.contains("]}.close()")) {
+			int bookIndex = args.indexOf("{book[");
+			int addIndex = args.indexOf("]}.close()", bookIndex);
+			String bookName = args.substring(bookIndex + 6, addIndex);
+
+			if (books.containsKey(bookName)) {
+				GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
+
+				if (currentScreen instanceof GuiScreenBook) {
+					GuiScreenBook currentBook = ((GuiScreenBook) currentScreen);
+
+					String bookTitle = ReflectionHelper.getPrivateValue(GuiScreenBook.class, currentBook,
+							"bookTitle", "field_146482_z");
+
+					if (bookTitle.equals("CT" + bookName)) {
+						Minecraft.getMinecraft().displayGuiScreen(null);
+					}
+				}
+			}
+
+			args = args.replace("{book[" + bookName + "]}.close()", "");
 		}
 
 		return args;
