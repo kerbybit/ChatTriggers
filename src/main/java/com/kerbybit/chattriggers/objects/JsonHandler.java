@@ -109,13 +109,11 @@ public class JsonHandler {
         } catch (FileNotFoundException exception) {
             dest = dest.replace("./mods/ChatTriggers/", "");
             String check_str = dest.substring(0, dest.lastIndexOf("/"));
-            System.out.println(check_str);
 
             if (check_str.contains("/")) {
                 StringBuilder folder = new StringBuilder("./mods/ChatTriggers/");
                 for (String value : check_str.split("/")) {
                     folder = folder.append(value).append("/");
-                    System.out.println(folder);
                     File check = new File(folder.toString());
                     if (!check.mkdir()) {
                         break;

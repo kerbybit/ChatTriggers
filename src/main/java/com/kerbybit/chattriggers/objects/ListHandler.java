@@ -94,7 +94,6 @@ public class ListHandler {
                 StringBuilder folder = new StringBuilder("./mods/ChatTriggers/");
                 for (String value : check_str.split("/")) {
                     folder = folder.append(value).append("/");
-                    System.out.println(folder);
                     File check = new File(folder.toString());
                     if (!check.mkdir()) {
                         break;
@@ -125,12 +124,11 @@ public class ListHandler {
                 return null;
             } else {
                 value = value.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",");
-                String[] list = value.substring(1, value.length()-1).split(",");
+                String[] list = value.substring(1, value.length() - 1).split(",");
                 return new ArrayList<>(Arrays.asList(list));
             }
-        } else {
-            return null;
         }
+        return null;
     }
 
     public static void getList(String list_name, String list_from) {
@@ -157,17 +155,14 @@ public class ListHandler {
             }
             return_string = new StringBuilder(return_string.substring(0, return_string.length()-1) + "]");
             return return_string.toString();
-        } else {
-            return "[]";
         }
+        return "[]";
     }
 
     private static ArrayList<String> getListObject(String list_name) {
-        if (lists.containsKey(list_name)) {
+        if (lists.containsKey(list_name))
             return new ArrayList<>(lists.get(list_name));
-        } else {
-            return null;
-        }
+        return null;
     }
 
     private static String addToList(String list_name, String value) {
@@ -232,11 +227,9 @@ public class ListHandler {
 
     private static String getValue(String list_name, int position) throws NumberFormatException {
         List<String> entries = lists.get(list_name);
-        if (position < entries.size() && position >= 0) {
+        if (position < entries.size() && position >= 0)
             return entries.get(position);
-        } else {
-            throw new NumberFormatException();
-        }
+        throw new NumberFormatException();
     }
 
     private static String getHasValue(String list_name, String value) {
@@ -246,14 +239,12 @@ public class ListHandler {
         if (lists.containsKey(list_name)) {
             if (ignoreCase) {
                 for (String element : lists.get(list_name)) {
-                    if (element.equalsIgnoreCase(value)) {
+                    if (element.equalsIgnoreCase(value))
                         return "true";
-                    }
                 }
             } else {
-                if (lists.get(list_name).contains(value)) {
+                if (lists.get(list_name).contains(value))
                     return "true";
-                }
             }
         }
         return "false";
@@ -274,15 +265,13 @@ public class ListHandler {
                     }
                     i++;
                 }
-                if (position == -1) {
+                if (position == -1)
                     return "Index out of bounds";
-                } else {
+                else
                     return position+"";
-                }
             }
-        } else {
-            return "Empty list";
         }
+        return "Empty list";
     }
 
     private static String getRandomValue(String list_name) {
@@ -290,32 +279,27 @@ public class ListHandler {
             List<String> list = lists.get(list_name);
             int randInt = EventsHandler.randInt(0, list.size()-1);
             return list.get(randInt);
-        } else {
-            return "Empty list";
         }
+        return "Empty list";
     }
 
     private static String getSize(String list_name) {
-        if (lists.containsKey(list_name)) {
+        if (lists.containsKey(list_name))
             return lists.get(list_name).size()+"";
-        } else {
-            return "0";
-        }
+        return "0";
     }
 
     private static String removeValue(String list_name, int position) throws NumberFormatException {
         List<String> entries = lists.get(list_name);
         if (position < entries.size() && position >= 0) {
             String removed = entries.remove(position);
-            if (entries.size() == 0) {
+            if (entries.size() == 0)
                 lists.remove(list_name);
-            } else {
+            else
                 lists.put(list_name, entries);
-            }
             return removed;
-        } else {
-            throw new NumberFormatException();
         }
+        throw new NumberFormatException();
     }
 
     private static String removeValue(String list_name, String value) {

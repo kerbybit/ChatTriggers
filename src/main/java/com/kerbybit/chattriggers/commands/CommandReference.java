@@ -2,23 +2,31 @@ package com.kerbybit.chattriggers.commands;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
+import com.google.common.collect.ComparisonChain;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.references.AsyncHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.scoreboard.ScorePlayerTeam;
+import net.minecraft.world.WorldSettings;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class CommandReference {
     public static Boolean isCommandAllowed(String command) {
         command = command.toLowerCase();
         return command.equals("who")
                 || command.equals("whereami")
-                || command.equals("wtfmap");
+                || command.equals("wtfmap")
+                || Minecraft.getMinecraft().isSingleplayer();
     }
 
     static void clearAll() {
@@ -229,7 +237,7 @@ public class CommandReference {
             r.add("{rcps} {rcpsAve} {rcpsMax}");
             r.add("");
             r.add("{server} {serverIP} {serverMOTD} {serverVersion}");
-            r.add("{ping} {playerList}");
+            r.add("{ping} {playerList} {tabList}");
             r.add("{scoreboardTitle} {scoreboardLines}");
             r.add("");
             r.add("{actionbarText} {bossbarText}");
@@ -294,9 +302,9 @@ public class CommandReference {
             r.add(".ignoreEscape()");
             r.add(".fixLinks()");
             r.add("");
-            r.add(".length()");
-            r.add(".size()");
+            r.add(".length() .size()");
             r.add(".split($value)");
+            r.add(".load($url) .load($file) .export($file)");
 
         return r;
     }
@@ -423,6 +431,18 @@ public class CommandReference {
         }
         if (global.rclicks.size() > global.rclicks_max) {
             global.rclicks_max = global.rclicks.size();
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static class PlayerComparator implements Comparator<NetworkPlayerInfo> {
+        public PlayerComparator() {
+        }
+
+        public int compare(NetworkPlayerInfo p_compare_1_, NetworkPlayerInfo p_compare_2_) {
+            ScorePlayerTeam scoreplayerteam = p_compare_1_.getPlayerTeam();
+            ScorePlayerTeam scoreplayerteam1 = p_compare_2_.getPlayerTeam();
+            return ComparisonChain.start().compareTrueFirst(p_compare_1_.getGameType() != WorldSettings.GameType.SPECTATOR, p_compare_2_.getGameType() != WorldSettings.GameType.SPECTATOR).compare(scoreplayerteam != null ? scoreplayerteam.getRegisteredName() : "", scoreplayerteam1 != null ? scoreplayerteam1.getRegisteredName() : "").compare(p_compare_1_.getGameProfile().getName(), p_compare_2_.getGameProfile().getName()).result();
         }
     }
 }

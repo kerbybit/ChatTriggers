@@ -21,7 +21,7 @@ public class RomanNumber {
     }
 
     public static String toRoman(int number) {
-        if (number > 0) {
+        if (number > 0 && number < 11) {
             int l =  map.floorKey(number);
             if ( number == l ) {
                 return map.get(number);
