@@ -9,73 +9,57 @@ import java.util.List;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
+import com.kerbybit.chattriggers.objects.DisplayHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 public class TriggerHandler {
     public static void onChat(String fmsg, String msg, ClientChatReceivedEvent e) {
+        onChat(fmsg, msg, e, false);
+    }
+
+    public static void onChat(String fmsg, String msg, ClientChatReceivedEvent e, Boolean isActionbar) {
+        msg = msg.replace("\n", "\\n");
+        fmsg = fmsg.replace("\n", "\\n");
         String msgNOEDIT = msg;
 
         //debug chat
-        if (global.debugChat) {
+        if (global.debugChat && !isActionbar) {
             String tmp_out = ChatHandler.removeFormatting(fmsg);
             global.copyText.add(tmp_out);
             tmp_out = tmp_out.replace("'", "\\'");
-            ChatHandler.warn("clickable("+ChatHandler.ignoreFormatting(tmp_out)+",run_command,/trigger copy CopyFromDebugChat " + (global.copyText.size()-1) + ",Click to copy)");
+            List<String> TMP_eventout = new ArrayList<>();
+            TMP_eventout.add("text:'" + tmp_out + "',clickEvent:{action:'run_command',value:'/t copy CopyFromDebugChat " + (global.copyText.size()-1) + "'},hoverEvent:{action:'show_text',value:'Click to copy\n" + tmp_out + "'}");
+            ChatHandler.sendJson(TMP_eventout);
         }
 
-        for (int i=0; i<global.chatTrigger.size(); i++) {
+        //get trigger list if chat or actionbar
+        List<List<String>> temp;
+        if (isActionbar) temp = new ArrayList<>(global.actionTrigger);
+        else temp = new ArrayList<>(global.chatTrigger);
+
+        for (List<String> trigger : temp) {
             //setup
-            String TMP_trig = global.chatTrigger.get(i).get(1);
-            String TMP_w = "";
-            String[] TMP_server = {};
+            String TMP_trig = trigger.get(1);
+            String TMP_w;
+            String[] TMP_server;
             String current_server;
             Boolean correct_server = false;
-            Boolean TMP_formatted = false;
+            Boolean TMP_formatted;
 
             //tags
-            if (TMP_trig.contains("<s>")) {
-                TMP_w = "s";
-                TMP_trig = TMP_trig.replace("<s>", "");
-            }
-            if (TMP_trig.contains("<c>")) {
-                TMP_w = "c";
-                TMP_trig = TMP_trig.replace("<c>", "");
-            }
-            if (TMP_trig.contains("<e>")) {
-                TMP_w = "e";
-                TMP_trig = TMP_trig.replace("<e>", "");
-            }
-            if (TMP_trig.contains("<start>")) {
-                TMP_w = "s";
-                TMP_trig = TMP_trig.replace("<start>", "");
-            }
-            if (TMP_trig.contains("<contain>")) {
-                TMP_w = "c";
-                TMP_trig = TMP_trig.replace("<contain>", "");
-            }
-            if (TMP_trig.contains("<end>")) {
-                TMP_w = "e";
-                TMP_trig = TMP_trig.replace("<end>", "");
-            }
-            if (TMP_trig.contains("<list=") && TMP_trig.contains(">")) {
-                TMP_trig = TMP_trig.replace(TMP_trig.substring(TMP_trig.indexOf("<list="), TMP_trig.indexOf(">", TMP_trig.indexOf("<list=")) + 1), "");
-            }
-            if (TMP_trig.contains("<imported>")) {
-                TMP_trig = TMP_trig.replace("<imported>", "");
-            }
-            if (TMP_trig.contains("<formatted>")) {
-                TMP_trig = TMP_trig.replace("<formatted>", "");
-                TMP_formatted = true;
-            }
+            TMP_w = TagHandler.getChatPosition(TMP_trig);
+            TMP_formatted = TagHandler.getIsFormatted(TMP_trig);
+            TMP_server = TagHandler.getServer(TMP_trig);
+            TMP_trig = TagHandler.removeTags(TMP_trig);
+
 
             //check server stuff
-            if (TMP_trig.contains("<server=") && TMP_trig.contains(">")) {
-                TMP_server = TMP_trig.substring(TMP_trig.indexOf("<server=") + 8, TMP_trig.indexOf(">", TMP_trig.indexOf("<server="))).split(",");
-                TMP_trig = TMP_trig.replace(TMP_trig.substring(TMP_trig.indexOf("<server="), TMP_trig.indexOf(">", TMP_trig.indexOf("<server=")) + 1), "");
-            }
-
             if (Minecraft.getMinecraft().isSingleplayer()) {
                 current_server = "SinglePlayer";
             } else {
@@ -88,7 +72,7 @@ public class TriggerHandler {
             }
 
             for (String value : TMP_server) {
-                if (current_server.contains(value.replace("99.198.123.2","hypixel"))) {
+                if (current_server.toUpperCase().contains(value.toUpperCase())) {
                     correct_server = true;
                 }
             }
@@ -108,153 +92,120 @@ public class TriggerHandler {
                 msg = msgNOEDIT;
             }
 
-            //read strings
-            if (TMP_trig.contains("{string<") && TMP_trig.contains(">}")) {
-                String TMP_sn = TMP_trig.substring(TMP_trig.indexOf("{string<") + 8, TMP_trig.indexOf(">}"));
-                for (int j = 0; j < global.USR_string.size(); j++) {
-                    if (global.USR_string.get(j).get(0).equals(TMP_sn)) {
-                        String TMP_s = global.USR_string.get(j).get(1);
-                        TMP_trig = TMP_trig.replace("{string<" + TMP_sn + ">}", TMP_s);
-                    }
-                }
-            }
-            TMP_trig = TMP_trig.replace("{me}", Minecraft.getMinecraft().thePlayer.getDisplayNameString());
+            TMP_trig = getTrigStrings(TMP_trig);
+
 
             if (correct_server) {
-                if (TMP_w.equals("s")) { //startWith
-                    try {
-                        TMP_trig = StringHandler.setStrings(msg, TMP_trig);
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                        ChatHandler.warn(ChatHandler.color("red", "There was a problem setting strings!"));
-                    }
-                    if (msg.startsWith(TMP_trig)) { //check
-                        //add all events to temp list
-                        List<String> TMP_events = new ArrayList<String>();
-                        for (int j = 2; j < global.chatTrigger.get(i).size(); j++) {
-                            TMP_events.add(global.chatTrigger.get(i).get(j));
-                        }
+                TMP_trig = setTrigStrings(msg, TMP_trig);
 
-                        //do events
-                        if (global.temporary_replace.size() == 0) {
-                            EventsHandler.doEvents(TMP_events, e);
-                        } else {
-                            EventsHandler.doEvents(TMP_events, e, global.temporary_replace.toArray(new String[global.temporary_replace.size()]), global.temporary_replacement.toArray(new String[global.temporary_replacement.size()]));
-                            global.temporary_replace.clear();
-                            global.temporary_replacement.clear();
-                        }
-                    } else {
-                        global.temporary_replace.clear();
-                        global.temporary_replacement.clear();
-                    }
-                } else if (TMP_w.equals("c")) { //contains
-                    try {
-                        TMP_trig = StringHandler.setStrings(msg, TMP_trig);
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                        ChatHandler.warn(ChatHandler.color("red", "There was a problem setting strings!"));
-                    }
-                    if (msg.contains(TMP_trig)) { //check
-                        //add all events to temp list
-                        List<String> TMP_events = new ArrayList<String>();
-                        for (int j = 2; j < global.chatTrigger.get(i).size(); j++) {
-                            TMP_events.add(global.chatTrigger.get(i).get(j));
-                        }
-
-                        //do events
-                        if (global.temporary_replace.size() == 0) {
-                            EventsHandler.doEvents(TMP_events, e);
-                        } else {
-                            EventsHandler.doEvents(TMP_events, e, global.temporary_replace.toArray(new String[global.temporary_replace.size()]), global.temporary_replacement.toArray(new String[global.temporary_replacement.size()]));
-                            global.temporary_replace.clear();
-                            global.temporary_replacement.clear();
-                        }
-                    } else {
-                        global.temporary_replace.clear();
-                        global.temporary_replacement.clear();
-                    }
-                } else if (TMP_w.equals("e")) { //endsWith
-                    try {
-                        TMP_trig = StringHandler.setStrings(msg, TMP_trig);
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                        ChatHandler.warn(ChatHandler.color("red", "There was a problem setting strings!"));
-                    }
-                    if (msg.endsWith(TMP_trig)) {
-                        //add all events to temp list
-                        List<String> TMP_events = new ArrayList<String>();
-                        for (int j = 2; j < global.chatTrigger.get(i).size(); j++) {
-                            TMP_events.add(global.chatTrigger.get(i).get(j));
-                        }
-
-                        //do events
-                        if (global.temporary_replace.size() == 0) {
-                            EventsHandler.doEvents(TMP_events, e);
-                        } else {
-                            EventsHandler.doEvents(TMP_events, e, global.temporary_replace.toArray(new String[global.temporary_replace.size()]), global.temporary_replacement.toArray(new String[global.temporary_replacement.size()]));
-                            global.temporary_replace.clear();
-                            global.temporary_replacement.clear();
-                        }
-                    } else {
-                        global.temporary_replace.clear();
-                        global.temporary_replacement.clear();
-                    }
-                } else { //equals
-                    try {
-                        TMP_trig = StringHandler.setStrings(msg, TMP_trig);
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                        ChatHandler.warn(ChatHandler.color("red", "There was a problem setting strings!"));
-                    }
-                    if (msg.equals(TMP_trig)) {
-                        //add all events to temp list
-                        List<String> TMP_events = new ArrayList<String>();
-                        for (int j = 2; j < global.chatTrigger.get(i).size(); j++) {
-                            TMP_events.add(global.chatTrigger.get(i).get(j));
-                        }
-
-                        //do events
-                        if (global.temporary_replace.size() == 0) {
-                            EventsHandler.doEvents(TMP_events, e);
-                        } else {
-                            EventsHandler.doEvents(TMP_events, e, global.temporary_replace.toArray(new String[global.temporary_replace.size()]), global.temporary_replacement.toArray(new String[global.temporary_replacement.size()]));
-                            global.temporary_replace.clear();
-                            global.temporary_replacement.clear();
-                        }
-                    } else {
-                        global.temporary_replace.clear();
-                        global.temporary_replacement.clear();
-                    }
+                switch (TMP_w) {
+                    case ("s"):
+                        if (msg.startsWith(TMP_trig))
+                            doEvents(trigger, e);
+                        break;
+                    case("c"):
+                        if (msg.contains(TMP_trig))
+                            doEvents(trigger, e);
+                        break;
+                    case("e"):
+                        if (msg.endsWith(TMP_trig))
+                            doEvents(trigger, e);
+                        break;
+                    default:
+                        if (msg.equals(TMP_trig))
+                            doEvents(trigger, e);
+                        break;
                 }
+                clearTemporary();
             }
         }
     }
 
-	public static void onChat(ClientChatReceivedEvent e) {
-
-        //onChat
-        for (int i=0; i<global.onChatTrigger.size(); i++) {
-            //add all events to temp list
-            List<String> TMP_events = new ArrayList<String>();
-            for (int j=2; j<global.onChatTrigger.get(i).size(); j++) {TMP_events.add(global.onChatTrigger.get(i).get(j));}
-
-            //do events
-            EventsHandler.doEvents(TMP_events, e);
+    private static String setTrigStrings(String msg, String TMP_trig) {
+        try {
+            return StringHandler.setStrings(msg, TMP_trig);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+            ChatHandler.warn(ChatHandler.color("red", "There was a problem setting strings!"));
         }
 
-        //chat
-		String msg = e.getMessage().getUnformattedText();
-		String fmsg = e.getMessage().getFormattedText();
-        if (global.chatHistory.size() >= 1) {
-            if (!global.chatHistory.get(global.chatHistory.size()-1).equals(ChatHandler.removeFormatting(fmsg))) {
-                global.chatHistory.add(ChatHandler.removeFormatting(fmsg));
+        return TMP_trig;
+    }
+
+    private static String getTrigStrings(String TMP_trig) {
+        //read strings
+        while (TMP_trig.contains("{string<") && TMP_trig.contains(">}")) {
+            Boolean  isString = false;
+            String TMP_sn = TMP_trig.substring(TMP_trig.indexOf("{string<") + 8, TMP_trig.indexOf(">}"));
+            if (global.USR_string.containsKey(TMP_sn)) {
+                String TMP_s = global.USR_string.get(TMP_sn);
+                TMP_trig = TMP_trig.replace("{string<" + TMP_sn + ">}", TMP_s);
+                isString = true;
             }
-        } else {
-            global.chatHistory.add(ChatHandler.removeFormatting(fmsg));
+            if (!isString) {
+                TMP_trig = TMP_trig.replace("{string<" + TMP_sn + ">}", "not a string!");
+            }
         }
-		if (global.chatHistory.size()>100) {global.chatHistory.remove(0);}
+        return TMP_trig.replace("{me}", Minecraft.getMinecraft().thePlayer.getDisplayNameString());
+    }
 
-        onChat(fmsg, msg, e);
+    private static void doEvents(List<String> trigger, ClientChatReceivedEvent e) {
+        //add all events to temp list
+        List<String> TMP_events = new ArrayList<>();
+        for (int j = 2; j < trigger.size(); j++) {
+            TMP_events.add(trigger.get(j));
+        }
+
+        //do events
+        if (global.temporary_replace.size() == 0) {
+            EventsHandler.doEvents(TMP_events, e);
+        } else {
+            EventsHandler.doEvents(TMP_events, e, global.temporary_replace.toArray(new String[global.temporary_replace.size()]), global.temporary_replacement.toArray(new String[global.temporary_replacement.size()]));
+            clearTemporary();
+        }
+    }
+
+    private static void clearTemporary() {
+        global.temporary_replace.clear();
+        global.temporary_replacement.clear();
+    }
+
+	public static void onChat(ClientChatReceivedEvent e) {
+        if (e.getType() != 2) {
+            //onChat
+            for (int i=0; i<global.onChatTrigger.size(); i++) {
+                //add all events to temp list
+                List<String> TMP_events = new ArrayList<>();
+                for (int j=2; j<global.onChatTrigger.get(i).size(); j++) {TMP_events.add(global.onChatTrigger.get(i).get(j));}
+
+                //do events
+                EventsHandler.doEvents(TMP_events, e);
+            }
+
+            //chat
+            String msg = e.getMessage().getUnformattedText();
+            String fmsg = e.getMessage().getFormattedText();
+            if (global.chatHistory.size() >= 1) {
+                if (!global.chatHistory.get(global.chatHistory.size()-1).equals(ChatHandler.removeFormatting(fmsg))) {
+                    global.chatHistory.add(ChatHandler.removeFormatting(fmsg));
+                }
+            } else global.chatHistory.add(ChatHandler.removeFormatting(fmsg));
+            if (global.chatHistory.size()>100) global.chatHistory.remove(0);
+
+            onChat(fmsg, msg, e);
+        } else {
+            String msg = e.getMessage().getUnformattedText();
+            String fmsg = e.getMessage().getFormattedText();
+
+            if (global.actionHistory.size() >= 1) {
+                if (!global.actionHistory.get(global.actionHistory.size()-1).equals(ChatHandler.removeFormatting(fmsg))) {
+                    global.actionHistory.add(ChatHandler.removeFormatting(fmsg));
+                }
+            } else global.actionHistory.add(ChatHandler.removeFormatting(fmsg));
+            if (global.actionHistory.size() > 100) global.actionHistory.remove(0);
+
+            onChat(fmsg, msg, e, true);
+        }
 	}
 	
 	public static void onClientTickTriggers() {
@@ -262,7 +213,7 @@ public class TriggerHandler {
 			for (int i=0; i<global.tickTrigger.size(); i++) {
 				if (global.ticksElapsed % global.tickTriggerTime.get(i) == 0) {
 					//add all events to temp list
-					List<String> TMP_events = new ArrayList<String>();
+					List<String> TMP_events = new ArrayList<>();
 					for (int j=2; j<global.tickTrigger.get(i).size(); j++) {TMP_events.add(global.tickTrigger.get(i).get(j));}
 					
 					//do events
@@ -271,11 +222,54 @@ public class TriggerHandler {
 			}
 		}
 	}
+
+	public static void onSoundPlay(PlaySoundEvent e) {
+        if (global.ignoreNextSound) {
+            global.ignoreNextSound = false;
+        } else {
+            for (int i = 0; i < global.onSoundPlayTrigger.size(); i++) {
+                //add all events to temp list
+                List<String> TMP_events = new ArrayList<>();
+                for (int j = 2; j < global.onSoundPlayTrigger.get(i).size(); j++) {
+                    String toAdd = global.onSoundPlayTrigger.get(i).get(j);
+                    TMP_events.add(toAdd);
+                }
+
+                //do events
+                try {
+                    String[] extraStrings = new String[]{
+                            "{soundName}", "{soundCategory}", "{soundDistance}",
+                            "{soundX}", "{soundY}", "{soundZ}",
+                            "{soundVol}", "{soundPitch}"
+                    };
+
+                    String soundName = e.getSound().getSoundLocation().getResourcePath();
+                    String categoryName = e.getSound().getCategory().getName();
+                    String soundDistance = String.valueOf(getDistanceFromPlayer(e.getSound()));
+                    String xPos = String.valueOf(e.getSound().getXPosF());
+                    String yPos = String.valueOf(e.getSound().getYPosF());
+                    String zPos = String.valueOf(e.getSound().getZPosF());
+                    String soundVolume = String.valueOf(e.getSound().getVolume());
+                    String soundPitch = String.valueOf(e.getSound().getPitch());
+
+                    String[] extraStringValues = new String[]{
+                            soundName, categoryName, soundDistance,
+                            xPos, yPos, zPos,
+                            soundVolume, soundPitch
+                    };
+
+                    EventsHandler.doEvents(TMP_events, e, extraStrings, extraStringValues);
+                } catch (NullPointerException exception) {
+                    // do nothing //
+                }
+            }
+        }
+    }
 	
 	public static void onRightClickPlayer(PlayerInteractEvent.EntityInteract e) {
 		for (int i=0; i<global.onRightClickPlayerTrigger.size(); i++) {
 			//add all events to temp list
-			List<String> TMP_events = new ArrayList<String>();
+			List<String> TMP_events = new ArrayList<>();
 			for (int j=2; j<global.onRightClickPlayerTrigger.get(i).size(); j++) {TMP_events.add(global.onRightClickPlayerTrigger.get(i).get(j).replace("{player}", e.getTarget().getName()));}
 			
 			//do events
@@ -285,10 +279,12 @@ public class TriggerHandler {
 	
 	public static void worldLoadTriggers() {
 		if (global.worldLoaded) {
-			for (int i=0; i<global.onWorldFirstLoadTrigger.size(); i++) {
-				if (global.worldFirstLoad) {
+            DisplayHandler.clearDisplays();
+
+            if (global.worldFirstLoad) {
+			    for (int i=0; i<global.onWorldFirstLoadTrigger.size(); i++) {
 					//add all events to temp list
-					List<String> TMP_events = new ArrayList<String>();
+					List<String> TMP_events = new ArrayList<>();
 					for (int j=2; j<global.onWorldFirstLoadTrigger.get(i).size(); j++) {TMP_events.add(global.onWorldFirstLoadTrigger.get(i).get(j));}
 					
 					//do events
@@ -298,21 +294,22 @@ public class TriggerHandler {
 				
 			for (int i=0; i<global.onWorldLoadTrigger.size(); i++) {
 				//add all events to temp list
-				List<String> TMP_events = new ArrayList<String>();
+				List<String> TMP_events = new ArrayList<>();
 				for (int j=2; j<global.onWorldLoadTrigger.get(i).size(); j++) {TMP_events.add(global.onWorldLoadTrigger.get(i).get(j));}
 				
 				//do events
 				EventsHandler.doEvents(TMP_events, null);
 			}
-			
-			for (int i=0; i<global.onServerChangeTrigger.size(); i++) {
-				String currentServer;
-				if (Minecraft.getMinecraft().isSingleplayer()) {currentServer = "SinglePlayer";}
-                else {currentServer = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
-				
-				if (!currentServer.equals(global.connectedToServer)) {
+
+            String currentServer;
+            if (Minecraft.getMinecraft().isSingleplayer()) {currentServer = "SinglePlayer";}
+            else {currentServer = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
+
+            if (!currentServer.equals(global.connectedToServer)) {
+			    for (int i=0; i<global.onServerChangeTrigger.size(); i++) {
+
 					//add all events to temp list
-					List<String> TMP_events = new ArrayList<String>();
+					List<String> TMP_events = new ArrayList<>();
 					for (int j=2; j<global.onServerChangeTrigger.get(i).size(); j++) {TMP_events.add(global.onServerChangeTrigger.get(i).get(j));}
 					
 					//do events
@@ -320,6 +317,7 @@ public class TriggerHandler {
 				}
 			}
 			global.worldFirstLoad = false;
+
 			if (Minecraft.getMinecraft().isSingleplayer()) {global.connectedToServer = "SinglePlayer";} 
 			else {global.connectedToServer = Minecraft.getMinecraft().getCurrentServerData().serverIP;}
 		}
@@ -335,7 +333,7 @@ public class TriggerHandler {
 				global.currentDate = dateFormat.format(date);
 				for (int i=0; i<global.onNewDayTrigger.size(); i++) {
 					//add all events to temp list
-					List<String> TMP_events = new ArrayList<String>();
+					List<String> TMP_events = new ArrayList<>();
 					for (int j=2; j<global.onNewDayTrigger.get(i).size(); j++) {TMP_events.add(global.onNewDayTrigger.get(i).get(j));}
 					
 					//do events
@@ -344,4 +342,18 @@ public class TriggerHandler {
 			}
 		}
 	}
+
+	private static double getDistanceFromPlayer(ISound sound) {
+        EntityPlayerSP p = FMLClientHandler.instance().getClientPlayerEntity();
+
+        float x = sound.getXPosF();
+        float y = sound.getYPosF();
+        float z = sound.getZPosF();
+
+        return Math.sqrt(
+                Math.pow(x - p.getPosition().getX(), 2)
+                + Math.pow(y - p.getPosition().getY(), 2)
+                + Math.pow(z - p.getPosition().getZ(), 2)
+        );
+    }
 }

@@ -1,5 +1,6 @@
 package com.kerbybit.chattriggers.commands;
 
+import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.references.BugTracker;
 import net.minecraft.client.Minecraft;
@@ -17,12 +18,12 @@ public class CommandT extends CommandBase{
 	public void processCommand(ICommandSender sender, String[] args) {
         try {
             if (global.canUse) {
-                if (global.settings.get(6).equalsIgnoreCase("true")) {
+                if (Settings.commandT) {
                     CommandTrigger.doCommand(args, false);
                 } else {
-                    String send = "";
-                    for (String arg : args) {send += arg + " ";}
-                    Minecraft.getMinecraft().thePlayer.sendChatMessage("/t " + send.trim());
+                    StringBuilder send = new StringBuilder();
+                    for (String arg : args) {send.append(arg).append(" ");}
+                    Minecraft.getMinecraft().thePlayer.sendChatMessage("/t " + send.toString().trim());
                 }
             }
         } catch (Exception e) {

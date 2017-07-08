@@ -1,0 +1,16 @@
+[
+{
+  "modid": "ct",
+  "name": "ChatTriggers",
+  "description": "Customize your chat",
+  "version": "5.0",
+  "mcversion": "1.12",
+  "url": "http://ct.kerbybit.com",
+  "updateUrl": "",
+  "authorList": ["kerbybit", "FalseHonesty"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
