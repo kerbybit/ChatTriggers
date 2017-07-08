@@ -11,10 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import org.apache.commons.lang3.text.WordUtils;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -363,9 +360,55 @@ public class StringFunctions {
                     return getStringFromURL(args);
                 else
                     return getStringFromFile(args);
+            case("EXPORT"):
+                return saveStringToFile(stringValue, args);
             default:
                 return null;
         }
+    }
+
+    private static String saveStringToFile(String value, String dest) {
+        dest = dest.replace("./mods/ChatTriggers/", "./");
+        dest = dest.replace("./", "./mods/ChatTriggers/");
+
+        if (!dest.contains("/")) {
+            dest = "./mods/ChatTriggers/"+dest;
+        }
+
+        try {
+            PrintWriter writer = new PrintWriter(dest, "UTF-8");
+            writer.println(value);
+            writer.close();
+        } catch (FileNotFoundException exception) {
+            dest = dest.replace("./mods/ChatTriggers/", "");
+            String check_str = dest.substring(0, dest.lastIndexOf("/"));
+
+            if (check_str.contains("/")) {
+                StringBuilder folder = new StringBuilder("./mods/ChatTriggers/");
+                for (String dir : check_str.split("/")) {
+                    folder = folder.append(dir).append("/");
+                    File check = new File(folder.toString());
+                    if (!check.mkdir()) {
+                        break;
+                    }
+                }
+                if (new File(folder.toString()).exists()) {
+                    saveStringToFile(value, "./" + dest);
+                }
+            } else {
+                File check = new File("./mods/ChatTriggers/" + check_str);
+                if (!check.mkdir())
+                    ChatHandler.warn("red", "Unable to save json to file!");
+                else {
+                    saveStringToFile(value, "./" + dest);
+                }
+            }
+        } catch (IOException exception) {
+            exception.printStackTrace();
+            return "Unable to save string to file! IOException";
+        }
+
+        return value;
     }
 
     private static String getStringFromURL(String url) {

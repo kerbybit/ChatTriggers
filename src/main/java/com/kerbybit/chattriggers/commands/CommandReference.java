@@ -25,7 +25,8 @@ public class CommandReference {
         command = command.toLowerCase();
         return command.equals("who")
                 || command.equals("whereami")
-                || command.equals("wtfmap");
+                || command.equals("wtfmap")
+                || Minecraft.getMinecraft().isSingleplayer();
     }
 
     static void clearAll() {
@@ -236,7 +237,7 @@ public class CommandReference {
             r.add("{rcps} {rcpsAve} {rcpsMax}");
             r.add("");
             r.add("{server} {serverIP} {serverMOTD} {serverVersion}");
-            r.add("{ping} {playerList}");
+            r.add("{ping} {playerList} {tabList}");
             r.add("{scoreboardTitle} {scoreboardLines}");
             r.add("");
             r.add("{actionbarText} {bossbarText}");
@@ -301,9 +302,9 @@ public class CommandReference {
             r.add(".ignoreEscape()");
             r.add(".fixLinks()");
             r.add("");
-            r.add(".length()");
-            r.add(".size()");
+            r.add(".length() .size()");
             r.add(".split($value)");
+            r.add(".load($url) .load($file) .export($file)");
 
         return r;
     }
