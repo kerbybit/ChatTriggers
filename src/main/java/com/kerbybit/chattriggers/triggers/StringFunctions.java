@@ -3,10 +3,7 @@ package com.kerbybit.chattriggers.triggers;
 import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.file.FileHandler;
 import com.kerbybit.chattriggers.globalvars.global;
-import com.kerbybit.chattriggers.objects.ArrayHandler;
-import com.kerbybit.chattriggers.objects.DisplayHandler;
-import com.kerbybit.chattriggers.objects.JsonHandler;
-import com.kerbybit.chattriggers.objects.ListHandler;
+import com.kerbybit.chattriggers.objects.*;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import org.apache.commons.lang3.text.WordUtils;
@@ -723,6 +720,10 @@ public class StringFunctions {
         }
         while (args.contains("{json[") && args.contains("]}")) {
             args = JsonHandler.jsonFunctions(args, isAsync);
+            args = stringFunctions(args, chatEvent, isAsync);
+        }
+        while (args.contains("{book[") && args.contains("]}")) {
+            args = BookHandler.bookFunctions(args, isAsync);
             args = stringFunctions(args, chatEvent, isAsync);
         }
         while (args.contains("{string[") && args.contains("]}")) {

@@ -137,6 +137,10 @@ public class JsonHandler {
     }
 
     private static void setValue(String json_name, String key, String value) {
+        if (!jsons.containsKey(json_name)) {
+            jsons.put(json_name, new JsonObject());
+        }
+
         if (jsons.containsKey(json_name)) {
             try {
                 JsonObject obj = jsons.get(json_name);

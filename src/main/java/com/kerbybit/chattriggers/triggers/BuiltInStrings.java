@@ -16,8 +16,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiIngame;
-import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.client.gui.GuiScreenBook;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.BossStatus;
@@ -967,6 +968,33 @@ public class BuiltInStrings {
             }
 
             TMP_e = createDefaultString("arrows", arrows+"", TMP_e, isAsync);
+        }
+
+        if (TMP_e.contains("{inBook(") && TMP_e.contains(")}")) {
+            int bookIndex = TMP_e.indexOf("{inBook(");
+            String bookName = TMP_e.substring(bookIndex + 8, TMP_e.indexOf(")}", bookIndex));
+            Boolean inBook = false;
+
+            if (Minecraft.getMinecraft().currentScreen instanceof GuiScreenBook) {
+                System.out.println("inBook");
+                GuiScreenBook bookScreen = ((GuiScreenBook) Minecraft.getMinecraft().currentScreen);
+
+                String bookTitle = ReflectionHelper.getPrivateValue(GuiScreenBook.class, bookScreen, "field_146482_z", "bookTitle");
+                System.out.println("BT: " + bookTitle);
+                if (bookTitle.equalsIgnoreCase("CT" + bookName)) {
+                    inBook = true;
+                }
+            }
+
+            if (isAsync) {
+                global.Async_string.put("AsyncDefaultString->INBOOK-" + (global.Async_string.size() + 1), inBook.toString());
+                global.backupAsync_string.put("AsyncDefaultString->INBOOK-" + global.Async_string.size(), inBook.toString());
+                return TMP_e.replace("{inBook(" + bookName + ")}", "{string[AsyncDefaultString->INBOOK-" + global.Async_string.size() + "]}");
+            } else {
+                global.TMP_string.put("DefaultString->INBOOK-" + (global.TMP_string.size() + 1), inBook.toString());
+                global.backupTMP_strings.put("DefaultString->INBOOK-" + global.TMP_string.size(), inBook.toString());
+                return TMP_e.replace("{inBook(" + bookName + ")}", "{string[DefaultString->INBOOK-" + global.TMP_string.size() + "]}");
+            }
         }
 
         if (TMP_e.contains("{xpLevel}")) {
