@@ -21,7 +21,6 @@ public class Settings {
     public static String lastOpened = "1997/01/01";
 
     public static Boolean isBeta = false;
-    public static String CTversion = "4.1.7";
     public static Boolean backupFiles = false;
 
     public static Boolean oldFormatting = false;

@@ -570,16 +570,28 @@ public class BuiltInStrings {
                 armorList = new StringBuilder(armorList.substring(0, armorList.length()-1) + "}");
             }
 
-            JsonHandler.getJson("DefaultJson->ARMOR-"+(JsonHandler.getJsonsSize()+1), armorList.toString());
+            String json_name;
+            if (isAsync)
+                json_name = "AsyncDefaultJson->ARMOR-"+(JsonHandler.getJsonsSize()+1);
+            else
+                json_name = "DefaultJson->ARMOR-"+(JsonHandler.getJsonsSize()+1);
 
-            TMP_e = TMP_e.replace("{armor}", "{json[DefaultJson->ARMOR-"+ JsonHandler.getJsonsSize()+"]}");
+            JsonHandler.getJson(json_name, armorList.toString());
+
+            TMP_e = TMP_e.replace("{armor}", "{json[" + json_name + "]}");
         }
         if (TMP_e.contains("{heldItem}")) {
             ItemStack item = mc.thePlayer.getHeldItem();
 
-            JsonHandler.getJson("DefaultJson->HELDITEM-"+(JsonHandler.getJsonsSize()+1), getItemJson(item));
+            String json_name;
+            if (isAsync)
+                json_name = "AsyncDefaultJson->HELDITEM-"+(JsonHandler.getJsonsSize()+1);
+            else
+                json_name = "DefaultJson->HELDITEM-"+(JsonHandler.getJsonsSize()+1);
 
-            TMP_e = TMP_e.replace("{heldItem}", "{json[DefaultJson->HELDITEM-"+ JsonHandler.getJsonsSize()+"]}");
+            JsonHandler.getJson(json_name, getItemJson(item));
+
+            TMP_e = TMP_e.replace("{heldItem}", "{json[" + json_name + "]}");
         }
 
 		if (TMP_e.contains("{hotbar(") && TMP_e.contains(")}")) {
@@ -591,9 +603,15 @@ public class BuiltInStrings {
         	if (slot <= 8) {
 				ItemStack itemStack = mc.thePlayer.inventory.getStackInSlot(slot);
 
-				JsonHandler.getJson("DefaultJson->HOTBAR-" + (JsonHandler.getJsonsSize() + 1), getItemJson(itemStack));
+				String json_name;
+				if (isAsync)
+				    json_name = "AsyncDefaultJson->HOTBAR-" + (JsonHandler.getJsonsSize() + 1);
+				else
+				    json_name = "DefaultJson->HOTBAR-" + (JsonHandler.getJsonsSize() + 1);
+
+				JsonHandler.getJson(json_name, getItemJson(itemStack));
 				TMP_e = TMP_e.replace("{hotbar(" + slotString + ")}",
-						"{json[DefaultJson->HOTBAR-" + JsonHandler.getJsonsSize() + "]}");
+						"{json[" + json_name + "]}");
 			}
 		}
 
@@ -758,8 +776,14 @@ public class BuiltInStrings {
 				jsonString = "{}";
 			}
 
-			JsonHandler.getJson("DefaultJson->LOOKINGATMIN-" + (JsonHandler.getJsonsSize() + 1), jsonString);
-			TMP_e = TMP_e.replace("{lookingAtMin}", "{json[DefaultJson->LOOKINGATMIN-" + JsonHandler.getJsonsSize() + "]}");
+			String json_name;
+			if (isAsync)
+			    json_name = "AsyncDefaultJson->LOOKINGATMIN-" + (JsonHandler.getJsonsSize() + 1);
+			else
+			    json_name = "DefaultJson->LOOKINGATMIN-" + (JsonHandler.getJsonsSize() + 1);
+
+			JsonHandler.getJson(json_name, jsonString);
+			TMP_e = TMP_e.replace("{lookingAtMin}", "{json[" + json_name + "]}");
 		}
 
 		if (TMP_e.contains("{lookingAt}")) {
@@ -951,8 +975,14 @@ public class BuiltInStrings {
 				jsonString = "{}";
 			}
 
-			JsonHandler.getJson("DefaultJson->LOOKINGAT-" + (JsonHandler.getJsonsSize() + 1), jsonString);
-			TMP_e = TMP_e.replace("{lookingAt}", "{json[DefaultJson->LOOKINGAT-" + JsonHandler.getJsonsSize() + "]}");
+			String json_name;
+			if (isAsync)
+			    json_name = "AsyncDefaultJson->LOOKINGAT-" + (JsonHandler.getJsonsSize() + 1);
+			else
+			    json_name = "DefaultJson->LOOKINGAT-" + (JsonHandler.getJsonsSize() + 1);
+
+			JsonHandler.getJson(json_name, jsonString);
+			TMP_e = TMP_e.replace("{lookingAt}", "{json[" + json_name + "]}");
 		}
 
         if (TMP_e.contains("{arrows}")) {

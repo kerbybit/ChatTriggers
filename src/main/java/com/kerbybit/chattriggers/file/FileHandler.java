@@ -254,7 +254,6 @@ public class FileHandler {
 		writer.println("colorName:"+Settings.col[1]);
 
 		writer.println("");
-		writer.println("version:"+Settings.CTversion);
         writer.println("isBeta:"+Settings.isBeta);
         writer.println("backup files:"+Settings.backupFiles);
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
@@ -508,7 +507,6 @@ public class FileHandler {
         for (String l : lines) {
 			if (l.startsWith("color:")) {Settings.col[0] = l.substring(l.indexOf("color:") + 6);}
 			if (l.startsWith("colorName:")) {Settings.col[1] = l.substring(l.indexOf("colorName:") + 10);}
-			if (l.startsWith("version:")) {Settings.CTversion = l.substring(l.indexOf("version:") + 8);}
 			if (l.startsWith("killfeed pos:")) {
                 String temp = l.substring(l.indexOf("killfeed pos:")+13);
                 try {

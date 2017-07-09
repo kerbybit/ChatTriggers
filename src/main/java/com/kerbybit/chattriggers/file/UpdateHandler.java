@@ -1,9 +1,6 @@
 package com.kerbybit.chattriggers.file;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -102,12 +99,15 @@ public class UpdateHandler {
 		});
 		threadCanUse1.start();
 	}
-	
+
+	private static String get;
 	public static void loadVersion(String url) {
-		global.versionURL = url;
+	    get = url;
 		Thread threadLoadVersion = new Thread(() -> {
             try {
-                URL web = new URL(global.versionURL);
+                URL web = new URL(get);
+                String myVersion = null;
+
                 InputStream fis = web.openStream();
                 List<String> lines = new ArrayList<>();
                 String line;
@@ -117,8 +117,34 @@ public class UpdateHandler {
                 }
                 bufferedReader.close();
 
-                if (!Settings.CTversion.equals("null")) {
-                    if (!lines.get(0).equals(Settings.CTversion)) {
+                File folder = new File("./mods/");
+                try {
+                    for (File file : folder.listFiles()) {
+                        if (!file.isDirectory()) { // get file
+                            if (file.getName().startsWith("ChatTriggers_")
+                                    && file.getName().endsWith(".jar")) { // check name
+                                myVersion = file.getName().substring(13); // get version number in name
+                                myVersion = myVersion.substring(myVersion.indexOf("_") + 1);
+                                break;
+                            }
+                        } else {
+                            String mcVersion = Minecraft.getMinecraft().getVersion(); // get mc version
+                            if (mcVersion.contains("-")) // fix mc version
+                                mcVersion = mcVersion.substring(0, mcVersion.indexOf("-"));
+                            if (file.getName().equals(mcVersion)) { // check if mc version matches folder
+                                for (File subfile : file.listFiles()) {
+                                    if (subfile.getName().startsWith("ChatTriggers_")
+                                            && subfile.getName().endsWith(".jar")) { // check name
+                                        myVersion = subfile.getName().substring(13); // get version number in name
+                                        myVersion = myVersion.substring(myVersion.indexOf("_") + 1);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (!myVersion.equals(lines.get(0) + ".jar")) { // your version doesnt match version found online
                         ChatHandler.warnBreak(0);
                         if (Settings.isBeta) {
                             ChatHandler.warn(ChatHandler.color("red", "You are running on an outdated version of ChatTriggers!"));
@@ -129,18 +155,13 @@ public class UpdateHandler {
                             ChatHandler.warn("clickable(&cct.kerbybit.com/download,open_url,http://ct.kerbybit.com/download,Open download page)");
                             ChatHandler.warn(ChatHandler.color("red", "Current stable version: " + lines.get(0)));
                         }
-                        ChatHandler.warn(ChatHandler.color("red", "Your version: " + Settings.CTversion));
-                        ChatHandler.warn(ChatHandler.color("red", "You will only see this message once until the next update"));
                         ChatHandler.warnBreak(1);
-                        Settings.CTversion = lines.get(0);
-                        FileHandler.saveAll();
                     }
-                } else {
-                    Settings.CTversion = lines.get(0);
-                    FileHandler.saveAll();
+                } catch (Exception e) {
+                    ChatHandler.warn("red", "Unable to finish checking for an update for ChatTriggers. Did you change the name of the jar in your mods folder?");
                 }
             } catch (IOException e) {
-                ChatHandler.warn(ChatHandler.color("red", "Can't grab update! Update services must be down"));
+                ChatHandler.warn(ChatHandler.color("red", "Can't grab update! is ct.kerbybit.com down?"));
                 e.printStackTrace();
             }
 
