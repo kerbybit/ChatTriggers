@@ -157,6 +157,8 @@ public class UpdateHandler {
                         }
                         ChatHandler.warnBreak(1);
                     }
+
+                    Settings.version = myVersion.replace(".jar", "");
                 } catch (Exception e) {
                     ChatHandler.warn("red", "Unable to finish checking for an update for ChatTriggers. Did you change the name of the jar in your mods folder?");
                 }

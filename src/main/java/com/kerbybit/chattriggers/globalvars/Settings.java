@@ -22,6 +22,7 @@ public class Settings {
 
     public static Boolean isBeta = false;
     public static Boolean backupFiles = false;
+    public static String version = "null";
 
     public static Boolean oldFormatting = false;
 

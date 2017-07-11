@@ -464,6 +464,15 @@ public class BuiltInStrings {
             DateFormat dateFormat = new SimpleDateFormat("MMMM");
             TMP_e = createDefaultString("month", dateFormat.format(new Date()), TMP_e, isAsync);
         }
+        if (TMP_e.contains("{dayNumber}") || TMP_e.contains("{daynumber}")) {
+            DateFormat dateFormat = new SimpleDateFormat("d");
+            TMP_e = createDefaultString("dayNumber", "daynumber", dateFormat.format(new Date()), TMP_e, isAsync);
+        }
+        if (TMP_e.contains("{monthNumber}") || TMP_e.contains("{monthnumber}")) {
+            Calendar myCal = new GregorianCalendar();
+            myCal.setTime(new Date());
+            TMP_e = createDefaultString("monthNumber", "monthnumber", (myCal.get(Calendar.MONTH)+1) + "", TMP_e, isAsync);
+        }
         if (TMP_e.contains("{year}")) {
             DateFormat dateFormat = new SimpleDateFormat("yyyy");
             TMP_e = createDefaultString("year", dateFormat.format(new Date()), TMP_e, isAsync);
@@ -1117,7 +1126,7 @@ public class BuiltInStrings {
             TMP_e = createDefaultString("rcpsMax", global.rclicks_max.toString().replace(".0",""), TMP_e, isAsync);
         }
         if (TMP_e.contains("{CTVersion}")) {
-            TMP_e = createDefaultString("CTVersion", Reference.VERSION, TMP_e, isAsync);
+            TMP_e = createDefaultString("CTVersion", Settings.version, TMP_e, isAsync);
         }
 
         if (TMP_e.contains("{MCVersion}")) {

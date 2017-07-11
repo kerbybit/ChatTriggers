@@ -246,6 +246,7 @@ public class CommandReference {
             r.add("{random($low,$high)} {random($high)}");
             r.add("{time} {date} {unixTime}");
             r.add("{year} {month} {day}");
+            r.add("{monthNumber} {dayNumber}");
             r.add("{hour} {hour12} {minute} {second}");
             r.add("{am/pm} {timezone}");
             r.add("{CTVersion} {MCVersion}");
