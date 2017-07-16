@@ -29,6 +29,16 @@ public class CommandReference {
                 || Minecraft.getMinecraft().isSingleplayer();
     }
 
+    public static Boolean hasIllegalChatString(String event) {
+        event = ChatHandler.deleteFormatting(event).toUpperCase();
+
+        return event.startsWith("CHAT")
+                && (event.contains("[YT]")
+                || event.contains("[ADMIN]")
+                || event.contains("[MOD]")
+                || event.contains("[HELPER]"));
+    }
+
     static void clearAll() {
         global.waitEvents.clear();
         global.waitTime.clear();

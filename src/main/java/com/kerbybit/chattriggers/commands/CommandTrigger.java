@@ -215,10 +215,13 @@ public class CommandTrigger extends CommandBase {
             if (args[1].equalsIgnoreCase("GETSTARTED")) {
                 ChatHandler.warnBreak(0);
                 ChatHandler.warn("&fJoin the Discord to get live help");
-                ChatHandler.warn(" clickable("+Settings.col[0]+"ct.kerbybit.com/discord,open_url,http://ct.kerbybit.com/discord/,&7Join the Discord)");
+                ChatHandler.warn(" &f>> clickable("+Settings.col[0]+"Discord,open_url,http://ct.kerbybit.com/discord/,&7Join the Discord)");
                 ChatHandler.warn("");
                 ChatHandler.warn("&fCheck out the starting tutorial");
-                ChatHandler.warn(" clickable("+Settings.col[0]+"ct.kerbybit.com/tutorials,open_url,http://ct.kerbybit.com/tutorials/,&7Open the starting tutorial)");
+                ChatHandler.warn(" &f>> clickable("+Settings.col[0]+"Tutorials,open_url,http://ct.kerbybit.com/tutorials/,&7Go to the starting tutorial)");
+                ChatHandler.warn("");
+                ChatHandler.warn("&fRead the terms of service");
+                ChatHandler.warn(" &f>> clickable("+Settings.col[0]+"Terms of Service,open_url,https://goo.gl/E8zt5t,&7Open the ToS)");
                 ChatHandler.warn("");
                 ChatHandler.warn("clickable(&f< Back,run_command,/trigger help,&7Go back to help page)");
                 ChatHandler.warnBreak(1);
