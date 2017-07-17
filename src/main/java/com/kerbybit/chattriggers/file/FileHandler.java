@@ -52,7 +52,7 @@ public class FileHandler {
 			}
 		}
 	}
-	
+
 	private static void getImport(String filename) {
 		global.importURL = filename;
 		if (global.canImport) {
@@ -124,7 +124,7 @@ public class FileHandler {
 			ChatHandler.warn(ChatHandler.color("red", "You are trying to do this too quick! slow down!"));
 		}
 	}
-	
+
 	private static void saveTriggers(List<List<String>> trigger) throws IOException {
 		PrintWriter writer = new PrintWriter("./mods/ChatTriggers/triggers.txt","UTF-8");
 		List<String> lists = new ArrayList<>();
@@ -134,7 +134,7 @@ public class FileHandler {
 				lists.add(value.get(1).substring(value.get(1).indexOf("<list="), value.get(1).indexOf(">",value.get(1).indexOf("<list="))+1));
 			}
 		}
-		
+
 		writer.println("");
 		Set<String> uniqueLists = new HashSet<>(lists);
 		for (String value : uniqueLists) {
@@ -148,17 +148,17 @@ public class FileHandler {
                         } else {
                             writer.println("trigger "+trig.get(0)+"("+trig.get(1)+") {");
                         }
-						
+
 						int tabbed_logic=0;
 						for (int j=2; j<trig.size(); j++) {
 							StringBuilder extraSpaces = new StringBuilder();
 							String TMP_c = trig.get(j);
-							
+
 							if (TMP_c.equalsIgnoreCase("END")
-							|| TMP_c.toUpperCase().startsWith("ELSE")) { 
+							|| TMP_c.toUpperCase().startsWith("ELSE")) {
 								tabbed_logic--;
 							}
-							
+
 								for (int k=0; k<tabbed_logic; k++) {extraSpaces.append("  ");}
 								if (Settings.oldFormatting) {
 							        writer.println(extraSpaces + "  event:"+trig.get(j));
@@ -170,8 +170,8 @@ public class FileHandler {
                                     }
                                 }
 
-							
-							if (TMP_c.toUpperCase().startsWith("IF") 
+
+							if (TMP_c.toUpperCase().startsWith("IF")
 							|| TMP_c.toUpperCase().startsWith("FOR")
 							|| TMP_c.toUpperCase().startsWith("CHOOSE")
 							|| TMP_c.toUpperCase().startsWith("WAIT")
@@ -197,17 +197,17 @@ public class FileHandler {
                 } else {
                     writer.println("trigger "+trig.get(0)+"("+trig.get(1)+") {");
                 }
-				
+
 				int tabbed_logic = 0;
 				for (int j=2; j<trig.size(); j++) {
 					StringBuilder extraSpaces = new StringBuilder();
 					String TMP_c = trig.get(j);
-					
+
 					if (TMP_c.equalsIgnoreCase("END")
-					|| TMP_c.toUpperCase().startsWith("ELSE")) { 
+					|| TMP_c.toUpperCase().startsWith("ELSE")) {
 						tabbed_logic--;
 					}
-					
+
 						for (int k=0; k<tabbed_logic; k++) {extraSpaces.append("  ");}
 						if (Settings.oldFormatting) {
                             writer.println(extraSpaces + "  event:"+trig.get(j));
@@ -219,8 +219,8 @@ public class FileHandler {
                             }
                         }
 
-					
-					if (TMP_c.toUpperCase().startsWith("IF") 
+
+					if (TMP_c.toUpperCase().startsWith("IF")
 					|| TMP_c.toUpperCase().startsWith("FOR")
 					|| TMP_c.toUpperCase().startsWith("CHOOSE")
 					|| TMP_c.toUpperCase().startsWith("WAIT")
@@ -237,7 +237,7 @@ public class FileHandler {
 		writer.println("");
 		writer.close();
 	}
-	
+
 	private static void saveStrings(Map<String, String> listName) throws IOException {
 		PrintWriter writer = new PrintWriter("./mods/ChatTriggers/strings.txt","UTF-8");
         for (Map.Entry<String, String> string : listName.entrySet()) {
@@ -246,7 +246,7 @@ public class FileHandler {
 		}
 		writer.close();
 	}
-	
+
 	private static void saveSettings() throws IOException {
 		PrintWriter writer = new PrintWriter("./mods/ChatTriggers/settings.txt","UTF-8");
 
@@ -285,7 +285,7 @@ public class FileHandler {
 
 		writer.close();
 	}
-	
+
 	public static List<List<String>> loadTriggers(String fileName, Boolean isImport, String importName) throws IOException {
 		List<List<String>> tmp_triggers = new ArrayList<>();
 		List<String> lines = loadFile(fileName);
@@ -310,7 +310,7 @@ public class FileHandler {
 				String importTag = "";
 				if (isImport) {importTag="<imported>";}
 				tmp_list.add(importTag+lines.get(i).substring(lines.get(i).indexOf("trigger:") + 8, lines.get(i).length()));
-				
+
 				tmp_triggers.add(tmp_list);
 				j++;
 			}
@@ -361,7 +361,7 @@ public class FileHandler {
                 isTrigger = true;
                 j++;
             }
-			
+
 			if (lines.get(i).trim().startsWith("event:") && j>-1) {
 				String tmp_event = lines.get(i).substring(lines.get(i).indexOf("event:") + 6);
 				tmp_triggers.get(j).add(tmp_event);
@@ -383,15 +383,14 @@ public class FileHandler {
                                         if (CommandReference.hasIllegalChatString(tmp_event)) {
                                             ChatHandler.warnBreak(0);
 
-                                            ChatHandler.warn("red", "Whoa There!");
+                                            ChatHandler.warn("red", "Whoa There, Cowboy!");
                                             ChatHandler.warn("");
-                                            ChatHandler.warn("red", "It looks like you are attempting to load a chat event that breaks the ChatTriggers terms of service. If you believe this to be an error, please contact kerbybit on twitter or discord.");
+                                            ChatHandler.warn("red", "It looks like you are trying to load an event that violates the ChatTriggers Terms of Service.");
+                                            ChatHandler.warn(" If you believe this to be an error, please contact kerbybit on clickable(Twitter,open_url,https://twitter.com/kerbybit,&7Go to kerbybit's Twitter) or clickable(&cthe ChatTriggers Discord,open_url,http://ct.kerbybit.com/discord,&7Join the ChatTriggers Discord).")
                                             ChatHandler.warn("");
-                                            ChatHandler.warn(" &f>> clickable(&cTwitter,open_url,https://twitter.com/kerbybit,&7Go to kerbybit's twitter)");
-                                            ChatHandler.warn(" &f>> clickable(&cDiscord,open_url,http://ct.kerbybit.com/discord,&7Join the ChatTriggers discord)");
-                                            ChatHandler.warn(" &f>> clickable(&cTerms of Service,open_url,https://goo.gl/E8zt5t,&7Open the ToS)");
+                                            ChatHandler.warn(" &f>> clickable(&cIf you haven't already, please read the ChatTriggers Terms of Service,open_url,https://goo.gl/friuTB,&7Open the Terms of Service)");
                                             ChatHandler.warn("");
-                                            ChatHandler.warn("red", "Although ChatTriggers will still load this event properly, you can and will be added to the blacklist making CT unusable for you if you are breaking the ToS");
+                                            ChatHandler.warn("red", "Although ChatTriggers will still load this event properly, if you are using an event against the Terms of Service you will be added to the clickable(Public Blacklist,open_url,http://kerbybit.com/blacklist,Public Blacklist), preventing you from using several mods.");
                                             ChatHandler.warn("");
                                             ChatHandler.warn("red", "Detected event:");
                                             ChatHandler.warn("  " + tmp_event);
@@ -406,7 +405,7 @@ public class FileHandler {
                     }
                 }
             }
-			
+
 			if (lines.get(i).trim().startsWith("!")) {
 				String importFunction = lines.get(i).trim().substring(lines.get(i).trim().indexOf("!")+1);
 
@@ -419,8 +418,8 @@ public class FileHandler {
 					} else {
 						sn = importFunction.substring(importFunction.toUpperCase().indexOf("CREATESTRING ")+13);
 					}
-					
-					
+
+
 					String sv = "";
 					String svo = "";
 					if (sn.toUpperCase().contains("ONCE WITH ")) {
@@ -439,7 +438,7 @@ public class FileHandler {
                             sv = sv.substring(1, sv.length()-2);
                         }
 					}
-					
+
 					if (sn.contains(" ")) {sn = sn.substring(0, sn.indexOf(" ")).trim();}
 					if (global.debug) {
 						if (!sv.equals("")) {ChatHandler.warn(ChatHandler.color("gray", "Importing string "+sn+" with value "+sv));}
@@ -497,15 +496,15 @@ public class FileHandler {
         for (List<String> value : tmp_triggers) {
 			CommandReference.addToTriggerList(value);
 		}
-		
-		
+
+
 		return tmp_triggers;
 	}
-	
+
 	public static Map<String, String> loadStrings() throws IOException {
 		Map<String, String> tmp_strings = new HashMap<>();
 		List<String> lines = loadFile("./mods/ChatTriggers/strings.txt");
-		
+
 		for (int i=0; i<lines.size()-1; i++) {
 			try {
                 if (lines.get(i).contains("string:") && lines.get(i+1).startsWith("  value:")) {
@@ -518,7 +517,7 @@ public class FileHandler {
 
 		return tmp_strings;
 	}
-	
+
 	public static void loadSettings() throws IOException {
 		List<String> lines = loadFile("./mods/ChatTriggers/settings.txt");
 
@@ -648,15 +647,15 @@ public class FileHandler {
             }
 		}
 	}
-	
+
 	public static void saveAll() throws IOException {
 		if (global.canSave) {
 			saveTriggers(global.trigger);
 			saveStrings(global.USR_string);
 			saveSettings();
-			
+
 			CommandReference.clearTriggerList();
-			
+
 			global.trigger = FileHandler.loadTriggers("./mods/ChatTriggers/triggers.txt", false, null);
 			global.USR_string = FileHandler.loadStrings();
 			FileHandler.loadSettings();
@@ -710,7 +709,7 @@ public class FileHandler {
             }
         }
     }
-	
+
 	private static void startup() throws ClassNotFoundException {
 		ChatHandler.warn(ChatHandler.color("gray", "Loading ChatTriggers..."));
 		try {
@@ -730,14 +729,14 @@ public class FileHandler {
 			    }
 			}
 
-			
-			try {saveAll(); ChatHandler.warn(ChatHandler.color("green", "New files created!"));} 
+
+			try {saveAll(); ChatHandler.warn(ChatHandler.color("green", "New files created!"));}
 			catch (IOException e111) {ChatHandler.warn(ChatHandler.color("red", "Error saving files!")); e111.printStackTrace();}
             ChatHandler.warn(ChatHandler.color(Settings.col[0], "ChatTriggers loaded"));
 		}
 		try {saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
 	}
-	
+
 	public static void firstFileLoad() {
 		if (global.tick==0) {
 			global.tick=1;
@@ -749,7 +748,7 @@ public class FileHandler {
             UpdateHandler.getCanUse("http://www.kerbybit.com/blacklist/", "http://www.kerbybit.com/enabledmods/", "http://ct.kerbybit.com/creators/");
 		}
 	}
-	
+
 	public static void tickImports() {
 		if (global.neededImports.size()>0 && global.canImport) {
 			if (global.canSave) {
