@@ -18,6 +18,9 @@ public class global {
     public static Boolean hasWatermark = true;
     public static String hasWatermarkURL = "";
     public static Boolean inverted = false;
+
+    public static Boolean illegalChat = false;
+    public static String illegalChatEvent = "";
 	
 	public static int playerHealth = -1;
     public static int fpslow = 50;

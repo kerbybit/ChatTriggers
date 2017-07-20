@@ -39,6 +39,25 @@ public class CommandReference {
                 || event.contains("[HELPER]"));
     }
 
+    public static void showIllegalChatWarning(String tmp_event) {
+        ChatHandler.warnBreak(0);
+
+        ChatHandler.warn("red", "Whoa There!");
+        ChatHandler.warn("");
+        ChatHandler.warn("red", "It looks like you are attempting to load a chat event that breaks the ChatTriggers terms of service. If you believe this to be an error, please contact kerbybit on twitter or discord.");
+        ChatHandler.warn("");
+        ChatHandler.warn(" &f>> clickable(&cTwitter,open_url,https://twitter.com/kerbybit,&7Go to kerbybit's twitter)");
+        ChatHandler.warn(" &f>> clickable(&cDiscord,open_url,http://ct.kerbybit.com/discord,&7Join the ChatTriggers discord)");
+        ChatHandler.warn(" &f>> clickable(&cTerms of Service,open_url,https://goo.gl/E8zt5t,&7Open the ToS)");
+        ChatHandler.warn("");
+        ChatHandler.warn("red", "Although ChatTriggers will still load this event properly, you can and will be added to the blacklist making CT unusable for you if you are breaking the ToS");
+        ChatHandler.warn("");
+        ChatHandler.warn("red", "Detected event:");
+        ChatHandler.warn("  " + tmp_event);
+
+        ChatHandler.warnBreak(1);
+    }
+
     static void clearAll() {
         global.waitEvents.clear();
         global.waitTime.clear();

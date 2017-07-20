@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
+import com.kerbybit.chattriggers.commands.CommandReference;
 import com.kerbybit.chattriggers.commands.CommandTrigger;
 import com.kerbybit.chattriggers.globalvars.Settings;
 import com.kerbybit.chattriggers.globalvars.global;
@@ -36,9 +37,8 @@ public class UpdateHandler {
                     if (getline.contains(getthis)) {
                         String getuuid = getline.substring(getline.indexOf(getthis) + getthis.length(), getline.indexOf("\"", getline.indexOf(getthis) + getthis.length()));
                         try {
-                            if (getuuid.equals(Minecraft.getMinecraft().thePlayer.getUniqueID().toString().replace("-", ""))) {
+                            if (getuuid.equals(Minecraft.getMinecraft().thePlayer.getUniqueID().toString().replace("-", "")))
                                 global.canUse = false;
-                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -88,6 +88,10 @@ public class UpdateHandler {
                         global.hasWatermark = false;
                     }
                 }
+
+                System.out.println("Done getting watermark  " + global.illegalChat);
+                if (global.hasWatermark && global.illegalChat)
+                    CommandReference.showIllegalChatWarning(global.illegalChatEvent);
 
             } catch (MalformedURLException e) {
                 ChatHandler.warn(ChatHandler.color("red", "Can't grab update! Update services must be down"));
