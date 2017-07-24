@@ -51,7 +51,7 @@ public class ChatTriggers {
 	private static KeyBinding altGuiKey;
     private static KeyBinding displayKey;
     private static KeyBinding displayMenuKey;
-	
+
 	@EventHandler
 	public void init(FMLInitializationEvent event) throws ClassNotFoundException, IOException {
 		MinecraftForge.EVENT_BUS.register(this);

@@ -27,7 +27,11 @@ public class CommandT extends CommandBase{
                 }
             }
         } catch (Exception e) {
-            BugTracker.show(e, "command");
+            StringBuilder command = new StringBuilder("/t");
+            for (String arg : args) {
+                command.append(" ").append(arg);
+            }
+            BugTracker.show(e, "command", command.toString());
         }
 	}
 }

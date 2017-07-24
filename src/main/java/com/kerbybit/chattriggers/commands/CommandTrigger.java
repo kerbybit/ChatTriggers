@@ -38,7 +38,11 @@ public class CommandTrigger extends CommandBase {
             try {
                 doCommand(args, false);
             } catch (Exception e) {
-                BugTracker.show(e, "command");
+                StringBuilder command = new StringBuilder("/trigger");
+                for (String arg : args) {
+                    command.append(" ").append(arg);
+                }
+                BugTracker.show(e, "command", command.toString());
             }
         }
     }
@@ -71,6 +75,9 @@ public class CommandTrigger extends CommandBase {
                 break;
             case("SUBMITBUGREPORT"):
                 commandSubmitBugReport();
+                break;
+            case("SHOWBUGREPORT"):
+                commandShowBugReport();
                 break;
             case("SIMULATE"):
             case("SIM"):
@@ -165,6 +172,10 @@ public class CommandTrigger extends CommandBase {
 
     private static void commandSubmitBugReport() {
         BugTracker.send();
+    }
+
+    private static void commandShowBugReport() {
+        BugTracker.showMore();
     }
 
     private static void commandSimulate(String args[]) {

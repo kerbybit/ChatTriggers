@@ -33,7 +33,11 @@ public class CommandTR extends CommandBase {
                 }
             }
         } catch (Exception e) {
-            BugTracker.show(e, "command");
+            StringBuilder command = new StringBuilder("/tr");
+            for (String arg : args) {
+                command.append(" ").append(arg);
+            }
+            BugTracker.show(e, "command", command.toString());
         }
 	}
 }

@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -55,7 +54,7 @@ public class BugTracker {
                     conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
                     conn.setDoOutput(true);
                     conn.getOutputStream().write(postDataBytes);
-                    Reader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                    new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
                     ChatHandler.warn(Settings.col[0] + "Bug report submitted successfully!");
                     global.bugReport.clear();
                 } catch (Exception e) {
@@ -67,11 +66,31 @@ public class BugTracker {
         }
     }
 
-    public static void show(Exception e) {
-        show(e, "none");
+    public static void showMore() {
+        ChatHandler.warnBreak(0);
+
+
+        if (!global.bugLastCommand.equals("")) {
+            ChatHandler.warn("red", "I don't know much, but I know this might be the cause");
+            ChatHandler.warn(" " + ChatHandler.ignoreFormatting(global.bugLastCommand));
+        } else if (!global.bugLastEvent.equals("")) {
+            ChatHandler.warn("red", "I don't know much, but I know this might be the cause");
+            ChatHandler.warn(" " + ChatHandler.ignoreFormatting(global.bugLastEvent));
+        } else {
+            ChatHandler.warn("red", "I have no extra info about this error to show :(");
+        }
+
+        ChatHandler.warnBreak(1);
     }
 
+    public static void show(Exception e) {
+        show(e, "none", null);
+    }
     public static void show(Exception e, String type) {
+        show(e, type, null);
+    }
+
+    public static void show(Exception e, String type, String extra) {
         if (e != null) {
             e.printStackTrace();
 
@@ -79,15 +98,22 @@ public class BugTracker {
                 global.bugReport.add(stack.toString());
             }
         }
-        if (type.equals("command")) {
-            global.bugLastCommand = global.lastCommand;
+        if (extra != null) {
+            global.bugLastCommand = extra;
             global.bugLastEvent = "";
         } else {
-            global.bugLastCommand = "";
-            global.bugLastEvent = global.lastEvent;
+            if (type.equals("command")) {
+                global.bugLastCommand = global.lastCommand;
+                global.bugLastEvent = "";
+            } else {
+                global.bugLastCommand = "";
+                global.bugLastEvent = global.lastEvent;
+            }
         }
         ChatHandler.warn(ChatHandler.color("darkred",getError(type)));
-        ChatHandler.warn("&4Click clickable(&c[HERE],run_command,/trigger submitbugreport,Send a bug report) &4to submit a bug report");
+        ChatHandler.warn("&f >> clickable(&cSubmit but report,run_command,/trigger submitbugreport,Send a bug report)");
+        if (extra != null)
+            ChatHandler.warn("&f >> clickable(&cShow mow about this error,run_command,/trigger showbugreport,Show more)");
 
         for (int i=0; i<global.onUnknownError.size(); i++) {
             //add all events to temp list
@@ -116,6 +142,8 @@ public class BugTracker {
                 return "An unknown error has occurred while executing \"&casync&4\"";
             case "onsoundplay":
                 return "An unknown error has occurred while executing \"&conSoundPlay&4\"";
+            case "event":
+                return "An unknown error has occured while executing \"&cevent&4\"";
             default:
                 return "An unknown error has occurred";
         }
