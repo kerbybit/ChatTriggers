@@ -88,18 +88,18 @@ public class global {
 	// get(1) = trigger (eg: "{s}Guild >" or "ctrl+b")
 	// get(2+)= events  (eg: "say Hi" or "sound QuakePro.DoubleKill")
 	////////////////////////////////////////////////////
-	public static List<List<String>> trigger = new ArrayList<>();
-	public static List<List<String>> chatTrigger = new ArrayList<>();
-	public static List<List<String>> actionTrigger = new ArrayList<>();
+	public static List<List<String>> trigger = new ArrayList<>(); //
+	public static List<List<String>> chatTrigger = new ArrayList<>(); //
+	public static List<List<String>> actionTrigger = new ArrayList<>(); //
 	public static List<List<String>> tickTrigger = new ArrayList<>();
 	public static List<Integer> tickTriggerTime = new ArrayList<>();
-	public static List<List<String>> onWorldLoadTrigger = new ArrayList<>();
-	public static List<List<String>> onWorldFirstLoadTrigger = new ArrayList<>();
-	public static List<List<String>> onServerChangeTrigger = new ArrayList<>();
-	public static List<List<String>> onNewDayTrigger = new ArrayList<>();
-	public static List<List<String>> onRightClickPlayerTrigger = new ArrayList<>();
-	public static List<List<String>> onSoundPlayTrigger = new ArrayList<>();
-    public static List<List<String>> onChatTrigger = new ArrayList<>();
+	public static List<List<String>> onWorldLoadTrigger = new ArrayList<>(); //
+	public static List<List<String>> onWorldFirstLoadTrigger = new ArrayList<>(); //
+	public static List<List<String>> onServerChangeTrigger = new ArrayList<>(); //
+	public static List<List<String>> onNewDayTrigger = new ArrayList<>(); //
+	public static List<List<String>> onRightClickPlayerTrigger = new ArrayList<>(); //
+	public static List<List<String>> onSoundPlayTrigger = new ArrayList<>(); //
+    public static List<List<String>> onChatTrigger = new ArrayList<>(); //
     public static List<List<String>> function = new ArrayList<>();
     public static List<List<String>> onUnknownError = new ArrayList<>();
 	

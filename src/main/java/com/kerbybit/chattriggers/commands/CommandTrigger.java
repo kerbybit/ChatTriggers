@@ -151,13 +151,73 @@ public class CommandTrigger extends CommandBase {
             case("TEST"):
                 commandTest();
                 break;
+            case("INFO"):
+                commandInfo();
+                break;
             default:
-                ChatHandler.warn("&c/trigger &c[clickable(&ccreate,suggest_command,/trigger create ,&7Suggest &7/trigger &7create)&c/clickable(&cadd,suggest_command,/trigger add ,&7Suggest &7/trigger &7add)&c/clickable(&clist,run_command,/trigger list,&7Run &7/trigger &7list)&c] &c<...>");
-                ChatHandler.warn("&c/trigger &c[clickable(&cstring,suggest_command,/trigger string ,&7Suggest &7/trigger &7string)&c/clickable(&carray,run_command,/trigger array,&7Run &7/trigger &7array)&c] &c<...>");
+                ChatHandler.warn("&c/trigger &c[clickable(&ccreate,suggest_command,/trigger create ,&7Suggest &7/trigger &7create)&c/clickable(&cadd,suggest_command,/trigger add ,&7Suggest &7/trigger &7add)&c/clickable(&clist,run_command,/trigger list,&7Run &7/trigger &7list)&c/clickable(&cstring,suggest_command,/trigger string ,&7Suggest &7/trigger &7string)&c] &c<...>");
                 ChatHandler.warn("&c/trigger &c[clickable(&csave,run_command,/trigger save,&7Run &7/trigger &7save)&c/clickable(&cload,run_command,/trigger load,&7Run &7/trigger 77load)&c]");
                 ChatHandler.warn("&c/trigger &c[clickable(&crun,suggest_command,/trigger run ,&7Suggest &7/trigger &7run)&c/clickable(&cimport,suggest_command,/trigger import ,&7Suggest &7/trigger &7import)&c/clickable(&cimports,run_command,/trigger imports,&7Run &7/trigger &7imports)&c] &c<...>");
                 break;
         }
+    }
+
+    private static void commandInfo() {
+        ChatHandler.warnBreak(0);
+
+        ChatHandler.warn(" &cChat&9Triggers");
+        ChatHandler.warn("   &fVersion: " + Settings.col[0] + Settings.version);
+        ChatHandler.warn("   &fRunning Beta: " + Settings.col[0] + Settings.isBeta);
+        ChatHandler.warn("");
+        ChatHandler.warn("   &fStrings Loaded: " + Settings.col[0] + global.USR_string.size());
+        int totalStrings = global.USR_string.size() + global.TMP_string.size() + global.Async_string.size();
+        ChatHandler.warn("   &fStrings In Memory: " + Settings.col[0] + totalStrings);
+        ChatHandler.warn("");
+        int totalEvents = 0;
+        for (List<String> trigger : global.trigger) {
+            if (trigger.size() > 2) {
+                for (int i = 2; i < global.trigger.size(); i++) {
+                    totalEvents++;
+                }
+            }
+        }
+        ChatHandler.warn("   &fEvents Loaded: " + Settings.col[0] + totalEvents);
+        ChatHandler.warn("   &fTriggers Loaded: " + Settings.col[0] + global.trigger.size());
+        int totalOthers = global.trigger.size() - (global.chatTrigger.size() + global.actionTrigger.size()
+                + global.tickTrigger.size() + global.onWorldLoadTrigger.size()
+                + global.onWorldFirstLoadTrigger.size() + global.onServerChangeTrigger.size()
+                + global.onNewDayTrigger.size() + global.onRightClickPlayerTrigger.size()
+                + global.onSoundPlayTrigger.size() + global.onChatTrigger.size()
+                + global.function.size() + global.onUnknownError.size());
+        if (totalOthers > 0)
+            ChatHandler.warn("     &fother: " + Settings.col[0] + totalOthers);
+        if (global.chatTrigger.size() > 0)
+            ChatHandler.warn("     &fchat: " + Settings.col[0] + global.chatTrigger.size());
+        if (global.onChatTrigger.size() > 0)
+            ChatHandler.warn("     &fonChat: " + Settings.col[0] + global.onChatTrigger.size());
+        if (global.actionTrigger.size() > 0)
+            ChatHandler.warn("     &factionBar: " + Settings.col[0] + global.actionTrigger.size());
+        if (global.onSoundPlayTrigger.size() > 0)
+            ChatHandler.warn("     &fonSoundPlay: " + Settings.col[0] + global.onSoundPlayTrigger.size());
+        if (global.onRightClickPlayerTrigger.size() > 0)
+            ChatHandler.warn("     &fonRightClickPlayer: " + Settings.col[0] + global.onRightClickPlayerTrigger.size());
+        if (global.onWorldLoadTrigger.size() > 0)
+            ChatHandler.warn("     &fonWorldLoad: " + Settings.col[0] + global.onWorldLoadTrigger.size());
+        if (global.onWorldFirstLoadTrigger.size() > 0)
+            ChatHandler.warn("     &fonWorldFirstLoad: " + Settings.col[0] + global.onWorldFirstLoadTrigger.size());
+        if (global.onServerChangeTrigger.size() > 0)
+            ChatHandler.warn("     &fonServerChange: " + Settings.col[0] + global.onServerChangeTrigger.size());
+        if (global.onNewDayTrigger.size() > 0)
+            ChatHandler.warn("     &fonNewDay: " + Settings.col[0] + global.onNewDayTrigger.size());
+        if (global.tickTrigger.size() > 0)
+            ChatHandler.warn("     &fonClientTick: " + Settings.col[0] + global.tickTrigger.size());
+        if (global.onUnknownError.size() > 0)
+            ChatHandler.warn("     &fonUnknownError: " + Settings.col[0] + global.onUnknownError.size());
+        if (global.function.size() > 0)
+            ChatHandler.warn("     &ffunction: " + Settings.col[0] + global.function.size());
+
+
+        ChatHandler.warnBreak(1);
     }
 
     private static void commandFiles() {
@@ -750,7 +810,7 @@ public class CommandTrigger extends CommandBase {
                     if (!silent) {
                         ChatHandler.warn(ChatHandler.color("gray", "Deleted trigger") + " " + ChatHandler.color(Settings.col[0], ChatHandler.ignoreFormatting(TMP_rem)) + " " + ChatHandler.color("gray", "and all of its events"));
                     }
-                    global.trigger.remove(num).get(1);
+                    global.trigger.remove(num);
                     try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                 } else {
                     ChatHandler.warn(ChatHandler.color("red", "You cannot edit imported triggers!"));
@@ -843,14 +903,14 @@ public class CommandTrigger extends CommandBase {
             ChatHandler.warn(ChatHandler.color("red", "/trigger string <string name>"));
         } else {
             if (args[1].equalsIgnoreCase("CREATE")) {
-                if (args.length < 2) {
+                if (args.length < 3) {
                     ChatHandler.warn(ChatHandler.color("red", "/trigger string create <string name>"));
                 } else {
                     if (global.canSave) {
                         String stringName = args[2];
 
                         StringBuilder stringValueBuilder = new StringBuilder();
-                        if (args.length > 2) {
+                        if (args.length > 3) {
                             for (int i=3; i<args.length; i++) {
                                 stringValueBuilder.append(args[i]).append(" ");
                             }
@@ -1327,15 +1387,15 @@ public class CommandTrigger extends CommandBase {
                     if (args[2].equalsIgnoreCase("TOGGLE")) {
                         if (Settings.isBeta) {
                             Settings.isBeta = false;
-                            ChatHandler.warn(ChatHandler.color("red", "You have turned nightly notifications off!"));
+                            ChatHandler.warn(ChatHandler.color("red", "You have turned beta notifications off!"));
                             ChatHandler.warn(ChatHandler.color("red", "For more info, do </trigger settings beta>"));
-                            UpdateHandler.loadVersion("http://kerbybit.github.io/ChatTriggers/download/version.txt");
+                            UpdateHandler.loadVersion("http://ct.kerbybit.com/download/version.txt");
                             try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         } else {
                             Settings.isBeta = true;
                             ChatHandler.warn(ChatHandler.color("red", "You have turned nightly notifications")+" "+ChatHandler.color("green","on!"));
                             ChatHandler.warn(ChatHandler.color("red", "For more info, do </trigger settings beta>"));
-                            UpdateHandler.loadVersion("http://kerbybit.github.io/ChatTriggers/download/betaversion.txt");
+                            UpdateHandler.loadVersion("http://ct.kerbybit.com/download/betaversion.txt");
                             try {FileHandler.saveAll();} catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error saving triggers!"));}
                         }
                     } else {

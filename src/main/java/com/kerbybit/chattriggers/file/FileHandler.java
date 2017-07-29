@@ -60,7 +60,7 @@ public class FileHandler {
 			Thread t1 = new Thread(() -> {
                 ChatHandler.warn(ChatHandler.color("gray", "Getting import..."));
                 try {
-                    String importName = global.importURL.replace("http://chattriggers.kerbybit.com/exports/","").replace(".txt","");
+                    String importName = global.importURL.replace("http://ct.kerbybit.com/exports/","").replace(".txt","");
                     String currentVersion = "null";
 
                     String url = global.importURL;
@@ -108,7 +108,8 @@ public class FileHandler {
 
                     global.saveSoon = true;
 
-                    ChatHandler.warn(ChatHandler.color(Settings.col[0], "Got "+file+" successfully!"));
+                    ChatHandler.warn(Settings.col[0], "Got "+file+" successfully!");
+                    ChatHandler.warn(Settings.col[0] + "Manage your imports by running clickable(&7/trigger &7imports,run_command,/trigger imports,run /trigger imports)");
                 } catch (MalformedURLException e) {
                     ChatHandler.warn(ChatHandler.color("red", "Not a valid import! bad URL"));
                     e.printStackTrace();
@@ -729,8 +730,8 @@ public class FileHandler {
 			global.tick=1;
 			try {startup();} catch (ClassNotFoundException e) {e.printStackTrace();}
 
-	    	if (Settings.isBeta) {UpdateHandler.loadVersion("http://chattriggers.kerbybit.com/download/betaversion.txt");}
-	    	else {UpdateHandler.loadVersion("http://chattriggers.kerbybit.com/download/version.txt");}
+	    	if (Settings.isBeta) {UpdateHandler.loadVersion("http://ct.kerbybit.com/download/betaversion.txt");}
+	    	else {UpdateHandler.loadVersion("http://ct.kerbybit.com/download/version.txt");}
 
             UpdateHandler.getCanUse("http://www.kerbybit.com/blacklist/", "http://www.kerbybit.com/enabledmods/", "http://ct.kerbybit.com/creators/");
 		}
@@ -739,7 +740,7 @@ public class FileHandler {
 	public static void tickImports() {
 		if (global.neededImports.size()>0 && global.canImport) {
 			if (global.canSave) {
-				FileHandler.getImport("http://chattriggers.kerbybit.com/exports/"+global.neededImports.remove(0)+".txt");
+				FileHandler.getImport("http://ct.kerbybit.com/exports/"+global.neededImports.remove(0)+".txt");
 			} else {
 				global.neededImports.clear();
 				ChatHandler.warn(ChatHandler.color("red", "cannot get imports while in test mode"));
