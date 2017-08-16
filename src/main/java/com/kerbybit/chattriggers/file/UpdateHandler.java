@@ -89,15 +89,11 @@ public class UpdateHandler {
                     }
                 }
 
-                System.out.println("Done getting watermark  " + global.illegalChat);
                 if (global.hasWatermark && global.illegalChat)
                     CommandReference.showIllegalChatWarning(global.illegalChatEvent);
 
-            } catch (MalformedURLException e) {
-                ChatHandler.warn(ChatHandler.color("red", "Can't grab update! Update services must be down"));
-                e.printStackTrace();
-            } catch (IOException e) {
-                ChatHandler.warn(ChatHandler.color("red", "Can't grab update! Report this to kerbybit ASAP"));
+            } catch (Exception e) {
+                ChatHandler.warn(ChatHandler.color("red", "Can't grab update! Is ct.kerbybit.com down?"));
                 e.printStackTrace();
             }
 		});

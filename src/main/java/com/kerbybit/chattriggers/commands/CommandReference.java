@@ -31,15 +31,15 @@ public class CommandReference {
 
     public static Boolean hasIllegalChatString(String event) {
         event = ChatHandler.deleteFormatting(event).toUpperCase();
-
         return event.startsWith("CHAT")
-                && (event.contains("[YT]")
-                || event.contains("[ADMIN]")
-                || event.contains("[MOD]")
-                || event.contains("[HELPER]"));
+                && (event.contains("{ME}") || event.contains(Minecraft.getMinecraft().thePlayer.getName().toUpperCase()))
+                && (event.contains("[YT]") || event.contains("[ADMIN]") || event.contains("[MOD]") || event.contains("[HELPER]"));
     }
 
     public static void showIllegalChatWarning(String tmp_event) {
+        global.illegalChat = false;
+        global.illegalChatEvent = "";
+
         ChatHandler.warnBreak(0);
 
         ChatHandler.warn("red", "Whoa There!");

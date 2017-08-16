@@ -1692,6 +1692,8 @@ public class CommandTrigger extends CommandBase {
             CommandReference.silentResetAll();
             ChatHandler.warn(Settings.col[0] + "Files loaded");
             global.worldLoaded = true;
+            if (global.hasWatermark && global.illegalChat)
+                CommandReference.showIllegalChatWarning(global.illegalChatEvent);
         } catch (IOException e) {ChatHandler.warn(ChatHandler.color("red", "Error loading triggers!"));}
     }
 

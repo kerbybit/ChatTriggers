@@ -113,7 +113,7 @@ public class BugTracker {
         ChatHandler.warn(ChatHandler.color("darkred",getError(type)));
         ChatHandler.warn("&f >> clickable(&cSubmit but report,run_command,/trigger submitbugreport,Send a bug report)");
         if (extra != null)
-            ChatHandler.warn("&f >> clickable(&cShow mow about this error,run_command,/trigger showbugreport,Show more)");
+            ChatHandler.warn("&f >> clickable(&cShow more about this error,run_command,/trigger showbugreport,Show more)");
 
         for (int i=0; i<global.onUnknownError.size(); i++) {
             //add all events to temp list

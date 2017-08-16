@@ -13,6 +13,7 @@ import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.overlay.KillfeedHandler;
 import com.kerbybit.chattriggers.overlay.NotifyHandler;
 import com.kerbybit.chattriggers.triggers.StringHandler;
+import net.minecraft.command.ICommand;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import org.lwjgl.input.Keyboard;
@@ -57,18 +58,26 @@ public class ChatTriggers {
 		MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
 
-        ClientCommandHandler.instance.registerCommand(new CommandTrigger());
-        ClientCommandHandler.instance.registerCommand(new CommandT());
-        ClientCommandHandler.instance.registerCommand(new CommandTR());
+        registerCommands(new CommandTrigger(), new CommandT(), new CommandTR());
         
         altGuiKey = new KeyBinding("Trigger GUI", Keyboard.KEY_L, "ChatTriggers");
         displayKey = new KeyBinding("Killfeed Position", Keyboard.KEY_K, "ChatTriggers");
         displayMenuKey = new KeyBinding("Alternate Display Screen", Keyboard.KEY_F4, "ChatTriggers");
 
-        ClientRegistry.registerKeyBinding(altGuiKey);
-        ClientRegistry.registerKeyBinding(displayKey);
-        ClientRegistry.registerKeyBinding(displayMenuKey);
+        registerKeyBindings(altGuiKey, displayKey, displayMenuKey);
 	}
+
+	private void registerCommands(ICommand... commands) {
+	    for (ICommand command : commands) {
+	        ClientCommandHandler.instance.registerCommand(command);
+        }
+    }
+
+    private void registerKeyBindings(KeyBinding... keyBindings) {
+	    for (KeyBinding keyBinding : keyBindings) {
+	        ClientRegistry.registerKeyBinding(keyBinding);
+        }
+    }
 	
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
