@@ -8,7 +8,6 @@ import com.kerbybit.chattriggers.globalvars.global;
 import com.kerbybit.chattriggers.gui.IconHandler;
 import com.kerbybit.chattriggers.objects.ListHandler;
 import com.kerbybit.chattriggers.objects.JsonHandler;
-import com.kerbybit.chattriggers.references.Reference;
 import com.kerbybit.chattriggers.util.RomanNumber;
 import com.kerbybit.chattriggers.util.ScoreboardReader;
 import net.minecraft.block.Block;
@@ -136,32 +135,32 @@ public class BuiltInStrings {
                 TMP_e = TMP_e.replace("{msg}.meta()", "{string[DefaultString->MSGMETA-"+global.TMP_string.size()+"]}");
             }
             if (TMP_e.contains("{msg}")) {
-                TMP_e = createDefaultString("msg", ChatHandler.removeFormatting(chatEvent.message.getFormattedText()), TMP_e, isAsync);
+                TMP_e = createDefaultString(ChatHandler.removeFormatting(chatEvent.message.getFormattedText()), TMP_e, isAsync, "msg");
             }
         }
         if (TMP_e.contains("{me}")) {
-            TMP_e = createDefaultString("me", mc.thePlayer.getDisplayNameString(), TMP_e, isAsync);
+            TMP_e = createDefaultString(mc.thePlayer.getDisplayNameString(), TMP_e, isAsync, "me");
         }
         if (TMP_e.contains("{server}")) {
             String current_server;
             if (mc.isSingleplayer()) current_server = "SinglePlayer";
             else current_server = mc.getCurrentServerData().serverName;
 
-            TMP_e = createDefaultString("server", current_server, TMP_e, isAsync);
+            TMP_e = createDefaultString(current_server, TMP_e, isAsync, "server");
         }
         if (TMP_e.contains("{serverMOTD}") || TMP_e.contains("{servermotd}")) {
             String returnString;
             if (mc.isSingleplayer()) returnString = "Single Player world";
             else returnString = mc.getCurrentServerData().serverMOTD;
 
-            TMP_e = createDefaultString("serverMOTD", "servermotd", returnString, TMP_e, isAsync);
+            TMP_e = createDefaultString(returnString, TMP_e, isAsync, "serverMOTD", "servermotd");
         }
         if (TMP_e.contains("{serverIP}") || TMP_e.contains("{serverip}")) {
             String returnString;
             if (mc.isSingleplayer()) returnString = "localhost";
             else returnString = mc.getCurrentServerData().serverIP;
 
-            TMP_e = createDefaultString("serverIP", "serverip", returnString, TMP_e, isAsync);
+            TMP_e = createDefaultString(returnString, TMP_e, isAsync, "serverIP", "serverip");
         }
         if (TMP_e.contains("{ping}")) {
             String returnString;
@@ -170,29 +169,29 @@ public class BuiltInStrings {
                 returnString = CommandReference.getPing();
             }
 
-            TMP_e = createDefaultString("ping", returnString, TMP_e, isAsync);
+            TMP_e = createDefaultString(returnString, TMP_e, isAsync, "ping");
         }
         if (TMP_e.contains("{yaw}")) {
-            TMP_e = createDefaultString("yaw", String.valueOf(MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw)), TMP_e, isAsync);
+            TMP_e = createDefaultString(String.valueOf(MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw)), TMP_e, isAsync, "yaw");
         }
         if (TMP_e.contains("{pitch}")) {
-            TMP_e = createDefaultString("pitch", String.valueOf(MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationPitch)), TMP_e, isAsync);
+            TMP_e = createDefaultString(String.valueOf(MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationPitch)), TMP_e, isAsync, "pitch");
         }
         if (TMP_e.contains("{serverversion}") || TMP_e.contains("{serverVersion}")) {
             String returnString;
             if (mc.isSingleplayer()) {returnString = "1.8";}
             else {returnString = mc.getCurrentServerData().gameVersion;}
 
-            TMP_e = createDefaultString("serverversion", "serverVersion", returnString, TMP_e, isAsync);
+            TMP_e = createDefaultString(returnString, TMP_e, isAsync, "serverversion", "serverVersion");
         }
         if (TMP_e.contains("{isFullscreen}") || TMP_e.contains("{isfullscreen}")) {
-            TMP_e = createDefaultString("isfullscreen", "isFullscreen", mc.isFullScreen() + "",TMP_e, isAsync);
+            TMP_e = createDefaultString(mc.isFullScreen() + "",TMP_e, isAsync, "isfullscreen", "isFullscreen");
         }
         if (TMP_e.contains("{windowheight}") || TMP_e.contains("{windowHeight}")) {
-            TMP_e = createDefaultString("windowheight", "windowHeight", mc.displayHeight + "",TMP_e, isAsync);
+            TMP_e = createDefaultString(mc.displayHeight + "",TMP_e, isAsync, "windowheight", "windowHeight");
         }
         if (TMP_e.contains("{windowwidth}") || TMP_e.contains("{windowWidth}")) {
-            TMP_e = createDefaultString("windowwidth", "windowWidth", mc.displayWidth + "",TMP_e, isAsync);
+            TMP_e = createDefaultString(mc.displayWidth + "",TMP_e, isAsync, "windowwidth", "windowWidth");
         }
         if (TMP_e.contains("{playerlist}") || TMP_e.contains("{playerList}")) {
             StringBuilder returnString = new StringBuilder("[");
@@ -203,7 +202,7 @@ public class BuiltInStrings {
                 }
             }
             if (returnString.toString().equals("[")) {
-                TMP_e = createDefaultString("playerlist", "playerList", "[]", TMP_e, isAsync);
+                TMP_e = createDefaultString("[]", TMP_e, isAsync, "playerlist", "playerList");
             } else {
                 String list_name;
                 if (isAsync)
@@ -226,7 +225,7 @@ public class BuiltInStrings {
             }
 
             if (returnString.toString().equals("[")) {
-                TMP_e = createDefaultString("tabList", "tablist", "[]", TMP_e, isAsync);
+                TMP_e = createDefaultString("[]", TMP_e, isAsync, "tabList", "tablist");
             } else {
                 String list_name;
                 if (isAsync)
@@ -250,7 +249,7 @@ public class BuiltInStrings {
                 returnString.append(scoreboardLine.replace(",","")).append(",");
             }
             if (returnString.toString().equals("[")) {
-                TMP_e = createDefaultString("scoreboardlines", "scoreboardLines", "[]", TMP_e, isAsync);
+                TMP_e = createDefaultString("[]", TMP_e, isAsync, "scoreboardlines", "scoreboardLines");
             } else {
                 String list_name;
                 if (isAsync)
@@ -264,9 +263,9 @@ public class BuiltInStrings {
             }
         }
         if (TMP_e.contains("{debug}")) {
-            TMP_e = createDefaultString("debug", global.debug + "", TMP_e, isAsync);
+            TMP_e = createDefaultString(global.debug + "", TMP_e, isAsync, "debug");
         }
-        if (TMP_e.contains("{titletext}") || TMP_e.contains("{titleText}")) {
+        if (TMP_e.contains("{titletext}") || TMP_e.contains("{titleText}") || TMP_e.contains("{title}")) {
 			String titleText;
 
 			titleText = ReflectionHelper.getPrivateValue(
@@ -276,9 +275,9 @@ public class BuiltInStrings {
                 titleText = "null";
             }
 
-            TMP_e = createDefaultString("titletext", "titleText", titleText, TMP_e, isAsync);
+            TMP_e = createDefaultString(titleText, TMP_e, isAsync, "titletext", "titleText", "title");
         }
-        if (TMP_e.contains("{subtitletext}") || TMP_e.contains("{subtitleText}")) {
+        if (TMP_e.contains("{subtitletext}") || TMP_e.contains("{subtitleText}") || TMP_e.contains("{subtitle}")) {
 			String subtitleText;
 
 			subtitleText = ReflectionHelper.getPrivateValue(
@@ -288,9 +287,9 @@ public class BuiltInStrings {
                 subtitleText = "null";
             }
 
-            TMP_e = createDefaultString("subtitletext", "subtitleText", subtitleText, TMP_e, isAsync);
+            TMP_e = createDefaultString(subtitleText, TMP_e, isAsync, "subtitletext", "subtitleText", "subtitle");
         }
-        if (TMP_e.contains("{actionbartext}") || TMP_e.contains("{actionbarText}")) {
+        if (TMP_e.contains("{actionbartext}") || TMP_e.contains("{actionbarText}") || TMP_e.contains("{actionbar}")) {
             String recordPlaying = ReflectionHelper.getPrivateValue(
                     GuiIngame.class, FMLClientHandler.instance().getClient().ingameGUI, "field_73838_g");
 
@@ -298,37 +297,41 @@ public class BuiltInStrings {
                 recordPlaying = "null";
             }
 
-            TMP_e = createDefaultString("actionbartext", "actionbarText", recordPlaying, TMP_e, isAsync);
+            TMP_e = createDefaultString(recordPlaying, TMP_e, isAsync, "actionbartext", "actionbarText", "actionbar");
         }
-        if (TMP_e.contains("{bossbartext}") || TMP_e.contains("{bossbarText}")) {
+        if (TMP_e.contains("{bossbartext}") || TMP_e.contains("{bossbarText}") || TMP_e.contains("{bossbar}")) {
             String bossName = BossStatus.bossName;
 
             if (bossName == null) {
 				bossName = "";
             }
 
-			if (TMP_e.contains("{bossbartext}.hide()") || TMP_e.contains("{bossbarText}.hide()")) {
+			if (TMP_e.contains("{bossbartext}.hide()")
+                    || TMP_e.contains("{bossbarText}.hide()")
+                    || TMP_e.contains("{bossbar}.hide()")) {
 				GuiIngameForge.renderBossHealth = false;
 			}
 
-			if (TMP_e.contains("{bossbartext}.show()") || TMP_e.contains("{bossbarText}.show()")) {
+			if (TMP_e.contains("{bossbartext}.show()")
+                    || TMP_e.contains("{bossbarText}.show()")
+                    || TMP_e.contains("{bossbar}.show()")) {
 				GuiIngameForge.renderBossHealth = true;
 			}
 
-            TMP_e = createDefaultString("bossbartext", "bossbarText", bossName, TMP_e, isAsync);
+            TMP_e = createDefaultString(bossName, TMP_e, isAsync, "bossbartext", "bossbarText", "bossbar");
         }
-        if (TMP_e.contains("{setcol}")) {
-            TMP_e = createDefaultString("setcol", Settings.col[0], TMP_e, isAsync);
+        if (TMP_e.contains("{setcol}") || TMP_e.contains("{settingsColor}")) {
+            TMP_e = createDefaultString(Settings.col[0], TMP_e, isAsync, "setcol", "settingsColor");
         }
 
-        if (TMP_e.contains("{br}")) {
+        if (TMP_e.contains("{br}") || TMP_e.contains("{break}")) {
             StringBuilder dashes = new StringBuilder();
             float chatWidth = mc.gameSettings.chatWidth;
             float chatScale = mc.gameSettings.chatScale;
             int numdash = (int) floor(((((280*(chatWidth))+40)/320) * (1/chatScale))*53);
             for (int j=0; j<numdash; j++) {dashes.append("-");}
 
-            TMP_e = createDefaultString("br", dashes.toString(), TMP_e, isAsync);
+            TMP_e = createDefaultString(dashes.toString(), TMP_e, isAsync, "br", "break");
         }
 
         if (TMP_e.contains("{br(") && TMP_e.contains(")}")) {
@@ -348,62 +351,62 @@ public class BuiltInStrings {
             TMP_e = TMP_e.replace("{br(" + fillerChar + ")}", toReturn);
         }
         if (TMP_e.contains("{chatwidth}") || TMP_e.contains("{chatWidth}")) {
-            TMP_e = createDefaultString("chatwidth", "chatWidth", ""+(int)((280*(mc.gameSettings.chatWidth))+40), TMP_e, isAsync);
+            TMP_e = createDefaultString(""+(int)((280*(mc.gameSettings.chatWidth))+40), TMP_e, isAsync, "chatwidth", "chatWidth");
         }
         if (TMP_e.contains("{scoreboardtitle}") || TMP_e.contains("{scoreboardTitle}")) {
             ScoreboardReader.resetCache();
-            TMP_e = createDefaultString("scoreboardtitle", "scoreboardTitle", ChatHandler.removeFormatting(ScoreboardReader.getScoreboardTitle()), TMP_e, isAsync);
+            TMP_e = createDefaultString(ChatHandler.removeFormatting(ScoreboardReader.getScoreboardTitle()), TMP_e, isAsync, "scoreboardtitle", "scoreboardTitle");
         }
         if (TMP_e.contains("{hp}") || TMP_e.contains("{HP}")) {
-            TMP_e = createDefaultString("hp", "HP", global.playerHealth + "", TMP_e, isAsync);
+            TMP_e = createDefaultString(global.playerHealth + "", TMP_e, isAsync, "hp", "HP");
         }
         if (TMP_e.contains("{sneak}") || TMP_e.contains("{sneaking}")) {
-            TMP_e = createDefaultString("sneak", "sneaking", mc.thePlayer.isSneaking()+"", TMP_e, isAsync);
+            TMP_e = createDefaultString(mc.thePlayer.isSneaking()+"", TMP_e, isAsync, "sneak", "sneaking");
         }
         if (TMP_e.contains("{sprint}") || TMP_e.contains("{sprinting}")) {
-            TMP_e = createDefaultString("sprint", "sprinting", mc.thePlayer.isSprinting()+"", TMP_e, isAsync);
+            TMP_e = createDefaultString(mc.thePlayer.isSprinting()+"", TMP_e, isAsync, "sprint", "sprinting");
         }
         if (TMP_e.contains("{inchat}") || TMP_e.contains("{inChat}")) {
-            TMP_e = createDefaultString("inchat", "inChat",mc.ingameGUI.getChatGUI().getChatOpen() + "", TMP_e, isAsync);
+            TMP_e = createDefaultString(mc.ingameGUI.getChatGUI().getChatOpen() + "", TMP_e, isAsync,"inchat", "inChat");
         }
         if (TMP_e.contains("{intab}") || TMP_e.contains("{inTab}")) {
-            TMP_e = createDefaultString("intab", "inTab",  mc.gameSettings.keyBindPlayerList.isKeyDown() + "", TMP_e, isAsync);
+            TMP_e = createDefaultString( mc.gameSettings.keyBindPlayerList.isKeyDown() + "", TMP_e, isAsync, "intab", "inTab");
         }
         if (TMP_e.contains("{inAltScreen}")) {
-            TMP_e = createDefaultString("inAltScreen", global.displayMenu + "", TMP_e, isAsync);
+            TMP_e = createDefaultString(global.displayMenu + "", TMP_e, isAsync, "inAltScreen");
         }
         if (TMP_e.contains("{coordX}") || TMP_e.contains("{x}")) {
-            TMP_e = createDefaultString("coordX", "x", Math.round(mc.thePlayer.posX)+"", TMP_e, isAsync);
+            TMP_e = createDefaultString(Math.round(mc.thePlayer.posX)+"", TMP_e, isAsync, "coordX", "x");
         }
         if (TMP_e.contains("{coordY}") || TMP_e.contains("{y}")) {
-            TMP_e = createDefaultString("coordY", "y", Math.round(mc.thePlayer.posY)+"", TMP_e, isAsync);
+            TMP_e = createDefaultString(Math.round(mc.thePlayer.posY)+"", TMP_e, isAsync, "coordY", "y");
         }
         if (TMP_e.contains("{coordZ}") || TMP_e.contains("{z}")) {
-            TMP_e = createDefaultString("coordZ", "z", Math.round(mc.thePlayer.posZ)+"", TMP_e, isAsync);
+            TMP_e = createDefaultString(Math.round(mc.thePlayer.posZ)+"", TMP_e, isAsync, "coordZ", "z");
         }
         if (TMP_e.contains("{exactX}")) {
-            TMP_e = createDefaultString("exactX", mc.thePlayer.posX+"", TMP_e, isAsync);
+            TMP_e = createDefaultString(mc.thePlayer.posX+"", TMP_e, isAsync, "exactX");
         }
         if (TMP_e.contains("{exactY}")) {
-            TMP_e = createDefaultString("exactY", mc.thePlayer.posY+"", TMP_e, isAsync);
+            TMP_e = createDefaultString(mc.thePlayer.posY+"", TMP_e, isAsync, "exactY");
         }
         if (TMP_e.contains("{exactZ}")) {
-            TMP_e = createDefaultString("exactZ", mc.thePlayer.posZ+"", TMP_e, isAsync);
+            TMP_e = createDefaultString(mc.thePlayer.posZ+"", TMP_e, isAsync, "exactZ");
         }
 		if (TMP_e.contains("{motionX}")) {
-			TMP_e = createDefaultString("motionX", mc.thePlayer.motionX + "", TMP_e, isAsync);
+			TMP_e = createDefaultString(mc.thePlayer.motionX + "", TMP_e, isAsync, "motionX");
 		}
 		if (TMP_e.contains("{motionY}")) {
-			TMP_e = createDefaultString("motionY", mc.thePlayer.motionY + "", TMP_e, isAsync);
+			TMP_e = createDefaultString(mc.thePlayer.motionY + "", TMP_e, isAsync, "motionY");
 		}
 		if (TMP_e.contains("{motionZ}")) {
-			TMP_e = createDefaultString("motionZ", mc.thePlayer.motionZ + "", TMP_e, isAsync);
+			TMP_e = createDefaultString(mc.thePlayer.motionZ + "", TMP_e, isAsync, "motionZ");
 		}
         if (TMP_e.contains("{fps}") || TMP_e.contains("{FPS}")) {
-            TMP_e = createDefaultString("fps", "FPS", Minecraft.getDebugFPS()+"", TMP_e, isAsync);
+            TMP_e = createDefaultString(Minecraft.getDebugFPS()+"", TMP_e, isAsync, "fps", "FPS");
         }
         if (TMP_e.contains("{lightLevel}")) {
-        	TMP_e = createDefaultString("lightLevel", mc.theWorld.getLight(mc.thePlayer.playerLocation) + "", TMP_e, isAsync);
+        	TMP_e = createDefaultString(mc.theWorld.getLight(mc.thePlayer.playerLocation) + "", TMP_e, isAsync, "lightLevel");
 		}
         if (TMP_e.contains("{fpscol}") || TMP_e.contains("{fpsCol}")) {
             String col;
@@ -415,7 +418,7 @@ public class BuiltInStrings {
                 col = global.fpslowcol;
             }
 
-            TMP_e = createDefaultString("fpscol", "fpsCol", col, TMP_e, isAsync);
+            TMP_e = createDefaultString(col, TMP_e, isAsync, "fpscol", "fpsCol");
         }
         if (TMP_e.contains("{facing}")) {
         	float yaw = MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw);
@@ -440,66 +443,66 @@ public class BuiltInStrings {
         		direction = "south east";
 			}
 
-            TMP_e = createDefaultString("facing", direction, TMP_e, isAsync);
+            TMP_e = createDefaultString(direction, TMP_e, isAsync, "facing");
         }
         if (TMP_e.contains("{facingMin}")) {
-            TMP_e = createDefaultString("facingMin", mc.thePlayer.getHorizontalFacing().toString(), TMP_e, isAsync);
+            TMP_e = createDefaultString(mc.thePlayer.getHorizontalFacing().toString(), TMP_e, isAsync, "facingMin");
         }
         if (TMP_e.contains("{time}")) {
             DateFormat dateFormat = new SimpleDateFormat(Settings.timeFormat);
-            TMP_e = createDefaultString("time", dateFormat.format(new Date()), TMP_e, isAsync);
+            TMP_e = createDefaultString(dateFormat.format(new Date()), TMP_e, isAsync, "time");
         }
         if (TMP_e.contains("{date}")) {
             DateFormat dateFormat = new SimpleDateFormat(Settings.dateFormat);
-            TMP_e = createDefaultString("date", dateFormat.format(new Date()), TMP_e, isAsync);
+            TMP_e = createDefaultString(dateFormat.format(new Date()), TMP_e, isAsync, "date");
         }
         if (TMP_e.contains("{unixtime}") || TMP_e.contains("{unixTime}")) {
-            TMP_e = createDefaultString("unixtime", "unixTime", new Date().getTime()+"", TMP_e, isAsync);
+            TMP_e = createDefaultString(new Date().getTime()+"", TMP_e, isAsync, "unixtime", "unixTime");
         }
         if (TMP_e.contains("{day}")) {
             DateFormat dateFormat = new SimpleDateFormat("EEEE");
-            TMP_e = createDefaultString("day", dateFormat.format(new Date()), TMP_e, isAsync);
+            TMP_e = createDefaultString(dateFormat.format(new Date()), TMP_e, isAsync, "day");
         }
         if (TMP_e.contains("{month}")) {
             DateFormat dateFormat = new SimpleDateFormat("MMMM");
-            TMP_e = createDefaultString("month", dateFormat.format(new Date()), TMP_e, isAsync);
+            TMP_e = createDefaultString(dateFormat.format(new Date()), TMP_e, isAsync, "month");
         }
         if (TMP_e.contains("{dayNumber}") || TMP_e.contains("{daynumber}")) {
             DateFormat dateFormat = new SimpleDateFormat("d");
-            TMP_e = createDefaultString("dayNumber", "daynumber", dateFormat.format(new Date()), TMP_e, isAsync);
+            TMP_e = createDefaultString(dateFormat.format(new Date()), TMP_e, isAsync, "dayNumber", "daynumber");
         }
         if (TMP_e.contains("{monthNumber}") || TMP_e.contains("{monthnumber}")) {
             Calendar myCal = new GregorianCalendar();
             myCal.setTime(new Date());
-            TMP_e = createDefaultString("monthNumber", "monthnumber", (myCal.get(Calendar.MONTH)+1) + "", TMP_e, isAsync);
+            TMP_e = createDefaultString((myCal.get(Calendar.MONTH)+1) + "", TMP_e, isAsync, "monthNumber", "monthnumber");
         }
         if (TMP_e.contains("{year}")) {
             DateFormat dateFormat = new SimpleDateFormat("yyyy");
-            TMP_e = createDefaultString("year", dateFormat.format(new Date()), TMP_e, isAsync);
+            TMP_e = createDefaultString(dateFormat.format(new Date()), TMP_e, isAsync, "year");
         }
         if (TMP_e.contains("{hour}")) {
             DateFormat dateFormat = new SimpleDateFormat("H");
-            TMP_e = createDefaultString("hour", dateFormat.format(new Date()), TMP_e, isAsync);
+            TMP_e = createDefaultString(dateFormat.format(new Date()), TMP_e, isAsync, "hour");
         }
         if (TMP_e.contains("{hour12}")) {
             DateFormat dateFormat = new SimpleDateFormat("h");
-            TMP_e = createDefaultString("hour12", dateFormat.format(new Date()), TMP_e, isAsync);
+            TMP_e = createDefaultString(dateFormat.format(new Date()), TMP_e, isAsync, "hour12");
         }
         if (TMP_e.contains("{minute}")) {
             DateFormat dateFormat = new SimpleDateFormat("m");
-            TMP_e = createDefaultString("minute", dateFormat.format(new Date()), TMP_e, isAsync);
+            TMP_e = createDefaultString(dateFormat.format(new Date()), TMP_e, isAsync, "minute");
         }
         if (TMP_e.contains("{second}")) {
             DateFormat dateFormat = new SimpleDateFormat("s");
-            TMP_e = createDefaultString("second", dateFormat.format(new Date()), TMP_e, isAsync);
+            TMP_e = createDefaultString(dateFormat.format(new Date()), TMP_e, isAsync, "second");
         }
         if (TMP_e.contains("{am/pm}")) {
             DateFormat dateFormat = new SimpleDateFormat("a");
-            TMP_e = createDefaultString("am/pm", dateFormat.format(new Date()), TMP_e, isAsync);
+            TMP_e = createDefaultString(dateFormat.format(new Date()), TMP_e, isAsync, "am/pm");
         }
         if (TMP_e.contains("{timezone}")) {
             DateFormat dateFormat = new SimpleDateFormat("zzz");
-            TMP_e = createDefaultString("timezone", dateFormat.format(new Date()), TMP_e, isAsync);
+            TMP_e = createDefaultString(dateFormat.format(new Date()), TMP_e, isAsync, "timezone");
         }
         if (TMP_e.contains("{potionEffects}")) {
             Collection<PotionEffect> potionEffects = mc.thePlayer.getActivePotionEffects();
@@ -1006,7 +1009,7 @@ public class BuiltInStrings {
                 }
             }
 
-            TMP_e = createDefaultString("arrows", arrows+"", TMP_e, isAsync);
+            TMP_e = createDefaultString(arrows+"", TMP_e, isAsync, "arrows");
         }
 
         if (TMP_e.contains("{inBook(") && TMP_e.contains(")}")) {
@@ -1037,42 +1040,36 @@ public class BuiltInStrings {
         }
 
         if (TMP_e.contains("{xpLevel}")) {
-        	TMP_e = createDefaultString("xpLevel",
-					mc.thePlayer.experienceLevel + "", TMP_e, isAsync);
+        	TMP_e = createDefaultString(mc.thePlayer.experienceLevel + "", TMP_e, isAsync, "xpLevel");
 		}
 
 		if (TMP_e.contains("{xpProgress}")) {
         	EntityPlayerSP p = mc.thePlayer;
-        	TMP_e = createDefaultString("xpProgress", p.experience + "", TMP_e, isAsync);
+        	TMP_e = createDefaultString(p.experience + "", TMP_e, isAsync, "xpProgress");
 		}
 
 		if (TMP_e.contains("{hunger}")) {
-        	TMP_e = createDefaultString("hunger",
-					mc.thePlayer.getFoodStats().getFoodLevel() + "", TMP_e, isAsync);
+        	TMP_e = createDefaultString(mc.thePlayer.getFoodStats().getFoodLevel() + "", TMP_e, isAsync, "hunger");
 		}
 
 		if (TMP_e.contains("{saturation}")) {
-        	TMP_e = createDefaultString("saturation",
-					mc.thePlayer.getFoodStats().getSaturationLevel() + "", TMP_e, isAsync);
+        	TMP_e = createDefaultString(mc.thePlayer.getFoodStats().getSaturationLevel() + "", TMP_e, isAsync, "saturation");
 		}
 
 		if (TMP_e.contains("{renderDistance}")) {
-        	TMP_e = createDefaultString("renderDistance",
-					mc.gameSettings.renderDistanceChunks + "", TMP_e, isAsync);
+        	TMP_e = createDefaultString(mc.gameSettings.renderDistanceChunks + "", TMP_e, isAsync, "renderDistance");
 		}
 
 		if (TMP_e.contains("{fov}")) {
-        	TMP_e = createDefaultString("fov",
-					Math.floor(mc.gameSettings.fovSetting) + "", TMP_e, isAsync);
+        	TMP_e = createDefaultString(Math.floor(mc.gameSettings.fovSetting) + "", TMP_e, isAsync, "fov");
 		}
 
 		if (TMP_e.contains("{uuid}")) {
-        	TMP_e = createDefaultString("uuid", mc.getSession().getPlayerID(), TMP_e, isAsync);
+        	TMP_e = createDefaultString(mc.getSession().getPlayerID(), TMP_e, isAsync, "uuid");
 		}
 
 		if (TMP_e.contains("{armorPoints}")) {
-        	TMP_e = createDefaultString("armorPoints",
-					mc.thePlayer.getTotalArmorValue() + "", TMP_e, isAsync);
+        	TMP_e = createDefaultString(mc.thePlayer.getTotalArmorValue() + "", TMP_e, isAsync, "armorPoints");
 		}
 
         if (TMP_e.contains("{cps}")) {
@@ -1080,14 +1077,14 @@ public class BuiltInStrings {
 
             returnString = global.clicks.size() + "";
 
-            TMP_e = createDefaultString("cps", returnString.replace(".0",""), TMP_e, isAsync);
+            TMP_e = createDefaultString(returnString.replace(".0",""), TMP_e, isAsync, "cps");
         }
         if (TMP_e.contains("{rcps}")) {
             String returnString;
 
             returnString = global.rclicks.size() + "";
 
-            TMP_e = createDefaultString("rcps", returnString.replace(".0", ""), TMP_e, isAsync);
+            TMP_e = createDefaultString(returnString.replace(".0", ""), TMP_e, isAsync, "rcps");
         }
         if (TMP_e.contains("{cpsAve}")) {
             String clicksAve;
@@ -1102,7 +1099,7 @@ public class BuiltInStrings {
                 clicksAve = "0";
             }
 
-            TMP_e = createDefaultString("cpsAve", clicksAve.replace(".0",""), TMP_e, isAsync);
+            TMP_e = createDefaultString(clicksAve.replace(".0",""), TMP_e, isAsync, "cpsAve");
         }
         if (TMP_e.contains("{rcpsAve}")) {
             String clicksAve;
@@ -1117,20 +1114,20 @@ public class BuiltInStrings {
                 clicksAve = "0";
             }
 
-            TMP_e = createDefaultString("rcpsAve", clicksAve.replace(".0",""), TMP_e, isAsync);
+            TMP_e = createDefaultString(clicksAve.replace(".0",""), TMP_e, isAsync, "rcpsAve");
         }
         if (TMP_e.contains("{cpsMax}")) {
-            TMP_e = createDefaultString("cpsMax", global.clicks_max.toString().replace(".0",""), TMP_e, isAsync);
+            TMP_e = createDefaultString(global.clicks_max.toString().replace(".0",""), TMP_e, isAsync, "cpsMax");
         }
         if (TMP_e.contains("{rcpsMax}")) {
-            TMP_e = createDefaultString("rcpsMax", global.rclicks_max.toString().replace(".0",""), TMP_e, isAsync);
+            TMP_e = createDefaultString(global.rclicks_max.toString().replace(".0",""), TMP_e, isAsync, "rcpsMax");
         }
         if (TMP_e.contains("{CTVersion}")) {
-            TMP_e = createDefaultString("CTVersion", Settings.version, TMP_e, isAsync);
+            TMP_e = createDefaultString(Settings.version, TMP_e, isAsync, "CTVersion");
         }
 
         if (TMP_e.contains("{MCVersion}")) {
-        	TMP_e = createDefaultString("MCVersion", mc.getVersion(), TMP_e, isAsync);
+        	TMP_e = createDefaultString(mc.getVersion(), TMP_e, isAsync, "MCVersion");
 		}
 
 		if (TMP_e.contains("{biome}")) {
@@ -1138,92 +1135,92 @@ public class BuiltInStrings {
         	BiomeGenBase biome = chunk.getBiome(mc.thePlayer.getPosition(),
 					mc.theWorld.getWorldChunkManager());
 
-        	TMP_e = createDefaultString("biome", biome.biomeName, TMP_e, isAsync);
+        	TMP_e = createDefaultString(biome.biomeName, TMP_e, isAsync, "biome");
 		}
 
 		if (TMP_e.contains("{worldTime}")) {
-        	TMP_e = createDefaultString("worldTime", mc.theWorld.getWorldTime() + "", TMP_e, isAsync);
+        	TMP_e = createDefaultString(mc.theWorld.getWorldTime() + "", TMP_e, isAsync, "worldTime");
 		}
 
 		if (TMP_e.contains("{chunkX}")) {
-			TMP_e = createDefaultString("chunkX", mc.thePlayer.chunkCoordX + "", TMP_e, isAsync);
+			TMP_e = createDefaultString(mc.thePlayer.chunkCoordX + "", TMP_e, isAsync, "chunkX");
 		}
 
 		if (TMP_e.contains("{chunkY}")) {
-			TMP_e = createDefaultString("chunkY", mc.thePlayer.chunkCoordY + "", TMP_e, isAsync);
+			TMP_e = createDefaultString(mc.thePlayer.chunkCoordY + "", TMP_e, isAsync, "chunkY");
 		}
 
 		if (TMP_e.contains("{chunkZ}")) {
-			TMP_e = createDefaultString("chunkZ", mc.thePlayer.chunkCoordZ + "", TMP_e, isAsync);
+			TMP_e = createDefaultString(mc.thePlayer.chunkCoordZ + "", TMP_e, isAsync, "chunkZ");
 		}
 
         if (TMP_e.contains("{black}")) {
-            TMP_e = createDefaultString("black", "&0", TMP_e, isAsync);
+            TMP_e = createDefaultString("&0", TMP_e, isAsync, "black");
         }
         if (TMP_e.contains("{darkBlue}")) {
-            TMP_e = createDefaultString("darkBlue", "&1", TMP_e, isAsync);
+            TMP_e = createDefaultString("&1", TMP_e, isAsync, "darkBlue");
         }
         if (TMP_e.contains("{darkGreen}")) {
-            TMP_e = createDefaultString("darkGreen", "&2", TMP_e, isAsync);
+            TMP_e = createDefaultString("&2", TMP_e, isAsync, "darkGreen");
         }
         if (TMP_e.contains("{darkAqua}")) {
-            TMP_e = createDefaultString("darkAqua", "&3", TMP_e, isAsync);
+            TMP_e = createDefaultString("&3", TMP_e, isAsync, "darkAqua");
         }
         if (TMP_e.contains("{darkRed}")) {
-            TMP_e = createDefaultString("darkRed", "&4", TMP_e, isAsync);
+            TMP_e = createDefaultString("&4", TMP_e, isAsync, "darkRed");
         }
         if (TMP_e.contains("{darkPurple}")) {
-            TMP_e = createDefaultString("darkPurple", "&5", TMP_e, isAsync);
+            TMP_e = createDefaultString("&5", TMP_e, isAsync, "darkPurple");
         }
         if (TMP_e.contains("{gold}")) {
-            TMP_e = createDefaultString("gold", "&6", TMP_e, isAsync);
+            TMP_e = createDefaultString("&6", TMP_e, isAsync, "gold");
         }
         if (TMP_e.contains("{gray}")) {
-            TMP_e = createDefaultString("gray", "&7", TMP_e, isAsync);
+            TMP_e = createDefaultString("&7", TMP_e, isAsync, "gray");
         }
         if (TMP_e.contains("{darkGray}")) {
-            TMP_e = createDefaultString("darkGray", "&8", TMP_e, isAsync);
+            TMP_e = createDefaultString("&8", TMP_e, isAsync, "darkGray");
         }
         if (TMP_e.contains("{blue}")) {
-            TMP_e = createDefaultString("blue", "&9", TMP_e, isAsync);
+            TMP_e = createDefaultString("&9", TMP_e, isAsync, "blue");
         }
         if (TMP_e.contains("{green}")) {
-            TMP_e = createDefaultString("green", "&a", TMP_e, isAsync);
+            TMP_e = createDefaultString("&a", TMP_e, isAsync, "green");
         }
         if (TMP_e.contains("{aqua}")) {
-            TMP_e = createDefaultString("aqua", "&b", TMP_e, isAsync);
+            TMP_e = createDefaultString("&b", TMP_e, isAsync, "aqua");
         }
         if (TMP_e.contains("{red}")) {
-            TMP_e = createDefaultString("red", "&c", TMP_e, isAsync);
+            TMP_e = createDefaultString("&c", TMP_e, isAsync, "red");
         }
         if (TMP_e.contains("{lightPurple}")) {
-            TMP_e = createDefaultString("lightPurple", "&d", TMP_e, isAsync);
+            TMP_e = createDefaultString("&d", TMP_e, isAsync, "lightPurple");
         }
         if (TMP_e.contains("{yellow}")) {
-            TMP_e = createDefaultString("yellow", "&e", TMP_e, isAsync);
+            TMP_e = createDefaultString("&e", TMP_e, isAsync, "yellow");
         }
         if (TMP_e.contains("{white}")) {
-            TMP_e = createDefaultString("white", "&f", TMP_e, isAsync);
+            TMP_e = createDefaultString("&f", TMP_e, isAsync, "white");
         }
         if (TMP_e.contains("{obfuscated}")) {
-            TMP_e = createDefaultString("obfuscated", "&k", TMP_e, isAsync);
+            TMP_e = createDefaultString("&k", TMP_e, isAsync, "obfuscated");
         }
         if (TMP_e.contains("{bold}")) {
-            TMP_e = createDefaultString("bold", "&l", TMP_e, isAsync);
+            TMP_e = createDefaultString("&l", TMP_e, isAsync, "bold");
         }
         if (TMP_e.contains("{strikethrough}")) {
-            TMP_e = createDefaultString("strikethrough", "&m", TMP_e, isAsync);
+            TMP_e = createDefaultString("&m", TMP_e, isAsync, "strikethrough");
         }
         if (TMP_e.contains("{underline}")) {
-            TMP_e = createDefaultString("underline", "&n", TMP_e, isAsync);
+            TMP_e = createDefaultString("&n", TMP_e, isAsync, "underline");
         }
         if (TMP_e.contains("{italic}")) {
-            TMP_e = createDefaultString("italic", "&o", TMP_e, isAsync);
+            TMP_e = createDefaultString("&o", TMP_e, isAsync, "italic");
         }
         if (TMP_e.contains("{reset}")) {
-            TMP_e = createDefaultString("reset", "&r", TMP_e, isAsync);
+            TMP_e = createDefaultString("&r", TMP_e, isAsync, "reset");
         }
-        if (TMP_e.contains("{randcol}")) {
+        if (TMP_e.contains("{randcol}") || TMP_e.contains("{randomColor}") || TMP_e.contains("{randCol}")) {
             String col = "&f";
             int num = EventsHandler.randInt(0,15);
             switch(num) {
@@ -1257,7 +1254,7 @@ public class BuiltInStrings {
                 default:
                     break;
             }
-            TMP_e = createDefaultString("randcol", col, TMP_e, isAsync);
+            TMP_e = createDefaultString(col, TMP_e, isAsync, "randcol", "randomColor", "randCol");
         }
 
 
@@ -1305,29 +1302,24 @@ public class BuiltInStrings {
 		return held;
 	}
 
-    private static String createDefaultString(String string_name, String string_value, String TMP_e, Boolean isAsync) {
-        if (isAsync) {
-            global.Async_string.put("AsyncDefaultString->" + string_name.toUpperCase() + "-" + (global.Async_string.size() + 1), string_value);
-            global.backupAsync_string.put("AsyncDefaultString->" + string_name.toUpperCase() + "-" + global.Async_string.size(), string_value);
-            return TMP_e.replace("{" + string_name + "}", "{string[AsyncDefaultString->" + string_name.toUpperCase() + "-" + global.Async_string.size() + "]}");
-        } else {
-            global.TMP_string.put("DefaultString->" + string_name.toUpperCase() + "-" + (global.TMP_string.size() + 1), string_value);
-            global.backupTMP_strings.put("DefaultString->" + string_name.toUpperCase() + "-" + global.TMP_string.size(), string_value);
-            return TMP_e.replace("{" + string_name + "}", "{string[DefaultString->" + string_name.toUpperCase() + "-" + global.TMP_string.size() + "]}");
-        }
-    }
+    private static String createDefaultString(String string_value, String TMP_e, Boolean isAsync, String... string_names) {
+        if (string_names.length == 0)
+            return TMP_e;
 
-    private static String createDefaultString(String string_name1, String string_name2, String string_value, String TMP_e, Boolean isAsync) {
         if (isAsync) {
-            global.Async_string.put("AsyncDefaultString->" + string_name1.toUpperCase() + "-" + (global.Async_string.size() + 1), string_value);
-            global.backupAsync_string.put("AsyncDefaultString->" + string_name1.toUpperCase() + "-" + global.Async_string.size(), string_value);
-            return TMP_e.replace("{" + string_name1 + "}", "{string[AsyncDefaultString->" + string_name1.toUpperCase() + "-" + global.Async_string.size() + "]}")
-                    .replace("{" + string_name2 + "}", "{string[AsyncDefaultString->" + string_name1.toUpperCase() + "-" + global.Async_string.size() + "]}");
+            String temp_name = "AsyncDefaultString->" + string_names[0].toUpperCase() + "-" + (global.Async_string.size() + 1);
+            global.Async_string.put(temp_name, string_value);
+            global.backupAsync_string.put(temp_name, string_value);
+            for (String string_name : string_names)
+                TMP_e = TMP_e.replace("{" + string_name + "}", "{string[" + temp_name + "]}");
+            return TMP_e;
         } else {
-            global.TMP_string.put("DefaultString->" + string_name1.toUpperCase() + "-" + (global.TMP_string.size() + 1), string_value);
-            global.backupTMP_strings.put("DefaultString->" + string_name1.toUpperCase() + "-" + global.TMP_string.size(), string_value);
-            return TMP_e.replace("{" + string_name1 + "}", "{string[DefaultString->" + string_name1.toUpperCase() + "-" + global.TMP_string.size() + "]}")
-                    .replace("{" + string_name2 + "}", "{string[DefaultString->" + string_name1.toUpperCase() + "-" + global.TMP_string.size() + "]}");
+            String temp_name = "DefaultString->" + string_names[0].toUpperCase() + "-" + (global.TMP_string.size() + 1);
+            global.TMP_string.put(temp_name, string_value);
+            global.backupTMP_strings.put(temp_name, string_value);
+            for (String string_name : string_names)
+                TMP_e = TMP_e.replace("{" + string_name + "}", "{string[" + temp_name + "]}");
+            return TMP_e;
         }
     }
 }

@@ -240,7 +240,7 @@ public class CommandReference {
             r.add("{msg} {msg}.meta() {msg($number)}");
             r.add("{imported($import)}");
             r.add("{br} {br($character)}");
-            r.add("{setcol} {debug}");
+            r.add("{settingsColor} {debug}");
             r.add("{windowWidth} {windowHeight} {isFullscreen}");
             r.add("{chatWidth}");
             r.add("");
