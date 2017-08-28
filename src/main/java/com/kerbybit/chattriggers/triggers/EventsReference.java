@@ -4,17 +4,19 @@ import com.kerbybit.chattriggers.chat.ChatHandler;
 import com.kerbybit.chattriggers.globalvars.global;
 
 class EventsReference {
-    private static Double before;
+    private static Double before = null;
     private static String beforeString;
     private static String beforeBefore;
-    private static Double after;
+    private static Double after = null;
     private static String afterString;
     private static String afterAfter;
 
     private static void getBeforeAndAfter(String last, String next) {
+        before = null;
+        after = null;
+        beforeBefore = "";
+        afterAfter = "";
         try {
-            beforeBefore = "";
-            afterAfter = "";
             if (last.trim().contains("logicF6cyUQp9logic")) {
                 before = Double.parseDouble(last.trim().substring(last.trim().lastIndexOf("logicF6cyUQp9logic") + 18).trim());
                 beforeBefore = last.trim().substring(0, last.trim().lastIndexOf("logicF6cyUQp9logic") + 18);
@@ -108,7 +110,7 @@ class EventsReference {
                 case "LTE":
                     getBeforeAndAfter(split[i - 1], split[i + 1]);
 
-                    if (before <= after) {
+                    if ((before != null && after != null) && before <= after) {
                         split[i - 1] = "";
                         split[i] = "";
                         split[i + 1] = beforeBefore + "true" + afterAfter;
@@ -121,7 +123,7 @@ class EventsReference {
                 case "GTE":
                     getBeforeAndAfter(split[i - 1], split[i + 1]);
 
-                    if (before >= after) {
+                    if ((before != null && after != null) && before >= after) {
                         split[i - 1] = "";
                         split[i] = "";
                         split[i + 1] = beforeBefore + "true" + afterAfter;
@@ -134,7 +136,7 @@ class EventsReference {
                 case "LT":
                     getBeforeAndAfter(split[i - 1], split[i + 1]);
 
-                    if (before < after) {
+                    if ((before != null && after != null) && before < after) {
                         split[i - 1] = "";
                         split[i] = "";
                         split[i + 1] = beforeBefore + "true" + afterAfter;
@@ -147,7 +149,7 @@ class EventsReference {
                 case "GT":
                     getBeforeAndAfter(split[i - 1], split[i + 1]);
 
-                    if (before > after) {
+                    if ((before != null && after != null) && before > after) {
                         split[i - 1] = "";
                         split[i] = "";
                         split[i + 1] = beforeBefore + "true" + afterAfter;
@@ -160,7 +162,7 @@ class EventsReference {
                 case "EE":
                     getBeforeAndAfterString(split[i - 1], split[i + 1]);
 
-                    if (beforeString.equals(afterString)) {
+                    if ((before != null && after != null) && beforeString.equals(afterString)) {
                         split[i - 1] = "";
                         split[i] = "";
                         split[i + 1] = beforeBefore + "true" + afterAfter;

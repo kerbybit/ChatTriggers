@@ -6,6 +6,8 @@ public class global {
 	public static HashMap<Integer, List<String>> asyncMap = new HashMap<>();
 	public static int asyncID = 0;
 
+	public static List<String> creators = new ArrayList<>();
+
 	public static Boolean worldLoaded = false;
 	public static Boolean worldFirstLoad = true;
 	public static Boolean worldIsLoaded = false;

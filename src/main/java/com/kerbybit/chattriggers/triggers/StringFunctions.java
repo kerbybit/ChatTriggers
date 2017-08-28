@@ -205,6 +205,7 @@ public class StringFunctions {
             case("PREFIX"):
                 return args + stringValue;
             case("SUFFIX"):
+            case("APPEND"):
                 return stringValue + args;
             case("TOUPPER"):
             case("TOUPPERCASE"):
@@ -290,7 +291,7 @@ public class StringFunctions {
                         endAlwaysText = true;
                     subargs[1] = subargs[1].replaceAll("(?i)<end>|<e>|<include>|<i>|<number>|<n>|<text>|<t>", "");
 
-                    String temp = removeExtras(stringValue);
+                    String temp = stringValue;
                     if (getStart) {
                         first = 0;
                         if (!subargs[0].equals("")) {

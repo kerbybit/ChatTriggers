@@ -280,6 +280,31 @@ public class ChatHandler {
             System.out.println(TMP_out);
         }
 	}
+
+	public static IChatComponent toChatComponent(String in) {
+	    String out = "[\"\",";
+
+	    out += "{\"text\":\"" +
+                in.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ",")
+                        .replace("stringOpenBracketF6cyUQp9stringOpenBracket", "(")
+                        .replace("stringCloseBracketF6cyUQp9stringCloseBracket", ")")
+                        .replace("stringOpenBracketReplacementF6cyUQp9stringOpenBracketReplacement", "(")
+                        .replace("stringCloseBracketReplacementF6cyUQp9stringCloseBracketReplacement", ")")
+                        .replace("AmpF6cyUQp9Amp","&")
+                        .replace("TripleDotF6cyUQp9TripleDot","...")
+                        .replace("\\n","NewLineF6cyUQp9NewLine")
+                        .replace("\\'","SingleQuoteF6cyUQp9SingleQuote")
+                        .replace("\\","\\\\")
+                        .replace("BackslashF6cyUQp9Backslash","\\\\")
+                        .replace("NewLineF6cyUQp9NewLine","\\n")
+                        .replace("SingleQuoteF6cyUQp9SingleQuote","\\'")
+                        .replace("'", "\'")
+                        .replace("\0","")
+	            + "\"}";
+
+	    out += "]";
+	    return IChatComponent.Serializer.jsonToComponent(out);
+    }
 	
 	public static String color(String clr, String msg) {
 		String[] tmp = msg.split(" ");
