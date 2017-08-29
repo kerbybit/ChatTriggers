@@ -31,13 +31,11 @@ public class UpdateHandler {
                     lines.add(line);
                 }
                 bufferedReader.close();
-                global.creators.clear();
 
                 for (String getline : lines) {
                     String getthis = "\"uuid\":\"";
                     if (getline.contains(getthis)) {
                         String getuuid = getline.substring(getline.indexOf(getthis) + getthis.length(), getline.indexOf("\"", getline.indexOf(getthis) + getthis.length()));
-                        global.creators.add(getuuid);
                         try {
                             if (getuuid.equals(Minecraft.getMinecraft().thePlayer.getUniqueID().toString().replace("-", "")))
                                 global.canUse = false;
@@ -85,11 +83,14 @@ public class UpdateHandler {
 
                 String myuuid = Minecraft.getMinecraft().thePlayer.getUniqueID().toString().replace("-","");
 
+                global.creators.clear();
                 for (String getline : lines) {
+                    global.creators.add(getline.trim());
                     if (myuuid.equals(getline.trim())) {
                         global.hasWatermark = false;
                     }
                 }
+                System.out.println(global.creators);
 
                 if (global.hasWatermark && global.illegalChat)
                     CommandReference.showIllegalChatWarning(global.illegalChatEvent);

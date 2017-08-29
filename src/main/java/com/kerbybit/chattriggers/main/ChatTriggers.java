@@ -13,9 +13,14 @@ import com.kerbybit.chattriggers.objects.DisplayHandler;
 import com.kerbybit.chattriggers.overlay.KillfeedHandler;
 import com.kerbybit.chattriggers.overlay.NotifyHandler;
 import com.kerbybit.chattriggers.triggers.StringHandler;
+import com.kerbybit.chattriggers.util.cape.DLCape;
+import com.kerbybit.chattriggers.util.cape.LayerCape;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.command.ICommand;
+import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import org.lwjgl.input.Keyboard;
 
 import com.kerbybit.chattriggers.chat.ChatHandler;
@@ -65,7 +70,17 @@ public class ChatTriggers {
         displayMenuKey = new KeyBinding("Alternate Display Screen", Keyboard.KEY_F4, "ChatTriggers");
 
         registerKeyBindings(altGuiKey, displayKey, displayMenuKey);
+
+        DLCape.getCapes();
 	}
+
+	@EventHandler
+    public static void postInit(FMLPostInitializationEvent event) {
+        //Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.CAPE, true);
+        for (RenderPlayer render : Minecraft.getMinecraft().getRenderManager().getSkinMap().values()) {
+            render.addLayer(new LayerCape(render));
+        }
+    }
 
 	private void registerCommands(ICommand... commands) {
 	    for (ICommand command : commands) {
