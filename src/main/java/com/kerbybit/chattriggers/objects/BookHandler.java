@@ -126,7 +126,7 @@ public class BookHandler {
 
 			StringFunctions.nestedArgs(textToAdd, null, isAsync);
 
-			bookData.writePage(textToAdd);
+			bookData.writePage(textToAdd.replace("stringCommaReplacementF6cyUQp9stringCommaReplacement", ","));
 			args = args.replace("{book[" + bookName + "]}.add(" + textToAdd + ")", "");
 		}
 

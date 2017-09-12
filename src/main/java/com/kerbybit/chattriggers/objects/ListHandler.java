@@ -291,13 +291,17 @@ public class ListHandler {
 
     private static String removeValue(String list_name, int position) throws NumberFormatException {
         List<String> entries = lists.get(list_name);
-        if (position < entries.size() && position >= 0) {
-            String removed = entries.remove(position);
-            if (entries.size() == 0)
-                lists.remove(list_name);
-            else
-                lists.put(list_name, entries);
-            return removed;
+        if (entries != null) {
+            if (position < entries.size() && position >= 0) {
+                String removed = entries.remove(position);
+                if (entries.size() == 0)
+                    lists.remove(list_name);
+                else
+                    lists.put(list_name, entries);
+                return removed;
+            }
+        } else {
+            return "Empty list";
         }
         throw new NumberFormatException();
     }
